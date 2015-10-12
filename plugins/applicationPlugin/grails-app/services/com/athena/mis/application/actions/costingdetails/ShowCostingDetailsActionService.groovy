@@ -4,7 +4,9 @@ import com.athena.mis.ActionIntf
 import com.athena.mis.BaseService
 import com.athena.mis.GridEntity
 import com.athena.mis.application.entity.CostingDetails
+import com.athena.mis.application.entity.CostingType
 import com.athena.mis.application.service.CostingDetailsService
+import com.athena.mis.application.service.CostingTypeService
 import com.athena.mis.application.utility.CostingDetailsCacheUtility
 import com.athena.mis.utility.Tools
 import org.apache.log4j.Logger
@@ -21,6 +23,7 @@ class ShowCostingDetailsActionService extends BaseService implements ActionIntf 
     private static final String GRID_OBJECT = "gridObject"
 
     CostingDetailsService costingDetailsService
+    CostingTypeService costingTypeService
     @Autowired
     CostingDetailsCacheUtility costingDetailsCacheUtility
 
@@ -82,31 +85,50 @@ class ShowCostingDetailsActionService extends BaseService implements ActionIntf 
         }
     }
 
-    @Override
-    Object buildFailureResultForUI(Object obj) {
-        return null
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                LinkedHashMap preResult = (LinkedHashMap) obj
+                if (preResult.message) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, SHOW_FAILURE_MESSAGE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SHOW_FAILURE_MESSAGE)
+            return result
+        }
     }
 
     private List wrapListInGridEntityList(List<CostingDetails> costingDetailsList, int start) {
-        List costingDetails = [] as List
+        List lstWrappedCostingDetails = [] as List
         try {
             int counter = start + 1
             for (int i = 0; i < costingDetailsList.size(); i++) {
+                CostingDetails costingDetails = costingDetailsList[i]
+                CostingType costingType = costingTypeService.read(costingDetails.costingTypeId)
                 GridEntity obj = new GridEntity()
                 obj.id = costingDetailsList[i].id
                 obj.cell = [
                         counter,
-                        costingDetailsList[i].name,
-                        costingDetailsList[i].description
+                        costingType.name,
+                        costingDetails.description,
+                        costingDetails.costingAmount ? costingDetails.costingAmount : Tools.EMPTY_SPACE
                 ]
-                costingDetails << obj
+                lstWrappedCostingDetails << obj
                 counter++
             }
-            return costingDetails
+            return lstWrappedCostingDetails
         } catch (Exception ex) {
             log.error(ex.getMessage())
-            costingDetails = []
-            return costingDetails
+            lstWrappedCostingDetails = []
+            return lstWrappedCostingDetails
         }
     }
 }

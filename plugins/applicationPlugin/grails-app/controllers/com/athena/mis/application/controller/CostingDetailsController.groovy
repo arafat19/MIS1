@@ -1,6 +1,7 @@
 package com.athena.mis.application.controller
 
 import com.athena.mis.application.actions.costingdetails.CreateCostingDetailsActionService
+import com.athena.mis.application.actions.costingdetails.ShowCostingDetailsActionService
 import grails.converters.JSON
 
 class CostingDetailsController {
@@ -9,7 +10,23 @@ class CostingDetailsController {
                              edit  : "POST", update: "POST", delete: "POST", list: "POST"]
 
     CreateCostingDetailsActionService createCostingDetailsActionService
+    ShowCostingDetailsActionService showCostingDetailsActionService
 
+
+    def show() {
+        Map result
+        Map executeResult
+        Boolean isError
+
+        executeResult = (Map) showCostingDetailsActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showCostingDetailsActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showCostingDetailsActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(view: '/application/costingDetails/show', model: [output: result as JSON])
+    }
 
     def create() {
         Map preResult
