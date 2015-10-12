@@ -1,0 +1,48 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-63 | Priority: | High
+ *Name* | List Current Fixed Asset Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fixedAssetReport/listCurrentFixedAsset | *Action Class:* | ListForCurrentFixedAssetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 12th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+User will see the Current Fixed Asset Report within the system under following columns:
+# Serial
+# Current Location
+# Category
+# Model/Serial
+# Purchase Date
+# Price
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Get list of Current Fixed Asset Report from server (default: 20 at Max).
+
+h4. Post-condition:
+
+# *Success:*
+## Current Fixed Asset Report will be listed in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+# [Clear Results|common Usecases]
+# [Refresh|common Usecases]
+# [Previous Page|common Usecases]
+# [Forward Page|common Usecases]
+# [First Page|common Usecases]
+# [Last Page|common Usecases]

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="chartOfAccountTree" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="550" leftMargin="35" rightMargin="10" topMargin="15" bottomMargin="20" uuid="1a2c75df-ff9b-4899-b7f4-91b1ff8d5316">
+	<property name="ireport.zoom" value="1.1269722013523664"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="accSourceNone" class="java.lang.Integer"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT acc_type.name AS acc_type_name,t1.name AS t1_name,t1.id AS t1_id,t2.name AS t2_name,
+t2.id AS t2_id,t3.name AS t3_name,t3.id AS t3_id
+FROM acc_type
+LEFT JOIN acc_tier1 t1 ON t1.acc_type_id=acc_type.id AND t1.company_id = $P{companyId}
+LEFT JOIN acc_tier2 t2 ON t2.acc_tier1id=t1.id AND t2.company_id = $P{companyId}
+LEFT JOIN acc_tier3 t3 ON t3.acc_tier2id=t2.id AND t3.company_id = $P{companyId}
+ORDER BY acc_type_name,t1_name,t2_name,t3_name;]]>
+	</queryString>
+	<field name="acc_type_name" class="java.lang.String"/>
+	<field name="t1_name" class="java.lang.String"/>
+	<field name="t1_id" class="java.lang.Integer"/>
+	<field name="t2_name" class="java.lang.String"/>
+	<field name="t2_id" class="java.lang.Integer"/>
+	<field name="t3_name" class="java.lang.String"/>
+	<field name="t3_id" class="java.lang.Integer"/>
+	<variable name="counterAccType" class="java.lang.Integer" incrementType="Group" incrementGroup="AccountType" calculation="Count">
+		<variableExpression><![CDATA[$F{acc_type_name}]]></variableExpression>
+	</variable>
+	<group name="AccountType">
+		<groupExpression><![CDATA[$F{acc_type_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="1c6955bc-a6bf-46a4-90d4-358700ae6470" x="0" y="0" width="546" height="20"/>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{acc_type_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tier_1">
+		<groupExpression><![CDATA[$F{t1_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[( $F{t1_name} != null) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="0c633241-fcce-4690-a30b-c6808f252f38" x="3" y="0" width="26" height="20">
+						<printWhenExpression><![CDATA[Boolean.FALSE]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{t1_name}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement uuid="081071fb-ea41-4458-8a7f-ca15247b4f3c" x="30" y="0" width="510" height="20"/>
+					<subreportParameter name="tier1_id">
+						<subreportParameterExpression><![CDATA[$F{t1_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="tier1_name">
+						<subreportParameterExpression><![CDATA[$F{t1_name}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="companyId">
+						<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accSourceNone">
+						<subreportParameterExpression><![CDATA[$P{accSourceNone}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{REPORT_DIR} +  "/" + "subCOA_forT1.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tier_2">
+		<groupExpression><![CDATA[$F{t2_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[( $F{t2_name} != null) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				<subreport>
+					<reportElement uuid="25342964-ecfe-46bd-a609-713da5b5e32a" x="60" y="0" width="480" height="20"/>
+					<subreportParameter name="tier2_name">
+						<subreportParameterExpression><![CDATA[$F{t2_name}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="tier2_id">
+						<subreportParameterExpression><![CDATA[$F{t2_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="companyId">
+						<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accSourceNone">
+						<subreportParameterExpression><![CDATA[$P{accSourceNone}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{REPORT_DIR} + "/" + "subCOA_forT2.jasper"]]></subreportExpression>
+				</subreport>
+				<textField>
+					<reportElement uuid="97c53028-a854-48a0-a126-486176f705b5" positionType="Float" x="3" y="0" width="26" height="20">
+						<printWhenExpression><![CDATA[Boolean.FALSE]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{t2_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tier_3">
+		<groupExpression><![CDATA[$F{t3_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[( $F{t3_name} != null) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				<textField>
+					<reportElement uuid="60e1cca8-6016-406b-ba21-36983e4f5edb" positionType="Float" x="3" y="0" width="26" height="20">
+						<printWhenExpression><![CDATA[Boolean.FALSE]]></printWhenExpression>
+					</reportElement>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{t3_name}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement uuid="9176f93c-c640-4cd3-82b5-5e4d1f3fc902" positionType="Float" x="90" y="0" width="450" height="20"/>
+					<subreportParameter name="tier3_id">
+						<subreportParameterExpression><![CDATA[$F{t3_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="tier3_name">
+						<subreportParameterExpression><![CDATA[$F{t3_name}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="companyId">
+						<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accSourceNone">
+						<subreportParameterExpression><![CDATA[$P{accSourceNone}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{REPORT_DIR} + "/" + "subCOA_forT3.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<pageHeader>
+		<band height="42">
+			<image>
+				<reportElement uuid="bef5d1e0-96af-4c90-b3f9-8252554138ec" x="216" y="0" width="334" height="35"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<line>
+				<reportElement uuid="d5751be1-2393-4ee1-9d7b-5560964146b7" x="0" y="41" width="550" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="0" y="15" width="185" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Chart Of Accounts Report]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<pageFooter>
+		<band height="15" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a0b3ac35-56f4-4a04-bd8b-439afe850859" x="0" y="0" width="546" height="15"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="7a32ad0b-7ffe-4fee-b2b3-a5a9cdc6e19b" x="0" y="0" width="45" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c7276151-8a12-41d3-9d77-38fe24228c76" x="45" y="0" width="104" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5b600708-a9aa-4001-96c2-297495fa9d6e" x="241" y="0" width="38" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Page No]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4ad29b6c-e662-4d41-9510-5e9448b209d6" x="279" y="0" width="58" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " +$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

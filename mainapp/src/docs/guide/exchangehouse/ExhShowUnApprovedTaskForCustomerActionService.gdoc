@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of Customer's "Un-Approved Task" | |
+*ActionService:* | ExhShowUnApprovedTaskForCustomerActionService | *Auditable:* | No
+*Url:* | /exhTask/showUnApprovedTaskForCustomer | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 30th January 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+This is the landing page of Customer's "Un-Approved Task" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Un-Approved" link.
+* Show Landing Page of Customer's "Un-Approved Task".
+
+h4. Pre-condition:
+* User must have "Show UnApproved Customer Task" privilege.
+
+h4. Process:
+* [Get list of Customer's "Un-Approved Task"|guide:ExhListUnApprovedTaskForCustomerActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show list of Customer's "Un-Approved Task" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [List Customer's "Disbursed Task"|guide:ExhListDisbursedTaskForCustomerActionService].
+* [Show Landing Page of "Invoice" Report For "Customer"|guide:ShowInvoiceForCustomer].
+
+!Exh/Customer's_Un-approved Task_Show.png!

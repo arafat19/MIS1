@@ -1,0 +1,58 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show list of Approved "Inventory Production" in landing page | |
+ *ActionService:* | ListForApprovedProductionWithConsumptionActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransaction/listApprovedProdWithConsump | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "New"(Production) link.
+* Show list of Approved "Inventory Production" in [landing page|guide:ShowForApprovedProductionWithConsumptionActionService].
+
+h4. Pre-condition:
+* User must have "List For Approved Prod.With Consumption" privilege.
+
+h4. Process:
+* Get list of Approve "Inventory Production" from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Production ID
+** Inventory
+** Production Line Item
+** Raw Materials (Count)
+** Finish Materials (Count)
+** Production Date
+** Created By
+
+h4. Post-condition:
+
+* *Success:*
+** Approve "Inventory Production" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search Approve "Inventory Production" From Grid View|guide:SearchForApprovedProductionWithConsumptionActionService].
+
+!Inv/Approved_Production_List.png!

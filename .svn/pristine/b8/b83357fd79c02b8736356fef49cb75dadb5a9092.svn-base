@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Employee* From Grid View | |
+*ActionService:* | SearchEmployeeActionService | *Auditable:* | No
+*Url:* | /employee/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 25th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Employee* link.
+* [Show Landing Page of Employee|guide:ShowEmployeeActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Employee* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Employee" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Searching Option*
+Find | Text Box | Text | Full Name
+Find | Text Box | Text | Nick Name
+Find | Text Box | Numeric | Mobile No
+Find | Text Box | Alpha Numeric | Email Address
+{table}
+
+
+h4. Process:
+* Get list of *Employee* (default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Employee*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Employee* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Employee" in Landing Page|guide:ListEmployeeActionService].

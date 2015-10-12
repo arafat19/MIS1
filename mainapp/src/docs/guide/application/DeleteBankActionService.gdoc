@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Bank* | |
+*ActionService:* | DeleteBankActionService | *Auditable:* | No
+*Url:* | /bank/delete | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Bank* link.
+* [Show Landing Page of "Bank"|guide:ShowBankActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Bank*.
+
+h4. Pre-condition:
+* User must have "Delete Bank" privilege.
+* If *Bank* has dependency with following business entity then selected *Bank* will not be delete-able:
+** *Task*
+** *Bank Branch*
+
+h4. Process:
+* Delete selected *Bank*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Bank* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

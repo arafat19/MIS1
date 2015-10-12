@@ -1,0 +1,44 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *Photo Id Type* List in drop-down | |
+*ActionService:* | ExhPhotoIdTypeDropDownTagLib |*Auditable:* | No
+*Url:* | /exhCustomer/registration | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent, Cashier, Customer, Anonymous User.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks "New User? Click Here" option from show page.
+* [Show "User Registration" Page|guide:ExhShowRegistrationCustomerActionService].
+* Populate "Photo Id Type" list in drop down.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get all *Photo Id Type* list from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate list of *Photo Id Type* at drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecases:
+* [Create "User Registration"|guide:ExhSignupForCustomerUserActionService].
+* [Create "Customer"|guide:ExhCreateCustomerActionService].
+* [Update "Customer"|guide:ExhUpdateCustomerActionService].
+

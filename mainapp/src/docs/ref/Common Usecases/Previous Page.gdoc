@@ -1,0 +1,36 @@
+
+h2.	Purpose
+System will show the previous page by clicking on backward arrow.
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Previous page | | 
+ *Action Class:* | ListAnyDomainActionService | *Auditable:* | No
+ *Url:* | /anyDomain/list | | 
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+User.
+
+h4. Description:
+Previous arrow could go back the user for seeing previous page.
+
+h4. Pre-condition:
+* Grid must have two or more pages of information.
+
+h4. Process:
+* Click previous arrow to go previous page. 
+
+h4. Post-condition:
+
+* *Success:*
+** Go previous page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

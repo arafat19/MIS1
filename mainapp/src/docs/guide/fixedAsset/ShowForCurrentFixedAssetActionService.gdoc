@@ -1,0 +1,35 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-62 | Priority: | High
+ *Name* | Show Current Fixed Asset Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fixedAssetReport/showCurrentFixedAsset | *Action Class:* | ShowForCurrentFixedAssetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 12th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+# Show blank input form of Current Fixed Asset Report, so that actor can Search Current Fixed Asset Report.
+# [List Current Fixed Asset Report|guide:ListForCurrentFixedAssetActionService].
+
+h4. Post-condition:
+
+# *Success:*
+## Show Current Fixed Asset Report landing page at grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

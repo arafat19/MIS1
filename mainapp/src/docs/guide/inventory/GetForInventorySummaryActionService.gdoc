@@ -1,0 +1,71 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Generate "Inventory Summary" Report in HTML Format | |
+ *ActionService:* | GetForInventorySummaryActionService | *Auditable:* | No
+ *Url:* | /invReport/getInventorySummary | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Summary" link.
+* [Show Landing Page of "Inventory Summary" Report|guide:ShowForInventorySummaryActionService].
+* User must insert valid input to search "Inventory Summary" Report.
+* Click "Search" button.
+* Generate "Inventory Summary" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "Search Inventory Summary" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ Start Date | Calendar | Numeric | Default (To Date) 
+ End Date | Calendar | Numeric | Default (To Date) 
+ [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required
+ [Populate Inventory Name List|guide:GetInventoryListByInventoryTypeActionService] |Drop-Down List | Numeric | Required
+{table}
+
+
+h4. Process:
+* Get "Inventory Summary" Report from server.
+
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Date
+** Item
+** Total Quantity (In)
+** Count (In)
+** Total Quantity (Out)
+** Count (Out)
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Inventory Summary" Report in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Landing Page of "Inventory Summary" Report|guide:ShowForInventorySummaryActionService].
+* [Refresh|common Usecases]
+* [Previous Page|common Usecases]
+* [Forward Page|common Usecases]
+* [First Page|common Usecases]
+* [Last Page|common Usecases]
+
+!Inv/Inventory_Summary_Report_Generate.png!

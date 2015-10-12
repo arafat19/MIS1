@@ -1,0 +1,266 @@
+<script type="text/javascript">
+
+    var taskListModel = false, taskId;
+    var localCurrency, refundAmount;
+
+    $(document).ready(function () {
+        onLoadRefundTask();
+    });
+
+
+    function onLoadRefundTask() {
+        try {
+            initializeForm($('#refundTaskForm'), onSubmitRefundTask);
+            localCurrency = $('#hidLocalCurrency').val();
+            $('#lblLocalCurrency').text(localCurrency);
+            $('#lblLocalCurrency2').text(localCurrency);
+            var output = ${modelJson? modelJson: null};
+            if(output.isError) {
+                showError(output.message);
+            } else {
+                populateTaskDetails(output.taskDetails);
+            }
+            refundAmount = $('#refundAmount').kendoNumericTextBox({
+                min: 0.00,
+                step: 0.01,
+                format: "0.00",
+                decimals: 2
+            }).data("kendoNumericTextBox");
+            refundAmount.focus();
+            initFlexGrid();
+            $(document).attr('title', "SARB - Show Task Status");
+            loadNumberedMenu(MENU_ID_SARB, "#sarbTaskModel/showTaskStatus");
+
+        } catch (e) {
+            showError('Error occurred on page load');
+        }
+    }
+
+    function onSubmitRefundTask() {
+        var refundTaskAmount = $('#refundAmount').val();
+        var oldTaskId = $('#oldTaskId').val();
+        if(refundTaskAmount == '') {
+            showError("Please enter valid amount");
+            return false;
+        }
+        setButtonDisabled($('#refund'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'sarbTaskModel', action: 'createSarbTaskForRefundTask')}?oldTaskId=" + oldTaskId + '&refundAmount=' + refundTaskAmount,
+            success: executePostConditionForRefundTask,
+            complete: onCompleteAjaxCall,
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForRefundTask() {
+        setButtonDisabled($('#refund'), false);
+    }
+
+
+    function initFlexGrid() {
+        $("#flex").flexigrid
+        (
+                {
+                    url: "${createLink(controller: 'sarbTaskModel', action: 'listRefundTaskForShowStatus')}?taskId="+taskId,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 50, sortable: false, hide: true, align: "left"},
+                        {display: "Ref No", name: "refNo", width: 100, sortable: false, align: "left"},
+                        {display: "Customer Name", name: "customerName", width: 130, sortable: false, align: "left"},
+                        {display: "Beneficiary Name", name: "beneficiaryName", width: 130, sortable: false, align: "left"},
+                        {display: "Payment Method", name: "paymentMethod", width: 110, sortable: false, align: "left"},
+                        {display: "Submitted File", name: "submittedFileCount", width: 120, sortable: false, align: "left"},
+                        {display: "Amount(BDT)", name: "amountInForeignCurrency", width: 100, sortable: false, align: "left"},
+                        {display: "Amount(" + localCurrency + ")", name: "amountInLocalCurrency", width: 100, sortable: false, align: "left"},
+                        {display: "Accepted", name: "isAcceptedBySarb", width: 100, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        {name: 'Details', bclass: 'report', onpress: detailsTaskStatus},
+                        {name: 'Get Response', bclass: 'down', onpress: retrieveResponseAgain},
+                        <app:ifAllUrl urls="/sarbTaskModel/moveForResend">
+                        {name: 'Move For Resend', bclass: 'send', onpress: moveForResend},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/sarbTaskModel/moveForRefund">
+                        {name: 'Move To Refund', bclass: 'refresh', onpress: moveForRefund}
+                        </app:ifAllUrl>
+                    ],
+                    sortname: "refNo",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'Tasks Status',
+                    useRp: true,
+                    rp: 10,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 250,
+                    customPopulate: populateTaskGrid,
+                    afterAjax: function () {
+                        showLoadingSpinner(false);
+                    }
+                }
+        );
+    }
+
+    function populateTaskGrid(data) {
+        if (data.isError) {
+            taskListModel = getEmptyGridModel();
+        } else {
+            taskListModel = data.gridObj;
+        }
+        $('#flex').flexAddData(taskListModel);
+        return false;
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex').flexOptions({query: ''}).flexReload();
+    }
+
+    function populateTaskDetails(taskDetails) {
+        taskId = taskDetails.id;
+        $('#oldTaskId').val(taskDetails.id);
+        $('#lblPaymentMethod').text(taskDetails.paymentMethod);
+        $('#lblCustomerName').text(taskDetails.customerName);
+        $('#lblCustomerId').text(taskDetails.customerId);
+        $('#lblBeneficiaryName').text(taskDetails.beneficiaryName);
+        $('#lblBeneficiaryId').text(taskDetails.beneficiaryId);
+        $('#lblRemittancePurpose').text(taskDetails.remittancePurpose);
+        $('#lblRefNo').text(taskDetails.refNo);
+        $('#lblLocalAmount').text(taskDetails.amountInLocalCurrency);
+        $('#lblForeignAmount').text(taskDetails.amountInForeignCurrency);
+        $('#lblPaidBy').text(taskDetails.paidBy);
+    }
+
+    function detailsTaskStatus(com, grid) {
+        $("#lblSarbRefNo").text('SARB Reference:');
+        $("#lblResponseOfRef").text('');
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', true) == false) {
+            return;
+        }
+        var id = getSelectedIdFromGrid($('#flex'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'sarbTaskModel', action: 'showTaskStatusDetails')}?id=" + id,
+            success: executePostCondition,
+            complete: onCompleteAjaxCall,
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function retrieveResponseAgain(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', false) == false) {
+            return;
+        }
+        var ids = getSelectedIdFromGrid($('#flex'));
+        var selectedIds = $('.trSelected', grid);
+
+        if (!confirm("Are you sure you want to retrieve selected task's status from SARB again?")) {
+            return false;
+        }
+        $('span.send').hide();
+        showLoadingSpinner(true);
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            url: "${createLink(controller: 'sarbTaskModel',action: 'retrieveResponseAgain')}?id=" + ids,
+            success: function (data) {
+                if (data.isError == false) {
+                    showSuccess(data.message);
+                    executePostConditionForRetrieveStatus(data);
+                } else {
+                    showError(data.message);
+                }
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                $('span.send').show();
+                onCompleteAjaxCall();
+            }
+        });
+    }
+
+    function executePostConditionForRetrieveStatus(data) {
+        updateListModel(taskListModel, data.entity, 0);
+        $("#flex").flexAddData(taskListModel);
+    }
+
+    function moveForResend() {
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', true) == false) {
+            return;
+        }
+        if (!confirm("Are you sure you want to move task for Re-Send ?")) {
+            return false;
+        }
+        var id = getSelectedIdFromGrid($('#flex'));
+
+        showLoadingSpinner(true);
+        try{
+            $.ajax({
+                url: "${createLink(controller: 'sarbTaskModel', action: 'moveForResend')}?id=" + id,
+                success: executePostConditionMoveForResend,
+                complete: onCompleteAjaxCall,
+                dataType: 'json',
+                type: 'post'
+            });
+        }catch (e) {
+            alert('e:' + e);
+        }
+        return false;
+    }
+
+    function executePostConditionMoveForResend(data) {
+        if (data.isError == true) {
+            showError(data.message);
+            return
+        }
+        var selectedRow = null;
+        $('.trSelected', $('#flex')).each(function (e) {
+            selectedRow = $(this).remove();
+        });
+        $('#flex').decreaseCount(1);
+        showSuccess(data.message);
+
+    }
+
+    function moveForRefund() {
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', true) == false) {
+            return;
+        }
+        if (!confirm("Are you sure you want to move task for refund ?")) {
+            return false;
+        }
+        var id = getSelectedIdFromGrid($('#flex'));
+
+        showLoadingSpinner(true);
+        try{
+            $.ajax({
+                url: "${createLink(controller: 'sarbTaskModel', action: 'moveForCancel')}?id=" + id,
+                success: executePostConditionMoveForRefund,
+                complete: onCompleteAjaxCall,
+                dataType: 'json',
+                type: 'post'
+            });
+        }catch (e) {
+            alert('e:' + e);
+        }
+        return false;
+    }
+
+    function executePostConditionMoveForRefund(data) {
+        if (data.isError == true) {
+            showError(data.message);
+            return
+        }
+        var selectedRow = null;
+        $('.trSelected', $('#flex')).each(function (e) {
+            selectedRow = $(this).remove();
+        });
+        $('#flex').decreaseCount(1);
+        showSuccess(data.message);
+    }
+
+</script>

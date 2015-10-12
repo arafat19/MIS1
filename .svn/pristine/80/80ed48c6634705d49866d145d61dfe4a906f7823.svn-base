@@ -1,0 +1,217 @@
+function checkAmountValidity(value) {
+    try {
+        value = $.trim(value);
+        if (value.length <= 0) {
+            return false
+        }
+        // check amount pattern
+        var regexForAmount = /^[0-9]\d{0,10}(\.\d{1,2})?$/;
+        if ((isNaN(value)) || (value <= 0) || (regexForAmount.test(value) == false)) {
+            return false;
+        }
+
+        return true;
+    } catch (ex) {
+        return false;
+    }
+}
+
+
+function showError(errDescrip) {
+    if (errDescrip.length == 0) {
+        return false;
+    }
+    $.jGrowl(errDescrip, 'error');
+}
+
+function showConstraintsErrors(errors) {
+    // Growl massages should display in <Li> tag in a single growl message
+    var erroHtml = '<ul>';
+    errors.each(function (i) {
+        var err = $(this);
+        var errStr = 'Error(s) occurred in some inputs';
+        try {
+            if (err.length == 2) {
+                if ($("label[for='" + err[0] + "']").html() != null) {  // get the label of that field
+                    errStr = $("label[for='" + err[0] + "']").html() + ' ' + err[1];
+                }
+            } else if (err.length == 1) {
+                errStr = err[0]
+            }
+        } catch (e) {
+        }
+        erroHtml += '<li>' + errStr + '</li>';
+    });
+    erroHtml = erroHtml + '</ul>';
+    showError(erroHtml);
+}
+
+function clearDivErrors() {
+    $('#errorDiv').empty();
+    $('#errorDiv').hide();
+}
+
+function showSuccess(successDescrip) {
+    if (successDescrip.length == 0) {
+        return false;
+    }
+
+    // new imp
+    $.jGrowl(successDescrip, 'success');
+}
+
+function showInfo(errDescrip) {
+    if (!errDescrip || errDescrip.length == 0) {
+        return false;
+    }
+    $.jGrowl(errDescrip, 'info');
+}
+
+String.prototype.endsWith = function (str) {
+    return (this.match(str + "$") == str)
+}
+
+String.prototype.isEmpty = function () {
+    try {
+        return ($.trim(this).length == 0);
+    } catch (e) {
+        return true;
+    }
+}
+
+/*Function is responsible to refresh dropDown by url
+ * 1. Extract all attributes
+ * 2. build url parameter with attributes
+ * 3. fire the url, receive html data & update div with data
+ * */
+
+$.fn.reloadMe = function (callbackFunc, customDivToUpdate) {
+    var attributes = this.get(0).attributes;
+    var params = "?" + attributes[0].name + "=" + attributes[0].value;
+    for (var i = 1; i < attributes.length; i++) {
+        params = params + "&" + attributes[i].name + "=" + encodeURIComponent(attributes[i].value);
+    }
+    var url = this.attr('url');
+    var divToUpdate = (typeof customDivToUpdate != "undefined") ? $(customDivToUpdate) : $(this).parent().closest('div');
+    $(this).prev('span.k-dropdown-wrap').find('span.k-icon').toggleClass('k-loading');
+    jQuery.ajax({type: 'post', dataType: 'html', url: url + params,
+        success: function (data, textStatus) {
+            $(divToUpdate).html(data);
+        },
+        complete: function (XMLHttpRequest, textStatus) {
+            $(this).prev('span.k-dropdown-wrap').find('span.k-icon').toggleClass('k-loading');
+            if (callbackFunc) callbackFunc();
+        }
+    });
+};
+
+
+$.fn.refreshDropDown = function (data, options) {
+
+    try {
+        var ctrlDropDown = this;
+        ctrlDropDown.children().remove();
+
+        options = $.extend({
+            valueMember: 'id',
+            textMember: 'name',
+            addAllAttributes: false,
+            unselectedValue: '-1',
+            selectHints: 'Please Select...',
+            defaultValue: -1
+        }, options);
+        var hasUnselected = options.unselectedValue.length;
+        if (hasUnselected != undefined) { // if undefined then skip
+            $($('<option></option>')).val(options.unselectedValue).html(options.selectHints).appendTo(ctrlDropDown);
+        }
+
+        $(data).each(function (e) {
+            var opt = $($('<option></option>'));
+            $.each(this, function (k, v) {
+                if (k == options.textMember) opt.html(v);
+                else if (k == options.valueMember) opt.val(v);
+                else if (options.addAllAttributes) opt.attr(k, v);
+            });
+            opt.appendTo(ctrlDropDown);
+        });
+
+        // initial selection with default
+        if (options.defaultValue) {
+            ctrlDropDown.attr('value', options.defaultValue);
+        }
+    } catch (e) {
+
+    }
+
+};
+
+function getGridHeight(numberOfGridBar) {
+    var extraHieght = 0;
+    if ($('#message_div').length) {
+        extraHieght = $('#message_div').height() + 4;
+    }
+    var totalHeight = (27 * 2 + 31 + 8 + 2) + 5;
+    if (numberOfGridBar != 3) {
+        totalHeight += 27;
+    }
+
+    var gridHeight = $("#contentHolder").height() - ($("#application_top_panel").height() + 2 + totalHeight + extraHieght);
+    return gridHeight;
+}
+function getFullGridHeight() {
+    var totalHeight = (27 * 2 + 31 + 8 + 2) + 5;
+    if ($('.tDiv').length) {
+        totalHeight += 27;
+    }
+    var gridHeight = $("#contentHolder").height() - totalHeight;
+    return gridHeight;
+}
+
+function getGridHeightKendo(ctl) {
+    var height = $(ctl).parent('div').parent('div').height() - $(ctl).parent('div').prev('div').height();
+    return height;
+}
+
+function clearGridKendo(gridModel) {
+    gridModel.dataSource.data([]);
+}
+
+function isEmpty(val) {
+    var val2;
+    val2 = $.trim(val);
+    return (val2.length == 0);
+}
+
+function isUnselected(ctl) {
+    ctl = $(ctl);
+    return (ctl.val() == -1);
+}
+
+
+// clean following method after replacement of EXH plugin usage
+function displayEntryErrors(result) {
+
+    var errors = $(result.errors);
+    errors.each(function (i) {
+        var err = $(this);
+        try {
+            if (err.length == 2) {
+                $('<label></label>').addClass('error').html(err[1]).insertAfter('#' + err[0]);
+            }
+            else if (err.length == 1) {
+                /** Azam: there should not be any element with id 'errorList', take corrective measure
+                 $("#errorList").append("<li></li>").html(err[0]);
+                 */
+            }
+        } catch (e) { /* ignored **/
+        }
+    });
+
+    showLoadingSpinner(false);
+    if (result.message) {
+        showError(result.message);
+    }
+}
+
+
+

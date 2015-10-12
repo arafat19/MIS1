@@ -1,0 +1,321 @@
+package com.athena.mis.document.controller
+
+import com.athena.mis.document.actions.appuserdoccategory.*
+import com.athena.mis.document.actions.appuserdocsubcategory.*
+import grails.converters.JSON
+
+class DocAllCategoryUserMappingController {
+    static allowedMethods = [showForCategory: "post", createForCategory: "post", updateForCategory: "post", deleteForCategory: "post",
+            listForCategory: "post", selectForCategory: "post", showForSubCategory: "post", createForSubCategory: "post",
+            updateForSubCategory: "post", deleteForSubCategory: "post", listForSubCategory: "post", selectForSubCategory: "post"]
+
+
+    ShowAppUserDocCategoryActionService showAppUserDocCategoryActionService
+    CreateAppUserDocCategoryActionService createAppUserDocCategoryActionService
+    SelectAppUserDocCategoryActionService selectAppUserDocCategoryActionService
+    UpdateAppUserDocCategoryActionService updateAppUserDocCategoryActionService
+    DeleteAppUserDocCategoryActionService deleteAppUserDocCategoryActionService
+    ListAppUserDocCategoryActionService listAppUserDocCategoryActionService
+
+    ShowAppUserDocSubCategoryActionService showAppUserDocSubCategoryActionService
+    CreateAppUserDocSubCategoryActionService createAppUserDocSubCategoryActionService
+    SelectAppUserDocSubCategoryActionService selectAppUserDocSubCategoryActionService
+    UpdateAppUserDocSubCategoryActionService updateAppUserDocSubCategoryActionService
+    DeleteAppUserDocSubCategoryActionService deleteAppUserDocSubCategoryActionService
+    ListAppUserDocSubCategoryActionService listAppUserDocSubCategoryActionService
+
+    /*
+    * Show AppUser DocCategory mapping list
+    * */
+
+    def showForCategory() {
+        Map result, executeResult
+        Boolean isError
+        String output
+
+        executeResult = (Map) showAppUserDocCategoryActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showAppUserDocCategoryActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render(view: '/document/appUserDocCategoryMapping/show', model: [output: output])
+            return;
+        } else {
+            result = (Map) showAppUserDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        Long categoryId = (Long) result.categoryId    // add separate non-json key for tagLib parameter
+        render(view: '/document/appUserDocCategoryMapping/show', model: [categoryId: categoryId, output: output])
+    }
+
+    /*
+    * Create AppUser DocCategory mapping
+    * */
+
+    def createForCategory() {
+        Map preResult, executeResult, result
+        Boolean isError
+
+        preResult = (Map) createAppUserDocCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createAppUserDocCategoryActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) createAppUserDocCategoryActionService.execute(null, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createAppUserDocCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) createAppUserDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(result as JSON)
+    }
+
+    /*
+    * Select AppUser DocCategory Mapping object
+    * */
+
+    def selectForCategory() {
+        Map result
+        Map executeResult = (Map) selectAppUserDocCategoryActionService.execute(params, null)
+        Boolean isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) selectAppUserDocCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (LinkedHashMap) selectAppUserDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render result as JSON
+    }
+    /*
+    * Update AppUser DocCategory Mapping
+    * */
+
+    def updateForCategory() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+
+        preResult = (Map) updateAppUserDocCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateAppUserDocCategoryActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) updateAppUserDocCategoryActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateAppUserDocCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) updateAppUserDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(result as JSON)
+    }
+
+    /*
+    * Delete AppUser DocCategory Mapping object
+    * */
+
+    def deleteForCategory() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+
+        preResult = (Map) deleteAppUserDocCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deleteAppUserDocCategoryActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) deleteAppUserDocCategoryActionService.execute(params, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deleteAppUserDocCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) deleteAppUserDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(result as JSON)
+    }
+
+    /*
+    * List of AppUser DocCategory  Mapping
+    * */
+
+    def listForCategory() {
+        Map result
+        Map executeResult
+        Boolean isError
+
+        executeResult = (Map) listAppUserDocCategoryActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) listAppUserDocCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) listAppUserDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        String output = result as JSON
+        render output
+    }
+
+    ///***************  For Sub Category *************/////////////////
+
+    /*
+    * Show AppUser DocSubCategory mapping list
+    * */
+
+    def showForSubCategory() {
+        Map result, executeResult
+        Boolean isError
+        String output
+
+        executeResult = (Map) showAppUserDocSubCategoryActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showAppUserDocSubCategoryActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render(view: '/document/appUserDocSubCategoryMapping/show', model: [output: output])
+            return;
+        } else {
+            result = (Map) showAppUserDocSubCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        Long subCategoryId = (Long) result.subCategoryId    // add separate non-json key for tagLib parameter
+        render(view: '/document/appUserDocSubCategoryMapping/show', model: [subCategoryId: subCategoryId, output: output])
+    }
+
+    /*
+    * Create AppUser DocSubCategory Mapping object
+    * */
+
+    def createForSubCategory() {
+        Map preResult, executeResult, result
+        Boolean isError
+
+        preResult = (Map) createAppUserDocSubCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createAppUserDocSubCategoryActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) createAppUserDocSubCategoryActionService.execute(null, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createAppUserDocSubCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) createAppUserDocSubCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(result as JSON)
+    }
+
+    /*
+    * Select AppUser DocSubCategory mapping object
+    * */
+
+    def selectForSubCategory() {
+        Map result
+        Map executeResult = (Map) selectAppUserDocSubCategoryActionService.execute(params, null)
+        Boolean isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) selectAppUserDocSubCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (LinkedHashMap) selectAppUserDocSubCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render result as JSON
+    }
+
+    /*
+    * Update AppUser DocSubCategory Mapping object
+    * */
+
+    def updateForSubCategory() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+
+        preResult = (Map) updateAppUserDocSubCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateAppUserDocSubCategoryActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) updateAppUserDocSubCategoryActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateAppUserDocSubCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) updateAppUserDocSubCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(result as JSON)
+    }
+
+    /*
+    * Delete AppUser DocSubCategory Mapped object
+    * */
+
+    def deleteForSubCategory() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+
+        preResult = (Map) deleteAppUserDocSubCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deleteAppUserDocSubCategoryActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) deleteAppUserDocSubCategoryActionService.execute(params, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deleteAppUserDocSubCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) deleteAppUserDocSubCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(result as JSON)
+    }
+
+    /*
+    * List of AppUser DocSubCategory mapping
+    * */
+
+    def listForSubCategory() {
+        Map result
+        Map executeResult
+        Boolean isError
+
+        executeResult = (Map) listAppUserDocSubCategoryActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) listAppUserDocSubCategoryActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) listAppUserDocSubCategoryActionService.buildSuccessResultForUI(executeResult)
+        }
+        String output = result as JSON
+        render output
+    }
+
+    /*
+    * Dropdown AppUser for Category reload
+    * */
+
+    def dropDownAppUserForCategoryReload() {
+        render doc.dropDownAppUserForCategory(params)
+    }
+
+    /*
+    * Dropdown AppUser for SubCategory reload
+    * */
+
+    def dropDownAppUserForSubCategoryReload() {
+        render doc.dropDownAppUserForSubCategory(params)
+    }
+}

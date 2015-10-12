@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "User Project Mapping" | |
+*ActionService:* | ShowUserProjectActionService | *Auditable:* | No
+*Url:* | /userProject/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 30th May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *User Project* Mapping with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Project* link.
+* [Show Landing Page of Project|guide:ShowProjectActionService].
+* Select a line-item from grid view.
+* Click "User" button from tool bar.
+* Show Landing Page of "User Project Mapping".
+
+h4. Pre-condition:
+* User must have "Show User Project" privilege.
+
+h4. Process:
+* [Get List of all "User Project Mapping" from server|guide:ListUserProjectActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "User Project Mapping"|guide:CreateUserProjectActionService].
+** Show list of all "User Project Mapping" in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "User Project Mapping" in Edit Mode|guide:_SelectUserProjectActionService].
+* [Delete "User Project Mapping"|guide:DeleteUserProjectActionService].
+* [Search "User Project Mapping" From Grid View|guide:SearchUserProjectActionService].
+
+!application/User-Project-Mapping_Show.png!

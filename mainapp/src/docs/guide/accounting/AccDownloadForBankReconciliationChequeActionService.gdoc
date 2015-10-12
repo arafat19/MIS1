@@ -1,0 +1,55 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Download "Bank Reconciliation Cheque" Report in PDF Format | |
+ *ActionService:* | AccDownloadForBankReconciliationChequeActionService | *Auditable:* | No
+ *Url:* | /accReport/downloadBankReconciliationCheque | |
+{table}
+
+h4. Revision History:
+    {table}
+     *Author*   | *Date* | *Reason for Changes*	| *Version*
+     Nahida Sultana | 29th April 2013	| Initial Requirement | 1.0
+    {table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Cheque" link.
+* [Show Landing Page of Bank Reconciliation Cheque Report|guide:AccShowForBankReconciliationChequeActionService].
+* Enter valid input.
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Bank Reconciliation Cheque" Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download Bank Reconciliation Cheque report" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ To Date | Calender | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* To get Bank Reconciliation Cheque Report in PDF Format "Click Here":bankReconciliationCheque.pdf
+* Download the report PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+"Download Bank Reconciliation Cheque Report in PDF Format":bankReconciliationCheque.pdf

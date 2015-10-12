@@ -1,0 +1,75 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search "InActive Backlog" | |
+*ActionService:* | ListInActiveBacklogActionService | *Auditable:* | No
+*Url:* | /ptBacklog/listForInActive | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "Inactive" link.
+* Show Landing Page of *InActive Backlog*.
+* Enter Valid input.
+* Click "Search" button.
+* Search "InActive Backlog". *InActive Backlog* will be listed in grid view.
+
+h4. Pre-condition:
+* User must have "List Inactive Backlog" privilege.
+
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Project|guide:GetDropDownPtProjectTagLibActionService] | Drop-Down List |  Numeric | Required
+[Task Status|guide:PopulateBacklogStatusTypeList] | Drop-Down List |  Numeric | Default (All)
+[Sprint|guide:PtGetInActiveSprintListByProjectIdActionService] | Drop-Down List |  Numeric | Default (All)
+
+{table}
+
+
+h4. Process:
+* Get *Active Backlog* list (default: 15 at Max) matching with search criteria.
+
+* Following columns should show in grid view:
+** Serial
+** Idea
+** Status
+** Owner
+** Acceptance Criteria Count
+** Bug Count
+** Unresolved
+
+h4. Post-condition:
+
+* *Success:*
+** *Active Backlog* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* ["Send Task" to "Bank"|guide:ExhSendTaskToBankActionService].
+* ["Cancel Task"|guide:ExhCancelTaskActionService].
+* [Show Landing Page of "Invoice"|guide:ExhShowInvoiceDetailsReportActionService].
+* [Show Landing Page of "Task Note"|guide:ShowExhTaskNoteActionService].
+* [Search "Manage Task" From Grid View Created By "Cashier"|guide:SearchExhTaskForAdminActionService].
+
+
+!projecttrack/List-Inactive.png!

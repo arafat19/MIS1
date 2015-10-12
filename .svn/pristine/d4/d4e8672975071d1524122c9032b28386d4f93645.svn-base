@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Reload *Bank* List | |
+*Action:* | ListExhTaskForAdminActionService | *Auditable:* | No
+*Url:* | /exhTask/listExhTaskForAdmin  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 3rd June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Enter Valid date range and status.
+* Reload *Bank* List.
+
+h4. Pre-condition:
+* Must have date range.
+* [Must have Task Status|guide:GetDropDownSystemEntityTagLibActionService].
+
+h4. Process:
+* Reload *Bank* List into drop-down.
+
+h4. Post-condition:
+
+* *Success:*
+** Reload *Bank* List.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show Landing Page of "Manage Task" Created By "Agent"|guide:ShowAgentTaskForAdminActionService].
+* [Show Landing Page of "Manage Task" Created By "Customer"|guide:ShowCustomerTaskForAdminActionService].
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+

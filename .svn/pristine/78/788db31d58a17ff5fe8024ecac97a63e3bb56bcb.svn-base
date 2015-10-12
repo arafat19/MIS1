@@ -1,0 +1,77 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update "Beneficiary" | |
+*ActionService:* | ExhUpdateBeneficiaryActionService | *Auditable:* | No
+*Url:* | /exhBeneficiary/updateForCustomer | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 27th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button.
+* [Show Landing page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Beneficiary" in Edit Mode|guide:ExhSelectBeneficiaryActionService].
+* User must enter valid input to update.
+* Click "Update" button.
+* Update "Beneficiary".
+
+h4. Pre-condition:
+* User must have "Update beneficiary for Customer" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Customer A/C No|guide:GenerateCustomerNo] | Read Only | Numeric | System Generated
+ Customer Name | Read Only | Alpha Numeric |
+ First Name | Text Box | Alpha Numeric | Required
+ Middle Name | Text Box | Alpha Numeric | Optional
+ Last Name | Text Box | Alpha Numeric | Required (If "mis.exchangehouse.beneficiaryLastNameRequired" key value is 1)
+ Email | Text Box | Alpha Numeric | Optional
+ Address | Text Area | Alpha Numeric | Optional
+ [Sanction List Verification|guide:ExhGetSanctionCountActionService] | Check Box | Boolean | Required (If "mis.exchangehouse.verifyBeneficiarySanction" key value is 1)
+ A/C No | Text Box | Alpha Numeric | Optional
+ Bank | Text Box | Alpha Numeric | Optional
+ Branch | Text Box | Alpha Numeric | Optional
+ District | Text Box | Alpha Numeric | Optional
+ Photo ID Type | Text Box | Alpha Numeric | Optional
+ Photo ID No | Text Box | Alpha Numeric | Optional
+ Thana | Text Box | Alpha Numeric | Optional
+ Phone | Text Box | Alpha Numeric | Optional
+ [Linked Beneficiary Verified|guide:ExhListLinkedBeneficiaryActionService] | Check Box | Boolean | Required
+{table}
+
+* Match expected version before updating a *Beneficiary*.
+
+h4. Process:
+* Update selected *Beneficiary*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Beneficiary* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

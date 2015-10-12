@@ -1,0 +1,72 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Validate "Photo Id No" to Create "Customer" | |
+*ActionServices:* | ValidateSarbCustomerPhotoIdNoActionService | *Auditable:* | No
+*Url:* | N/A | |
+{table}
+
+h4. Revision History
+{table}
+*Author* | *Date* | *Reason for Changes* | *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+"Photo Id No" in banking system is very important for security purpose. Which is checked by SARB validation rules during *Customer* creatation.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:_ExhShowCustomerForSarbActionService].
+* Click "Identity Info" tab from grid view.
+* Enter Validate "Photo Id No" to Create "Customer".
+
+h4. Pre-condition:
+* User must have "Create customer" privilege.
+* User must insert a valid "Photo Id No".
+* Calculation formula of valid "Photo Id No" as per "Asylum ID Number" or "Ayslum Seeker Temporary Permit":
+** Get sum of all odd numbers from full "Photo Id No".
+** Muitiple by 2 individually all even numbers.
+** Get sum of all multiplied even numbers.
+** Do sum of odd number and even number results.
+** The last digit of the Id number is controlling figure and its determined by (sum of odd & even numbers and subtract the result thereof from the next multiple of ten, which must be epual to the controlling figure).
+
+# Here is one example of caculation formula:
+## Suppose the ID number is 6202010042089
+## Write down the number as: 6 2 0 2 0 1 0 0 4 2 0 8 9
+## From left to right, mark the first figure and thereafter every alternative figure but excluding the last figure (controlling figure) as follows:
+### *6* 2 *0* 2 *0* 1 *0* 0 *4* 2 *0* 8 9 (Add the value of 6 + 0 + 0 + 0 + 4 + 0 = 10).
+## From left to right, mark the second figure and thereafter every alternative as follows: 
+### 6 *2* 0 *2* 0 *1* 0 *0* 4 *2* 0 *8* 9 
+### Multiply the figures with 2 : 2 x 2 = 4, 2 x 2 = 4, 1 x 2 = 2, 0 x 2 = 0, 2 x 2 = 4, 8 x 2 = 16.
+### Note: Where the result exceeds 9, the figures contained in the answer wre added together, e.g. 2 x 8 = 16 is added as 1 + 6 and not as 16.
+### The figures calculated under point 4 must accordingly be added in the following manner: 
+### 4 + 4 + 2 + 0 + 4 + 1 + 6 = 21
+## The last digit of the ID number is the controlling figure and is determined as follows:
+
+### Add the result of the 1st calculation to the result of the 2nd calculation and subtract the result thereof from the following multiple of ten, which must be equal to the controlling figure (9 in this case): 10 + 21 =31
+
+### The next multiple of ten is 40. (40 - 31 = 9)
+
+### The figure 9 is the controlling figure for the above ID number.
+
+h4. Process:
+* Enter a valid "Photo Id No" to create *Customer*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Photo Id No" to create event.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Customer"|guide:_ExhCreateCustomerForSarbActionService].
+* [Update "Customer"|guide:_ExhUpdateCustomerForSarbActionService].

@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Send Mail with attachment of "All Un-approved Inventory Transaction" PDF Report | |
+*ActionService:* | SendMailForInventoryTransactionActionService | *Auditable:* | No
+*Url:* | /invInventoryTransaction/sendMailForInventoryTransaction| |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 23th June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System, Configuration Manager.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "Mail" link.
+* [Show Landing Page of "Mail"|guide:ShowAppMailActionService].
+* Select "All Pending Inventory Transaction" from grid view.
+* Click "Send Mail" button from tool bar.
+* Send Mail with attachment of "All Un-approved Inventory Transaction" PDF Report.
+
+
+h4. Pre-condition:
+* User must have 'Send mail for all pending inventory transaction' privilege.
+* Transaction Code "SendMailForInventoryTransactionActionService" must be active.
+* Must have Valid role id with comma delimited.
+* Auto approve of Inventory must be un-checked.
+
+h4. Process:
+* Send Mail with "All Un-approved Inventory Transaction" pdf report attachment in given role ids.
+
+
+h4. Post-condition:
+
+* *Success:*
+** If Actor "system"
+*** Show success message.
+** If Actor "Configuration Manager"
+*** System Log Generate with status in database.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

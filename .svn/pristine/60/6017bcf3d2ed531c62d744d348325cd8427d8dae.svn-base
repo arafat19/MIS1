@@ -1,0 +1,41 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-21 | Priority: | High
+ *Name* | Delete Category Maintenance Type Mapping | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fxdCategoryMaintenanceType/delete | *Action Class:* | FxdDeleteCategoryMaintenanceTypeActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select a Category Maintenance Type Mapping to delete.
+# Click "Delete" button.
+# System will show conformation message.
+# Actor clicks "Yes" button.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Delete a selected Category Maintenance Type Mapping.
+
+h4. Post-condition:
+
+# *Success:*
+## Delete selected Category Maintenance Type Mapping information from grid.
+## Show Success message.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

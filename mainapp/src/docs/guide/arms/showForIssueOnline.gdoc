@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Online Transaction" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsInstrument/showForIssueOnline | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 21st July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Remittance User.
+
+h4. Description:
+This is the landing page of *Issue Online* with search panel on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Instrument" sub menu from left menu.
+* Click *Online* link.
+* Show Landing Page of "Online Transaction".
+
+h4. Pre-condition:
+* User must have "Show for issue online" privilege.
+
+h4. Process:
+* Get blank list of "Online Transaction" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show search panel on top to [Search "Online Transaction"|guide:SearchTaskForProcessInstrumentActionService].
+** Show blank list of "Online Transaction" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* [Revise "Task"|guide:ReviseTaskActionService].
+* [Disburse "Task"|guide:DisburseRmsTaskActionService].

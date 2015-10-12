@@ -1,0 +1,238 @@
+package com.athena.mis.document.actions.taglib
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.PluginConnector
+import com.athena.mis.application.config.AppSysConfigurationCacheUtility
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.document.utility.DocSubCategoryCacheUtility
+import com.athena.mis.integration.document.DocumentPluginConnector
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import groovy.sql.GroovyRowResult
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
+
+
+class GetCountDocMyCategoriesTaglibActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String CATEGORY_ID = 'category_id'
+    private static final String SYS_CONFIGURATION_OBJ = 'sysConfigurationObj'
+    private static final String SUB_CATEGORY_COUNT = 'subCategoryCount'
+
+    @Autowired(required = false)
+    DocumentPluginConnector documentImplService
+
+    @Autowired
+    AppSysConfigurationCacheUtility appSysConfigurationCacheUtility
+    @Autowired
+    DocSubCategoryCacheUtility docSubCategoryCacheUtility
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+
+    /**
+     * Build a map containing properties of html listView
+     *  1. Set default values of properties
+     *  2. Overwrite default properties if defined in parameters
+     * @param parameters - a map of given attributes
+     * @param obj - N/A
+     * @return - a map containing all necessary properties with value
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map listAttributes = new LinkedHashMap()
+        try {
+            Map attrs = (Map) parameters
+            listAttributes.put(Tools.IS_ERROR, Boolean.TRUE)  // default value
+            String strCategoryId = attrs.get(CATEGORY_ID)
+
+            if ((!strCategoryId) || (strCategoryId.length() == 0)) {
+                return listAttributes
+            }
+
+            long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+            long pluginId = PluginConnector.DOCUMENT_ID
+            String key = DocSysConfigurationCacheUtility.DOC_SUB_CATEGORY_LABEL
+            SysConfiguration sysConfiguration = getObjectOfSysConfig(key, pluginId, companyId)
+            if (!sysConfiguration) {
+                return listAttributes
+            }
+
+            long categoryId = Long.parseLong(strCategoryId)
+            DocCategory category = (DocCategory) docCategoryCacheUtility.read(categoryId)
+            if (!category) {
+                return listAttributes
+            }
+            int subCategoryCount = subCategoryCount(categoryId)
+
+            if(subCategoryCount == 0){
+                return listAttributes
+            }
+
+            listAttributes.put(CATEGORY_ID, new Long(categoryId))   // set categoryId
+            listAttributes.put(SYS_CONFIGURATION_OBJ, sysConfiguration)
+            listAttributes.put(SUB_CATEGORY_COUNT, subCategoryCount)
+            listAttributes.put(Tools.IS_ERROR, Boolean.FALSE)
+            return listAttributes
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            listAttributes.put(Tools.IS_ERROR, Boolean.TRUE)
+            return listAttributes
+        }
+    }
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Get the list of Categories
+     * build the lstMappedCategories for 'listView'
+     * @param parameters - map of given attributes
+     * @param obj - N/A
+     * @return - lstCat string for 'listView'
+     */
+    public Object execute(Object parameters, Object obj) {
+        try {
+            String output
+            Map lstAttributes = (Map) parameters
+            Long categoryId = (Long) lstAttributes.get(CATEGORY_ID)
+            int subCategoryCount = (int) lstAttributes.get(SUB_CATEGORY_COUNT)
+            SysConfiguration sysConfiguration = (SysConfiguration) lstAttributes.get(SYS_CONFIGURATION_OBJ)
+            // For Sub Category Count
+
+            Map subCategoryCountMap = [id: categoryId, subCategoryCount: subCategoryCount, subCategoryLabel:sysConfiguration.value]
+            output = buildMyCategoryDetails(subCategoryCountMap)
+            return output
+        } catch (Exception e) {
+            log.error(e.message)
+            return Boolean.FALSE
+        }
+    }
+
+    private String buildMyCategoryDetails(Map categoryDetails) {
+        // read map values
+        String html = """
+        <ul class="nav nav-pills nav-stacked" style="padding-bottom: 5px">
+            <li class="active">
+                    <a ${(categoryDetails?.subCategoryCount > 0) ? "href='#docSubCategory/showMySubCategories?id=${categoryDetails?.id}'" : "&nbsp"}>
+                         <span class="badge pull-right">${categoryDetails?.subCategoryCount}</span>${categoryDetails?.subCategoryLabel}
+                    </a>
+            </li>
+        </ul>
+                """
+
+        return html
+    }
+
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    public Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+
+    private int subCategoryCount(long categoryId) {
+        int countMappedCategories = listCategory(categoryId)
+        int subCategoryCount = -1
+        if (countMappedCategories > 0) {
+            subCategoryCount = docSubCategoryCacheUtility.countByCategoryIdAndIsActive(categoryId)
+        } else {
+            subCategoryCount = mappedSubCategoryCount(categoryId)
+        }
+        return subCategoryCount
+    }
+
+    /*
+* Get count of Mapped Sub Categories
+* @param categoryId
+* @return countSubCategory - count of Mapped Sub Categories
+* */
+
+    private int mappedSubCategoryCount(long categoryId) {
+        AppUser appUser = docSessionUtil.appSessionUtil.getAppUser()
+        Map queryParams = [
+                companyId: appUser.companyId,
+                categoryId: categoryId,
+                userId: appUser.id,
+        ]
+
+        List<GroovyRowResult> result = executeSelectSql(MAPPED_SUB_CATEGORY_COUNT, queryParams)
+        if (result.size() < 0) {
+            throw new RuntimeException("Failed to get count of sub category")
+        }
+        int countSubCategory = (int) result[0].sunCatCount
+        return countSubCategory
+    }
+
+    private static final String MAPPED_SUB_CATEGORY_COUNT = """
+                         SELECT COUNT(cum.category_id) sunCatCount
+                            FROM doc_sub_category sc
+                            LEFT JOIN doc_all_category_user_mapping cum ON sc.id=cum.sub_category_id AND sc.is_active=true
+                            WHERE cum.company_id=:companyId
+                            AND cum.category_id=:categoryId
+                            AND cum.user_id=:userId
+                            AND cum.sub_category_id !=0
+                    """
+
+    private static final String IS_CATEGORY_MAPPED = """
+                      SELECT COUNT(cum.category_id) count
+                        FROM doc_all_category_user_mapping cum
+                        WHERE cum.company_id=:companyId
+                        AND cum.category_id=:categoryId
+                        AND cum.user_id=:userId
+                        AND cum.sub_category_id=0
+                    """
+    /*
+* Get List of Mapped Categories
+* @return lstCategory - mapped category List
+* */
+
+    private int listCategory(long categoryId) {
+        AppUser appUser = docSessionUtil.appSessionUtil.getAppUser()
+        Map queryParams = [
+                companyId: appUser.companyId,
+                categoryId: categoryId,
+                userId: appUser.id
+        ]
+
+        List<GroovyRowResult> lstCategory = executeSelectSql(IS_CATEGORY_MAPPED, queryParams)
+        int count = (int) lstCategory[0][0]
+        return count
+    }
+
+    /**
+     * get object of sysConfiguration
+     * @param key - key of sysConfiguration
+     * @param pluginId - plugin id
+     * @param companyId -id of company
+     * @return - object of sysConfiguration
+     */
+    private SysConfiguration getObjectOfSysConfig(String key, long pluginId, long companyId) {
+        SysConfiguration sysConfiguration
+        switch (pluginId) {
+            case PluginConnector.APPLICATION_ID:
+                sysConfiguration = (SysConfiguration) appSysConfigurationCacheUtility.readByKeyAndCompanyId(key)
+                break
+            case PluginConnector.DOCUMENT_ID:
+                sysConfiguration = (SysConfiguration) documentImplService.readSysConfig(key, companyId)
+                break
+            default:
+                return null
+        }
+        return sysConfiguration
+    }
+}

@@ -1,0 +1,328 @@
+<script type="text/javascript">
+
+    var categoryList, categoryLabel, output, subCategoryLabel;
+    var entityTypeId;
+
+    $(document).ready(function () {
+        onLoadCategory();
+    });
+
+    function onLoadCategory() {
+        output = ${modelJson ? modelJson : ''};
+
+        initializeForm($('#categoryForm'), onSubmitCategory);
+
+        if (output.isError) {
+            showError(output.message);                   // show error message in case of error
+        } else {
+            categoryList = output.gridObj;               // set data in a global variable to populate
+            categoryLabel = output.categoryLabel;
+            subCategoryLabel = output.subCategoryLabel;
+            $("#categoryLabel").html(categoryLabel);
+        }
+        entityTypeId = $("#entityTypeId").val();
+
+        initFlexGrid();
+        loadFlexGrid();
+        $(document).attr('title', "DOC - Create " + categoryLabel);
+        loadNumberedMenu(MENU_ID_DOCUMENT, "#docCategory/show");
+    }
+
+    function executePreCondition() {
+        // trim field vales before process.
+        if (!validateForm($("#categoryForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitCategory() {
+
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller: 'docCategory', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller: 'docCategory', action: 'update')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#categoryForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                // Spinner Hide on AJAX Call
+                onCompleteAjaxCall();
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+
+        if (result.isError) {
+            showError(result.message);
+            var errors = $(result.errors);
+            errors.each(function (i) {
+                var err = $(this);
+                var errStr = 'Error(s) occurred in some inputs';
+                try {
+                    if (err.length == 2) {
+                        if ($("label[for='" + err[0] + "']").html() != null) {
+                            errStr = $("label[for='" + err[0] + "']").html() + ' ' + err[1];
+                        }
+                    } else if (err.length == 1) {
+                        errStr = err[0]
+                    }
+                } catch (e) { /** ignored */
+                }
+                showError(errStr);
+            });
+
+            showLoadingSpinner(false);
+        } else {
+            // @todo-Azam to load grid without round trip
+            try {
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(categoryList.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (categoryList.rows.length > 0) {
+                        firstSerial = categoryList.rows[0].cell[0];
+                        regenerateSerial($(categoryList.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+
+                    categoryList.rows.splice(0, 0, result.entity);
+
+                    if ($('#flexCategory').countEqualsResultPerPage(previousTotal)) {
+                        categoryList.rows.pop();
+                    }
+
+                    categoryList.total = ++previousTotal;
+                    $("#flexCategory").flexAddData(categoryList);
+
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(categoryList, result.entity, 0);
+                    $("#flexCategory").flexAddData(categoryList);
+                }
+
+                resetForm();
+                showSuccess(result.message);
+
+            } catch (e) {
+            }
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#categoryForm"), $('#name'));
+        setButtonDisabled($('.save'), false);
+        $('#isActive').attr('checked', true);
+        $('#url').html('(Auto Generated)');
+        $("#create").html("<span class='k-icon k-i-plus'></span>Create");   // reset create button text
+    }
+
+    function initFlexGrid() {
+        $("#flexCategory").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Name", name: "name", width: 200, sortable: false, align: "left"},
+                        {display: "Description", name: "description", width: 450, sortable: false, align: "left"},
+                        {display: subCategoryLabel + " Count", name: "subCategoryCount", width: 120, sortable: false, align: "right"},
+                        {display: "Active", name: "active", width: 60, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/docCategory/select,/docCategory/update">
+                        {name: 'Edit', bclass: 'edit', onpress: editCategory},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/docCategory/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteCategory},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/docAllCategoryUserMapping/showForCategory">
+                        {name: 'Member', bclass: 'creatCustomeruser', onpress: userCategoryMapping},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/docSubCategory/show">
+                        {name: subCategoryLabel, bclass: 'details', onpress: detailsCategory},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Name", name: "name", width: 180, sortable: false, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All ' + categoryLabel + ' List',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: customPopulateGrid
+                }
+        );
+    }
+
+    function customPopulateGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            categoryList = getEmptyGridModel();
+        } else {
+            categoryList = data.gridObj;
+        }
+        $("#flexCategory").flexAddData(categoryList);
+    }
+
+
+    <%-- reloading grid data --%>
+    function reloadGrid(com, grid) {
+        $('#flexCategory').flexOptions({query: ''}).flexReload();
+    }
+
+    function userCategoryMapping() {
+        if (executeCommonPreConditionForSelect($('#flexCategory'), categoryLabel) == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+
+        var categoryId = getSelectedIdFromGrid($('#flexCategory'));
+
+        var loc = "${createLink(controller:'docAllCategoryUserMapping', action: 'showForCategory')}?categoryId=" + categoryId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    <%-- Start : Delete operation of Category --%>
+    function deleteCategory(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+
+        showLoadingSpinner(true); // Spinner Show on AJAX Call
+
+        var categoryId = getSelectedIdFromGrid($('#flexCategory'));
+
+        $.ajax({
+            url: "${createLink(controller: 'docCategory', action: 'delete')}?id=" + categoryId,
+            success: executePostConditionForDelete,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flexCategory'), categoryLabel) == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected ' + categoryLabel + '?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flexCategory')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetForm();
+            $('#flexCategory').decreaseCount(1);
+            showSuccess(data.message);
+            // @todo-Azam managing grid to minimize round-trip
+            categoryList.total = parseInt(categoryList.total) - 1;
+            removeEntityFromGridRows(categoryList, selectedRow);
+
+        } else {
+            // show delete error
+            showError(data.message);
+        }
+    }
+
+    function editCategory(com, grid) {
+        //clear form before putting edited value
+        clearForm($("#categoryForm"));
+
+        if (executeCommonPreConditionForSelect($('#flexCategory'), categoryLabel) == false) {
+            return;
+        }
+        showLoadingSpinner(true);	// Spinner Show on AJAX Call
+        var categoryId = getSelectedIdFromGrid($('#flexCategory'));
+        $.ajax({
+            url: "${createLink(controller: 'docCategory', action: 'select')}?id="
+                    + categoryId,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+
+    function executePostConditionForEdit(data) {
+        if (data.entity == null) {
+            showError(result.message);
+        } else {
+            showCategory(data);
+        }
+    }
+
+    function showCategory(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        $('#name').val(entity.name);
+        $('#description').val(entity.description);
+        $('#url').text(entity.url);
+        $('#isActive').attr('checked', entity.isActive);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    function detailsCategory() {
+        if (executeCommonPreConditionForSelect($('#flexCategory'), categoryLabel) == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var categoryId = getSelectedIdFromGrid($('#flexCategory'))
+        var stuUrl = "${createLink(controller: 'docSubCategory',action: 'show')}?categoryId=" + categoryId;
+        $.history.load(formatLink(stuUrl));
+        return false;
+    }
+
+    function loadFlexGrid() {
+        var strUrl = "${createLink(controller: 'docCategory', action: 'list')}";
+        $("#flexCategory").flexOptions({url: strUrl});
+        if (categoryList) {
+            $("#flexCategory").flexAddData(categoryList);
+        }
+    }
+
+</script>

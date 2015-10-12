@@ -1,0 +1,66 @@
+package com.athena.mis.document.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.document.entity.DocArticle
+import com.athena.mis.utility.DateUtility
+
+class DocArticleService extends BaseService {
+
+    public DocArticle create(DocArticle article) {
+        DocArticle newArticle = article.save()
+        return newArticle
+    }
+
+    public List<DocArticle> list(BaseService baseService, long companyId, long userId) {
+        List<DocArticle> lstDocArticle = DocArticle.findAllByIsMovedToTrashAndCreatedByAndCompanyId(false, companyId, userId, [max: baseService.resultPerPage, offset: baseService.start, sort: baseService.sortColumn, order: baseService.sortOrder, readOnly: true])
+        return lstDocArticle
+    }
+
+    public int count(long companyId, long userId) {
+        int count = DocArticle.countByIsMovedToTrashAndCreatedByAndCompanyId(false, companyId, userId)
+        return count
+    }
+
+    public DocArticle read(long id) {
+        DocArticle article = DocArticle.read(id)
+        return article
+    }
+
+    public static final String UPDATE_QUERY = """
+        UPDATE doc_article SET
+            version=version+1,
+            title=:title,
+            details=:details,
+            is_moved_to_trash=:isMovedToTrash,
+            updated_on=:updatedOn,
+            updated_by=:updatedBy
+        WHERE
+            id=:id AND
+            version=:oldVersion
+    """
+
+    /**
+     * Update Category object in DB
+     * @param category - Category object
+     * @return -an int containing the value of update count
+     */
+    public int update(DocArticle article) {
+        Map queryParams = [
+                title: article.title,
+                details: article.details,
+                isMovedToTrash: article.isMovedToTrash,
+                id: article.id,
+                oldVersion: article.version,
+                updatedOn: DateUtility.getSqlDateWithSeconds(article.updatedOn),
+                updatedBy: article.updatedBy
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams);
+        if (updateCount <= 0) {
+            throw new RuntimeException("Failed to update Article")
+        }
+
+        article.version = article.version + 1
+        return updateCount
+    }
+}

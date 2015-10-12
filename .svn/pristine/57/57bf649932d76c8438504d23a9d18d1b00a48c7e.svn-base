@@ -1,0 +1,50 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of *IOU Slip* | |
+ *ActionService:* | ShowAccIouSlipActionService | *Auditable:* | No
+ *Url:* | /accIouSlip/show | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 5th May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+This is the landing page of *IOU Slip* with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click *IOU Slip* link.
+* Show Landing Page of *IOU Slip*.
+
+h4. Pre-condition:
+* User must have "Show IOU Slip" privilege.
+
+h4. Process:
+* [Get List of all "IOU Slip" from server|guide:ListAccIouSlipActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "IOU Slip"|guide:CreateAccIouSlipActionService].
+** Show list of all *IOU Slip* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "IOU Slip" in Edit Mode|guide:SelectAccIouSlipActionService].
+* [Delete "IOU Slip"|guide:DeleteAccIouSlipActionService].
+* [Search "IOU Slip" From Grid View|guide:SearchAccIouSlipActionService].
+* [Show "IOU Slip" Report From Grid View|guide:ShowForAccIouSlipActionService].
+* [Send "IOU Slip" For Approval|guide:SentNotificationAccIouSlipActionService].
+
+!Acc/IOU_Slip_Show.png!

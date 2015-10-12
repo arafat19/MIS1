@@ -1,0 +1,44 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Project Track Plugin | |
+*Action:* | N/A | *Auditable:* | No
+*Url:* | /projectTrack/renderProjectTrackMenu | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Configuration Manager, Software Engineer, QA Engineer.
+
+h4. Description:
+This is the landing page of Project Track Plugin.
+
+h4. Flow:
+* Click "Project Track" option from top menu bar.
+* Show Project Track Plugin.
+
+h4. Pre-condition:
+* MIS Project must contain "Project Track Plugin".
+* User must have "Project Track Module Menu" privilege to access Project Track option from menu bar.
+
+h4. Process:
+* Show "Project Track Plugin" Widget based on user privilege.
+* Project Track Left menu must be generate based on user privilege.
+
+h4. Post-condition:
+
+* *Success:*
+** Show Project Track widget in landing page.
+** Show Project Track left menu based on log in user privilege.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!projecttrack/project-track-plugins.png!

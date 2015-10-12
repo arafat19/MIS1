@@ -1,0 +1,60 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Company* in Landing Page | |
+*ActionService:* | ListCompanyActionService | *Auditable:* | No
+*Url:* | /company/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 18th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click *Company* link.
+* Show List of *Company* in [Landing Page|guide:ShowCompanyActionService].
+
+h4. Pre-condition:
+* User must have "List Company" privilege.
+
+h4. Process:
+* Get list of *Company* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Name
+** Code
+** Web URL
+** Email
+** Country
+** Default
+
+h4. Post-condition:
+
+* *Success:*
+** *Company* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+
+!application/Company_List.png!

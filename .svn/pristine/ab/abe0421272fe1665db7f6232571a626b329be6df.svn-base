@@ -1,0 +1,80 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create "Receive Cash" *Voucher* | |
+*Action:* | CreateAccVoucherActionService | *Auditable:* | No
+*Url:* | /accVoucher/create | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 2nd May 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click "Receive Cash" link.
+* [Show Landing Page of "Receive Cash" Voucher|guide:ShowAccVoucherReceiveCashActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create "Receive Cash" *Voucher*.
+
+h4. Pre-condition:
+* User must have "Create Acc Voucher" privilege.
+
+* Follow the rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ [Ref No|guide:SystemGeneratedVoucherTraceNumber] |  | Auto Generated | Alpha Numeric
+ Voucher Date | Calender | Alpha Numeric | Required(Default Current date)
+ [Populate Project List|application] | Drop Down List | Numeric | Required
+ Note | Text Area | Alpha Numeric | Required 
+ [PO Trace|guide:_validatePOTraceNumberWhileCreateVoucher] | Text Box | Numeric | Optional 
+ [IOU Trace|guide:_validateIOUTracewhileCreateVoucher] | Text Box | Numeric | Optional 
+ [Account Code(Debit)|guide:CreateAccVoucherTypeCoaActionService] | Text Box | Alpha Numeric | Required 
+ Amount(Debit) | Spin Button | Numeric | Required
+ [Division|guide:GetAccDivisionByProjectActionService] | Drop Down List | Numeric | Optional 
+ [Source|guide:GetSourceListBySourceCategoryAndAccSourceIdActionService] | Drop Down List | Numeric | Optional 
+ Particulars(Debit) | Text Area | Alpha Numeric | Optional 
+ [Account Code(Credit)|guide:_selectChartofAccountCodeRightPanel] | Drop Down List | Numeric | Required 
+ Amount(Credit) | Spin Button | Numeric | Required
+ [Division|guide:GetAccDivisionByProjectActionService] | Drop Down List | Numeric | Optional 
+ [Source|guide:GetSourceListBySourceCategoryAndAccSourceIdActionService] | Drop Down List | Numeric | Optional 
+ Particulars(Credit) | Text Area | Alpha Numeric | Optional 
+{table}
+
+* Debit amount and credit amount must be equal to create a *Voucher*.
+* Same *Chart Of Account* can not be added for both debit and credit entry.
+* Similar *Chart Of Account* can be added several times in Debit entry, which is also applicable for Credit entry.
+* Created *Voucher* posted status must be "No".
+* Voucher date must be within "Financial Year" date range.
+
+h4. Process:
+* Create a new "Receive Cash" *Voucher*.
+
+h4. Post-condition:
+
+* *Success:*
+** Newly created "Receive Cash" *Voucher* show in grid (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Search Chart of Account Code Right Panel|guide:SearchChartOfAccountForVoucherActionService].
+* [Show List of "Chart of Account Code" Right Panel in Landing Page|guide:ListChartOfAccountForVoucherActionService].
+* [System Generated Trace Number While Create Voucher|guide:SystemGeneratedVoucherTraceNumber].
+
+!Acc/Receive_Cash_Voucher_Create.png!

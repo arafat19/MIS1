@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Process Instrument Mapping* | |
+*ActionService:* | UpdateRmsProcessInstrumentMappingActionService | *Auditable:* | No
+*Url:* | /rmsProcessInstrumentMapping/update | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Process Instrument Mapping* link.
+* [Show Landing Page of "Process Instrument Mapping"|guide:ShowRmsProcessInstrumentMappingActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Process Instrument Mapping" in Edit Mode|guide:SelectRmsProcessInstrumentMappingActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Process Instrument Mapping*.
+
+h4. Pre-condition:
+* User must have "Update Process Instrument Mapping" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+[Process Type|guide:_PopulateProcessTypeList] | Drop Down Box | Numeric | Required
+[Instrument Type|guide:_PopulateProcessInstrumentTypeList] | Drop Down Box | Numeric | Required
+{table}
+
+* Match expected version before updating a *Process Instrument Mapping*.
+
+h4. Process:
+* Update selected *Process Instrument Mapping*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Process Instrument Mapping* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

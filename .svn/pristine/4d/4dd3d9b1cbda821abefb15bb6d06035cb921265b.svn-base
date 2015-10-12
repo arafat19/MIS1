@@ -1,0 +1,141 @@
+<script type="text/javascript">
+
+    var dropDownCategory, dropDownSubCategory, output , lstSuccessMail, lstRejectedForSubCategory, lstRejectedForCategory;
+
+    $(document).ready(function () {
+        onLoadInvitedMembers();
+    });
+
+    function onLoadInvitedMembers() {
+
+        initializeForm($('#sendInvitationForm'), onSubmitSendInvitation);
+        $('#lstRejectedMailDiv').hide();
+        $(document).attr('title', "DOC - Send Invitation");
+        loadNumberedMenu(MENU_ID_DOCUMENT, "#docInvitedMembers/show");
+    }
+
+    function executePreCondition() {
+        // trim field vales before process.
+        if (!validateForm($("#sendInvitationForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitSendInvitation() {
+
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller: 'docInvitedMembers', action: 'sendInvitation')}";
+
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#sendInvitationForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                // Spinner Hide on AJAX Call
+                onCompleteAjaxCall();
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+
+        if (result.isError) {
+            showError(result.message);
+            var errors = $(result.errors);
+            errors.each(function (i) {
+                var err = $(this);
+                var errStr = 'Error(s) occurred in some inputs';
+                try {
+                    if (err.length == 2) {
+                        if ($("label[for='" + err[0] + "']").html() != null) {
+                            errStr = $("label[for='" + err[0] + "']").html() + ' ' + err[1];
+                        }
+                    } else if (err.length == 1) {
+                        errStr = err[0]
+                    }
+                } catch (e) { /** ignored */
+                }
+                showError(errStr);
+            });
+
+            showLoadingSpinner(false);
+        } else {
+            try {
+                resetForm();
+                showSuccess(result.message);
+
+//                lstSuccessMail = result.lstRecipient ? result.lstRecipient : [];
+                lstRejectedForCategory = result.lstRejectedForCategory ? result.lstRejectedForCategory : [];
+                lstRejectedForSubCategory = result.lstRejectedForSubCategory ? result.lstRejectedForSubCategory : [];
+
+                if (lstRejectedForCategory.length > 0) {
+                    $('#lstRejectedMailDiv').show();
+                    initRejectedForCategory();
+                }
+                if (lstRejectedForSubCategory.length > 0) {
+                    $('#lstRejectedMailDiv').show();
+                    initRejectedForSubCategory();
+                }
+            } catch (e) {
+            }
+        }
+    }
+
+    function initRejectedForCategory() {
+        $("#lstFailureMail").kendoListView({
+            dataSource: lstRejectedForCategory,
+            template: "<div class='list-group-item'> #:rejectedMailForCategory#</div>"
+        });
+    }
+    function initRejectedForSubCategory() {
+        $("#lstFailureMail").kendoListView({
+            dataSource: lstRejectedForSubCategory,
+            template: "<div class='list-group-item'> #:rejectedMailForSubCategory# with #:subCategoryName#</div>"
+        });
+    }
+
+    function resetForm() {
+        //don't call clearForm due to multiselect control
+        clearErrors($("#sendInvitationForm"));
+        $('#categoryId').val('');
+        dropDownCategory.value('');
+        dropDownSubCategory.value('');
+        $('#recipients').val('');
+        $('#message').val('');
+        $('#categoryId').focus();
+
+        $('#lstRejectedMailDiv').hide();
+        setButtonDisabled($('.save'), false);
+        $("#send").html("<span class='k-icon k-i-plus'></span>Send");   // reset create button text
+    }
+
+    function onChangeCategory() {
+        var categoryId = dropDownCategory.value();
+        if (categoryId == '') {
+            dropDownSubCategory.setDataSource([]);
+            dropDownSubCategory.value('');
+            return false;
+        }
+        $('#subCategoryId').attr('category_id', categoryId);
+        $('#subCategoryId').attr("default_value", '""');   // reset value when resend invitation and change category
+        $('#subCategoryId').reloadMe(false, $('#containerSubCategory'));
+    }
+
+</script>

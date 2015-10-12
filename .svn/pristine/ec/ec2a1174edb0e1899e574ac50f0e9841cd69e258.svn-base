@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Module* | |
+*ActionService:* | CreatePtModuleActionService | *Auditable:* | No
+*Url:* | /ptModule/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 3rd July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Module* link.
+* [Show Landing Page of "Module"|guide:ShowPtModuleActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Module*.
+
+h4. Pre-condition:
+* User must have "Create a Module" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+Name | Text Box | Text | Required & Unique
+{table}
+
+
+h4. Process:
+* Create a new *Module*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Module* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!projecttrack/Create-Module.png!

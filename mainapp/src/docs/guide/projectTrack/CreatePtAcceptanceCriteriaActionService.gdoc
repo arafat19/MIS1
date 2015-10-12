@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Acceptance Criteria* | |
+*ActionService:* | CreatePtAcceptanceCriteriaActionService | *Auditable:* | No
+*Url:* | /ptAcceptanceCriteria/create | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Backlog* link.
+* [Show Landing Page of "Backlog"|guide:ShowPtBacklogActionService].
+* Select a line-item from grid view.
+* Click "Acceptance Criteria" button.
+* [Show Landing Page of "Acceptance Criteria"|guide:ShowPtAcceptanceCriteriaActionService].
+* User must insert valid input.
+* Create *Acceptance Criteria*.
+
+h4. Pre-condition:
+* User must have "Create an acceptance criteria" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Idea | Read Only | Alpha Numeric |
+[A.C Criteria Type|guide:PopulateAcceptanceCriteriaTypeList] | Drop-Down | Numeric | Required
+Criteria | Text Box | Alpha Numeric | Required
+{table}
+
+h4. Process:
+* Create a new *Acceptance Criteria*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Acceptance Criteria* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!projecttrack/Create-Acceptance-Criteria.png!
+

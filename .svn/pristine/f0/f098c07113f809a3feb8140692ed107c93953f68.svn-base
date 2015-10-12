@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Close *Bug* | |
+*ActionService:* | ClosePtBugActionService | *Auditable:* | No
+*Url:* | /ptBug/closeBug | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 8th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, SQA.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "Active" link.
+* Show Landing Page of *Active Backlog*.
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Active Backlog"|guide:ListActiveBacklogActionService]. *Active Backlog* will be listed in grid view.
+* Select a Line-Item from grid view.
+* Click "Bug" button.
+* [Show landing page of bug|guide:ShowPtBugActionService].
+* Select a line-item from grid view.
+* Click "Close" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Close selected *Bug*.
+
+h4. Pre-condition:
+* User must have "Set bug status close" privilege.
+* Only fixed bug can be closed.
+* Submitted bug must not be closed.
+* Already Closed bug can not be closed.
+
+h4. Process:
+* Close selected *Bug*.
+
+h4. Post-condition:
+
+* *Success:*
+** Closed *Bug* show into grid-view with status.
+** Show success message.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+

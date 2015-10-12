@@ -1,0 +1,184 @@
+package com.athena.mis.projecttrack.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.projecttrack.entity.PtProjectModule
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import org.springframework.beans.factory.annotation.Autowired
+
+class PtProjectModuleService extends BaseService {
+
+    @Autowired
+    PtSessionUtil ptSessionUtil
+
+    /**
+     * return all list of ptModule object
+     */
+    public List list() {
+        return PtProjectModule.list(readOnly: true)
+    }
+
+    /**
+     * Segmented/Sub list of PtProjectModule objects based on baseService pagination criteria
+     * @param baseService - BaseService object
+     * @return a map containing [lstPtProjectModule - List of tProjectModule objects , count: int count of ptProjectModule objects]
+     */
+    public Map list(BaseService baseService) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List lstProjectModule = PtProjectModule.withCriteria {
+            eq('companyId', companyId)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+        }
+        List counts = PtProjectModule.withCriteria {
+            eq('companyId', companyId)
+            projections { rowCount() }
+        }
+        int total = counts[0]
+        return [lstPtProjectModule: lstProjectModule, count: total]
+    }
+
+    /**
+     * Find List of PtProjectModule from DB
+     * @param projectId -  ptProjectModule.projectId
+     * @param companyId - ptProjectModule.companyId
+     * @return-lstModule
+     */
+    public List<PtProjectModule> findByProjectIdAndCompanyId(long projectId, long companyId) {
+        List<PtProjectModule> lstModule = PtProjectModule.findAllByProjectIdAndCompanyId(projectId, companyId)
+        return lstModule
+    }
+
+    /**
+     * Count total of PtProjectModule
+     * @param projectId -  ptProjectModule.projectId
+     * @param companyId - ptProjectModule.companyId
+     * @return-lstModule
+     */
+    public int countByProjectIdAndCompanyId(long projectId, long companyId) {
+        int count = PtProjectModule.countByProjectIdAndCompanyId(projectId, companyId)
+        return count
+    }
+
+    private static final String INSERT_QUERY =
+            """
+                INSERT INTO pt_project_module(id, company_id, module_id, project_id)
+                VALUES ( NEXTVAL('pt_project_module_id_seq'), :companyId, :moduleId, :projectId);
+    """
+
+    /**
+     * Save PtProjectModule object into DB
+     * @param projectModule - PtProjectModule object
+     * @return - saved ptProjectModule object
+     */
+    public PtProjectModule create(PtProjectModule projectModule) {
+        Map queryParams = [
+                companyId: ptSessionUtil.appSessionUtil.getCompanyId(),
+                moduleId: projectModule.moduleId,
+                projectId: projectModule.projectId
+        ]
+
+        List result = executeInsertSql(INSERT_QUERY, queryParams)
+
+        if (result.size() <= 0) {
+            throw new RuntimeException('Error occurred while insert project module information')
+        }
+
+        int projectModuleId = (int) result[0][0]
+        projectModule.id = projectModuleId
+        return projectModule
+    }
+
+    /**
+     * read single ptProjectModule object and return the object
+     * @param id - ptProjectModule id
+     * @return ptProjectModule object
+     */
+    public PtProjectModule read(long id) {
+        PtProjectModule projectModule = PtProjectModule.read(id)
+        return projectModule
+    }
+
+    private static final String UPDATE_QUERY =
+            """
+            UPDATE pt_project_module SET
+            module_id=:moduleId
+            WHERE
+            id=:id
+    """
+
+    /**
+     * update ptProjectModule object in DB
+     * @param projectModule - PtProjectModule Object
+     * @return - int containing no of update count
+     */
+    public int update(PtProjectModule projectModule) {
+
+        Map queryParams = [
+                id: projectModule.id,
+                moduleId: projectModule.moduleId
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update project module information')
+        }
+        return updateCount;
+    }
+
+    private static final String DELETE_QUERY =
+            """
+        DELETE FROM pt_project_module
+        WHERE
+            id=:id
+    """
+
+    /**
+     * Delete ptProjectModule object from DB
+     * @param id -id of ptProjectModule object
+     * @return -an integer containing the value of delete count
+     */
+    public int delete(long id) {
+        Map queryParams = [
+                id: id
+        ]
+        int deleteCount = executeUpdateSql(DELETE_QUERY, queryParams)
+
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Error occurred while delete project module information')
+        }
+        return deleteCount
+    }
+
+    /**
+     * Count id if PtProjectModule.projectId and PtProjectModule.moduleId exists
+     * @param ptProjectModule - object returned by buildObject
+     * @return total count of id
+     */
+    public int countByProjectIdAndModuleIdAndCompanyId(PtProjectModule projectModule) {
+        int count = PtProjectModule.countByProjectIdAndModuleIdAndCompanyId(projectModule.projectId, projectModule.moduleId, projectModule.companyId)
+        return count
+
+    }
+
+    /**
+     * Count id if PtProjectModule.projectId and PtProjectModule.moduleId exists
+     * @param ptProjectModule - object returned by buildObject
+     * @return total count of id
+     */
+    public int countByIdNotEqualAndProjectIdAndModuleIdAndCompanyId(PtProjectModule projectModule) {
+        int count = PtProjectModule.countByIdNotEqualAndProjectIdAndModuleIdAndCompanyId(projectModule.id, projectModule.projectId, projectModule.moduleId, projectModule.companyId)
+        return count
+    }
+
+    /**
+     * Get list of ProjectModule mapping by project id
+     * @param lstProjectIds -list of project ids
+     * @return -a list of ProjectModule objects
+     */
+    public List<PtProjectModule> findAllByProjectIdInList(List<Long> lstProjectIds) {
+        List<PtProjectModule> lstProjectModule = PtProjectModule.findAllByProjectIdInList(lstProjectIds)
+        return lstProjectModule
+    }
+}

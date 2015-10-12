@@ -1,0 +1,77 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search "Manage Task" Created By "Cashier" | |
+*ActionService:* | ListExhTaskForAdminActionService | *Auditable:* | No
+*Url:* | /exhTask/listExhTaskForAdmin | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Enter Valid input.
+* Click "Search" button.
+* Search "Manage Task" Created By "Cashier". *Task* will be listed in grid view.
+
+h4. Pre-condition:
+* User must have "List Exh Task for Admin" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Start Date | Calender | Alpha Numeric | Required
+End Date | Calender | Alpha Numeric | Required
+[Task Status|guide:GetDropDownSystemEntityTagLibActionService] | Drop Down List | Numeric | Required
+[Bank|guide:ExhListBanksForShowTaskAdminActionService] | Drop Down List | Numeric | Required
+{table}
+* Tasks which are initiate with "Payment Gateway" exist in searching list.
+
+h4. Process:
+* Get *Task* list created by "Cashier" (default: 15 at Max) matching with search criteria.
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Ref No
+** Amount(BDT)
+** Amount(GBP)
+** Total Due
+** Customer Name
+** Beneficiary Name
+** Payment Method
+** Regular Fee
+** Discount
+** Paid
+
+h4. Post-condition:
+
+* *Success:*
+** *Task* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* ["Send Task" to "Bank"|guide:ExhSendTaskToBankActionService].
+* ["Cancel Task"|guide:ExhCancelTaskActionService].
+* [Show Landing Page of "Invoice"|guide:ExhShowInvoiceDetailsReportActionService].
+* [Show Landing Page of "Task Note"|guide:ShowExhTaskNoteActionService].
+* [Search "Manage Task" From Grid View Created By "Cashier"|guide:SearchExhTaskForAdminActionService].
+
+!Exh/Manage Task_Cashier_Search.png!

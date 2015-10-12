@@ -1,0 +1,79 @@
+
+{table}
+Access Type: | Un-Restricted | Priority: | High
+*Name:* | Create "User Registration" | |
+*ActionService:* | ExhSignupForCustomerUserActionService | *Auditable:* | No
+*Url:* | /exhCustomer/signup | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 2nd February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Anonymous User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* User must request to access "Log-In" page.
+* Actor clicks "New User? Click Here" option from show page.
+* [Show "User Registration" Page|guide:ExhShowRegistrationCustomerActionService].
+* User must enter valid input.
+* Click "Sign Up" button.
+* Create "User Registration".
+
+h4. Pre-condition:
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Exchange House | Auto Generated | Alpha Numeric | System Generated (Integrated Company name)
+Name | Text Box | Alpha Numeric | Required
+[Nationality|guide:_PopulateNationalityList] | Drop Down List | Numeric | Required
+Visa Expiry Date | Calendar | Alpha Numeric | Required (If Nationality is not match with registered native country)
+Date Of Birth | Calendar | Alpha Numeric | Required (Must not be future date)
+Phone | Text Box | Numeric | Required(Must be matched with Native Country's "Phone Pattern")
+Post Code | Text Box | Alpha Numeric | Required
+Login ID | Text Box | Alpha Numeric | Required and Unique
+Password | Text Box | Alpha Numeric | Required
+Confirm Password | Text Box | Alpha Numeric | Required and must be match with given Password
+SMS Subscription | Check Box | Boolean | Optional (Default Value True)
+Mail Subscription | Check Box | Boolean | Optional (Default Value True)
+Address | Text Area | Alpha Numeric | Required
+Source of Fund | Text Box | Alpha Numeric | Required
+[Photo Id Type|guide:ExhPhotoIdTypeDropDownTagLib] | Drop Down List | Numeric | Required
+Photo ID No | Text Box | Alpha Numeric | Required
+Photo ID Image | File Control | Image | Required (If Photo Id Image Check Box is Enabled, field must be optional)
+Photo ID Expiry Date | Calendar | Alpha Numeric | Required
+Corporate Customer | Check Box | Boolean | Optional (Default Value False)
+Company Reg No. | Text Box | Alpha Numeric | Required (If Corporate Customer is Enabled)
+Date of Incorporation | Calendar | Alpha Numeric | Required (If Corporate Customer is Enabled)
+Type Security Text | Text Box | Alpha Numeric | Required
+{table}
+
+h4. Process:
+* Create a new "User" in disable mode.
+* Customer role default assigned.
+* User's "Enabled" CheckBox by Default False.
+* User's "Account Locked" CheckBox by Default False.
+* User's "Power User" CheckBox by Default False.
+* User's "Config Manager" CheckBox by Default False.
+* User's "Disable Password Expiration" CheckBox by Default False.
+* User's "Account Expired" CheckBox by Default False.
+
+h4. Post-condition:
+
+* *Success:*
+** Create a "User".
+** User back to Log-in Page.
+** Show success message.
+** [Send e-mail to Active "User" with Activation Link|guide:_SendMailForActiveUserActionService].
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Exh/User_Registration_Page_Create.png!

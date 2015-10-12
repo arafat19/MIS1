@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Un-Post *Voucher*  | |
+ *ActionService:* | UnPostAccVoucherActionService | *Auditable:* | No
+ *Url:* | /accVoucher/unPostedVoucher | |
+{table}
+
+h4. Revision History:
+    {table}
+     *Author*   | *Date*	| *Reason for Changes*	| *Version*
+     Nahida Sultana | 9th June 2013	| Initial Requirement | 1.0
+    {table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click "Pay Cash" link.
+* [Show Landing Page of "Pay Cash" Voucher|guide:ShowAccVoucherPayCashActionService].
+* Select a *Voucher* from grid view.
+* Click "Un-Post" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Un-Post *Voucher*.
+
+h4. Pre-condition:
+* User must have "Un-Post Acc Voucher" privilege.
+* Only posted *Voucher* can be un-posted.
+
+h4. Process:
+* Select a *Voucher* from grid view.
+* Click "Un-post" button from tool bar.
+* Un-Post Selected *Voucher*.
+
+h4. Post-condition:
+
+* *Success:*
+** Un-posted *Voucher* show in grid (With status).
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Show Landing Page of "Pay Cash" Voucher|guide:ShowAccVoucherPayCashActionService].
+* [Show Landing Page of "Pay Cheque" Voucher|guide:ShowAccVoucherPayBankActionService].
+* [Show Landing Page of "Receive Cash" Voucher|guide:ShowAccVoucherReceiveCashActionService].
+* [Show Landing Page of "Receive Cheque" Voucher|guide:ShowAccVoucherReceiveBankActionService].
+* [Show Landing Page of "Journal Voucher"|guide:ShowAccVoucherActionService].
+* [Generate "Voucher List" Report in HTML Format|guide:SearchForVoucherListActionService].

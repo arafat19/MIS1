@@ -1,0 +1,58 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate "Fixed Asset Details" List in drop-down | |
+ *ActionService:* | GetFixedAssetListByInventoryIdAndItemIdActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/listFixedAssetByInventoryIdAndItemId | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description: 
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "Consumption" link.
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+* Select a Line-Item from grid view.
+* Click "New" button.
+* [Show Landing Page of Un-Approved "Inventory Consumption"|guide:ShowForUnApprovedInventoryConsumptionDetailsActionService].
+* Select *Item* from drop-down which are used in "Fixed Asset".
+* Select "Fixed Asset" from Drop-Down List.
+* Populate "Fixed Asset Details" list in drop-down.
+
+h4. Pre-condition: 
+* User must have "Get Fixed-Asset List by inventory ID & item ID" privilege.
+* Populate drop-down criteria given below :
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+  "Project Name" | Read Only | Alpha Numeric | 
+  Budget Item | Read Only | Alpha Numeric | 
+ [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required
+ [Populate Inventory Name List|guide:GetInventoryListByInventoryTypeActionService] | Drop-Down List | Numeric | Required
+ [Item|guide:GetDropDownInventoryConsumptionItemTagLibActionService]|Drop-Down List | Numeric | Required
+ [Fixed Asset|guide:GetFixedAssetListByInventoryIdActionService]|Drop-Down List | Numeric | Required
+{table}
+
+h4. Process:
+* Get "Fixed Asset Details" list in drop-down from server.
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate list of "Fixed Asset Details" in drop-down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create Un-Approve "Inventory Consumption"|guide:CreateForInventoryConsumptionDetailsActionService].

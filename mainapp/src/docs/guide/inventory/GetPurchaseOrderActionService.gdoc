@@ -1,0 +1,54 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate *Purchase Order* List in drop-down | |
+ *ActionService:* | GetPurchaseOrderActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransaction/getPOListOfSupplier | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Nahida sultana | 24th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director,Project Manager,Production Operator,Inventory. Auditor,Inventory Operator.
+
+h4. Description: 
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Supplier" link.
+* [Show Group of "Inventory In" From Supplier Landing Page|guide:ShowForInventoryInFromSupplierActionService].
+* Select "Supplier" from Drop-Down List.
+* Populate *Purchase Order* List in drop-down.
+
+h4. Pre-condition:
+* User must have "Get Production Operator List Of Supplier" privilege.
+* *Purchase Order* must be approved.
+* *Purchase Order* must contain available item quantity.
+* *Purchase Order* list related with *Supplier* must populate in drop-down.
+* Populate drop-down criteria given below :
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+  [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required
+  [Populate Inventory Name List|guide:GetInventoryListByInventoryTypeActionService] | Drop-Down List | Numeric | Required
+  [Populate All Supplier List|application] | Drop-Down List | Numeric | Required
+{table}
+
+h4. Process:
+* Get "Approved Purchase Order" list from server.
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate list of "Approved Purchase Order" at drop-down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create Group of "Inventory In" From Supplier|guide:CreateForInventoryInFromSupplierActionService].

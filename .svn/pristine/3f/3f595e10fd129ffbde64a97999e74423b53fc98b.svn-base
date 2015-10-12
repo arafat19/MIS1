@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RemittanceSummaryRpt" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="2a5430fe-504f-46dc-94d8-38b3f0c502fb">
+	<property name="ireport.zoom" value="2.3579476910000072"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fromDate" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toDate" class="java.sql.Timestamp"/>
+	<parameter name="taskStatusListIds" class="java.util.List">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="paidByCash" class="java.lang.Long"/>
+	<parameter name="paidByOnline" class="java.lang.Long"/>
+	<parameter name="exchangeHouseName" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["G:\\GrailsProjects\\mis\\plugins\\exchangeHouse\\web-app\\reports\\exchangehouse\\remittanceSummary\\subreports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT a.created_on, a. sum_rem_stg, a.tot_dis, a.tot_net_comm, a.tot_gain, a.taka_equivalent, a.sum_tot_due, COALESCE(d.online_minus_comm,0) AS online_minus_comm
+FROM
+(SELECT
+date(created_on) created_on,
+(sum(amount_in_local_currency)) sum_rem_stg,
+sum(discount) tot_dis,
+(sum(regular_fee) - sum(discount)) tot_net_comm,
+sum(exh_gain) tot_gain,
+sum(amount_in_foreign_currency) taka_equivalent,
+sum(amount_in_local_currency)+sum(regular_fee)-sum(discount) sum_tot_due
+FROM exh_task task
+WHERE task.created_on BETWEEN $P{fromDate} AND $P{toDate} AND ($X{IN,current_status,taskStatusListIds})
+GROUP BY date(created_on) ORDER BY date(created_on)) a
+FULL OUTER JOIN
+(SELECT (sum(amount_in_local_currency)+sum(regular_fee)-sum(discount))-sum(regular_fee) online_minus_comm,
+date(exh_task.created_on) as created_on FROM exh_task WHERE
+exh_task.paid_by=$P{paidByOnline} AND ($X{IN,current_status,taskStatusListIds})
+AND exh_task.created_on BETWEEN $P{fromDate} AND $P{toDate}
+GROUP BY date(exh_task.created_on )ORDER BY date(created_on)) AS d ON a.created_on=d.created_on]]>
+	</queryString>
+	<field name="created_on" class="java.sql.Date"/>
+	<field name="sum_rem_stg" class="java.lang.Double"/>
+	<field name="tot_dis" class="java.lang.Double"/>
+	<field name="tot_net_comm" class="java.lang.Double"/>
+	<field name="tot_gain" class="java.lang.Double"/>
+	<field name="taka_equivalent" class="java.lang.Double"/>
+	<field name="sum_tot_due" class="java.lang.Double"/>
+	<field name="online_minus_comm" class="java.lang.Double"/>
+	<variable name="sumOfAmountGBP" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="sumOfComission" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="sumOfCharge" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="sumOfDiscount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="receivedInTill" class="java.lang.Double">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumOfReceivedInTill" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{receivedInTill}]]></variableExpression>
+	</variable>
+	<variable name="receivedOnline" class="java.lang.Double" resetType="None">
+		<variableExpression><![CDATA[]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="grandTotalNetCommission" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_net_comm}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalNetCollection" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{sum_rem_stg}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalEquivalent" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{taka_equivalent}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalTransaction" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{sum_tot_due}]]></variableExpression>
+	</variable>
+	<variable name="grandTotaLDiscount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_dis}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalExhGain" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_gain}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalBankTransfer" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{online_minus_comm}]]></variableExpression>
+	</variable>
+	<group name="task_created_on">
+		<groupExpression><![CDATA[$F{created_on}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="30" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="bea995cb-950e-4c25-8a2c-136b2cb84da6" x="0" y="2" width="148" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Justified">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Remittance Summary Report]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="a63f48f6-bb12-4084-a5a7-b176fb61293d" x="0" y="16" width="148" height="14"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{exchangeHouseName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ae12d924-4e3c-4bcf-b88a-66a88f7e97f2" x="0" y="0" width="55" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="c20efd97-e1d4-4fe0-8869-004887149898" x="59" y="14" width="153" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="00f9e9c0-5a02-4316-9d42-2ea3f43f2975" x="55" y="0" width="5" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cfd25887-55c0-4985-8aff-994c8a09db4d" x="55" y="14" width="5" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="030e68db-181f-440c-a605-6d51015a4f74" x="0" y="14" width="55" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="181ed287-1af6-41b1-8b87-911d6c1bf0eb" x="59" y="0" width="153" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="230585ca-fd9d-428e-bed8-83243f1b1480" x="0" y="0" width="67" height="15" forecolor="#000000" backcolor="#FFFFFF"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement markup="none">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b021f909-edc8-4edb-9cf8-4ddd15d61cc9" x="139" y="0" width="73" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Net Collection]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="09f23d37-894f-48a9-b9a5-6961eb59634a" x="67" y="0" width="72" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Bank Transfer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc69a0f2-75c8-492b-b264-6b591943fc57" x="212" y="0" width="87" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Net Commission]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc69a0f2-75c8-492b-b264-6b591943fc57" x="375" y="0" width="51" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Discount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2a294d63-cc37-4217-9a27-7187fed86a49" x="426" y="0" width="59" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Equivalent]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a9af27b5-3d15-4b0e-992e-efd9ffd94e26" x="485" y="0" width="90" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Transaction]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc69a0f2-75c8-492b-b264-6b591943fc57" x="299" y="0" width="76" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Exh Gain/Loss]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="39" splitType="Stretch">
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="544c8c3d-1214-494f-a52c-b2412ea112b7" x="485" y="0" width="90" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_tot_due}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="60040237-bacd-44eb-97d3-38372e43dc80" x="426" y="0" width="59" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{taka_equivalent}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="17813ccc-b778-40eb-996e-bbab9c93a7d2" x="212" y="0" width="87" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tot_net_comm}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="aad2e8e1-e160-47bb-9b62-d04b1a4f467a" x="67" y="0" width="72" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{online_minus_comm} ? $F{online_minus_comm} : 0]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="da533b7f-c077-41df-918a-9493e25814d6" x="139" y="0" width="73" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sum_rem_stg}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<reportElement uuid="2b3dcdaf-0f26-4038-b202-513f09afb7ce" x="0" y="0" width="67" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created_on}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="57b05d82-2f62-4401-9e74-241171a064ff" stretchType="RelativeToBandHeight" x="285" y="15" width="290" height="24" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="paidByCash">
+					<subreportParameterExpression><![CDATA[$P{paidByCash}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="created_on">
+					<subreportParameterExpression><![CDATA[$F{created_on}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="taskStatusListIds">
+					<subreportParameterExpression><![CDATA[$P{taskStatusListIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "SubRemittanceSummaryRpt.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="a04bbc8d-2c04-4a96-9dda-ca28fc75f33e" x="375" y="0" width="51" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{tot_dis}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="false">
+				<reportElement uuid="af85a701-c650-4cb4-92ea-707fd21564bf" x="299" y="0" width="76" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{tot_gain}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="23">
+			<subreport>
+				<reportElement uuid="57b05d82-2f62-4401-9e74-241171a064ff" positionType="Float" stretchType="RelativeToBandHeight" x="285" y="-1" width="290" height="24" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true"/>
+				<subreportParameter name="created_on">
+					<subreportParameterExpression><![CDATA[$F{created_on}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="taskStatusListIds">
+					<subreportParameterExpression><![CDATA[$P{taskStatusListIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "SubTransactionTypeRemittanceReport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ae5cec96-3eb3-4222-b49d-9167c533f618" x="394" y="5" width="180" height="9"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Report generated by Athena Software Associates Ltd.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f6499586-113b-4d30-8182-7cb0ed231f31" x="0" y="4" width="63" height="10"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d5100a80-3291-44b0-9e66-475ab52c7021" x="258" y="4" width="3" height="10"/>
+				<textElement>
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f7ebe384-3928-4a0f-9053-87db3804bd18" x="199" y="4" width="58" height="10"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Print Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="false">
+				<reportElement uuid="a3244461-b74e-4bf3-a731-9a07748bedd6" x="261" y="4" width="47" height="10"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="15" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="82434905-f09a-4962-a25c-7549a7e28e53" x="0" y="0" width="55" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="a739995a-8fc4-4721-8089-a07ea8d14bbe" x="199" y="0" width="86" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalNetCommission}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="85c29e73-f6ec-4216-b3f9-bd2c230ccece" x="127" y="0" width="73" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalNetCollection}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="624848e6-793b-49dd-a153-ecb51fbdffc0" x="416" y="0" width="59" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalEquivalent}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="ca948567-ba65-4eb8-97a3-473be944bcd8" x="475" y="0" width="100" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalTransaction}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="a739995a-8fc4-4721-8089-a07ea8d14bbe" x="365" y="0" width="51" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotaLDiscount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="1b278d61-7628-474c-8161-7e19ab8d070d" x="285" y="0" width="80" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalExhGain}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="6b1fa90d-96e2-4390-aa64-0656b05bf4de" x="55" y="0" width="72" height="15"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalBankTransfer}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

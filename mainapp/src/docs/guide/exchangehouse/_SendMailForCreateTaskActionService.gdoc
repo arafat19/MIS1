@@ -1,0 +1,60 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Send E-mail for Create *Task* | |
+*ActionServices:* | ExhCreateTaskActionService | *Auditable:* | No
+*Url:* | /exhTask/create | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 31th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* [Show Landing Page of Cashier's "Task"|guide:ShowExhTaskForCashierActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Send E-mail for Create Task.
+
+h4. Pre-condition:
+* Transaction code "ExhSignupForCustomerUserActionService" must be active.
+* *User* must insert valid e-mail address.
+
+h4. Process:
+* Send e-mail to corresponding *Customer*.
+
+h4. Post-condition:
+
+* *Success:*
+** Send System generated e-mail for corresponding *Customer*.
+** System should send "Task Invoice" Report in pdf format at corresponding e-mail.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create Agent's "Task"|guide:ExhCreateTaskActionService].
+* [Update Agent's "Task"|guide:ExhUpdateTaskActionService].
+* [Create Customer's "Task"|guide:_ExhCreateTaskForCustomerActionService].
+* [Update Customer's "Task"|guide:_ExhUpdateTaskForCustomerActionService].
+* [Create Cashier's "Task"|guide:_ExhCreateTaskForCashierActionService].
+* [Update Cashier's "Task"|guide:_ExhUpdateTaskForCashierActionService].

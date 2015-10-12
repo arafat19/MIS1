@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Reload "Project" wise "Budget Scope Mapping" | |
+*Action:* | SelectProjectBudgetScopeActionService | *Auditable:* | No
+*Url:* | /projectBudgetScope/select | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 10 August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click "Project Scope Mapping" link.
+* [Show Landing Page of "Project Scope Mapping"|guide:_showProjectBudgetScope].
+* Enter valid input.
+* Click "Search" button.
+* [Search "Project" wise "Budget Scope Mapping"|guide:SelectProjectBudgetScopeActionService].
+* Change "Project" wise "Budget Scope Mapping".
+* Click "Discard Changes".
+* Reload "Project" wise "Budget Scope Mapping".
+
+h4. Pre-condition:
+* User must have "Select Project Budget Scope" privilege.
+
+h4. Process:
+* Reload "Budget Scope Mapping".
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Budget Scope Mapping" as previous setting.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,63 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Add *Sprint's Backlog* | |
+*ActionService:* | CreateBackLogForSprintActionService | *Auditable:* | No
+*Url:* | /ptBacklog/createBackLogForSprint | | 
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Task" button from tool bar.
+* [Show Landing Page of "Sprint's Backlog"|guide:ShowBackLogForSprintActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Add *Sprint's Backlog*.
+
+h4. Pre-condition:
+* User must have "Create Backlog for sprint" privilege.
+* Backlog can create in "Define" Sprint.
+* Backlog can create in "In Progress" Sprint.
+* Backlog can create in "Completed" Sprint.
+* Backlog can add in "Active" and "Inactive" Sprint.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+Sprint | Read Only | Alpha Numeric | 
+[Module|guide:_PopulateProjectWiseModuleList] | Drop Down List | Numeric | Required
+[Task|guide:GetBackLogForModuleActionService] | Drop Down List | Numeric | Required
+{table}
+
+
+h4. Process:
+* Add a new *Sprint's Backlog*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Sprint's Backlog* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+

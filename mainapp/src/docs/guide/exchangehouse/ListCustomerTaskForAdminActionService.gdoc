@@ -1,0 +1,77 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search "Manage Task" Created By *Customer* | |
+*ActionService:* | ListCustomerTaskForAdminActionService | *Auditable:* | No
+*Url:* | /exhTask/listCustomerTaskForAdmin | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Manage Task" Created By "Customer"|guide:ShowCustomerTaskForAdminActionService].
+* Enter Valid input.
+* Click "Search" button.
+* Search "Manage Task" Created By *Customer*. *Task* will be listed in grid view.
+
+h4. Pre-condition:
+* User must have "List Customer Task for Admin" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Start Date | Calender | Alpha Numeric | Required
+End Date | Calender | Alpha Numeric | Required
+[Task Status|guide:GetDropDownSystemEntityTagLibActionService] | Drop Down List | Numeric | Required
+[Bank|guide:ExhListBanksForShowCustomerTaskAdminActionService] | Drop Down List | Numeric | Required
+{table}
+
+
+h4. Process:
+* Get "Manage Task" list created by *Customer* (default: 15 at Max) matching with search criteria.
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Ref No
+** Amount(BDT)
+** Amount(GBP)
+** Total Due
+** Customer Name
+** Beneficiary Name
+** Payment Method
+** Regular Fee
+** Discount
+
+h4. Post-condition:
+
+* *Success:*
+** "Manage Task" Created By *Customer* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* ["Send Task" to "Bank"|guide:ExhSendTaskToBankActionService].
+* ["Cancel Task"|guide:ExhCancelTaskActionService].
+* [Show Landing Page of "Invoice"|guide:ExhShowInvoiceDetailsReportActionService].
+* [Show Landing Page of "Task Note"|guide:ShowExhTaskNoteActionService].
+* [Search "Manage Task" From Grid View Created By "Customer"|guide:SearchCustomerTaskForAdminActionService].
+* [Show List of "Manage Task" Created By "Customer" in Landing Page|guide:ListCustomerTaskForAdminActionService].
+
+!Exh/Manage Task_Customer_By_Admin_Search.png!

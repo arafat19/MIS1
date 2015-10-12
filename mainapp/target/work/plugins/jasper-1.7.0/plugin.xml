@@ -1,0 +1,31 @@
+<plugin name='jasper' version='1.7.0' grailsVersion='2.1.0 &gt; *'>
+  <author>Craig Andrews</author>
+  <authorEmail>candrews@integralblue.com</authorEmail>
+  <title>Jasper Plugin</title>
+  <description>
+	Adds easy support for launching jasper reports from GSP pages.
+	After installing, run your application and request (app-url)/jasper/demo for a demonstration and instructions.
+    </description>
+  <documentation>http://www.grails.org/plugin/jasper</documentation>
+  <type>JasperGrailsPlugin</type>
+  <resources>
+    <resource>org.codehaus.groovy.grails.plugins.jasper.JasperController</resource>
+    <resource>org.codehaus.groovy.grails.plugins.jasper.JasperDemoController</resource>
+    <resource>org.codehaus.groovy.grails.plugins.jasper.JasperService</resource>
+    <resource>org.codehaus.groovy.grails.plugins.jasper.JasperTagLib</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+  </repositories>
+  <dependencies>
+    <compile>
+      <dependency group='com.lowagie' name='itext' version='2.1.7' />
+      <dependency group='net.sf.jasperreports' name='jasperreports' version='5.5.0' />
+      <dependency group='org.apache.poi' name='poi' version='3.9' />
+    </compile>
+  </dependencies>
+  <plugins />
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

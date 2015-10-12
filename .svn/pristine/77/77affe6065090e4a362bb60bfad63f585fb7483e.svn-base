@@ -1,0 +1,244 @@
+package com.athena.mis.projecttrack.actions.ptbug
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.application.service.SystemEntityService
+import com.athena.mis.projecttrack.entity.PtBug
+import com.athena.mis.projecttrack.entity.PtModule
+import com.athena.mis.projecttrack.entity.PtSprint
+import com.athena.mis.projecttrack.service.PtBugService
+import com.athena.mis.projecttrack.service.PtSprintService
+import com.athena.mis.projecttrack.utility.PtModuleCacheUtility
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import com.athena.mis.projecttrack.utility.PtSprintStatusCacheUtility
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+class CreatePtBugForSprintActionService extends BaseService implements ActionIntf {
+
+    PtBugService ptBugService
+    PtSprintService ptSprintService
+    SystemEntityService systemEntityService
+    @Autowired
+    PtSessionUtil ptSessionUtil
+    @Autowired
+    PtModuleCacheUtility ptModuleCacheUtility
+    @Autowired
+    PtSprintStatusCacheUtility ptSprintStatusCacheUtility
+
+    private final Logger log = Logger.getLogger(getClass());
+
+    private static final String OBJ_NOT_FOUND = "object not found"
+    private static final String BUG_OBJ = "backlog"
+    private static final String BUG_CREATE_FAILURE_MSG = "Bug has not been saved"
+    private static final String BUG_CREATE_SUCCESS_MSG = "Bug has been successfully saved"
+    private static final String BUG_LIST = "bugList"
+    private static final String SAME_MAPPING_ALREADY_EXIST = "Same mapping already exists"
+    private static final String NOT_ALLOWED_TO_ADD = "Bug must not added to Closed Sprint"
+
+    /**
+     * Get parameters from UI and build PtBug object
+     * 1. check parameters and build new bug object
+     * 2. Duplicacy check by sprint id and company id
+     * @param params - serialized parameters from UI
+     * @param obj - N/A
+     * @returna map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap parameterMap = (GrailsParameterMap) params
+            // check required parameters
+            if (!parameterMap.bugId) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long bugId = Long.parseLong(parameterMap.bugId.toString())
+
+            PtBug oldBug = ptBugService.read(bugId) // get PtBug object
+            // check whether selected ptBug object exists or not
+            if (!oldBug) {
+                result.put(Tools.MESSAGE, OBJ_NOT_FOUND)
+                return result
+            }
+
+
+            PtBug newBugObj = buildPtBugObject(parameterMap, oldBug)  // build PtBug object for update
+            int duplicateCount = PtBug.countByIdAndSprintIdAndCompanyId(newBugObj.id, newBugObj.sprintId, newBugObj.companyId)
+            if (duplicateCount > 0) {
+                result.put(Tools.MESSAGE, SAME_MAPPING_ALREADY_EXIST)
+                return result
+            }
+            SystemEntity statusClosed = (SystemEntity) ptSprintStatusCacheUtility.readByReservedAndCompany(ptSprintStatusCacheUtility.CLOSED_RESERVED_ID,oldBug.companyId)
+            PtSprint sprint = ptSprintService.read(newBugObj.sprintId)
+            // backlog must not added to Closed Sprint
+            if(sprint.statusId == statusClosed.id){
+                result.put(Tools.MESSAGE, NOT_ALLOWED_TO_ADD)
+                return result
+            }
+            result.put(BUG_OBJ, newBugObj)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BUG_CREATE_FAILURE_MSG)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for executePostCondition
+     */
+    public Object executePostCondition(Object params, Object obj) {
+        return null
+    }
+
+    /**
+     * Update sprint id of Bug object
+     * @param params - N/A
+     * @param obj - map returned from executePreCondition method
+     * @return - a map containing all objects necessary for buildSuccessResultForUI
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj   // cast map returned from executePreCondition method
+            PtBug bugObj = (PtBug) preResult.get(BUG_OBJ)
+            ptBugService.updateBugForSprint(bugObj)  // update bug object in DB
+            if (bugObj.backlogId > 0) {
+                updateSprintIdOfBacklog(bugObj)
+            }
+            result.put(BUG_OBJ, bugObj)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BUG_CREATE_FAILURE_MSG)
+            return result
+        }
+    }
+
+    /**
+     * Build grid object to show and show a single row (newly mapped) in the grid
+     * 1. Get module object by moduleId of bug
+     * 2. Get system entity object (bugSeverity) by severity of bug
+     * 3. Get system entity object (bugType) by type of bug
+     * @param obj - map from execute method
+     * @return - a map containing all objects necessary to indicate success event
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap executeResult = (LinkedHashMap) obj   // cast map returned from execute method
+            PtBug ptBug = (PtBug) executeResult.get(BUG_OBJ)
+            GridEntity object = new GridEntity()    // build grid entity object
+            PtModule module = (PtModule) ptModuleCacheUtility.read(ptBug.moduleId)
+            SystemEntity bugSeverity = systemEntityService.read(ptBug.severity)
+            SystemEntity bugType = systemEntityService.read(ptBug.type)
+            object.id = ptBug.id
+            object.cell = [
+                    Tools.LABEL_NEW,
+                    ptBug.id,
+                    module.name,
+                    ptBug.title,
+                    bugSeverity.key,
+                    bugType.key
+            ]
+            List<PtBug> lstBug = ptBugService.findAllByModuleIdAndStatusAndCompanyId(ptBug)
+            result.put(BUG_LIST, lstBug)
+            result.put(Tools.MESSAGE, BUG_CREATE_SUCCESS_MSG)
+            result.put(Tools.ENTITY, object)
+            result.put(Tools.VERSION, ptBug.version.toInteger())
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BUG_CREATE_SUCCESS_MSG)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                LinkedHashMap preResult = (LinkedHashMap) obj   // cast map returned from previous method
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, BUG_CREATE_SUCCESS_MSG)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BUG_CREATE_SUCCESS_MSG)
+            return result
+        }
+    }
+
+    /**
+     * Build new bug object
+     * @param parameterMap - serialized parameters from UI
+     * @param oldBug - old bug object
+     * @return - new bug object
+     */
+    private PtBug buildPtBugObject(GrailsParameterMap parameterMap, PtBug oldBug) {
+        PtBug newBug = new PtBug(parameterMap)
+        oldBug.sprintId = newBug.sprintId
+        oldBug.updatedOn = new Date()
+        oldBug.updatedBy = ptSessionUtil.appSessionUtil.getAppUser().id
+        if (oldBug.backlogId == 0) {
+            PtSprint sprint = ptSprintService.read(oldBug.sprintId)
+            oldBug.projectId = sprint.projectId
+        }
+        return oldBug
+    }
+
+    private static final String UPDATE_BACKLOG_FOR_SPRINT = """
+	    UPDATE pt_backlog SET
+		    sprint_id = :sprintId
+		WHERE
+		    id = :id
+	"""
+
+    /**
+     * Update sprint id of backlog
+     * @param bug - object of PtBug
+     * @return - an integer containing the value of count
+     */
+    public int updateSprintIdOfBacklog(PtBug bug) {
+        Map queryParams = [
+                id: bug.backlogId,
+                sprintId: bug.sprintId
+        ]
+        int updateCount = executeUpdateSql(UPDATE_BACKLOG_FOR_SPRINT, queryParams);
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        return updateCount
+    }
+}

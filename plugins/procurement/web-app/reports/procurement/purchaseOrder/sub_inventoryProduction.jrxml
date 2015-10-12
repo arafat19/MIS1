@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_inventoryProduction" language="groovy" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ce4e32e8-c9d1-44b9-9bf5-927d901d4bdb">
+	<property name="ireport.zoom" value="1.771561000000004"/>
+	<property name="ireport.x" value="404"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="transactionId" class="java.lang.Long"/>
+	<parameter name="dbQuantityFormat" class="java.lang.String"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT iitd.id, iitd.item_id, item.name AS finished_product,
+
+      iitd.rate,
+      to_char(iitd.rate,$P{dbCurrencyFormat}) AS str_rate,
+
+      iitd.actual_quantity AS quantity,
+      to_char(iitd.actual_quantity,$P{dbQuantityFormat}) || ' ' || item.unit AS str_quantity,
+
+      prodLine.overhead_cost AS overhead_cost,
+      to_char(prodLine.overhead_cost,$P{dbCurrencyFormat}) AS str_overhead_cost,
+
+      (iitd.actual_quantity * iitd.rate) AS total_amount,
+      to_char((iitd.actual_quantity * iitd.rate),$P{dbCurrencyFormat}) AS str_total_amount
+
+            FROM inv_inventory_transaction_details iitd
+                LEFT JOIN inv_inventory_transaction trProd ON trProd.id = iitd.inventory_transaction_id
+                LEFT JOIN item ON item.id = iitd.item_id
+                LEFT JOIN inv_production_line_item prodLine ON prodLine.id = trProd.inv_production_line_item_id
+            WHERE trProd.transaction_id = $P{transactionId} AND
+                  iitd.inventory_transaction_id = trProd.id AND
+                  trProd.inv_production_line_item_id > 0 AND
+                  iitd.is_current = true
+            ORDER BY finished_product]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="item_id" class="java.lang.Long"/>
+	<field name="finished_product" class="java.lang.String"/>
+	<field name="rate" class="java.math.BigDecimal"/>
+	<field name="str_rate" class="java.lang.String"/>
+	<field name="quantity" class="java.math.BigDecimal"/>
+	<field name="str_quantity" class="java.lang.String"/>
+	<field name="overhead_cost" class="java.math.BigDecimal"/>
+	<field name="str_overhead_cost" class="java.lang.String"/>
+	<field name="total_amount" class="java.math.BigDecimal"/>
+	<field name="str_total_amount" class="java.lang.String"/>
+	<variable name="totalAmountFinishPro" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_amount}]]></variableExpression>
+	</variable>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4a790b4b-eec1-469e-98e3-c0e75b2afc7e" x="1" y="4" width="107" height="16"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ Finished Product(s) :]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="44" splitType="Prevent">
+			<textField>
+				<reportElement uuid="cc6e77cc-db0d-4df2-8f60-df82cb0fecb1" x="31" y="22" width="194" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{finished_product}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3e8126e9-0068-4964-b9ea-ee7b5cbe1257" x="445" y="22" width="90" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_total_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bf53a3e3-2baf-47b5-9a1a-2711a7c2d45b" x="1" y="22" width="30" height="20"/>
+				<box leftPadding="2" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c8ebf5dd-c4a6-4879-9a40-bf4674e9511c" x="1" y="2" width="30" height="20"/>
+				<box leftPadding="2" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61b5d9ca-136d-4442-bb45-56f1b7e7e43a" x="31" y="2" width="194" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f174d377-2837-4d44-b6d7-fb341e0e70c7" x="225" y="2" width="70" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="416970a8-99d3-462a-b3c5-7e2e5f30529c" x="445" y="2" width="90" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement uuid="c9446714-8492-49a7-9be6-5ad28812e481" x="295" y="22" width="70" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_rate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="f37e42f6-8e8f-4682-937d-dd5fc9bbcd14" x="225" y="22" width="70" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_quantity}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3aea883a-bc1b-46cf-ad97-227c95f33d9d" x="295" y="2" width="70" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Rate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f174d377-2837-4d44-b6d7-fb341e0e70c7" x="365" y="2" width="80" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Overhead Cost]]></text>
+			</staticText>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3e8126e9-0068-4964-b9ea-ee7b5cbe1257" x="365" y="22" width="80" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_overhead_cost}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="22">
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="1" y="1" width="224" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Amount :]]></text>
+			</staticText>
+			<textField pattern="###0.00">
+				<reportElement uuid="6b060277-42a3-442b-bfb0-043ba0646dd0" x="445" y="0" width="90" height="19"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalAmountFinishPro}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

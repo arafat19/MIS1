@@ -1,0 +1,163 @@
+package com.athena.mis.application.actions.appuser
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.model.AppUserModel
+import com.athena.mis.application.service.ApplicationSessionService
+import com.athena.mis.application.utility.AppSessionUtil
+import com.athena.mis.application.utility.RoleTypeCacheUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ *  Used to do force logout of online user
+ *  For details go through Use-Case doc named 'ForceLogoutOnlineUserActionService'
+ */
+class ForceLogoutOnlineUserActionService extends BaseService implements ActionIntf {
+
+    ApplicationSessionService applicationSessionService
+    @Autowired
+    AppSessionUtil appSessionUtil
+    @Autowired
+    RoleTypeCacheUtility roleTypeCacheUtility
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String SESSION_NOT_FOUND = 'Session not found or already expired'
+    private static final String FAILED_TO_EXPIRE = 'Failed to expire selected user'
+    private static final String SUCCESS_SESSION_EXPIRED = 'Selected user session has expired'
+
+    /**
+     * Check if user has access to force logout user or not
+     * @param parameters -N/A
+     * @param obj -N/A
+     * @return -a map containing hasAccess(true/false) depending on method success
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            // only development role type user can access this feature
+            if (appSessionUtil.getAppUser().isConfigManager) {
+                result.put(Tools.HAS_ACCESS, Boolean.TRUE)
+            } else {
+                result.put(Tools.HAS_ACCESS, Boolean.FALSE)
+            }
+            return result
+        }
+        catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.HAS_ACCESS, Boolean.FALSE)
+            return result
+        }
+    }
+
+    /**
+     * Check required parameter
+     * Get AppUserModel of selected online user by sessionId
+     * Destroy current session of user
+     * Remove AppUserModel of user
+     * @param parameters -parameters from UI
+     * @param obj -N/A
+     * @return - a map containing isError(true/false) and relevant message depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            List sessionIds = (List<String>) params.ids.split(Tools.UNDERSCORE)
+            // check required parameter
+            if (sessionIds.size() == 0) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            String msgReturn = checkSessionUser(sessionIds)
+            if (msgReturn) {
+                result.put(Tools.MESSAGE, msgReturn)
+                return result
+            }
+            removeSessionUser(sessionIds)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(Tools.MESSAGE, SUCCESS_SESSION_EXPIRED)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILED_TO_EXPIRE)
+            return result
+        }
+    }
+
+    /**
+     * Do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Do nothing for build success result
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                Map previousResult = (Map) obj  // cast map returned from previous method
+                result.put(Tools.MESSAGE, previousResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, FAILED_TO_EXPIRE)
+            }
+            return result
+        }
+        catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILED_TO_EXPIRE)
+            return result
+        }
+    }
+
+    /**
+     * Check is the session of user exist or not
+     * @param sessionIds - List of session ids of different users
+     * @return - a string of message
+     */
+    private String checkSessionUser(List sessionIds) {
+        for (int i = 0; i < sessionIds.size(); i++) {
+            String sessionId = sessionIds[i]
+            AppUserModel userModel = applicationSessionService.readBySessionId(sessionId)
+            // get AppUserModel of user
+            if ((!userModel) || (!userModel.currentSession)) {
+                return SESSION_NOT_FOUND
+            }
+        }
+        return null
+    }
+
+    /**
+     * Remove the session users
+     * @param sessionIds - List of session ids of different users
+     */
+    private void removeSessionUser(List sessionIds) {
+        for (int i = 0; i < sessionIds.size(); i++) {
+            String sessionId = sessionIds[i]
+            AppUserModel userModel = applicationSessionService.readBySessionId(sessionId)
+            userModel.currentSession.invalidate()   // destroy current session of user
+            applicationSessionService.remove(userModel) // remove AppUserModel of user
+        }
+    }
+}

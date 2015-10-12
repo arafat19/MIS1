@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open Approved "Inventory In" From Supplier to Delete | |
+ *ActionService:* | SelectForInventoryInDetailsFromSupplierActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/selectInventoryInDetailsFromSupplier | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 1st July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director,Production Operator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Supplier" link.
+* [Show Group of "Inventory In" From Supplier Landing Page|guide:ShowForInventoryInFromSupplierActionService].
+* Select a Line-Item from grid view.
+* Click "Approve" button.
+* [Show Landing Page of Approved "Inventory in" From Supplier|guide:ShowForApprovedInvInFromSupplierActionService].
+* Select a Line-Item from grid view.
+* Click "Reverse" button.
+* Open Approved "Inventory In" From Supplier to Delete.
+
+h4. Pre-condition:
+* User must have "Reverse Adjustment For Inventory. In From Supplier" privilege.
+
+h4. Process:
+Get approved "Inventory In" From Supplier from server.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected approved "Inventory In" From Supplier in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Delete Approved "Inventory in" From Supplier|guide:ReverseAdjustForInvInFromSupplierActionService].

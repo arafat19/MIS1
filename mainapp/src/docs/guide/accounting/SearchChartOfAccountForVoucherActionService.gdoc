@@ -1,0 +1,71 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search *Chart of Account* From Right Panel | |
+ *ActionService:* | SearchChartOfAccountForVoucherActionService | *Auditable:* | No
+ *Url:* | accChartOfAccount/listForVoucher | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click "Pay Cash" link.
+* Click "Right Panel".
+* Show *Chart of Account* list in right panel grid view.
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Chart of Account* From Right Panel.
+
+h4. Pre-condition:
+* User must have "List For Voucher" privilege.
+* Follow the Rules of Searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*	
+  Find | Text box | Alpha Numeric | All (Account Code, Head name)
+{table}
+
+* Searching with zero length string will list all *Chart of Account* code.
+
+h4. Process:
+* Get a list of account code information matching with search criteria(Default: 15 at Max).
+* Actor will see all *Chart of Account* code Right Panel of following columns:
+** Account Code
+** Head Name
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Chart of Account* code list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Pay Cash" Voucher|guide:_CreateAccPCVoucherActionService].
+* [Create "Pay Cheque" Voucher|guide:_CreateAccPBVoucherActionService].
+* [Create "Receive Cash" Voucher|guide:_CreateAccRCVoucherActionService].
+* [Create "Receive Cheque" Voucher|guide:_CreateAccRBVoucherActionService].
+* [Create Journal Voucher|guide:_CreateAccJRVoucherActionService].
+* [Show "Ledger" Report from Right Panel|guide:ShowForLedgerActionService].
+* [Show List of "Chart of Account Code" Right Panel in Landing Page|guide:ListChartOfAccountForVoucherActionService].
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].

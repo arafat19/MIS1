@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of Journal *Voucher* | |
+*ActionService:* | ShowAccVoucherActionService | *Auditable:* | No
+*Url:* | /accVoucher/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 2nd May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+This is the landing page of Journal *Voucher* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click "Journal" link.
+* Show Landing Page of Journal *Voucher*.
+
+h4. Pre-condition:
+* User must have "Show Acc Vooucher" privilege.
+
+h4. Process:
+* [Get List of all "Journal Voucher" from server|guide:ListAccVoucherActionService].
+* Show list of all *Chart of Account* in right panel to create Journal *Voucher*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Journal Voucher"|guide:_CreateAccJRVoucherActionService].
+** Show list of all Journal *Voucher* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Journal Voucher" in Edit Mode|guide:_SelectAccJRVoucherActionService].
+* [Cancel "Journal Voucher"|guide:_CancelAccJournalVoucherActionService].
+* [Search "Journal Voucher" From Grid View|guide:SearchAccVoucherActionService].
+* [Post "Voucher"|guide:PostAccVoucherActionService].
+* [Un-Post "Voucher"|guide:UnPostAccVoucherActionService].
+* [Show "Ledger" Report from Right Panel|guide:ShowForLedgerActionService].
+* [Show "Voucher" Report From Grid View|guide:ShowForVoucherActionService].
+
+!Acc/Journal_Voucher_Show.png!

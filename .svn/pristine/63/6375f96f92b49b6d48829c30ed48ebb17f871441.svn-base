@@ -1,0 +1,64 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show list of Un-Approved "Inventory Consumption" in landing page | |
+ *ActionService:* | ListForUnApprovedInventoryConsumptionDetailsActionService |*Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/listInventoryConsumptionDetails | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "Consumption" link.
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+* Select a Line-Item from grid view.
+* Click "New" button.
+* Show list of Un-Approved "Inventory Consumption" in [landing page|guide:ShowForUnApprovedInventoryConsumptionDetailsActionService].
+
+h4. Pre-condition:
+* User must have "List Un Approved Consumption Details" privilege.
+
+h4. Process:
+* Get list of un-approve "Inventory Consumption" from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Chalan
+** Item
+** Quantity
+** Consumption Date
+** Fixed Asset
+** Fixed Asset Details
+** Created By
+** Updated By
+
+h4. Post-condition:
+
+* *Success:*
+** Un-approved "Inventory Consumption" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search Un-approve "Inventory Consumption" From Grid View|guide:SearchForUnApprovedInventoryConsumptionDetailsActionService].
+
+!Inv/List_Pending_Consumption_Widget.png!

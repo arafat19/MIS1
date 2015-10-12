@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Project" List in drop-down | |
+*ActionService:* | GetDropDownPtProjectTagLibActionService |*Auditable:* | No
+*Url*: | /ptSprint/show  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 7th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Populate "Project" List in drop-down.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get "Project" list from server. [Show Landing Page of "Software Project"|guide:ShowPtProjectActionService]
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Project" list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Create "Sprint"|guide:PtCreateSprintActionService].
+* [Update "Sprint"|guide:PtUpdateSprintActionService].
+* [Show Landing Page of "Active Backlog"|guide:_showForActive].
+* [Show Landing Page of "InActive Backlog"|guide:_showForInActive].
+* [Show Landing Page of "Sprint Detials" Report|guide:PtShowSprintDetailsReportActionService].
+* [Show Landing Page of "Open Backlog" Report|guide:ShowOpenBacklogReportActionService].
+* [Show Landing Page of "Bug Details" Report|guide:ShowPtBugDetailsReportActionService].

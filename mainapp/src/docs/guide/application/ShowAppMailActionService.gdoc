@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Mail" | |
+*ActionService:* | ShowAppMailActionService | *Auditable:* | No
+*Url:* | /appMail/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+This is the landing page of "Mail" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "Mail" link.
+* Show Landing Page of "Mail".
+
+h4. Pre-condition:
+* User must have "Show App Mail" privilege.
+
+h4. Process:
+* [Get List of all "Mail" from server|guide:ListAppMailActionService].
+ 
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Update "Mail"|guide:UpdateAppMailActionService].
+** Show list of all *Mail* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Mail" in Edit Mode|guide:SelectAppMailActionService].
+
+!application/Mail_Show.png!

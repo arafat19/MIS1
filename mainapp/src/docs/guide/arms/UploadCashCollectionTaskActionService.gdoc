@@ -1,0 +1,63 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Upload "Cash Collection" Task List | |
+ *ActionService:* | UploadCashCollectionTaskActionService | *Auditable:* | No
+ *Url:* | /rmsTask/createForUploadTask | |
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 22 July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Remittance User, Exchange House User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Upload" link.
+* [Show Landing Page of "Upload Task"|guide:showForUploadTask].
+* User must insert valid input.
+* Click "Upload" button.
+* Upload "Cash Collection" Task List.
+
+h4. Pre-condition:
+* User must have "Create Tasks for upload Task" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Payment Method|guide:PopulatePaymentMethod] | Drop Down List | Numeric | Required
+ [Exchange House|guide:PopulateExchangeHouseList] | Drop Down List | Numeric | Required
+ Task File | Upload Box | File | Required
+{table}
+
+* Uploaded file must be in CSV format.
+* If any column or row of the file invalid then file upload not possible.
+* Same *Task* CSV file can not be upload-able for same "Exchange House".
+* Same *Task* CSV file can be upload-able for different "Exchange House".
+
+h4. Process:
+* Upload valid *Task* CSV File.
+
+h4. Post-condition:
+
+* Uploaded file show the fouded error in grid view(Row wise).
+
+* *Success:*
+** Upload selected CSV file.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].

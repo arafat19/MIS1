@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Landing Page of *Budget Schema* | |
+*ActionService:* | ShowBudgSchemaActionService | *Auditable:* | No
+*Url:* | /budgSchema/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of *Budget Schema* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* [Show Landing Page of "Budget"|guide:ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Schema" button from tool bar.
+* Show Landing Page of *Budget Schema*.
+
+h4. Pre-condition:
+* User must have "Show budget schema" privilege.
+
+h4. Process:
+* [Get List of all "Budget Schema" from server|guide:ListBudgSchemaActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Budget Schema"|guide:CreateBudgSchemaActionService].
+** Show list of all *Budget Schema* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Budget Schema" in Edit Mode|guide:SelectBudgSchemaActionService].
+* [Delete "Budget Schema"|guide:DeleteBudgSchemaActionService].
+* [Search "Budget Schema" From Grid View|guide:SearchBudgSchemaActionService].
+* [Generate Budget Requirement|guide:GenerateBudgetRequirementActionService].

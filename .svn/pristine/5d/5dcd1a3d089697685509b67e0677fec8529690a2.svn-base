@@ -1,0 +1,263 @@
+<script language="javascript">
+    var sprintBackLogListModel = false;
+    var dropDownModule, sprintId, sprintName;
+
+    $(document).ready(function () {
+        onLoadSprintBackLogPage();
+    });
+
+    // method called on page load
+    function onLoadSprintBackLogPage() {
+        initializeForm($("#taskForm"), onSubmitSearchBacklog);
+
+        var output =${output ? output : ''};
+        if (output.isError) {
+            showError(output.message);  // show error message in case of error
+        } else {
+            sprintBackLogListModel = output.gridObj;    // set data in a global variable to populate
+        }
+        dropDownModule = initKendoDropdown($('#moduleId'), null, null, output.lstModule);
+
+        sprintName = output.name;
+        sprintId = output.sprintId;
+        initFlex();
+        populateFlex1();
+
+        var backLogHeight = $('#contentHolder').height() - $('#containerSearchByModule').height() - 80;
+        $('#lstBacklogs').css('height', backLogHeight);
+
+        // update page title
+        $(document).attr('title', "MIS - Create Sprint Task");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#ptSprint/show");
+    }
+
+    // initialize the grid
+    function initFlex() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 50, sortable: false, align: "right", hide: true},
+                        {display: "ID", name: "id", width: 50, sortable: false, align: "right"},
+                        {display: "Module", name: "module.code", width: 80, sortable: true, align: "left"},
+                        {display: "Priority", name: "priority", width: 60, sortable: false, align: "left"},
+                        {display: "I want to", name: "purpose", width: 300, sortable: false, align: "left"},
+                        {display: "So that", name: "benefit", width: 290, sortable: false, align: "left"},
+                        {display: "A.C. count", name: "count", width: 65, sortable: false, align: "right"},
+                        {display: "Created By", name: "username", width: 150, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/ptBacklog/deleteBackLogForSprint">
+                        {name: 'Remove', bclass: 'delete', onpress: deleteTask},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptAcceptanceCriteria/show">
+                        {name: 'Acceptance Criteria', bclass: 'note', onpress: loadAcceptanceCriteria},
+                        </app:ifAllUrl>
+                        {name: 'Task Report', bclass: 'report', onpress: showTaskDetails},
+                        {name: 'Sprint Report', bclass: 'report', onpress: downloadSprintDetails},
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Idea", name: "idea", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "module.code",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Tasks for '+ '"'+sprintName+'"',
+                    useRp: true,
+                    rp: 20,
+                    showTableToggleBtn: false,
+                    height: getGridHeight(),
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    preProcess: onLoadListJSON
+                }
+        );
+    }
+
+    // reload grid
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    // load acceptance criteria for selected backlog
+    function loadAcceptanceCriteria(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'Backlog') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'ptAcceptanceCriteria', action: 'show')}?backlogId=" + backlogId + "&leftMenu=" + 'ptSprint/show';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    // custom populate the grid
+    function onLoadListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            sprintBackLogListModel = null;
+        } else {
+            sprintBackLogListModel = data;
+        }
+        return data;
+    }
+
+    // delete sprintBacklog object
+    function deleteTask(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backLogId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'ptBacklog', action:  'deleteBackLogForSprint')}?id=" + backLogId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    // execute pre condition for delete
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'backlog') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected backlog?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row  --%>
+    function executePostConditionForDelete(data) {
+        if (data.isError == true) {
+            showError(data.message);
+        } else {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            sprintBackLogListModel.total = parseInt(sprintBackLogListModel.total) - 1;
+            removeEntityFromGridRows(sprintBackLogListModel, selectedRow);
+            showSuccess(data.message);
+        }
+    }
+
+    // set link to grid url to populate data
+    function populateFlex1() {
+        var strUrl = "${createLink(controller:'ptBacklog',action:  'listBackLogForSprint')}?sprintId=" + sprintId;
+        $("#flex1").flexOptions({url: strUrl});
+        if (sprintBackLogListModel) {
+            $("#flex1").flexAddData(sprintBackLogListModel);
+        }
+    }
+
+    function showTaskDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'task') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'ptReport', action: 'showForBacklogDetails')}?backlogId=" + backlogId + "&leftMenu=" + '#ptSprint/show';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    // method call for download
+    function downloadSprintDetails() {
+        showLoadingSpinner(true);
+        var params = "?sprintId=" + sprintId + "&forAll=" + true;
+        if (confirm('Do you want to download the PDF now?')) {
+            var url = "${createLink(controller: 'ptReport', action: 'downloadSprintDetails')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+        return false;
+    }
+
+    function onSubmitSearchBacklog() {
+        var moduleId = dropDownModule.value();
+        if (moduleId == '') {
+            return;
+        }
+        setButtonDisabled($('#search'), true);
+        $('#lstBacklogs').attr('module_id', moduleId);
+        $('#lstBacklogs').reloadMe(false, '#containerBackLogs');
+        setButtonDisabled($('#search'), false);
+        return false;
+    }
+
+    function addBacklogToSprint(id) {
+        if (!confirm('Are you sure you want to add the selected backlog to sprint?')) {
+            return false;
+        }
+        var params = "?sprintId=" + sprintId + "&backLogId=" + id;
+        showLoadingSpinner(true);   // show loading spinner
+        var actionUrl = "${createLink(controller:'ptBacklog', action: 'createBackLogForSprint')}" + params;
+
+        // fire ajax method
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#sprintBackLogForm").serialize(),  // serialize data from UI and send as parameter
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostConditionForAddBacklogToSprint(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);  // stop loading spinner
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePostConditionForAddBacklogToSprint(result) {
+        if (result.isError) {
+            showError(result.message);  // show error message in case of error
+            showLoadingSpinner(false);  // stop loading spinner
+        } else {
+            var newEntry = result;
+            var previousTotal = parseInt(sprintBackLogListModel.total);
+            var firstSerial = 1;
+
+            if (sprintBackLogListModel.rows.length > 0) {
+                firstSerial = sprintBackLogListModel.rows[0].cell[0];
+                regenerateSerial($(sprintBackLogListModel.rows), 0);
+            }
+            newEntry.entity.cell[0] = firstSerial;
+            sprintBackLogListModel.rows.splice(0, 0, newEntry.entity);
+
+            if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                sprintBackLogListModel.rows.pop();
+            }
+            sprintBackLogListModel.total = ++previousTotal;
+            $("#flex1").flexAddData(sprintBackLogListModel);
+            showSuccess(result.message);    // show success message
+
+            var lstBackLog = $("#lstBacklogs").data("kendoListView");
+            var elements = lstBackLog.element.children();
+            $(elements).each(function () {
+                var eachId = $(this).attr("id");
+                if (eachId == newEntry.entity.id) {
+                    lstBackLog.remove($(this));
+                    return false;
+                }
+            });
+        }
+    }
+
+</script>

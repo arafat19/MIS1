@@ -1,0 +1,45 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open "User Inventory Mapping" in Edit Mode | |
+ *ActionService:* | SelectInvUserInventoryActionService |*Auditable:* | No
+ *Url:* | /invUserInventory/select | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Inventory|guide:_widgetofInventoryoption] option from top menu bar.
+* Clicks "Settings" sub menu from left menu.
+* Clicks "User Inventory" link.
+* [Show Landing Page of "User Inventory Mapping"|guide:ShowInvUserInventoryActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button.
+* Open "User Inventory Mapping" in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select user-inventory" privilege.
+
+h4. Process:
+* Get "User Inventory Mapping" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected "User Inventory Mapping" in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Update "User Inventory Mapping"|guide:UpdateInvUserInventoryActionService].

@@ -1,0 +1,44 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Evaluate *Shell Script* | |
+*ActionService:* | EvaluateAppShellScriptActionService | *Auditable:* | No
+*Url:* | /appShellScript/evaluate | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 9th July 2014	| Initial Requirement | 1.0
+{table}
+
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Shell Script Output can be seen right side of the Landing page.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Shell Script* link.
+* [Show Landing Page of "Shell Script"|guide:ShowAppShellScriptActionService].
+* Select a Line-Item from grid view.
+* Click "Evaluate" Button.
+* Evaluate *Shell Script*.
+
+h4. Pre-condition:
+* User must have "Evaluate Shell Script" privilege.
+
+h4. Process:
+* Evaluate *Shell Script* output.
+
+h4. Post-condition:
+
+* *Success:*
+** Show Evaluate *Shell Script* output at right side of the Landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

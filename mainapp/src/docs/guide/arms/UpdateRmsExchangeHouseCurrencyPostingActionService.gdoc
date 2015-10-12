@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Exchange House Currency Posting* | |
+*ActionService:* | UpdateRmsExchangeHouseCurrencyPostingActionService | *Auditable:* | No
+*Url:* | /rmsExchangeHouseCurrencyPosting/update | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Ex. House Currency Posting* link.
+* [Show Landing Page of "Exchange House Currency Posting"|guide:ShowRmsExchangeHouseCurrencyPostingActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Exchange House Currency Posting" in Edit Mode|guide:SelectRmsExchangeHouseCurrencyPostingActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Exchange House Currency Posting*.
+
+h4. Pre-condition:
+* User must have "Update Exchange House Currency Posting" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+[Exchange House|guide:PopulateExchangeHouseList] |  Drop Down list | Numeric | Required
+Amount | Text Box | Text | Required & Unique
+Balance | Auto Generated | Numeric | Read Only
+{table}
+
+* Match expected version before updating a *Exchange House Currency Posting*.
+
+h4. Process:
+* Update selected *Exchange House Currency Posting*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Exchange House Currency Posting* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

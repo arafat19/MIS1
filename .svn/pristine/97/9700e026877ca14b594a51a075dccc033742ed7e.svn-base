@@ -1,0 +1,109 @@
+<g:render template="/sarb/taskModel/scriptDetailsForReplaceTask"/>
+
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            replace Task
+        </div>
+    </div>
+
+    <form id='replaceTaskForm' name='replaceTaskForm' class="form-horizontal form-widgets" role="form" method="post">
+        <div class="panel-body">
+            <input type="hidden" name="taskId" id="taskId">
+
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label label-required">Remittance Purpose:</label>
+
+                        %{--<div class="col-md-3">--}%
+                        %{--<exh:dropDownRemittancePurpose dataModelName="dropDownRemittancePurpose" tabindex="1" name="remittancePurpose" required="true">--}%
+                        %{--</exh:dropDownRemittancePurpose>--}%
+                        %{--</div>--}%
+                        <div class="col-md-2 pull-left">
+                            <span class="k-invalid-msg" data-for="remittancePurpose"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="lblRefNo">Ref No:</label>
+                        <span id="lblRefNo" class="col-md-5">(Auto Generated)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="lblCustomerId">Customer A/C No:</label>
+                        <span id="lblCustomerId" class="col-md-5">None</span>
+                        <g:hiddenField name="customerId" value="" class="required"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="lblCustomerName">Customer Name:</label>
+                        <span id="lblCustomerName" class="col-md-5">None</span>
+                        <g:hiddenField name="customerName" value="" class="required"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="lblBeneficiaryId">Beneficiary ID:</label>
+                        <span id="lblBeneficiaryId" class="col-md-5">None</span>
+                        <g:hiddenField name="beneficiaryId" value="" class="required"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="lblBeneficiaryName">Beneficiary Name:</label>
+                        <span id="lblBeneficiaryName" class="col-md-5">None</span>
+                        <g:hiddenField name="beneficiaryName" value="" class="required"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-5 control-label label-required">Payment Method:</label>
+
+                        %{--<div class="col-md-5">--}%
+                        %{--<app:dropDownSystemEntity--}%
+                        %{--tabindex="2"--}%
+                        %{--name="paymentMethod"--}%
+                        %{--dataModelName="dropDownPaymentMethod"--}%
+                        %{--required="true"--}%
+                        %{--validationMessage=" "--}%
+                        %{--onchange="return updatePaymentMethod();"--}%
+                        %{--typeId="${SystemEntityTypeCacheUtility.TYPE_EXH_PAYMENT_METHOD}">--}%
+                        %{--</app:dropDownSystemEntity>--}%
+                        %{--</div>--}%
+
+                        <div class="col-md-2 pull-left">
+                            <span class="k-invalid-msg" data-for="paymentMethod"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-5 control-label"
+                                   for="isOtherBank">Select Other Bank:</label>
+
+                            <div class="col-md-5">
+                                <input type="checkbox" name="isOtherBank" id="isOtherBank"
+                                       tabindex="15"
+                                       onchange="displayOtherBankPanel();"/>
+                            </div>
+                        </div>
+                        <g:render template='/sarb/taskModel/otherBankInfo'/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+                <button name="create" id="create" type="submit" data-role="button"
+                        class="k-button k-button-icontext"
+                        role="button" tabindex="3"
+                        aria-disabled="false"><span class="k-icon k-i-plus"></span> Create
+                </button>
+
+                <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
+                        class="k-button k-button-icontext" role="button" tabindex="4"
+                        aria-disabled="false" onclick='resetForm();'><span class="k-icon k-i-close"></span>Cancel
+                </button>
+
+            </div>
+        </div>
+    </form>
+
+</div>

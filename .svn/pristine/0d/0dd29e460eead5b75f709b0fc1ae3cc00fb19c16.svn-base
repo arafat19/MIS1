@@ -1,0 +1,531 @@
+package com.athena.mis.qs.controler
+
+import com.athena.mis.qs.actions.report.budgetcontractdetails.DownloadForBudgetContractCsvDetailsActionService
+import com.athena.mis.qs.actions.report.budgetcontractdetails.DownloadForBudgetContractDetailsActionService
+import com.athena.mis.qs.actions.report.budgetcontractdetails.ListForBudgetContractDetailsActionService
+import com.athena.mis.qs.actions.report.budgetfinancialsummary.DownloadForBudgetFinancialCsvSummaryActionService
+import com.athena.mis.qs.actions.report.budgetfinancialsummary.DownloadForBudgetFinancialSummaryActionService
+import com.athena.mis.qs.actions.report.budgetfinancialsummary.ListForBudgetFinancialSummaryActionService
+import com.athena.mis.qs.actions.report.budgetwiseqs.DownloadForBudgetWiseQsActionService
+import com.athena.mis.qs.actions.report.budgetwiseqs.DownloadForBudgetWiseQsCsvActionService
+import com.athena.mis.qs.actions.report.budgetwiseqs.ListForBudgetWiseQsActionService
+import com.athena.mis.qs.actions.report.combinedqsmeasurement.DownloadForCombinedQSMActionService
+import com.athena.mis.qs.actions.report.combinedqsmeasurement.DownloadForCombinedQSMCsvActionService
+import com.athena.mis.qs.actions.report.combinedqsmeasurement.ListForCombinedQSMActionService
+import com.athena.mis.qs.actions.report.qsmeasurement.DownloadForQsMeasurementActionService
+import com.athena.mis.qs.actions.report.qsmeasurement.DownloadForQsMeasurementCsvActionService
+import com.athena.mis.qs.actions.report.qsmeasurement.ListForQsMeasurementActionService
+import grails.converters.JSON
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+
+class QsReportController {
+
+    static allowedMethods = [
+            showQsMeasurementRpt: "POST",
+            listQsMeasurementRpt: "POST",
+            showBudgetContractDetails: "POST",
+            listBudgetContractDetails: "POST",
+            showBudgetFinancialSummary: "POST",
+            listBudgetFinancialSummary: "POST",
+            showBudgetWiseQs: "POST",
+            listBudgetWiseQs: "POST",
+            showCombinedQSM: "POST",
+            listCombinedQSM: "POST"
+    ]
+
+    ListForQsMeasurementActionService listForQsMeasurementActionService
+    DownloadForQsMeasurementActionService downloadForQsMeasurementActionService
+    DownloadForQsMeasurementCsvActionService downloadForQsMeasurementCsvActionService
+
+    ListForBudgetContractDetailsActionService listForBudgetContractDetailsActionService
+
+    ListForBudgetFinancialSummaryActionService listForBudgetFinancialSummaryActionService
+
+    ListForBudgetWiseQsActionService listForBudgetWiseQsActionService
+    DownloadForBudgetWiseQsActionService downloadForBudgetWiseQsActionService
+    DownloadForBudgetWiseQsCsvActionService downloadForBudgetWiseQsCsvActionService
+
+    ListForCombinedQSMActionService listForCombinedQSMActionService
+    DownloadForCombinedQSMActionService downloadForCombinedQSMActionService
+    DownloadForCombinedQSMCsvActionService downloadForCombinedQSMCsvActionService
+    DownloadForBudgetContractDetailsActionService downloadForBudgetContractDetailsActionService
+    DownloadForBudgetContractCsvDetailsActionService downloadForBudgetContractCsvDetailsActionService
+    DownloadForBudgetFinancialSummaryActionService downloadForBudgetFinancialSummaryActionService
+    DownloadForBudgetFinancialCsvSummaryActionService downloadForBudgetFinancialCsvSummaryActionService
+
+    def showQsMeasurementRpt() {
+        render(view: '/qs/report/qsMeasurement/show', model: [modelJson: null])
+    }
+
+    def listQsMeasurementRpt() {
+        LinkedHashMap preResult
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        preResult = (LinkedHashMap) listForQsMeasurementActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForQsMeasurementActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        executeResult = (LinkedHashMap) listForQsMeasurementActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForQsMeasurementActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        result = (LinkedHashMap) listForQsMeasurementActionService.buildSuccessResultForUI(executeResult);
+        output = result as JSON
+        render output
+
+    }
+
+    def downloadQsMeasurementRpt() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForQsMeasurementActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForQsMeasurementActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForQsMeasurementActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForQsMeasurementActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+    }
+
+    def downloadQsMeasurementCsvRpt() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForQsMeasurementCsvActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForQsMeasurementCsvActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForQsMeasurementCsvActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForQsMeasurementCsvActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+    }
+
+    def showBudgetContractDetails() {
+        render(view: '/qs/report/budgetContractDetails/show', model: [modelJson: null])
+    }
+
+    def listBudgetContractDetails() {
+        LinkedHashMap preResult
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        preResult = (LinkedHashMap) listForBudgetContractDetailsActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForBudgetContractDetailsActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        executeResult = (LinkedHashMap) listForBudgetContractDetailsActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForBudgetContractDetailsActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        result = (LinkedHashMap) listForBudgetContractDetailsActionService.buildSuccessResultForUI(executeResult);
+        output = result as JSON
+        render output
+
+    }
+
+
+
+    def showBudgetFinancialSummary() {
+        render(view: '/qs/report/budgetFinancialSummary/show', model: [modelJson: null])
+    }
+
+
+    def listBudgetFinancialSummary() {
+        LinkedHashMap preResult
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        preResult = (LinkedHashMap) listForBudgetFinancialSummaryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForBudgetFinancialSummaryActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        executeResult = (LinkedHashMap) listForBudgetFinancialSummaryActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForBudgetFinancialSummaryActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        result = (LinkedHashMap) listForBudgetFinancialSummaryActionService.buildSuccessResultForUI(executeResult);
+        output = result as JSON
+        render output
+
+    }
+
+    def showBudgetWiseQs() {
+        render(view: '/qs/report/budgetWiseQs/show', model: [modelJson: null])
+    }
+
+    def listBudgetWiseQs() {
+        LinkedHashMap preResult
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        preResult = (LinkedHashMap) listForBudgetWiseQsActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForBudgetWiseQsActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        executeResult = (LinkedHashMap) listForBudgetWiseQsActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForBudgetWiseQsActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        result = (LinkedHashMap) listForBudgetWiseQsActionService.buildSuccessResultForUI(executeResult);
+        output = result as JSON
+        render output
+
+    }
+
+    def downloadBudgetWiseQs() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForBudgetWiseQsActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetWiseQsActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForBudgetWiseQsActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetWiseQsActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+
+    def downloadBudgetWiseQsCsv() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForBudgetWiseQsCsvActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetWiseQsCsvActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForBudgetWiseQsCsvActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetWiseQsCsvActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+    }
+
+    def showCombinedQSM() {
+        render(view: '/qs/report/combinedQSM/show', model: [modelJson: null])
+    }
+
+    def listCombinedQSM() {
+        LinkedHashMap preResult
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        preResult = (LinkedHashMap) listForCombinedQSMActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForCombinedQSMActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        executeResult = (LinkedHashMap) listForCombinedQSMActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForCombinedQSMActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        result = (LinkedHashMap) listForCombinedQSMActionService.buildSuccessResultForUI(executeResult);
+        output = result as JSON
+        render output
+
+    }
+
+    def downloadCombinedQSM() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForCombinedQSMActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForCombinedQSMActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForCombinedQSMActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForCombinedQSMActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+
+    def downloadCombinedQSMCsv() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForCombinedQSMCsvActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForCombinedQSMCsvActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForCombinedQSMCsvActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForCombinedQSMCsvActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+
+    def downloadBudgetFinancialSummary() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForBudgetFinancialSummaryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetFinancialSummaryActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForBudgetFinancialSummaryActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetFinancialSummaryActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+
+
+    def downloadBudgetFinancialCsvSummary() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForBudgetFinancialCsvSummaryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetFinancialCsvSummaryActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForBudgetFinancialCsvSummaryActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetFinancialCsvSummaryActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+
+    def downloadBudgetContractDetails() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForBudgetContractDetailsActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetContractDetailsActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForBudgetContractDetailsActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetContractDetailsActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+
+    def downloadBudgetContractCsvDetails() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForBudgetContractCsvDetailsActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetContractCsvDetailsActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForBudgetContractCsvDetailsActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForBudgetContractCsvDetailsActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+}

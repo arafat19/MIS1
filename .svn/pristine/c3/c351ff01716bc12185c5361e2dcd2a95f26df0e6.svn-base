@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download *Open Backlog* Report in PDF Format | |
+*ActionService:* | DownloadOpenBacklogReportActionService | *Auditable:* | No
+*Url:* | /ptReport/downloadOpenBacklogReport | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Backlog* link.
+* [Show Landing Page of "Open Backlog" Report|guide:ShowOpenBacklogReportActionService].
+* Enter valid input.
+* Click "PDF Report" button from tool bar .
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download *Open Backlog* Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "download open backlog report" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Project|guide:GetDropDownPtProjectTagLibActionService] | Drop Down List | Numeric | Required
+[Module|guide:GetDropDownPtModuleTagLibActionService] | Drop Down List | Numeric | All(Default)
+{table}
+
+
+h4. Process:
+* To get *Open Backlog* Report in PDF Format "Click Here":Backlog.pdf
+* Download the report as PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

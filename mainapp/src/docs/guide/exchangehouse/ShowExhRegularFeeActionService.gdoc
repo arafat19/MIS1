@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Regular Fee" | |
+*ActionService:* | ShowExhRegularFeeActionService| *Auditable:* | No
+*Url*: | /exhRegularFee/show | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+This is the landing page of "Regular Fee".
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "Regular Fee" link.
+* Show Landing Page of "Regular Fee".
+
+h4. Pre-condition:
+* User must have the "Show Regular Fee" privilege.
+
+h4. Process:
+* Show Regular Fee Logic in text area.
+* Update Button for update logic.
+* Amount text box to evaluate "Regular fee".
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Regular Fee".
+** Show "Regular Fee" logic in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Evaluate "Regular Fee"|guide:CalculateExhRegularFeeActionService].
+* [Update "Regular Fee" Logic|guide:UpdateExhRegularFeeActionService].
+
+!Exh/Regular_Fee_Show.png!

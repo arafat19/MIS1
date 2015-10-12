@@ -1,0 +1,9 @@
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadNumberedMenu(MENU_ID_DOCUMENT, "#docCategory/showCategories");
+        var containerHeight = $('#contentHolder').height();
+        var contentDesc = $('#frmContentDescription').height();
+        var headingHeight = $('.panel-heading').height();
+        $('#listMySubCategory').css('height', containerHeight - headingHeight - contentDesc - 135);
+    });
+</script>

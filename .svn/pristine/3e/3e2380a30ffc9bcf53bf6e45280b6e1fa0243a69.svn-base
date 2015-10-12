@@ -1,0 +1,71 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate "Canceled Task Details" Report in HTML Format | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsReport/listForViewCancelTask | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Canceled Task Details" link.
+* [Show Landing Page of "Canceled Task Details" Report|guide:showForViewCancelTask].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Canceled Task Details" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List For View Cancel Task" privilege.
+
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* Show list of "Canceled Task Details" information.
+* Following columns should show in grid view:
+** Serial
+** Ref No
+** Mapping Bank, Branch & District Info.
+** Process Type
+** Instrument Type
+** Payment Method
+** Amount (BDT)
+** Beneficiary Name
+** Revision Note
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Canceled Task Details" information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+
+!projecttrack/list-report-open-backlog.png!

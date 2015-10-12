@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *District* | |
+*ActionService:* | UpdateDistrictActionService | *Auditable:* | No
+*Url:* | /district/update | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *District* link.
+* [Show Landing Page of "District"|guide:ShowDistrictActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "District" in Edit Mode|guide:SelectDistrictActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *District*.
+
+h4. Pre-condition:
+* User must have "Update District" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Name | Text Box | Alpha Numeric | Required & Unique
+{table}
+
+* Match expected version before updating a *District*.
+
+h4. Process:
+* Update selected *District*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *District* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,45 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "View Notes" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsTask/showForViewNotes | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+This is the landing page of "View Notes" list with details in grid view.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Help Desk" sub menu from left menu.
+* Click "View Notes" link.
+* Show Landing Page of "View Notes".
+
+h4. Pre-condition:
+* User must have "Show for view notes" privilege.
+
+h4. Process:
+* [Get List of all "Notes" from server|guide:ListViewNotesOfRmsTaskActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show all "Notes" in landing page.
+** Show grid view at landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show Landing Page of "Task Details"|guide:showTaskDetailsWithNote].

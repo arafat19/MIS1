@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update "Project Budget Scope" | |
+*ActionService:* | UpdateProjectBudgetScopeActionService | *Auditable:* | No
+*Url:* | /projectBudgetScope/update | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click "Project Scope Mapping" link.
+* [Show Landing Page of "Project Scope Mapping"|guide:_showProjectBudgetScope].
+* Select a project. [Populate Project List|application]
+* Click "Search" button.
+* [Search *Project* wise "Budget Scope"|guide:SelectProjectBudgetScopeActionService].
+* User must enter valid input.
+* Click "Save" button.
+* Update "Project Budget Scope".
+
+h4. Pre-condition:
+* User must have "Update Project Budget Scope" privilege.
+* Match expected version before updating "Project Budget Scope".
+
+h4. Process:
+* Save selected projects "Budget Scope".
+
+h4. Post-condition:
+
+* *Success:*
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+

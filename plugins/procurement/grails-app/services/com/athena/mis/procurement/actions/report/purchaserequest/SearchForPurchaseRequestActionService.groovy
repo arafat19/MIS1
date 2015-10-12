@@ -1,0 +1,274 @@
+package com.athena.mis.procurement.actions.report.purchaserequest
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.Project
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.application.utility.AppUserEntityTypeCacheUtility
+import com.athena.mis.application.utility.ProjectCacheUtility
+import com.athena.mis.application.utility.UnitCacheUtility
+import com.athena.mis.integration.budget.BudgetPluginConnector
+import com.athena.mis.procurement.entity.ProcPurchaseRequest
+import com.athena.mis.procurement.entity.ProcPurchaseRequestDetails
+import com.athena.mis.procurement.utility.ProcSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import grails.converters.JSON
+import groovy.sql.GroovyRowResult
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ * Search Purchase Request for report
+ * For details go through Use-Case doc named 'SearchForPurchaseRequestActionService'
+ */
+class SearchForPurchaseRequestActionService extends BaseService implements ActionIntf {
+
+    BudgetPluginConnector budgetImplService
+    @Autowired
+    ProcSessionUtil procSessionUtil
+    @Autowired
+    AppUserEntityTypeCacheUtility appUserEntityTypeCacheUtility
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+    @Autowired
+    ProjectCacheUtility projectCacheUtility
+    @Autowired
+    UnitCacheUtility unitCacheUtility
+
+    private static final String PURCHASE_REQUEST_NOT_FOUND = "Purchase request not found."
+    private static final String FAILURE_MSG = "Fail to generate purchase request report."
+    private static final String PURCHASE_REQUEST_MAP = "purchaseRequestMap"
+    private static final String LST_ITEMS = "lstItems"
+    private static final String PURCHASE_REQUEST_OBJ = "purchaseRequest"
+    private static final String USER_PROJECT_NOT_MAPPED = "User is not associated with any project"
+    private static final String USER_HAS_NOT_ACCESS = "User is not associated with this project"
+
+    private final Logger log = Logger.getLogger(getClass())
+    /**
+     * 1. pull project ids related to logged user
+     * 2. pull purchase request object
+     * 3. check accessibility of project
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return - map containing purchase request object
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+
+            if (!params.purchaseRequestId) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            long purchaseRequestId = Long.parseLong(params.purchaseRequestId.toString())
+
+            List<Long> loggedInUserProjectIds = (List<Long>) procSessionUtil.appSessionUtil.getUserProjectIds()
+            if (loggedInUserProjectIds.size() <= 0) {
+                result.put(Tools.MESSAGE, USER_PROJECT_NOT_MAPPED)
+                return result
+            }
+
+            ProcPurchaseRequest purchaseRequest = ProcPurchaseRequest.findByIdAndCompanyId(purchaseRequestId, procSessionUtil.appSessionUtil.getCompanyId(), [readOnly: true])
+            if (!purchaseRequest) {
+                result.put(Tools.MESSAGE, PURCHASE_REQUEST_NOT_FOUND)
+                return result
+            }
+
+            boolean isAccessible = projectCacheUtility.isAccessible(purchaseRequest.projectId)
+            if (!isAccessible) {
+                result.put(Tools.MESSAGE, USER_HAS_NOT_ACCESS)
+                return result
+            }
+
+            result.put(PURCHASE_REQUEST_OBJ, purchaseRequest)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+    /**
+     * 1. receive purchase request object from pre execute method
+     * 2. pull item list
+     * 3. built purchaseRequest object
+     * @param parameters - N/A
+     * @param obj - object from pre execute method
+     * @return - newly built purchase request object, item list
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj
+            ProcPurchaseRequest purchaseRequest = (ProcPurchaseRequest) preResult.get(PURCHASE_REQUEST_OBJ)
+            LinkedHashMap purchaseRequestMap = buildPurchaseRequestMap(purchaseRequest)
+            List<GroovyRowResult> lstItemsPRD = listItemByPurchaseRequest(purchaseRequest.id)
+            List lstItems = buildItemList(lstItemsPRD)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(LST_ITEMS, lstItems  as JSON)
+            result.put(PURCHASE_REQUEST_MAP, purchaseRequestMap)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+    /**
+     * do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+    /**
+     * @param obj - object from execute method
+     * @return - purchase request map, item list
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap executeResult = (LinkedHashMap) obj
+
+            result.put(PURCHASE_REQUEST_MAP, executeResult.get(PURCHASE_REQUEST_MAP))
+            result.put(LST_ITEMS, executeResult.get(LST_ITEMS))
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            LinkedHashMap executeResult = (LinkedHashMap) obj
+
+            result.put(Tools.IS_ERROR, executeResult.get(Tools.IS_ERROR))
+            if (executeResult.message) {
+                result.put(Tools.MESSAGE, executeResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, FAILURE_MSG)
+            }
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+    /**
+     * Get item list related to specific pr
+     * @param lstPurchaseRequestDetails - indent details item list
+     * @return  -item list
+     */
+    private List buildItemList(List<GroovyRowResult> lstPurchaseRequestDetails) {
+        List lstItems = []
+        Map prDetails
+        for (int i = 0; i < lstPurchaseRequestDetails.size(); i++) {
+            GroovyRowResult eachInstance = lstPurchaseRequestDetails[i]
+            prDetails = [
+                    sl: i + 1,
+                    itemType: eachInstance.item_type_name,
+                    itemName: eachInstance.name,
+                    itemCode: eachInstance.code,
+                    quantity: eachInstance.quantity,
+                    rate: eachInstance.rate,
+                    totalCost: eachInstance.total_cost,
+                    rateStr: eachInstance.rate_str,
+                    totalCostStr: eachInstance.total_cost_str
+            ]
+            lstItems << prDetails
+        }
+        return lstItems
+    }
+    /**
+     * 1. pull budget & budget type object
+     * 2. pull unit from system entity
+     * 3. pull createdBy, approvedByDirector, approvedByProjectDirector from appUser
+     * 4. pull supplier object
+     * 5. pull entity content for Director & Project Director
+     * @param purchaseRequest - purchase request object
+     * @return - newly built purchase request map
+     */
+    private LinkedHashMap buildPurchaseRequestMap(ProcPurchaseRequest purchaseRequest) {
+        Project project = (Project) projectCacheUtility.read(purchaseRequest.projectId)
+        AppUser createdBy = (AppUser) appUserCacheUtility.read(purchaseRequest.createdBy)
+        AppUser approvedByDirector = (AppUser) appUserCacheUtility.read(purchaseRequest.approvedByDirectorId)
+        AppUser approvedByProjectDirector = (AppUser) appUserCacheUtility.read(purchaseRequest.approvedByProjectDirectorId)
+
+        LinkedHashMap purchaseRequestsMap = [
+                purchaseRequestId: purchaseRequest.id,
+                numberOfItems: purchaseRequest.itemCount,
+                createdOn: DateUtility.getDateFormatAsString(purchaseRequest.createdOn), // po date
+                printDate: DateUtility.getDateFormatAsString(new Date()),
+                createdBy: createdBy.username,
+                projectName: project.name,
+                projectDescription: project.description ? project.description : Tools.EMPTY_SPACE,
+                comments: purchaseRequest.comments,
+                approvedByDirector: approvedByDirector ? approvedByDirector.username : Tools.EMPTY_SPACE,
+                approvedByProjectDirector: approvedByProjectDirector ? approvedByProjectDirector.username : Tools.EMPTY_SPACE,
+                grandTotalItemCosts: grandTotalItemsCost(purchaseRequest.id)
+        ]
+        return purchaseRequestsMap
+    }
+
+    //@todo:model adjust using PurchaseRequestDetailsModel.listItemByPurchaseRequest(x)
+    // used to show material details for PR report
+    private List<GroovyRowResult> listItemByPurchaseRequest(long purchaseRequestId) {
+        String queryStr = """
+        SELECT item.name,item.code, to_char(quantity,'${Tools.DB_QUANTITY_FORMAT}') ||' '||item.unit as quantity,
+        to_char(rate,'${Tools.DB_CURRENCY_FORMAT}') AS rate_str,
+        (to_char(rate*quantity,'${Tools.DB_CURRENCY_FORMAT}')) AS total_cost_str, item_type.name AS item_type_name,
+        rate, (rate*quantity) AS total_cost
+        FROM proc_purchase_request_details purchase_request_details
+        LEFT JOIN item ON item.id= purchase_request_details.item_id
+        LEFT JOIN item_type ON item_type.id= item.item_type_id
+        WHERE purchase_request_id=:purchaseRequestId
+        ORDER BY item_type.name, item.name
+        """
+        Map queryParams = [
+                purchaseRequestId: purchaseRequestId
+        ]
+        List<GroovyRowResult> lstPurchaseRequestDetails = executeSelectSql(queryStr, queryParams)
+        return lstPurchaseRequestDetails
+    }
+
+    private static final String GRAND_TOTAL_COST_QUERY = """
+        SELECT SUM((rate*quantity))  AS grand_total_cost
+        FROM proc_purchase_request_details  purchase_request_details
+        LEFT JOIN item ON item.id = purchase_request_details.item_id
+        LEFT JOIN item_type ON item_type.id= item.item_type_id
+        WHERE purchase_request_id= :purchaseRequestId;
+        """
+    private int grandTotalItemsCost(long purchaseRequestId) {
+        Map queryParams = [
+                purchaseRequestId: purchaseRequestId
+        ]
+        List countResults = executeSelectSql(GRAND_TOTAL_COST_QUERY, queryParams)
+        int grandTotalCost = countResults[0].grand_total_cost
+        return grandTotalCost
+    }
+}

@@ -1,0 +1,69 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Update "Task" | |
+ *ActionService:* | UpdateRmsTaskActionService | *Auditable:* | No
+ *Url:* | /rmsTask/update | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali| 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Exchange House User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Create* link.
+* [Show Landing Page of Task|guide:ShowRmsTaskActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Task in Edit Mode|guide:SelectRmsTaskActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Task*.
+
+h4. Pre-condition:
+* User must have "Update Task" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+[Exchange House|guide:PopulateExchangeHouseList] | Drop Down List | Numeric | Required
+Ref No. | Text Box | Text | Required & Unique
+Date | Text Box | Text | Required
+Beneficiary Name | Text Box | Text | Required
+Amount | Text Box | Text | Required
+Bank | Text Box | Text | Required
+Bank Branch | Text Box | Text | Required
+District | Text Box | Text | Required
+[Local Currency|guide:PopulateLocalCurrencyList] | Drop Down List | Numeric | Optional
+Amount(Local)| Text Box | Text | Required
+[Payment Method|guide:PopulatePaymentMethod] | Drop Down List | Numeric | Required
+Beneficiary Address | Text Box | Text | Required
+Beneficiary Phone | Text Box | Text | Optional
+Sender Name | Text Box | Text | Optional
+Sender Mobile | Text Box | Text | Optional
+{table}
+
+* Match expected version before updating a *Task*.
+
+h4. Process:
+* Update selected *Task*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Task* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

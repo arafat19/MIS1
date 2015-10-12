@@ -1,0 +1,127 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.integration.exchangehouse.ExchangeHousePluginConnector
+import com.athena.mis.sarb.service.SarbTaskModelService
+import com.athena.mis.sarb.utility.SarbSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import groovy.sql.GroovyRowResult
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+class ListSarbTaskForRetrieveResponseActionService  extends BaseService implements ActionIntf {
+
+    @Autowired
+    SarbSessionUtil sarbSessionUtil
+    @Autowired
+    ExchangeHousePluginConnector exchangeHouseImplService
+    SarbTaskModelService sarbTaskModelService
+
+    private static final String LOAD_FAILED = "Failed to load task lists."
+    private static final String LST_TASK = "lstTask"
+    private final Logger log = Logger.getLogger(getClass())
+
+    /**
+     * Do nothing for execute pre condition
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        return null
+    }
+    /**
+     * Do nothing for execute post condition
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Get lstSarbTaskModel list for grid
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for buildSuccessResultForUI
+     * map contains isError(true/false) depending on method success
+     */
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            initPager(params)
+            long companyId = sarbSessionUtil.appSessionUtil.getCompanyId()
+            List<GroovyRowResult> lstSarbTaskModel = sarbTaskModelService.listForRetrieveResponse(companyId, this)
+            int count = sarbTaskModelService.countRetrieveResponse(companyId)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(LST_TASK, lstSarbTaskModel)
+            result.put(Tools.COUNT, count)
+            return result
+        }
+        catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, LOAD_FAILED)
+            return result
+        }
+    }
+
+    /**
+     * Wrap lstSarbTask list for grid
+     * @param obj -map returned from execute method
+     * @return -a map containing all objects necessary for grid view
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try{
+            Map executeResult = (Map) obj
+            List<GroovyRowResult> lstSarbTask = (List<GroovyRowResult>) executeResult.get(LST_TASK)
+            int count = (int) executeResult.get(Tools.COUNT)
+            List wrappedSarbTaskModel = wrapListSarbTaskModel(lstSarbTask, start)
+            Map output = [page: pageNumber, total: count, rows: wrappedSarbTaskModel]
+            return output
+        }
+        catch(Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, LOAD_FAILED)
+            return result
+        }
+    }
+    /**
+     * Do nothing
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * Wrap list of lstSarbTaskModel in grid entity
+     * @param lstSarbTaskModel -list of sarbTaskModel object(s)
+     * @param start -starting index of the page
+     * @return -list of wrapped obj
+     */
+    private List wrapListSarbTaskModel(List<GroovyRowResult> lstSarbTaskModel, int start) {
+        List SarbTaskModelList = []
+        int counter = start + 1
+        for (int i = 0; i < lstSarbTaskModel.size(); i++) {
+            GroovyRowResult eachRow = lstSarbTaskModel[i]
+            GridEntity obj = new GridEntity()
+            obj.id = eachRow.id
+            obj.cell = [
+                    counter,
+                    eachRow.id,
+                    eachRow.ref_no,
+                    eachRow.amount_in_foreign_currency,
+                    eachRow.amount_in_local_currency,
+                    eachRow.customer_name,
+                    eachRow.beneficiary_name,
+                    DateUtility.getLongDateForUI(eachRow.created_on),
+                    eachRow.original_file_name
+            ]
+            SarbTaskModelList << obj
+            counter++
+        }
+        return SarbTaskModelList
+    }
+}

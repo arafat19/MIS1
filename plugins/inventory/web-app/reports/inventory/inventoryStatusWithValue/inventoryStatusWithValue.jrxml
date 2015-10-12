@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="inventoryStatusWithValue" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2e6931d1-fda3-4ace-a4ac-20b42ddeb5de">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="transactionTypeConsumption" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="projectIds" class="java.util.Collection"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="transactionTypeIn" class="java.lang.Long"/>
+	<parameter name="entityTypeSupplier" class="java.lang.Long"/>
+	<parameter name="transactionTypeProduction" class="java.lang.Long"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<parameter name="itemCategoryFixedAssetId" class="java.lang.Long"/>
+	<parameter name="transactionEntityTypeInventory" class="java.lang.Long"/>
+	<parameter name="inventoryIds" class="java.util.Collection"/>
+	<parameter name="itemTypeIds" class="java.util.Collection"/>
+	<parameter name="inventoryTypeName" class="java.lang.String"/>
+	<parameter name="inventoryName" class="java.lang.String"/>
+	<parameter name="itemTypeName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT iitd.item_id AS item_id,item.name AS item_name,
+
+COALESCE(received_supplier.received_amount,0)  AS received_amount,
+to_char(COALESCE(received_supplier.received_amount,0), $P{dbCurrencyFormat})  AS str_received_amount,
+
+COALESCE(budget_consumption.total_budget_consume_amount,0) AS total_budget_consume_amount,
+to_char(COALESCE(budget_consumption.total_budget_consume_amount,0), $P{dbCurrencyFormat}) AS str_total_budget_consume_amount,
+
+COALESCE(prod_consumption.total_prod_consume_amount,0) AS total_prod_consume_amount,
+to_char(COALESCE(prod_consumption.total_prod_consume_amount,0), $P{dbCurrencyFormat}) AS str_total_prod_consume_amount,
+
+COALESCE(production.total_production_amount,0) AS total_production_amount,
+to_char(COALESCE(production.total_production_amount,0), $P{dbCurrencyFormat}) AS str_total_production_amount,
+
+(
+COALESCE(received_supplier.received_amount,0)+
+COALESCE(received_supplier_prev.received_amount_prev,0)+
+COALESCE(production.total_production_amount,0)+
+COALESCE(production_prev.total_production_amount_prev,0)-
+COALESCE(budget_consumption.total_budget_consume_amount,0)-
+COALESCE(budget_consumption_prev.total_budget_consume_amount_prev,0)-
+COALESCE(prod_consumption.total_prod_consume_amount,0)-
+COALESCE(prod_consumption_prev.total_prod_consume_amount_prev,0)
+) balance,
+
+(
+COALESCE(received_supplier_prev.received_amount_prev,0)+
+COALESCE(production_prev.total_production_amount_prev,0)-
+COALESCE(budget_consumption_prev.total_budget_consume_amount_prev,0)-
+COALESCE(prod_consumption_prev.total_prod_consume_amount_prev,0)
+) balance_prev,
+
+to_char(
+COALESCE(received_supplier.received_amount,0)+
+COALESCE(received_supplier_prev.received_amount_prev,0)+
+COALESCE(production.total_production_amount,0)+
+COALESCE(production_prev.total_production_amount_prev,0)-
+COALESCE(budget_consumption.total_budget_consume_amount,0)-
+COALESCE(budget_consumption_prev.total_budget_consume_amount_prev,0)-
+COALESCE(prod_consumption.total_prod_consume_amount,0)-
+COALESCE(prod_consumption_prev.total_prod_consume_amount_prev,0)
+,$P{dbCurrencyFormat}) str_balance,
+
+to_char(
+COALESCE(received_supplier_prev.received_amount_prev,0)+
+COALESCE(production_prev.total_production_amount_prev,0)-
+COALESCE(budget_consumption_prev.total_budget_consume_amount_prev,0)-
+COALESCE(prod_consumption_prev.total_prod_consume_amount_prev,0)
+,$P{dbCurrencyFormat}) str_balance_prev
+
+            FROM vw_inv_inventory_transaction_with_details iitd
+
+	  FULL OUTER JOIN
+            (
+              SELECT item_id,
+                     SUM(actual_quantity*rate) AS received_amount
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeIn} AND
+	          transaction_entity_type_id =$P{entityTypeSupplier} AND
+                    is_current=true AND
+                    approved_by > 0 AND
+	         ($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date BETWEEN $P{fromDate} AND $P{toDate}
+              GROUP BY item_id
+            ) received_supplier
+            ON received_supplier.item_id = iitd.item_id
+
+	  FULL OUTER JOIN
+            (
+              SELECT item_id,
+                     SUM(actual_quantity*rate) AS received_amount_prev
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeIn} AND
+	          transaction_entity_type_id =$P{entityTypeSupplier} AND
+                    is_current=true AND
+		approved_by > 0 AND
+	         ($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date < $P{fromDate}
+              GROUP BY item_id
+            ) received_supplier_prev
+            ON received_supplier_prev.item_id = iitd.item_id
+
+            FULL OUTER JOIN
+            (
+              SELECT item_id,
+                     SUM(actual_quantity*rate) AS total_budget_consume_amount
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeConsumption} AND
+                    is_current=true AND
+		approved_by > 0 AND
+                    budget_id > 0 AND
+		($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date BETWEEN $P{fromDate} AND $P{toDate}
+              GROUP BY item_id
+            ) budget_consumption
+            ON budget_consumption.item_id = iitd.item_id
+
+	 FULL OUTER JOIN
+            (
+              SELECT item_id,
+                     SUM(actual_quantity*rate) AS total_budget_consume_amount_prev
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeConsumption} AND
+                    is_current=true AND
+                    budget_id > 0 AND
+		approved_by > 0 AND
+		($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date < $P{fromDate}
+              GROUP BY item_id
+            ) budget_consumption_prev
+            ON budget_consumption_prev.item_id = iitd.item_id
+
+            FULL OUTER JOIN
+            (
+              SELECT item_id,
+                     SUM(actual_quantity*rate) AS total_prod_consume_amount
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeConsumption} AND
+                    is_current=true AND
+                    inv_production_line_item_id > 0 AND
+		approved_by > 0 AND
+		($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date BETWEEN $P{fromDate} AND $P{toDate}
+              GROUP BY item_id
+            ) prod_consumption
+            ON prod_consumption.item_id = iitd.item_id
+
+	 FULL OUTER JOIN
+            (
+              SELECT item_id,
+                     SUM(actual_quantity*rate) AS total_prod_consume_amount_prev
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeConsumption} AND
+                    is_current=true AND
+                    inv_production_line_item_id > 0 AND
+		approved_by > 0 AND
+		($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date < $P{fromDate}
+              GROUP BY item_id
+            ) prod_consumption_prev
+            ON prod_consumption_prev.item_id = iitd.item_id
+
+	 FULL OUTER JOIN
+            (
+             SELECT item_id,
+                     SUM(actual_quantity*rate) AS total_production_amount
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeProduction} AND
+                    is_current=true AND
+		approved_by > 0 AND
+		($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date BETWEEN $P{fromDate} AND $P{toDate}
+              GROUP BY item_id
+            ) production
+            ON production.item_id = iitd.item_id
+
+	 FULL OUTER JOIN
+            (
+             SELECT item_id,
+                     SUM(actual_quantity*rate) AS total_production_amount_prev
+              FROM vw_inv_inventory_transaction_with_details
+	   LEFT JOIN item ON item.id = vw_inv_inventory_transaction_with_details.item_id
+              WHERE ($X{IN,project_id, projectIds}) AND
+                    transaction_type_id = $P{transactionTypeProduction} AND
+                    is_current=true AND
+		approved_by > 0 AND
+		($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                    transaction_date < $P{fromDate}
+              GROUP BY item_id
+            ) production_prev
+            ON production_prev.item_id = iitd.item_id
+
+            LEFT JOIN item ON item.id = iitd.item_id
+            WHERE item.category_id <> $P{itemCategoryFixedAssetId} AND iitd.is_current = true AND
+	      ($X{IN,item.item_type_id,itemTypeIds}) AND
+	         ($X{IN,inventory_id,inventoryIds}) AND
+                ($X{IN,iitd.project_id, projectIds})
+AND iitd.transaction_date BETWEEN $P{fromDate} AND $P{toDate} AND
+iitd.approved_by > 0
+                  AND iitd.transaction_entity_type_id NOT IN ($P{transactionEntityTypeInventory})
+            GROUP BY iitd.item_id, item.name, item.unit, received_supplier.received_amount, budget_consumption.total_budget_consume_amount,
+prod_consumption.total_prod_consume_amount,
+production.total_production_amount,
+received_supplier_prev.received_amount_prev,
+budget_consumption_prev.total_budget_consume_amount_prev,
+prod_consumption_prev.total_prod_consume_amount_prev,
+production_prev.total_production_amount_prev
+            ORDER BY item.name]]>
+	</queryString>
+	<field name="item_id" class="java.lang.Long"/>
+	<field name="item_name" class="java.lang.String"/>
+	<field name="received_amount" class="java.math.BigDecimal"/>
+	<field name="str_received_amount" class="java.lang.String"/>
+	<field name="total_budget_consume_amount" class="java.math.BigDecimal"/>
+	<field name="str_total_budget_consume_amount" class="java.lang.String"/>
+	<field name="total_prod_consume_amount" class="java.math.BigDecimal"/>
+	<field name="str_total_prod_consume_amount" class="java.lang.String"/>
+	<field name="total_production_amount" class="java.math.BigDecimal"/>
+	<field name="str_total_production_amount" class="java.lang.String"/>
+	<field name="balance" class="java.math.BigDecimal"/>
+	<field name="balance_prev" class="java.math.BigDecimal"/>
+	<field name="str_balance" class="java.lang.String"/>
+	<field name="str_balance_prev" class="java.lang.String"/>
+	<variable name="sum_of_budg_cunsume_amount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_budget_consume_amount}]]></variableExpression>
+	</variable>
+	<variable name="sum_of_stock_amount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{balance}]]></variableExpression>
+	</variable>
+	<variable name="sum_of_received_amount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{received_amount}]]></variableExpression>
+	</variable>
+	<variable name="sum_of_prod_consume_amount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_prod_consume_amount}]]></variableExpression>
+	</variable>
+	<variable name="sum_of_production_amount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_production_amount}]]></variableExpression>
+	</variable>
+	<variable name="sum_of_prev_balance_amount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{balance_prev}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="143" splitType="Stretch">
+			<image>
+				<reportElement uuid="d2026318-6381-4f18-9ebf-5c40d0d38568" x="574" y="0" width="228" height="30"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="0" y="29" width="60" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="65402bf0-d51c-413d-a134-d80d14477f04" positionType="Float" x="65" y="29" width="509" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="46232ab8-3a3e-4444-90f8-8cb0a681667a" x="0" y="9" width="239" height="20"/>
+				<box bottomPadding="2">
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="11" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[INVENTORY STATUS WITH VALUE REPORT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="0" y="105" width="60" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="60" y="29" width="5" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="60" y="105" width="5" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="dac28ff9-6ec1-4228-bdca-ba23374ca3fc" x="65" y="105" width="509" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="60" y="124" width="5" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="0" y="124" width="60" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="42f46056-9aba-4e08-a182-4cd1a95e278c" x="65" y="124" width="509" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="0" y="48" width="60" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Inventory Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="0" y="67" width="60" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Inventory]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="0" y="86" width="60" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="60" y="48" width="5" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="60" y="67" width="5" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8c95d0f8-b301-442d-a421-3e2aa4c90e7a" positionType="Float" x="60" y="86" width="5" height="19"/>
+				<box topPadding="2" bottomPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="412a32c2-8a8a-48e2-b5f8-d7d13c655f51" x="65" y="48" width="509" height="19"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{inventoryTypeName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="99883fa3-e310-4ae5-8f6b-efb6109ee9b7" x="65" y="67" width="509" height="19"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{inventoryName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="760435f5-118f-4507-885f-0316c7b170d5" x="65" y="86" width="509" height="19"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{itemTypeName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="25">
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="0" y="0" width="148" height="25"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="475" y="0" width="109" height="25"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Consumed(Budget) Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="693" y="0" width="109" height="25"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Balance Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="257" y="0" width="109" height="25"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Received(Supplier)Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="584" y="0" width="109" height="25"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Consumed(Prod) Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="366" y="0" width="109" height="25"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Production Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bcfa968e-fce2-4720-be69-efdbfc87537d" x="148" y="0" width="109" height="25"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Previous balance]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" stretchType="RelativeToTallestObject" x="0" y="0" width="148" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="54353d58-6025-454a-b3dc-909129ce94d9" stretchType="RelativeToTallestObject" x="475" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_total_budget_consume_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="54353d58-6025-454a-b3dc-909129ce94d9" stretchType="RelativeToTallestObject" x="693" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_balance}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4b670844-dfd7-4d9c-8432-da3a1a672290" stretchType="RelativeToTallestObject" x="257" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_received_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="54353d58-6025-454a-b3dc-909129ce94d9" stretchType="RelativeToTallestObject" x="584" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_total_prod_consume_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="54353d58-6025-454a-b3dc-909129ce94d9" stretchType="RelativeToTallestObject" x="366" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_total_production_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="de3ada72-6663-43d5-b99c-a7a9db157dde" stretchType="RelativeToTallestObject" x="148" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_balance_prev}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="16" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="f5dcf386-0956-44cd-a400-e8f6367ceae9" x="247" y="1" width="555" height="15"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="db61d4df-7cfb-4207-a24b-f4b42dc69a2d" x="317" y="2" width="183" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="9fabb965-92b6-4725-a328-ddaf232ef416" x="0" y="0" width="100" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="18">
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="0" y="0" width="148" height="18"/>
+				<box leftPadding="2" rightPadding="2">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="e2106c1d-de88-4808-975c-330a2225abf9" stretchType="RelativeToTallestObject" x="257" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_of_received_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="d7ba53a0-0f45-4a29-b997-5b2b39d090aa" stretchType="RelativeToTallestObject" x="366" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_of_production_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="d9f48c76-c07d-4502-814b-aabb2dcbb3e6" stretchType="RelativeToTallestObject" x="693" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_of_stock_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="22c9768f-2b12-45e7-8889-07244c2afce8" stretchType="RelativeToTallestObject" x="584" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_of_prod_consume_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="ff17e231-527a-4598-9b59-618c34038c09" stretchType="RelativeToTallestObject" x="475" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_of_budg_cunsume_amount}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="e2106c1d-de88-4808-975c-330a2225abf9" stretchType="RelativeToTallestObject" x="148" y="0" width="109" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sum_of_prev_balance_amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

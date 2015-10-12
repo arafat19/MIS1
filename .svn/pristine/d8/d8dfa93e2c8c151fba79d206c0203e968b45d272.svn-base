@@ -1,0 +1,156 @@
+<script type="text/javascript">
+    var invoiceNo, modelJsonForInvoice;
+
+    jQuery(function ($) {
+        modelJsonForInvoice = ${modelJson};
+
+        $('#printInvoiceReport').click(function () {
+            printInvoice();
+            return false;
+        });
+
+        onLoadInvoice();
+    });
+
+    function printInvoice() {
+        var invoiceNo = $('#hidInvoiceNo').val();
+        if (executePreConditionToGetInvoice(invoiceNo) == false) {
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?invoiceNo=" + invoiceNo;
+        if (confirm('Do you want to download the PDF now?')) {
+            var url = "${createLink(controller:'invReport', action: 'downloadInvoice')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function onLoadInvoice() {
+        initializeForm($('#searchForm'),getInvoice);
+
+        try {
+            // Model will be supplied to grid on load _list.gsp
+            $('.download_icon_set').hide();
+            if (modelJsonForInvoice.invoiceMap) {
+                populateInvoice(modelJsonForInvoice.invoiceMap);
+            }
+        } catch (e) {
+            showError(e.message);
+            $('.download_icon_set').hide();
+        }
+
+        // update page title
+        $(document).attr('title', "MIS - Chalan");
+        loadNumberedMenu(MENU_ID_INVENTORY, "#invReport/showInvoice");
+
+    }
+
+    function executePreConditionToGetInvoice() {
+        if (!validateForm($('#searchForm'))) {
+            return false;
+        }
+        return true;
+    }
+
+    function getInvoice() {
+
+        var invoiceNo = $.trim($('#invoiceNo').val());
+        if (executePreConditionToGetInvoice() == false) {
+            resetInvoice();
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        $.ajax({
+            url:"${createLink(controller:'invReport', action: 'searchInvoice')}?invoiceNo=" + invoiceNo,
+            success:executePostConditionForInvoice,
+            complete:onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType:'json',
+            type:'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForInvoice(data) {
+
+        if (data.isError) {
+            showError(data.message);
+            resetInvoice();
+            return;
+        }
+        populateInvoice(data.invoiceMap);
+
+        return false;
+
+    }
+
+    function resetInvoice() {
+        $('span.lblInvoiceNo').text('');
+        $('#hidInvoiceNo').val('');
+        $('#invoiceNo').val('');
+        $('span.inventoryName').text('');
+        $('span.transactionType').text('');
+        $('span.transactionDate').text('');
+        $('span.entityName').text('');
+        $('span.itemName').text('');
+        $('span.itemQuantity').text('');
+        $('span.itemRate').text('');
+        $('span.totalCost').text('');
+        $('span.vehicleName').text('');
+        $('span.vehicleNo').text('');
+        $('span.referenceChalan').text('');
+        $('span.stackMeasurement').text('');
+        $('span.budgetItem').text('');
+        $('span.approvedBy').text('');
+        $('span.approvedOn').text('');
+        $('span.adjustmentFrom').text('');
+        $('span.currentAdjustment').text('');
+        $('span.comments').text('');
+
+        $('#inventoryInvoice').hide();
+        $('.download_icon_set').hide();
+    }
+
+    function populateInvoice(data) {
+        resetInvoice();
+        $('span.lblInvoiceNo').text(data.invoiceNo);
+        $('#hidInvoiceNo').val(data.invoiceNo);
+        $('#invoiceNo').val(data.invoiceNo);
+        $('span.inventoryName').text(data.inventoryName);
+        $('span.transactionType').text(data.transactionType);
+        $('span.transactionDate').text(data.transactionDate);
+        $('span.entityName').text(data.entityName);
+        $('span.lblEntityName').text(data.lblEntityName);
+        $('span.itemName').text(data.itemName);
+        $('span.itemQuantity').text(data.itemQuantity);
+        $('span.itemRate').text(data.itemRate);
+        $('span.totalCost').text(data.totalCost);
+        $('span.vehicleName').text(data.vehicleName);
+        $('span.vehicleNo').text(data.vehicleNo);
+        $('span.referenceChalan').text(data.referenceChalan);
+        $('span.stackMeasurement').text(data.stackMeasurement);
+        $('span.budgetItem').text(data.budgetItem);
+        $('span.approvedBy').text(data.approvedBy);
+        $('span.approvedOn').text(data.approvedOn);
+        $('span.adjustmentFrom').text(data.adjustmentFrom);
+        $('span.currentAdjustment').text(data.currentAdjustment);
+        $('span.comments').text(data.comments);
+
+        if(!data.isCurrent){
+            $('span.currentAdjustment').css({'font-weight': 'bold', 'color': 'brown'})   ;
+        } else{
+            $('span.currentAdjustment').css({'font-weight': '', 'color': ''})   ;
+        }
+
+        $('.download_icon_set').show();
+        $('#inventoryInvoice').show();
+        return false;
+    }
+
+    // update page title
+    $('span.headingText').html('Chalan');
+    $('#icon_box').attr('class', 'pre-icon-header invoice');
+    $(document).attr('title', "MIS - Chalan");
+</script>

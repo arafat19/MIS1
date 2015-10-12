@@ -1,0 +1,39 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show landing page of "Transaction Day" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* |/rmsTransactionDay/show | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 22th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Transaction Day" grid view on top to show "Transaction Day" and "Unresolved Task" in grid at bottom.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click "Transaction Day" link from left menu.
+* Show landing page of "Transaction Day"
+
+h4. Pre-condition:
+* User must have "Show transaction day" privilege.
+
+h4. Process:
+* Get list of "Transaction day" & "Unresolved Task" from server in both grid view.
+
+h4. Post-condition:
+
+* *Success:*
+** Show list of "Transaction day" & "Unresolved Task" from server in both grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

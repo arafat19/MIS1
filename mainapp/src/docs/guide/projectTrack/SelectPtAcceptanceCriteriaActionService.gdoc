@@ -1,0 +1,51 @@
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Open *Acceptance Criteria* in Edit Mode | |
+ *ActionService:* | SelectPtAcceptanceCriteriaActionService| *Auditable:* | No
+ *Url*: | /ptAcceptanceCriteria/select | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Backlog* link.
+* [Show Landing Page of "Backlog"|guide:ShowPtBacklogActionService].
+* Select a line-item from grid view.
+* Click "Acceptance Criteria" button.
+* [Show Landing Page of "Acceptance Criteria"|guide:ShowPtAcceptanceCriteriaActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* Open *Acceptance Criteria* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select all acceptance criteria" privilege.
+
+h4. Process:
+Get selected *Acceptance Criteria* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Acceptance Criteria* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+
+* [Update "Acceptance Criteria"|guide:UpdatePtAcceptanceCriteriaActionService].
+
+

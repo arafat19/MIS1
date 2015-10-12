@@ -1,0 +1,138 @@
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Search Voucher
+        </div>
+    </div>
+
+    <form id="searchForm" name="searchForm" class="form-horizontal form-widgets" role="form">
+        <div class="panel-body">
+            <input type="hidden" name="hideVoucherId" id="hideVoucherId"/>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label label-required" for="traceNo">Trace No:</label>
+
+                <div class="col-md-3">
+                    <input type="text" class="k-textbox"
+                           id="traceNo" name="traceNo"
+                           placeholder="Trace No"
+                           required="required"
+                           validationMessage="Required"/>
+                </div>
+
+                <label class="col-md-2 control-label label-optional">Cancelled:</label>
+
+                <div class="col-md-3">
+                    <g:checkBox tabindex="2" id="cancelledVoucher" name="cancelledVoucher"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button id="showReport" name="showReport" type="submit" data-role="button"
+                    class="k-button k-button-icontext" role="button"
+                    aria-disabled="false"><span class="k-icon k-i-search"></span>Search
+            </button>
+            <app:ifAllUrl urls="/accReport/downloadVoucher">
+                <span class="download_icon_set">
+                    <ul>
+                        <li>Save as :</li>
+                        <li><a href="javascript:void(0)" id="printVoucher" class="pdf_icon"></a></li>
+                    </ul>
+                </span>
+            </app:ifAllUrl>
+        </div>
+    </form>
+</div>
+
+<div id="divVoucher" class="table-responsive" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="success"><span id='lblVoucherTypeName'></span><span style="color: #ff0000"
+                                                                           id='lblCancelled'></span></td>
+        </tr>
+        <tr>
+            <td class="active">Voucher Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Trace No</td>
+                        <td><span id='lblTraceNo'></span></td>
+                        <td class="active">Voucher Date</td>
+                        <td><span id='lblVoucherDate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Project</td>
+                        <td><span id='lblProjectName'></span></td>
+                        <td class="active">Created By</td>
+                        <td><span id='lblPreparedBy'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Cheque No</td>
+                        <td><span id='lblChequeNo'></span></td>
+                        <td class="active">Posted By</td>
+                        <td><span id='lblCheckedBy'></span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="active">Instrument Type</td>
+                        <td><span id='lblInstrumentType'></span></td>
+                        <td class="active">Instrument No</td>
+                        <td><span id='lblInstrumentNo'></span></td>
+                    </tr>
+                    <tr id='lblCancelledByOn' style="color: #ff0000">
+                        <td class="active">Cancelled By</td>
+                        <td><span id='cancelledBy'></span></td>
+                        <td class="active">Cancelled On</td>
+                        <td><span id='cancelledOn'></span></td>
+                    </tr>
+                    <tr id='lblCancelledReason' style="color: #ff0000">
+                        <td class="active">Cancelled Reason</td>
+                        <td colspan="3"><span id='cancelReason'></span></td>
+                    </tr>
+                    <tr>
+                        <table id="accountNameDiv" class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <td class="active">Account Name:</td>
+                                <td colspan="2"><input type="text" class="k-textbox"
+                                                       id="accountName" name="accountName"
+                                                       placeholder="Account Name"/>
+                                </td>
+                                <td class="active">Account Payable:</td>
+                                <td><g:checkBox name="isAccountPayable"/></td>
+                                <td>
+                                    <app:ifAnyUrl
+                                            urls="/accReport/downloadVoucherBankCheque,/accReport/downloadVoucherBankChequePreview">
+                                        <span class="download_icon_set">
+                                            <ul>
+                                                <li>Print :</li>
+                                                <app:ifAllUrl urls="/accReport/downloadVoucherBankCheque">
+                                                    <li><a href="javascript:void(0)" id="printVoucherBankCheque"
+                                                           class="cheque_icon"></a></li>
+                                                </app:ifAllUrl>
+                                                <app:ifAllUrl urls="/accReport/downloadVoucherBankChequePreview">
+                                                    <li><a href="javascript:void(0)" id="printVoucherChequePreview"
+                                                           class="cheque_preview"></a></li>
+                                                </app:ifAllUrl>
+                                            </ul>
+                                        </span>
+                                    </app:ifAnyUrl>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+

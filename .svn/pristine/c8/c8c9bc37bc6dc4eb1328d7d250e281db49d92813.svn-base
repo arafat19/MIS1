@@ -1,0 +1,47 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Evaluate "Regular Fee" | |
+*ActionService:* | CalculateExhRegularFeeActionService | *Auditable:* | No
+*Url*: | /exhRegularFee/calculate | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+User can update Regular fee as per their requirement.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "Regular Fee" link.
+* [Show Landing Page of "Regular Fee"|guide:ShowExhRegularFeeActionService].
+* Insert valid amount.
+* Click "Evaluate" button from tool bar.
+* Evaluate "Regular Fee".
+
+h4. Pre-condition:
+* User must have "Calculate Regular Fee" privilege.
+* Must have valid logic to evaluate "Regular Fee".
+
+h4. Process:
+* Evaluate "Regular fee".
+
+h4. Post-condition:
+* *Success:*
+** Generate given amounts "Regular Fee".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Update "Regular Fee" Logic|guide:UpdateExhRegularFeeActionService].
+
+!Exh/Evaluate_Regular_Fee_Show.png!

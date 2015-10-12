@@ -1,0 +1,106 @@
+<script language="javascript">
+    var lstPRItemModel, isError, purchaseRequestId;
+    var lstPRItem;
+    $(document).ready(function () {
+        isError = "${result.isError}";
+        purchaseRequestId = "${result.purchaseRequestMap?.purchaseRequestId}";
+        lstPRItem = ${result.lstItems?result.lstItems:[]};
+        var message = "${result.message}";
+        $("#hidPurchaseRequestId").val(purchaseRequestId);
+
+        if (isError == 'true') {
+            showError(message);
+            $('#updatePRDiv').hide();
+            return false;
+        }
+        if (purchaseRequestId > 0) {
+            $('#updatePRDiv').show();
+        }
+
+        lstPRItemModel = $("#lstPRWithItem").kendoListView({
+            dataSource: lstPRItem,
+            template: "<tr>" +
+                    "<td>#:sl#</td>" +
+                    "<td>#:itemType#</td>" +
+                    "<td>#:itemName#</td>" +
+                    "<td>#:itemCode#</td>" +
+                    "<td>#:quantity#</td>" +
+                    "<td>#:rateStr#</td>" +
+                    "<td>#:totalCostStr#</td>" +
+                    "</tr>"
+        }).data("lstPRItemModel");
+
+    });
+</script>
+
+<div class="panel panel-success">
+    <div class="panel-heading">Purchase Request Information</div>
+
+    <div class="panel-body">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td class="active">PR Trace No</td>
+                <td>${result.purchaseRequestMap?.purchaseRequestId}</td>
+                <td class="active">Created On</td>
+                <td>${result.purchaseRequestMap?.createdOn}</td>
+            </tr>
+            <tr>
+                <td class="active">Project Name</td>
+                <td>${result.purchaseRequestMap?.projectName}</td>
+                <td class="active">Project Description</td>
+                <td>${result.purchaseRequestMap?.projectDescription}</td>
+            </tr>
+            <tr>
+                <td class="active">Number of Item(s)</td>
+                <td>${result.purchaseRequestMap?.numberOfItems}</td>
+                <td class="active">Grand Total of Item(s))</td>
+                <td>${result.purchaseRequestMap?.grandTotalItemCosts}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<div id="listPRWithItem" class="panel panel-success" style="display: none;">
+    <div class="panel-heading">Item List</div>
+
+    <div class="panel-body">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>SL#</th>
+                <th>Item Type</th>
+                <th>Item Name</th>
+                <th>Code</th>
+                <th>Quantity</th>
+                <th>Estimated Rate</th>
+                <th>Total Cost</th>
+            </tr>
+            </thead>
+            <tbody id="lstPRWithItem">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="listPRApproval" class="panel panel-success" style="display: none;">
+    <div class="panel-heading">Item List</div>
+
+    <div class="panel-body">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td class="active">Director</td>
+                <td>${result.purchaseRequestMap?.approvedByDirector}</td>
+            </tr>
+            <tr>
+                <td class="active">Project Director</td>
+                <td>${result.purchaseRequestMap?.approvedByProjectDirector}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

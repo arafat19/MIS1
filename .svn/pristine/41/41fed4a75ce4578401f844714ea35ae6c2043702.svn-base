@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ptBug" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1a2c75df-ff9b-4899-b7f4-91b1ff8d5316">
+	<property name="ireport.zoom" value="1.1000000000000114"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="bugId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT project.name AS project, module.name AS module_name, sprint.name AS sprint_name,
+backlog.actor,backlog.purpose, backlog.benefit, backlog.use_case_id AS use_case_id,
+bug.title AS title,bug.step_to_reproduce AS step_to_reproduce, type.key AS type, status.key AS status,
+bug.note AS note, severity.key AS severity, app_user.username AS created_by, app_user.username AS updated_by,
+to_char(bug.created_on,'dd-Mon-YYYY HH12:MI am') AS created_on, bug.fixed_on AS fixed_on, bug.closed_on AS closed_on,
+CASE WHEN fixed.id > 0 THEN fixed.username
+ELSE NULL END AS fixed_by,
+CASE WHEN closed.id > 0 THEN closed.username
+ELSE NULL END AS closed_by,
+CASE WHEN owner.id > 0 THEN owner.username
+ELSE '' END AS owner
+FROM pt_bug AS bug
+   LEFT JOIN pt_project project ON project.id = bug.project_id
+   LEFT JOIN pt_module module ON module.id = bug.module_id
+   LEFT JOIN pt_sprint sprint ON sprint.id = bug.sprint_id
+   LEFT JOIN pt_backlog backlog ON backlog.id = bug.backlog_id
+   LEFT JOIN system_entity type ON type.id = bug.type
+   LEFT JOIN system_entity status ON status.id = bug.status
+   LEFT JOIN system_entity severity ON severity.id = bug.severity
+   LEFT JOIN app_user app_user ON app_user.id = bug.created_by
+   LEFT JOIN app_user fixed ON fixed.id = bug.fixed_by
+   LEFT JOIN app_user closed ON closed.id = bug.closed_by
+   LEFT JOIN app_user owner ON owner.id = bug.owner_id
+WHERE bug.id = $P{bugId}
+AND bug.company_id = $P{companyId}]]>
+	</queryString>
+	<field name="project" class="java.lang.String"/>
+	<field name="module_name" class="java.lang.String"/>
+	<field name="sprint_name" class="java.lang.String"/>
+	<field name="actor" class="java.lang.String"/>
+	<field name="purpose" class="java.lang.String"/>
+	<field name="benefit" class="java.lang.String"/>
+	<field name="use_case_id" class="java.lang.String"/>
+	<field name="title" class="java.lang.String"/>
+	<field name="step_to_reproduce" class="java.lang.String"/>
+	<field name="type" class="java.lang.String"/>
+	<field name="status" class="java.lang.String"/>
+	<field name="note" class="java.lang.String"/>
+	<field name="severity" class="java.lang.String"/>
+	<field name="created_by" class="java.lang.String"/>
+	<field name="updated_by" class="java.lang.String"/>
+	<field name="created_on" class="java.lang.String"/>
+	<field name="fixed_on" class="java.sql.Timestamp"/>
+	<field name="closed_on" class="java.sql.Timestamp"/>
+	<field name="fixed_by" class="java.lang.String"/>
+	<field name="closed_by" class="java.lang.String"/>
+	<field name="owner" class="java.lang.String"/>
+	<title>
+		<band height="35">
+			<staticText>
+				<reportElement uuid="215f26a2-85f5-4dd1-a329-402e986e4994" x="0" y="0" width="204" height="28"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Bug details]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="121">
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="0" y="61" width="65" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Created On]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="341" y="61" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="65" y="61" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="0" y="21" width="65" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Sprint]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="65" y="21" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="341" y="21" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="0" y="41" width="65" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="277" y="41" width="64" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Severity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="65" y="41" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="341" y="41" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="56628daf-70fb-4405-a864-45252d7b7818" stretchType="RelativeToTallestObject" x="70" y="41" width="207" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3b0989e6-4549-4957-8812-05a03ae9e7b3" stretchType="RelativeToTallestObject" x="70" y="21" width="207" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{sprint_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2d78ac8d-cd6e-430d-be50-76bd4b5f70c5" stretchType="RelativeToTallestObject" x="346" y="21" width="209" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6447572f-e9fa-4bee-9fc7-d702c9f058d0" x="277" y="21" width="64" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Type]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7f5c2603-7e00-41f6-a215-2d9e1f1b478a" stretchType="RelativeToTallestObject" x="70" y="61" width="207" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created_on}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="277" y="61" width="64" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Created By]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="88929b67-b386-42b4-9431-f0f785c4742d" stretchType="RelativeToTallestObject" x="346" y="61" width="209" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created_by}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9f8750d8-f228-40a3-a7f1-5f5d52fb990b" stretchType="RelativeToTallestObject" x="346" y="41" width="209" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{severity}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="277" y="81" width="64" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Update By]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="341" y="81" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9300e29a-b386-4705-b0c2-76da73ba926f" stretchType="RelativeToTallestObject" x="346" y="81" width="209" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{updated_by}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="65" y="1" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="0" y="1" width="65" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="341" y="1" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d7f22200-999e-4a5d-8faf-57a3fbf18998" stretchType="RelativeToTallestObject" x="70" y="1" width="207" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{project}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a657e4b4-c9ff-4736-b155-559d74184a78" stretchType="RelativeToTallestObject" x="346" y="1" width="209" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{module_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6447572f-e9fa-4bee-9fc7-d702c9f058d0" x="277" y="1" width="64" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Module]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="5861eff5-843b-4c26-be85-ef2aae1dcbde" stretchType="RelativeToTallestObject" x="70" y="81" width="207" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{use_case_id}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7827db0d-1824-4d3c-98ee-71ddca912367" positionType="Float" x="0" y="81" width="65" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Use Case Id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="65" y="81" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6a6d1e5c-4dcc-40a5-a74e-a9358c81401c" x="0" y="101" width="65" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Owner]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="65" y="101" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4e7a06b6-5745-4ba4-a96c-a445b3cf4bb2" x="70" y="101" width="485" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{owner}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="47">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="56628daf-70fb-4405-a864-45252d7b7818" stretchType="RelativeToTallestObject" x="0" y="22" width="555" height="20" isRemoveLineWhenBlank="true"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actor}?
+"As a        :  " +$F{actor} + "\n"+
+"I want to : " + "\n"+
+"\t"+ $F{purpose} + "\n"+
+"So that   : " + "\n"+
+"\t"+ $F{benefit} : "Orphan Bug has no Task"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="215f26a2-85f5-4dd1-a329-402e986e4994" mode="Opaque" x="0" y="5" width="555" height="17" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Task:]]></text>
+			</staticText>
+		</band>
+		<band height="43">
+			<staticText>
+				<reportElement uuid="215f26a2-85f5-4dd1-a329-402e986e4994" mode="Opaque" x="0" y="0" width="555" height="17" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Title:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="31cf704a-d0ef-40ee-84ce-9fb911129382" stretchType="RelativeToTallestObject" x="0" y="17" width="555" height="20" isRemoveLineWhenBlank="true"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{title}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="43">
+			<staticText>
+				<reportElement uuid="215f26a2-85f5-4dd1-a329-402e986e4994" mode="Opaque" x="0" y="0" width="555" height="17" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Step to Reproduce:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b074a14f-70a5-4f89-bb43-c8133b64b296" stretchType="RelativeToTallestObject" x="0" y="17" width="555" height="20" isRemoveLineWhenBlank="true"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{step_to_reproduce}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="43">
+			<staticText>
+				<reportElement uuid="215f26a2-85f5-4dd1-a329-402e986e4994" mode="Opaque" x="0" y="0" width="555" height="17" isRemoveLineWhenBlank="true" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Note:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="b074a14f-70a5-4f89-bb43-c8133b64b296" stretchType="RelativeToTallestObject" x="0" y="17" width="555" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="14">
+			<textField pattern="">
+				<reportElement uuid="bcf84a52-1ea9-48a3-b456-a83996242e14" x="231" y="0" width="93" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="cc52cb8f-8678-4368-8b33-aa884df0235f" x="0" y="0" width="555" height="14"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" +"inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="9fabb965-92b6-4725-a328-ddaf232ef416" x="0" y="0" width="100" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="82">
+			<staticText>
+				<reportElement uuid="ea594b50-5dbf-4fc2-ada4-668f4ba8200c" x="65" y="62" width="26" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[By ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="372" y="62" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ea594b50-5dbf-4fc2-ada4-668f4ba8200c" x="347" y="62" width="25" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[By ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="91" y="42" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="226af84a-43d1-4062-a4f6-339ef77b501e" x="311" y="22" width="35" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Closed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="372" y="42" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7aef8ef5-f838-4081-9aed-52763ec12acc" positionType="Float" x="91" y="62" width="5" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ea594b50-5dbf-4fc2-ada4-668f4ba8200c" x="347" y="42" width="25" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[On ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="226af84a-43d1-4062-a4f6-339ef77b501e" x="0" y="22" width="65" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Fixed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ea594b50-5dbf-4fc2-ada4-668f4ba8200c" x="65" y="42" width="26" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[On ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8f2d61d1-e0be-4bc3-aab5-ab85a7c6824c" x="96" y="62" width="250" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fixed_by}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<reportElement uuid="6c15e30f-505d-4f7a-a17f-28c7859d6afa" x="96" y="42" width="250" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fixed_on}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="18943d8e-c4ad-4b60-861f-877c70d23495" x="377" y="62" width="178" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{closed_by}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<reportElement uuid="1f3c3b61-bf33-428a-974e-ecf41cbcb86c" x="377" y="42" width="178" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{closed_on}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

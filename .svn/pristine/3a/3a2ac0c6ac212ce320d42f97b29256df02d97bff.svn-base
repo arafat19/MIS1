@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Province* | |
+*ActionService:* | CreateSarbProvinceActionService | *Auditable:* | No
+*Url:* | /sarbProvince/create | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 4th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [SARB|guide:_ShowSARBPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Province* link.
+* [Show Landing Page of "Province"|guide:ShowSarbProvinceActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Province*.
+
+h4. Pre-condition:
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Name | Text Box | Alpha Numeric | Required
+{table}
+
+* User must have "Create province" privilege.
+
+h4. Process:
+* Create a new *Province*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Province* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!sarb/SARB_Province_Create.png!

@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *System Project* | |
+*ActionService:* | ShowPtProjectActionService | *Auditable:* | No
+*Url:* | /ptProject/show | | 
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 3rd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *System Project* with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Project* link.
+* Show Landing Page of *System Project*.
+
+h4. Pre-condition:
+* User must have "Show Project of Project track" privilege.
+
+h4. Process:
+*  [Get List of all "System Project" from server|guide:ListPtProjectActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *System Project* information in grid view.
+** Reset input form on top to create new *System Project*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "System Project" in Edit Mode|guide:SelectPtProjectActionService].
+* [Delete "System Project"|guide:DeletePtProjectActionService].
+* [Search "System Project" From Grid View|guide:SearchPtProjectActionService].
+
+!projecttrack/Show-Project.png!

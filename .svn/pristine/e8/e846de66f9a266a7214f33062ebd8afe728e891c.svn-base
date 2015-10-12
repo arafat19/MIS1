@@ -1,0 +1,38 @@
+
+{table}
+ Use Case ID: | MIS-Budget-26 | Priority: | High
+ *Name* | Open Budget Type in Edit Mode | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budgetType/select | *Action Class:* | SelectBudgetTypeActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 18th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System Admin.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select a budget type from grid.
+# Click "Edit" button.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Get budget type details from server.
+
+h4. Post-condition:
+
+# *Success:*
+## Show selected budget type in input form.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

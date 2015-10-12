@@ -1,0 +1,37 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Widget of "Budget Option" | |
+*Action:* | N/A | *Auditable:* | No
+*Url:* | /budgBudget/renderBudgetMenu | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Project manager.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Show "Widget" of Budget Option.
+
+h4. Pre-condition:
+* User must have "Budget Module" privilege.
+
+h4. Process:
+* [Show "Budget Status List" in Widget tab|guide:GetBudgetStatusForDashBoardActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show Budget Status list in first tab (by default).
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

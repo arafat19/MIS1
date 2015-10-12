@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accFinancialStatementOfLevel4" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="550" leftMargin="35" rightMargin="10" topMargin="15" bottomMargin="20" uuid="1a2c75df-ff9b-4899-b7f4-91b1ff8d5316">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="accSourceNone" class="java.lang.Integer"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="accTypeAssetId" class="java.lang.Long"/>
+	<parameter name="accTypeLiabilitiesId" class="java.lang.Long"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<parameter name="projectIdList" class="java.util.Collection"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="incomeStatementSumDr" class="java.lang.String"/>
+	<parameter name="incomeStatementSumCr" class="java.lang.String"/>
+	<parameter name="financialStatementTotalDr" class="java.lang.String"/>
+	<parameter name="financialStatementTotalCr" class="java.lang.String"/>
+	<parameter name="financialStatementGrandTotalDr" class="java.lang.String"/>
+	<parameter name="financialStatementGrandTotalCr" class="java.lang.String"/>
+	<parameter name="strProfitLoss" class="java.lang.String"/>
+	<parameter name="divisionName" class="java.lang.String"/>
+	<parameter name="lstDivisionIds" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[SELECT acc_type.name AS acc_type_name,t1.name AS t1_name,t1.id AS t1_id,t2.name AS t2_name,
+t2.id AS t2_id,t3.name AS t3_name,t3.id AS t3_id
+FROM acc_type
+LEFT JOIN acc_tier1 t1 ON t1.acc_type_id=acc_type.id AND t1.company_id = $P{companyId}
+LEFT JOIN acc_tier2 t2 ON t2.acc_tier1id=t1.id AND t2.company_id = $P{companyId}
+LEFT JOIN acc_tier3 t3 ON t3.acc_tier2id=t2.id AND t3.company_id = $P{companyId}
+WHERE acc_type.id = $P{accTypeAssetId} OR acc_type.id = $P{accTypeLiabilitiesId}
+ORDER BY acc_type.order_id,t1_name,t2_name,t3_name;]]>
+	</queryString>
+	<field name="acc_type_name" class="java.lang.String"/>
+	<field name="t1_name" class="java.lang.String"/>
+	<field name="t1_id" class="java.lang.Integer"/>
+	<field name="t2_name" class="java.lang.String"/>
+	<field name="t2_id" class="java.lang.Integer"/>
+	<field name="t3_name" class="java.lang.String"/>
+	<field name="t3_id" class="java.lang.Integer"/>
+	<variable name="counterAccType" class="java.lang.Integer" incrementType="Group" incrementGroup="AccountType" calculation="Count">
+		<variableExpression><![CDATA[$F{acc_type_name}]]></variableExpression>
+	</variable>
+	<group name="AccountType">
+		<groupExpression><![CDATA[$F{acc_type_name}]]></groupExpression>
+		<groupHeader>
+			<band height="25">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="1c6955bc-a6bf-46a4-90d4-358700ae6470" mode="Opaque" x="0" y="5" width="310" height="20" backcolor="#CCCCCC"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					</box>
+					<textElement>
+						<font size="10" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{acc_type_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" mode="Opaque" x="420" y="5" width="110" height="20" backcolor="#CCCCCC"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Liabilities]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" mode="Opaque" x="310" y="5" width="110" height="20" backcolor="#CCCCCC"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Asset]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tier_1">
+		<groupExpression><![CDATA[$F{t1_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[( $F{t1_name} != null) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				<subreport>
+					<reportElement uuid="081071fb-ea41-4458-8a7f-ca15247b4f3c" x="30" y="0" width="500" height="20"/>
+					<subreportParameter name="tier1_id">
+						<subreportParameterExpression><![CDATA[$F{t1_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="lstDivisionIds">
+						<subreportParameterExpression><![CDATA[$P{lstDivisionIds}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="postedByParam">
+						<subreportParameterExpression><![CDATA[$P{postedByParam}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="fromDate">
+						<subreportParameterExpression><![CDATA[$P{fromDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="dbCurrencyFormat">
+						<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accTypeLiabilitiesId">
+						<subreportParameterExpression><![CDATA[$P{accTypeLiabilitiesId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="projectIdList">
+						<subreportParameterExpression><![CDATA[$P{projectIdList}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="tier1_name">
+						<subreportParameterExpression><![CDATA[$F{t1_name}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="toDate">
+						<subreportParameterExpression><![CDATA[$P{toDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="companyId">
+						<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accTypeAssetId">
+						<subreportParameterExpression><![CDATA[$P{accTypeAssetId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subTier1.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tier_2">
+		<groupExpression><![CDATA[$F{t2_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[( $F{t2_name} != null) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				<subreport>
+					<reportElement uuid="25342964-ecfe-46bd-a609-713da5b5e32a" x="50" y="0" width="480" height="20"/>
+					<subreportParameter name="tier2_name">
+						<subreportParameterExpression><![CDATA[$F{t2_name}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="lstDivisionIds">
+						<subreportParameterExpression><![CDATA[$P{lstDivisionIds}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="postedByParam">
+						<subreportParameterExpression><![CDATA[$P{postedByParam}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="fromDate">
+						<subreportParameterExpression><![CDATA[$P{fromDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accTypeLiabilitiesId">
+						<subreportParameterExpression><![CDATA[$P{accTypeLiabilitiesId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="dbCurrencyFormat">
+						<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="projectIdList">
+						<subreportParameterExpression><![CDATA[$P{projectIdList}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="tier2_id">
+						<subreportParameterExpression><![CDATA[$F{t2_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="toDate">
+						<subreportParameterExpression><![CDATA[$P{toDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="companyId">
+						<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accTypeAssetId">
+						<subreportParameterExpression><![CDATA[$P{accTypeAssetId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subTier2.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Tier_3">
+		<groupExpression><![CDATA[$F{t3_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[( $F{t3_name} != null) ? Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+				<subreport>
+					<reportElement uuid="9176f93c-c640-4cd3-82b5-5e4d1f3fc902" positionType="Float" x="70" y="0" width="460" height="20"/>
+					<subreportParameter name="tier3_id">
+						<subreportParameterExpression><![CDATA[$F{t3_id}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="tier3_name">
+						<subreportParameterExpression><![CDATA[$F{t3_name}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="lstDivisionIds">
+						<subreportParameterExpression><![CDATA[$P{lstDivisionIds}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="postedByParam">
+						<subreportParameterExpression><![CDATA[$P{postedByParam}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="fromDate">
+						<subreportParameterExpression><![CDATA[$P{fromDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accTypeLiabilitiesId">
+						<subreportParameterExpression><![CDATA[$P{accTypeLiabilitiesId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="dbCurrencyFormat">
+						<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="projectIdList">
+						<subreportParameterExpression><![CDATA[$P{projectIdList}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="toDate">
+						<subreportParameterExpression><![CDATA[$P{toDate}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="companyId">
+						<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="accTypeAssetId">
+						<subreportParameterExpression><![CDATA[$P{accTypeAssetId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subTier3.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<pageHeader>
+		<band height="116">
+			<line>
+				<reportElement uuid="d5751be1-2393-4ee1-9d7b-5560964146b7" x="0" y="115" width="530" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="0" y="8" width="283" height="23"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.0" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Financial Statement (Hierarchy 4)]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="d2026318-6381-4f18-9ebf-5c40d0d38568" x="322" y="0" width="228" height="30"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="013f4f13-b56c-4e4a-87ca-3e50ede57b2b" x="65" y="31" width="130" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="78941357-f6b6-4a38-807b-d9d1595dd43c" x="65" y="51" width="130" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2956e419-b87f-42d0-b630-5e6860cb1d06" x="65" y="71" width="485" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="0" y="31" width="60" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="0" y="51" width="60" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="0" y="71" width="60" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="60" y="31" width="5" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="60" y="51" width="5" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="60" y="71" width="5" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="0" y="91" width="60" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Division]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="2956e419-b87f-42d0-b630-5e6860cb1d06" x="65" y="91" width="485" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{divisionName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="60" y="91" width="5" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<pageFooter>
+		<band height="15">
+			<staticText>
+				<reportElement uuid="7a32ad0b-7ffe-4fee-b2b3-a5a9cdc6e19b" x="4" y="0" width="45" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="a0b3ac35-56f4-4a04-bd8b-439afe850859" x="4" y="0" width="546" height="15"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="4ad29b6c-e662-4d41-9510-5e9448b209d6" x="283" y="0" width="58" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " +$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c7276151-8a12-41d3-9d77-38fe24228c76" x="49" y="0" width="104" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5b600708-a9aa-4001-96c2-297495fa9d6e" x="245" y="0" width="38" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Page No]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="63">
+			<textField>
+				<reportElement uuid="bf822a4d-af8f-4c1a-a56c-c8602973dbd5" x="310" y="1" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{financialStatementTotalDr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bf822a4d-af8f-4c1a-a56c-c8602973dbd5" x="310" y="43" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{financialStatementGrandTotalDr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a817da0c-e5be-4536-b33d-49133a97ad2f" x="70" y="1" width="240" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="bd7757ff-0871-43b4-8275-b0bac878bd64" x="420" y="43" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{financialStatementGrandTotalCr}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="199383f0-7aa6-4343-919f-5826ac69b529" x="70" y="21" width="460" height="1" forecolor="#000000"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="a817da0c-e5be-4536-b33d-49133a97ad2f" x="70" y="43" width="240" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[GRAND TOTAL]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="03eff5df-897f-4b4b-ad1f-e16c62093801" x="70" y="22" width="240" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["INCOME STATEMENT" + $P{strProfitLoss}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="29809ac9-6a0b-4c2b-806f-9990acd6a3f1" x="70" y="42" width="460" height="1"/>
+			</line>
+			<textField pattern="">
+				<reportElement uuid="c13216d6-3cd0-493f-a9fe-f642f9e9afb1" x="420" y="22" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{incomeStatementSumCr}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bd7757ff-0871-43b4-8275-b0bac878bd64" x="420" y="1" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{financialStatementTotalCr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="c13216d6-3cd0-493f-a9fe-f642f9e9afb1" x="310" y="22" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{incomeStatementSumDr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

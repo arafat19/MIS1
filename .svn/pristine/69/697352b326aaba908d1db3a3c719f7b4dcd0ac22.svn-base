@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Exchange House* | |
+*ActionService:* | CreateRmsExchangeHouseActionService | *Auditable:* | No
+*Url:* | /rmsExchangeHouse/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Exchange House* link.
+* [Show Landing Page of "Exchange House"|guide:ShowRmsExchangeHouseActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Exchange House*.
+
+h4. Pre-condition:
+* User must have "Create Exchange House" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+Name | Text Box | Text | Required & Unique
+Code | Text Box | Text | Required & Unique
+[Country|guide:GetDropDownCountryTagLibActionService] |  Drop Down list | Numeric | Required
+{table}
+
+
+h4. Process:
+* Create a new *Exchange House*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Exchange House* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,334 @@
+<script language="javascript" type="text/javascript">
+    var output = false;
+    var accLeaseAccountListModel = false;
+    var itemTypeId, itemId, dropDownItemType, dropDownItem, startDate, endDate, amount, noOfInstallment, interestRate,
+            installmentVolume;
+
+    $(document).ready(function () {
+        onLoadAccLeaseAccountPage();
+    });
+
+    function onLoadAccLeaseAccountPage() {
+        initializeForm($("#accLeaseAccountForm"), onSubmitAccLeaseAccount);
+        output = ${output ? output : ''};
+        dropDownItem = initKendoDropdown($('#itemId'), null, null, null);
+
+        $('#amount').kendoNumericTextBox({
+            min: 0, decimals: 2, step: 100, format: "#.##"
+        });
+        amount = $("#amount").data("kendoNumericTextBox");
+
+        $('#interestRate').kendoNumericTextBox({
+            min: 0, decimals: 2, format: "#.##"
+        });
+        interestRate = $("#interestRate").data("kendoNumericTextBox");
+
+        $('#noOfInstallment').kendoNumericTextBox({
+            min: 0, decimals: 2, format: "#.##"
+        });
+        noOfInstallment = $("#noOfInstallment").data("kendoNumericTextBox");
+
+        $('#installmentVolume').kendoNumericTextBox({
+            min: 0, decimals: 2, step: 100, format: "#.##"
+        });
+        installmentVolume = $("#installmentVolume").data("kendoNumericTextBox");
+
+        if (output.isError) {
+            showError(data.message);
+        } else {
+            accLeaseAccountListModel = output.accLeaseAccountList;
+        }
+
+        initGrid();
+        populateFlex1();
+
+        //update page title
+        $(document).attr('title', "Accounting - Create Lease Account");
+        loadNumberedMenu(MENU_ID_ACCOUNTING, "#accLeaseAccount/show");
+    }
+
+    function initGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 30, sortable: false, hide: true, align: "right"},
+                        {display: "Institution", name: "institution", width: 200, sortable: false, align: "left"},
+                        {display: "Item", name: "item", width: 200, sortable: false, align: "left"},
+                        {display: "Amount", name: "amount", width: 100, sortable: false, align: "right"},
+                        {display: "Interest Rate", name: "interestRate", width: 80, sortable: false, align: "right"},
+                        {display: "No(Installment)", name: "noOfInstallment", width: 80, sortable: false, align: "center"},
+                        {display: "Volume", name: "installmentVolume", width: 120, sortable: false, align: "right"},
+                        {display: "Start Date", name: "startDate", width: 80, sortable: false, align: "left"},
+                        {display: "End Date", name: "endDate", width: 80, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/accLeaseAccount/select,/accLeaseAccount/update">
+                        {name: 'Edit', bclass: 'edit', onpress: selectAccLeaseAccount},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/accLeaseAccount/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteAccLeaseAccount},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/accLeaseAccount/list">
+                        {name: 'Refresh', bclass: 'clear-results', onpress: reloadGrid},
+                        </app:ifAllUrl>
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Institution", name: "institution", width: 30, sortable: false, align: "left" },
+                        {display: "Item", name: "it.name", width: 50, sortable: false, align: "left" }
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Lease Account List',
+                    useRp: true,
+                    rp: 15,
+                    rpOptions: [15, 20, 25, 30],
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 10,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: populateGridForAccLeaseAccount
+                }
+        );
+    }
+
+    function selectAccLeaseAccount(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), ' lease account') == false) {
+            return;
+        }
+
+        resetAccLeaseForm();
+        showLoadingSpinner(true);
+        var accLeaseAccountId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'accLeaseAccount', action: 'select')}?id=" + accLeaseAccountId,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function resetAccLeaseForm() {
+        clearForm($("#accLeaseAccountForm"), $("#institution"));
+        dropDownItem.setDataSource(getKendoEmptyDataSource());
+        dropDownItem.value('');
+
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showAccLeaseAccount(data);
+        }
+    }
+
+    function showAccLeaseAccount(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        dropDownItemType.value(data.item.itemTypeId);
+        dropDownItem.setDataSource(data.itemList);
+        dropDownItem.value(entity.itemId);
+        $('#lcNo').val(entity.lcNo);
+        amount.value(entity.amount);
+        $('#bank').val(entity.bank);
+        $('#institution').val(entity.institution);
+        interestRate.value(entity.interestRate);
+        noOfInstallment.value(entity.noOfInstallment);
+        installmentVolume.value(entity.installmentVolume);
+        $('#startDate').val(data.startDate);
+        $('#endDate').val(data.endDate);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    function deleteAccLeaseAccount(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var accLeaseAccountId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'accLeaseAccount', action:'delete')}?id=" + accLeaseAccountId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'lease account') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected Lease Account?')) {
+            return false;
+        }
+        return true;
+    }
+
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetAccLeaseForm();
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            accLeaseAccountListModel.total = parseInt(accLeaseAccountListModel.total) - 1;
+            removeEntityFromGridRows(accLeaseAccountListModel, selectedRow);
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    function populateGridForAccLeaseAccount(data) {
+        if (data.isError) {
+            showError(data.message);
+            accLeaseAccountListModel = getEmptyGridModel();
+        } else {
+            accLeaseAccountListModel = data.accLeaseAccountList;
+        }
+        $("#flex1").flexAddData(accLeaseAccountListModel);
+    }
+
+    function onSubmitAccLeaseAccount() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller:'accLeaseAccount', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller:'accLeaseAccount', action: 'update')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#accLeaseAccountForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#accLeaseAccountForm"))) {
+            return false;
+        }
+        if (!customValidateDate($("#startDate"), 'Start Date', $("#endDate"), 'End Date')) {
+            return false;
+        }
+        return true;
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                var newEntry = result.entity;
+                if ($('#id').val().isEmpty() && newEntry != null) { // newly created
+
+                    var previousTotal = parseInt(accLeaseAccountListModel.total);
+                    var firstSerial = 1;
+
+                    if (accLeaseAccountListModel.rows.length > 0) {
+                        firstSerial = accLeaseAccountListModel.rows[0].cell[0];
+                        regenerateSerial($(accLeaseAccountListModel.rows), 0);
+                    }
+                    newEntry.cell[0] = firstSerial;
+                    accLeaseAccountListModel.rows.splice(0, 0, newEntry);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        accLeaseAccountListModel.rows.pop();
+                    }
+
+                    accLeaseAccountListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(accLeaseAccountListModel);
+
+                } else if (newEntry != null) { // updated existing
+                    updateListModel(accLeaseAccountListModel, newEntry, 0);
+                    $("#flex1").flexAddData(accLeaseAccountListModel);
+                }
+
+                resetAccLeaseForm();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function populateFlex1() {
+        var strUrl = "${createLink(controller:'accLeaseAccount', action: 'list')}";
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (accLeaseAccountListModel) {
+            $("#flex1").flexAddData(accLeaseAccountListModel);
+        }
+    }
+
+    // update item drop down list by item type id
+    function updateItemList() {
+        var itemTypeId = dropDownItemType.value();
+        if (itemTypeId == '') {
+            dropDownItem.setDataSource(getKendoEmptyDataSource());
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'item', action: 'listItemByItemTypeId')}?itemTypeId=" + itemTypeId,
+            success: function (data) {
+                updateItemListForDropDown(data);
+            }, complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
+
+    function updateItemListForDropDown(data) {
+        if (data.isError) {
+            showError(data.message);
+            dropDownItem.setDataSource(getKendoEmptyDataSource());
+        } else {
+            dropDownItem.setDataSource(data.itemList);
+        }
+    }
+
+</script>

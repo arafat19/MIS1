@@ -1,0 +1,43 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Upload Task" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsTask/showForUploadTask | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 22nd July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Remittance User, Exchange House User.
+
+h4. Description:
+This is the landing page of "Upload Task" list with input form on top.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Upload" link.
+* Show Landing Page of "Upload Task".
+
+h4. Pre-condition:
+* User must have "Show upload Task" privilege.
+
+h4. Process:
+* [Get List of all "Task" from server|guide:UploadBankDepositTaskActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Upload "Bank Deposit" Task File|guide:UploadBankDepositTaskActionService].
+** Show input form on top to [Upload "Cash Collection" Task File|guide:UploadCashCollectionTaskActionService].
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

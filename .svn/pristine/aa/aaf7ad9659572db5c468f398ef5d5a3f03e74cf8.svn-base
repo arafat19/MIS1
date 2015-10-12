@@ -1,0 +1,46 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Sending Task" List For "Getting Response" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /sarbTaskModel/showTaskForRetrieveResponse | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Sending Task" list For "Getting Response" with grid view.
+
+h4. Flow:
+* Actor clicks [SARB|guide:_ShowSARBPlugin] option from top menu bar.
+* "SARB" sub menu of left menu should show as default.
+* Click "Retrieve Response" link.
+* Show Landing Page of "Sending Task" List For "Getting Response".
+
+h4. Pre-condition:
+* User must have "Show Retrieve response" privilege.
+
+h4. Process:
+* [Get List of "Sending Task" For "Getting Response"|guide:ListSarbTaskForRetrieveResponseActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Sending Task" list for "Getting Response" in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Getting Response For "Sending Task"|guide:RetrieveSarbTaskResponseActionService].
+
+!sarb/SARB_Retrive Response_Show.png!

@@ -1,0 +1,404 @@
+package com.athena.mis.procurement.controller
+
+import com.athena.mis.procurement.actions.report.indent.DownloadIndentReportActionService
+import com.athena.mis.procurement.actions.report.indent.SearchForIndentActionService
+import com.athena.mis.procurement.actions.report.indent.ShowForIndentActionService
+import com.athena.mis.procurement.actions.report.purchaseorder.DownloadForPurchaseOrderActionService
+import com.athena.mis.procurement.actions.report.purchaseorder.SearchForCancelledPoActionService
+import com.athena.mis.procurement.actions.report.purchaseorder.SearchForPurchaseOrderActionService
+import com.athena.mis.procurement.actions.report.purchaseorder.ShowForPurchaseOrderActionService
+import com.athena.mis.procurement.actions.report.purchaserequest.DownloadForPurchaseRequestActionService
+import com.athena.mis.procurement.actions.report.purchaserequest.SearchForPurchaseRequestActionService
+import com.athena.mis.procurement.actions.report.purchaserequest.ShowForPurchaseRequestActionService
+import com.athena.mis.procurement.actions.report.supplierwisepo.DownloadForSupplierWisePOActionService
+import com.athena.mis.procurement.actions.report.supplierwisepo.DownloadForSupplierWisePOCsvActionService
+import com.athena.mis.procurement.actions.report.supplierwisepo.ListForSupplierWisePOActionService
+import com.athena.mis.procurement.actions.report.supplierwisepo.ShowForSupplierWisePOActionService
+import grails.converters.JSON
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+
+class ProcReportController {
+
+    static allowedMethods = [
+            showPurchaseOrderRpt: "POST",
+            searchPurchaseOrderRpt: "POST",
+            showPurchaseRequestRpt: "POST",
+            searchPurchaseRequestRpt: "POST",
+            showIndentRpt: "POST",
+            searchIndentRpt: "POST",
+            showSupplierWisePO: "POST",
+            listSupplierWisePO: "POST"]
+
+    ShowForPurchaseOrderActionService showForPurchaseOrderActionService
+    SearchForPurchaseOrderActionService searchForPurchaseOrderActionService
+    DownloadForPurchaseOrderActionService downloadForPurchaseOrderActionService
+    ShowForPurchaseRequestActionService showForPurchaseRequestActionService
+    SearchForPurchaseRequestActionService searchForPurchaseRequestActionService
+    SearchForCancelledPoActionService searchForCancelledPoActionService
+    ShowForIndentActionService showForIndentActionService
+    SearchForIndentActionService searchForIndentActionService
+    DownloadIndentReportActionService downloadIndentReportActionService
+    DownloadForPurchaseRequestActionService downloadForPurchaseRequestActionService
+    ShowForSupplierWisePOActionService showForSupplierWisePOActionService
+    ListForSupplierWisePOActionService listForSupplierWisePOActionService
+    DownloadForSupplierWisePOActionService downloadForSupplierWisePOActionService
+    DownloadForSupplierWisePOCsvActionService downloadForSupplierWisePOCsvActionService
+
+    /**
+     * Show Purchase order report
+     */
+    def showPurchaseOrderRpt() {
+        if(params.cancelledPo == 'true'){
+            LinkedHashMap preResult
+            LinkedHashMap executeResult
+            LinkedHashMap result
+            Boolean isError
+            String output
+            preResult = (LinkedHashMap) searchForCancelledPoActionService.executePreCondition(params, null)
+            isError = (Boolean) preResult.isError
+            if (isError.booleanValue()) {
+                result = (LinkedHashMap) searchForCancelledPoActionService.buildFailureResultForUI(preResult)
+                output = result as JSON
+                render output
+                return
+            }
+
+            executeResult = (LinkedHashMap) searchForCancelledPoActionService.execute(params, preResult)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (LinkedHashMap) searchForCancelledPoActionService.buildFailureResultForUI(executeResult)
+                output = result as JSON
+                render output
+                return
+            }
+
+            result = (LinkedHashMap) searchForCancelledPoActionService.buildSuccessResultForUI(executeResult)
+            render(view: '/procurement/report/purchaseOrder/show', model: [result: result])
+            return
+        }
+
+        Map executeResult = (Map) showForPurchaseOrderActionService.execute(params, null)
+
+        render(view: '/procurement/report/purchaseOrder/show', model: [result: executeResult])
+    }
+
+    /**
+     * Search Purchase order report
+     */
+    def searchPurchaseOrderRpt() {
+        LinkedHashMap preResult
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+
+        if(params.cancelledPo){
+                preResult = (LinkedHashMap) searchForCancelledPoActionService.executePreCondition(params, null)
+                isError = (Boolean) preResult.isError
+                if (isError.booleanValue()) {
+                    result = (LinkedHashMap) searchForCancelledPoActionService.buildFailureResultForUI(preResult)
+                    render(template: '/procurement/report/purchaseOrder/tmpPurchaseOrder', model: [result: result])
+                    return
+                }
+
+                executeResult = (LinkedHashMap) searchForCancelledPoActionService.execute(params, preResult)
+                isError = (Boolean) executeResult.isError
+                if (isError.booleanValue()) {
+                    result = (LinkedHashMap) searchForCancelledPoActionService.buildFailureResultForUI(executeResult)
+                    render(template: '/procurement/report/purchaseOrder/tmpPurchaseOrder', model: [result: result])
+                    return
+                }
+
+                result = (LinkedHashMap) searchForCancelledPoActionService.buildSuccessResultForUI(executeResult)
+
+        }else{
+            preResult = (LinkedHashMap) searchForPurchaseOrderActionService.executePreCondition(params, null)
+            isError = (Boolean) preResult.isError
+            if (isError.booleanValue()) {
+                result = (LinkedHashMap) searchForPurchaseOrderActionService.buildFailureResultForUI(preResult)
+                render(template: '/procurement/report/purchaseOrder/tmpPurchaseOrder', model: [result: result])
+                return
+            }
+
+            executeResult = (LinkedHashMap) searchForPurchaseOrderActionService.execute(params, preResult)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (LinkedHashMap) searchForPurchaseOrderActionService.buildFailureResultForUI(executeResult)
+                render(template: '/procurement/report/purchaseOrder/tmpPurchaseOrder', model: [result: result])
+                return
+            }
+
+            result = (LinkedHashMap) searchForPurchaseOrderActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(template: '/procurement/report/purchaseOrder/tmpPurchaseOrder', model: [result: result])
+        return
+    }
+
+    /**
+     * Download Purchase order PDF report
+     */
+    def downloadPurchaseOrderRpt() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForPurchaseOrderActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForPurchaseOrderActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForPurchaseOrderActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForPurchaseOrderActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+    }
+
+    /**
+     * Show Purchase Request report
+     */
+    def showPurchaseRequestRpt() {
+        Map result = (Map) showForPurchaseRequestActionService.execute(params, null)
+        render(view: '/procurement/report/purchaseRequest/show', model: [result: result])
+    }
+
+    /**
+     * Search Purchase Request report
+     */
+    def searchPurchaseRequestRpt() {
+        LinkedHashMap preResult
+        LinkedHashMap result
+        Boolean isError
+
+        preResult = (LinkedHashMap) searchForPurchaseRequestActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) searchForPurchaseRequestActionService.buildFailureResultForUI(preResult)
+            render(template: '/procurement/report/purchaseRequest/tmpPurchaseRequest', model: [result: result])
+            return
+        }
+
+        result = (LinkedHashMap) searchForPurchaseRequestActionService.execute(params, preResult)
+        isError = (Boolean) result.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) searchForPurchaseRequestActionService.buildFailureResultForUI(result)
+        }
+        render(template: '/procurement/report/purchaseRequest/tmpPurchaseRequest', model: [result: result])
+    }
+
+    /**
+     * Downlaod Purchase Request report
+     */
+    def downloadPurchaseRequestRpt() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForPurchaseRequestActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForPurchaseRequestActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForPurchaseRequestActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForPurchaseRequestActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+    }
+
+    /**
+     * Show indent report
+     */
+    def showIndentRpt() {
+        Map executeResult = (Map) showForIndentActionService.execute(params, null);
+        render(view: '/procurement/report/indent/show', model: [result: executeResult])
+    }
+
+    /**
+     * Search indent report
+     */
+    def searchIndentRpt() {
+
+        LinkedHashMap preResult
+        LinkedHashMap result
+        Boolean isError
+
+        preResult = (LinkedHashMap) searchForIndentActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) searchForIndentActionService.buildFailureResultForUI(preResult);
+            render(template: '/procurement/report/indent/tmpIndent', model: [result: result])
+            return
+        }
+
+        result = (LinkedHashMap) searchForIndentActionService.execute(params, preResult);
+        isError = (Boolean) result.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) searchForIndentActionService.buildFailureResultForUI(result)
+        }
+
+        render(template: '/procurement/report/indent/tmpIndent', model: [result: result])
+    }
+
+    /**
+     * Download indent report
+     */
+    def downloadIndentRpt() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadIndentReportActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadIndentReportActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadIndentReportActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadIndentReportActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+    }
+
+    /**
+     * Show supplier wise purchase order
+     */
+    def showSupplierWisePO() {
+        Map result = (Map) showForSupplierWisePOActionService.execute(params, null);
+        render(view: '/procurement/report/supplierWisePO/show', model: [modelJson: result as JSON])
+    }
+
+    /**
+     * List supplier wise purchase order
+     */
+    def listSupplierWisePO() {
+        LinkedHashMap preResult
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        preResult = (LinkedHashMap) listForSupplierWisePOActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForSupplierWisePOActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        executeResult = (LinkedHashMap) listForSupplierWisePOActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) listForSupplierWisePOActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return;
+        }
+
+        result = (LinkedHashMap) listForSupplierWisePOActionService.buildSuccessResultForUI(executeResult);
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * Download supplier wise purchase order
+     */
+    def downloadSupplierWisePO() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+        LinkedHashMap preResult = (LinkedHashMap) downloadForSupplierWisePOActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForSupplierWisePOActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForSupplierWisePOActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForSupplierWisePOActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+
+    }
+
+    /**
+     * Download supplier wise purchase order CSV report
+     */
+    def downloadSupplierWisePOCsv() {
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        LinkedHashMap preResult = (LinkedHashMap) downloadForSupplierWisePOCsvActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForSupplierWisePOCsvActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        LinkedHashMap executeResult = (LinkedHashMap) downloadForSupplierWisePOCsvActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) downloadForSupplierWisePOCsvActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map reportResult = (Map) executeResult.report
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[reportResult.format]
+        response.setHeader("Content-disposition", "attachment;filename=${reportResult.reportFileName}")
+        response.outputStream << reportResult.report.toByteArray()
+    }
+}

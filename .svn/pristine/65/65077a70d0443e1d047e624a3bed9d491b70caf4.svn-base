@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *User Exchange House Mapping* | |
+*ActionService:* | DeleteAppUserEntityActionService | *Auditable:* | No
+*Url:* | /appUserEntity/delete | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Exchange House* link.
+* [Show Landing Page of "Exchange House"|guide:ShowRmsExchangeHouseActionService].
+* Select a Line-Item from grid view.
+* Click "User" button from tool bar.
+* [Show Landing Page of "User Exchange House Mapping"|guide:ShowAppUserEntityActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *User Exchange House Mapping*.
+
+h4. Pre-condition:
+* User must have "Delete appUser Entity" privilege.
+* If *User Exchange House Mapping* has dependency with following business entity then *User Exchange House Mapping* will not be delete-able:
+** 
+** 
+
+h4. Process:
+* Delete a selected *User Exchange House Mapping*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *User Exchange House Mapping* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

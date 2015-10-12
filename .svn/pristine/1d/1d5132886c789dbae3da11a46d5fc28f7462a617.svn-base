@@ -1,0 +1,78 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Generate *Ledger* Report in HTML Format | |
+ *ActionService:* | ListForLedgerActionService | *Auditable:* | No
+ *Url:* | /accReport/listLedger | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 5th May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Ledger* link.
+* [Show Landing Page of Ledger Report|guide:ShowForLedgerActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate *Ledger* Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List Ledger Report" privilege.
+* Rules of Searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+  From Date | Calender | Alpha Numeric | Required
+  To Date | Calender | Alpha Numeric | Required
+  [Populate Project List|application] | Drop Down List | Numeric | All(Default)
+  Account Code | Right Panel | Alpha Numeric | Required
+{table}
+
+* Given Date must be in between *Financial Year*.
+
+h4. Process:
+* Show *Ledger* Report for selected Account Code from *Chart of Account* list.
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Voucher Date
+** Trace No
+** Cheque No
+** Particulars
+** Debit
+** Credit
+** Voucher Type ID (Default: Invisible)
+
+* *Ledger* report should show Account Code, Account Name and Previous Balance of selected *Chart of Account*.
+* Grid should show *Voucher* details by clicking "Details" icon.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Ledger* report landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Select Chart of Account Code From Right Panel|guide:_selectChartofAccountCodeRightPanel].
+* [Search Chart of Account Code Right Panel|guide:SearchChartOfAccountForVoucherActionService].
+* [List Chart of Account Code Right Panel|guide:ListChartOfAccountForVoucherActionService].
+* [Show Voucher Details|guide:_showVoucherDetails].
+
+!Acc/Ledger_Report_Generate.png!

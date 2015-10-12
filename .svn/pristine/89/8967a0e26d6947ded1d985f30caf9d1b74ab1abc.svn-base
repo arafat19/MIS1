@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Send *Task* to Sarb | |
+*ActionService:* | SendSarbTaskToSarbActionService | *Auditable:* | No 
+*Url:* | /sarbTaskModel/sendTaskToSarb | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [SARB|guide:_ShowSARBPlugin] option from top menu bar.
+* "SARB" sub menu of left menu should show as default.
+* Click "Send Task" link.
+* [Show Landing Page of "Send Task" To Sarb|guide:_ShowSarbTaskForSendToSarbActionService].
+* Show "Send Task" list in grid view.
+* Select a Line-Item from grid view.
+* Click "Send To SARB" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Ok" button.
+* Send *Task* to Sarb.
+
+h4. Pre-condition:
+* User must have "Send task to SARB" privilege.
+* *Task* must be sended to *Bank* before sending to "SARB".
+
+h4. Process:
+* Send selected *Task* to "SARB".
+
+h4. Post-condition:
+
+* *Success:*
+** Send *Task* to "Sarb" from grid view.
+** Show Success message.
+** Sended *Task* must be removed from the grid.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

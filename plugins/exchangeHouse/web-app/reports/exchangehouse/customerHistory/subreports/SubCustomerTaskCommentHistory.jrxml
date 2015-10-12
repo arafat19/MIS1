@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SubCustomerTaskCommentHistory" language="groovy" pageWidth="445" pageHeight="800" whenNoDataType="BlankPage" columnWidth="445" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="878cacdb-2aa1-40d8-9542-d7cdba569c4f">
+	<property name="ireport.zoom" value="1.6105100000000057"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="task_id" class="java.lang.Long"/>
+	<parameter name="noteEntityTypeTask" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT REPLACE(entity_note.note, '\r\n', ' ') AS comment, entity_note.created_on AS created_on,
+app_user.username AS created_by
+FROM entity_note
+LEFT JOIN app_user ON app_user.id = entity_note.created_by
+WHERE entity_note.entity_type_id =$P{noteEntityTypeTask} AND entity_note.entity_id =$P{task_id}]]>
+	</queryString>
+	<field name="comment" class="java.lang.String"/>
+	<field name="created_on" class="java.sql.Timestamp"/>
+	<field name="created_by" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="12">
+			<staticText>
+				<reportElement uuid="9d337452-eccd-4cfe-8f1a-4d1419bfbfac" mode="Opaque" x="89" y="0" width="150" height="12" backcolor="#CCCCCC"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#666666"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#333333"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Commented By]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="20829cd1-56cf-4502-8c34-0c627040565b" mode="Opaque" x="0" y="0" width="89" height="12" backcolor="#CCCCCC"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#666666"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Commented On]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4703a1a3-0da2-485d-9488-fc5e9247df14" mode="Opaque" x="239" y="0" width="205" height="12" backcolor="#CCCCCC"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#666666"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Comments]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1a1b9532-a948-40a0-94b7-f2837ed79383" positionType="Float" stretchType="RelativeToTallestObject" x="239" y="0" width="205" height="12"/>
+				<box topPadding="0" leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#333333"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comment}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yy [hh:mm aaa]" isBlankWhenNull="true">
+				<reportElement uuid="b07ad375-cf82-4292-9e69-c9239da97cd1" x="0" y="0" width="89" height="12"/>
+				<box topPadding="0" leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created_on}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="0ea5c15b-3a7f-4457-a0bd-af80af475971" x="89" y="0" width="150" height="12"/>
+				<box topPadding="0" leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#666666"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created_by}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

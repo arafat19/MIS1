@@ -1,0 +1,5 @@
+Serial,Date,REF NO.,BENIFICIARY,BANK,BRANCH,DIST,Benef Tele,Remitter,BDT ,Pin No,Identity Type,Identity No,Currency
+1,05/06/2014,013,Md. Abul Hasan,Dutch Bangla Bank Limited.,Mirpur Br.,COMILLA,1714031741,Salim,500,123456,Passport,,BDT
+2,05/06/2014,014,Ali Akbar,MTBL,Mirpur Br.,COMILLA,1714031741,Alim,600,7891011,Passport,,BDT
+3,05/06/2014,015,Kamal Uddin,BRAC Bank Limited.,Gulshan Br.,DHAKA,1714031741,Aman,700,123456,Voter ID,,BDT
+4,05/06/2014,016,Md. Kamruzzaman,Bank Asia,Mohakhali Br.,DHAKA,1714031741,Khalil,800,7891012,Voter ID,,BDT

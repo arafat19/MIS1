@@ -1,0 +1,140 @@
+package com.athena.mis.document.actions.appuserdoccategory
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocCategoryUserMapping
+import com.athena.mis.document.service.DocCategoryUserMappingService
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class SelectAppUserDocCategoryActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String NOT_FOUND_MASSAGE = "Selected member object not found"
+    private static final String DEFAULT_ERROR_MESSAGE = "Failed to select member"
+    private static final String APP_USER_CATEGORY = "appUserCategory"
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String DEFAULT_CATEGORY_NAME = 'Category'
+
+    DocCategoryUserMappingService docCategoryUserMappingService
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+
+    /**
+     * Do nothing for pre condition
+     */
+    public Object executePreCondition(Object params, Object obj) {
+        return null
+    }
+
+    /**
+     * Get AllCategoryUserMapping object by id
+     *  1.get categoryLabel from System configuration
+     *  2.Get the AllCategoryUserMapping object from DB
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for buildSuccessResultForUI
+     * map contains isError(true/false) depending on method success
+     * This method is in transactional boundary and will roll back in case of any exception
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object params, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = DEFAULT_CATEGORY_NAME
+        try {
+            long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+
+            result.put(Tools.IS_ERROR, Boolean.TRUE)    // default value
+            GrailsParameterMap parameterMap = (GrailsParameterMap) params
+            // check required parameters
+            if (!parameterMap.id) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long appUserCategoryId = Long.parseLong(parameterMap.id)
+            DocCategoryUserMapping docCategoryUserMapping = (DocCategoryUserMapping) docCategoryUserMappingService.read(appUserCategoryId)
+            if (!docCategoryUserMapping) {
+                result.put(Tools.MESSAGE, NOT_FOUND_MASSAGE)
+                return result
+            }
+            result.put(APP_USER_CATEGORY, docCategoryUserMapping)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, NOT_FOUND_MASSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Do nothing for post condition
+     */
+    public Object executePostCondition(Object params, Object obj) {
+        return null
+    }
+
+    /**
+     * Build a map with AllCategoryUserMapping object & other related properties to show on UI
+     * @param obj -map returned from execute method
+     * @return -a map containing all objects necessary for show
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map executeResult = (LinkedHashMap) obj   // cast map returned from execute method
+        String categoryLabel = executeResult.get(CATEGORY_LABEL)
+        try {
+            DocCategoryUserMapping docCategoryUserMapping = (DocCategoryUserMapping) executeResult.get(APP_USER_CATEGORY)
+            result.put(Tools.ENTITY, docCategoryUserMapping)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (LinkedHashMap) obj
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (preResult.get(Tools.MESSAGE)) {
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            }
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+}

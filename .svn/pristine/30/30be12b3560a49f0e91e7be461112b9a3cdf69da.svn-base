@@ -1,0 +1,60 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Item" List in drop-down | |
+*ActionService:* | GetForItemListForBudgetDetailsActionService | *Auditable:* | No
+*Url:* | /budgBudgetDetails/getItemListBudgetDetails | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 7th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description: 
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Production" link.
+* [Show Landing Page of "Production Budget"|guide:_ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Item(s)" button from tool bar.
+* [Show Landing Page of "Budget Details"|guide:ShowBudgetDetailsActionService].
+* Select "Item Type" from drop-down list.
+* Populate "Item" List in drop-down.
+
+h4. Pre-condition: 
+* User must have "Get Inventory Item by Budget and Item Type" privilege.
+
+* Populate Criteria:
+{table}
+*Field*   | *Input Type* | *Data Type* | *Rules*
+Project Name | Read Only | Alpha Numeric | 
+Budget Scope | Read Only | Alpha Numeric | 
+Budget Item | Read Only | Alpha Numeric | 
+Details | Read Only | Alpha Numeric | 
+[Populate Item Type List|application] | Drop Down List | Numeric | Required
+{table}
+
+h4. Process: 
+* Get "Inventory Item" list from server. [Show Landing Page of "Inventory Item"|guide:ShowItemCategoryInventoryActionService]
+* Get "Non-Inventory Item" list from server. [Show Landing Page of "Non-Inventory Item"|guide:ShowItemCategoryNonInvActionService]
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate list of "Item" at drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Create "Budget Details"|guide:CreateBudgetDetailsActionService].
+* [Update "Budget Details"|guide:UpdateBudgetDetailsActionService].

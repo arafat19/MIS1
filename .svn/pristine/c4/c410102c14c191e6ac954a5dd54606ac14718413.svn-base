@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Upload "Bank Statement File" | |
+ *ActionService:* | ImportAccBankStatementActionService | *Auditable:* | No
+ *Url:* | /accBankStatement/uploadBankStatementFile | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 9th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click "Bank Statement" link.
+* [Show Landing Page of Bank Statement File Upload Page|guide:ShowAccBankStatementActionService].
+* Select "Bank Name" from drop down list.
+* Browse your required "Bank Statement" CSV file.
+* Click "Upload Statement(s)" button.
+* Upload "Bank Statement File".
+
+h4. Pre-condition:
+* User must have "Upload Bank Statement" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ [Bank|guide:_populateBankList] | Drop Down List | Numeric | Required
+ Bank Statement File | Upload Box | File | Required 
+{table}
+
+* Uploaded file must be in CSV format.
+* If any column or row of the file invalid then file upload not possible.
+* Same "Bank Statement" CSV file can not be upload-able for same *Bank*.
+* Same "Bank Statement" CSV file can be upload-able for different *Bank*.
+
+h4. Process:
+* Upload valid "Bank Statement" File.
+
+h4. Post-condition:
+
+* Uploaded file show the fouded error in grid view(Row wise).
+
+* *Success:*
+** Upload selected CSV file.
+** Show success message.
+
+* *Failure:* 
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,50 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Cancel "Task" | |
+*Action:* | CancelRmsTaskActionService | *Auditable:* | No
+*Url:* |/rmsTask/cancelRmsTask | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Manage* link.
+* [Show Landing Page for "Manage Task"|guide:_ShowManageTask].
+* Enter Valid input.
+* Click "Search" button.
+* [Show "Task" Details|guide:renderTaskDetails].
+* Click "Cancel" button.
+* Give the "Cancel" note in text area.
+* Click on "Cancel" button.
+* Cancel "Task".
+
+h4. Pre-condition:
+* User must have "Cancel rms task" privilege.
+* Disbursed *Task* Can not be canceled.
+* *Task* Cancel note must be given.
+
+h4. Process:
+* *Task* amount will be credited to "Exchange House" Balance if *Task* decision is approved.
+* Update Current Status & Payment Status will Change to "Cancel".
+* Cancel Searched "Task".
+
+h4. Post-condition:
+* *Success:*
+** Show Success message.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

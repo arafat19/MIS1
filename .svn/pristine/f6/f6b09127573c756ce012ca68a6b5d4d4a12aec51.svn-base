@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Reload "Exchange House" List in drop-down | |
+*ActionService:* | reloadExchangeHouseFilteredDropDown | *Auditable:* | No
+*Url:* | /rmsExchangeHouse/reloadExchangeHouseFilteredDropDown | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Remittance User.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Create" link.
+* [Show Landing Page of "Task"|guide:show].
+* Click "Revised" check box.
+* Reload "Exchange House" List in drop-down.
+
+h4. Pre-condition:
+* User must have "Refresh filtered exchange house dropdown" privilege.
+
+* Rules of Reload:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Revised | | Check Box |  Boolean | Required
+From date | Calender | Alpha-Numeric | Required
+To date | Calender | Alpha-Numeric | Required
+{table}
+
+h4. Process:
+* Get Revised Task list from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Reload "Exchange House" List in drop-down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Search Task to Create List|guide:ListTaskForCreateTaskListActionService].
+* [Create Task List|guide:CreateRmsTaskListActionService].
+

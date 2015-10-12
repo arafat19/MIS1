@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *System Entity Type* From Grid View | |
+*ActionService:* | SearchSystemEntityTypeActionService | *Auditable:* | No
+*Url:* | /systemEntityType/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 18th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click *System Entity Type* link.
+* [Show Landing Page of System Entity Type|guide:ShowSystemEntityTypeActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *System Entity Type* From Grid View.
+
+h4. Pre-condition:
+* User must have "List system entity type" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Searching Option*
+Find | Text Box | Alpha Numeric | Name
+{table}
+
+
+h4. Process:
+* Get list of *System Entity Type* (default: 15 at Max) matching with search criteria.
+* Searching with zero length string will list all *System Entity Type*.
+
+h4. Post-condition:
+
+* *Success:*
+** *System Entity Type* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "System Entity Type" in Landing Page|guide:ListSystemEntityTypeActionService].

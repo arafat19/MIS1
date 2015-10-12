@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TransactionSummary" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="10" uuid="3a1ea334-7733-4bfd-8926-8ff6e6427ddf">
+	<property name="ireport.zoom" value="1.126972201352373"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="fromDate" class="java.sql.Timestamp"/>
+	<parameter name="toDate" class="java.sql.Timestamp"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="currencySymbol" class="java.lang.String"/>
+	<parameter name="taskStatusListIds" class="java.util.List"/>
+	<parameter name="amount" class="java.lang.Double"/>
+	<queryString>
+		<![CDATA[SELECT customer.code AS customer_account,
+customer.name customer_name ,COALESCE(customer.surname,'') customer_surname, count(task.id) AS count,
+COALESCE(sum(task.amount_in_local_currency),0) AS total_local_amount,
+COALESCE(sum(task.amount_in_foreign_currency),0) AS total_bdt_amount
+FROM exh_task task
+LEFT JOIN exh_customer customer ON customer.id = task.customer_id
+WHERE task.created_on BETWEEN $P{fromDate} AND $P{toDate}
+AND ($X{IN,current_status,taskStatusListIds})
+GROUP BY customer_account,customer.name, customer.surname
+HAVING SUM(task.amount_in_local_currency) >= $P{amount}
+ORDER BY customer.name]]>
+	</queryString>
+	<field name="customer_account" class="java.lang.String"/>
+	<field name="customer_name" class="java.lang.String"/>
+	<field name="customer_surname" class="java.lang.String"/>
+	<field name="count" class="java.lang.Long"/>
+	<field name="total_local_amount" class="java.lang.Double"/>
+	<field name="total_bdt_amount" class="java.lang.Double"/>
+	<variable name="sumOfTotalTask" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{count}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumOfLocalAmount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_local_amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="sumOfForeignAmount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_bdt_amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<title>
+		<band height="34" splitType="Stretch">
+			<staticText>
+				<reportElement x="434" y="0" width="27" height="13" uuid="7ba0c5e1-1033-4af5-bb7b-d93b7280bcb7"/>
+				<box leftPadding="0" rightPadding="1"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[From]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="434" y="13" width="27" height="13" uuid="51cc4633-0eb3-48ee-8ff6-41c4735aa705"/>
+				<box leftPadding="0" rightPadding="1"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[To]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement x="465" y="0" width="70" height="13" uuid="1e043c24-06c9-4eef-8553-52527f539868"/>
+				<box leftPadding="0" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement x="465" y="13" width="70" height="13" uuid="6810cbd9-a79f-41ae-b153-a74e14b70f39"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="461" y="13" width="4" height="13" uuid="f797828f-3fdb-42a2-9d40-8e371e5339c2"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="461" y="0" width="4" height="13" uuid="f797828f-3fdb-42a2-9d40-8e371e5339c2"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="172" height="18" uuid="b5335e57-af4e-4487-a990-641801edda0e"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="12" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Transaction Summary]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="">
+				<reportElement x="0" y="18" width="297" height="14" uuid="181ed287-1af6-41b1-8b87-911d6c1bf0eb"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Amount Higher or Equal to: " + $P{currencySymbol} + " " + $P{amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="15">
+			<staticText>
+				<reportElement x="0" y="0" width="100" height="15" uuid="728522f9-ffdb-4a25-8097-fef54e934bec"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="100" y="0" width="200" height="15" uuid="01ff7a09-fde5-47dd-ade5-76582378b5c5"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="299" y="0" width="65" height="15" uuid="44026c2e-b96b-48f1-8e3e-d17d833ec17e"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Task]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="445" y="0" width="90" height="15" uuid="99c8a006-f90d-4335-a81e-32753f121d97"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Amount (BDT)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="364" y="0" width="82" height="15" uuid="af15f96d-057f-48f6-9dca-fbb93c56ad22"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5" lineColor="#000000"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Amount ("+$P{currencySymbol}+")"]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Prevent">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="100" height="15" uuid="cef33661-6a27-4ad9-87cd-297786c0a80f"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{customer_account}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="0" width="200" height="15" uuid="06b5ca45-e0b2-4031-b54f-c3fc156333bf"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{customer_name} + " " + $F{customer_surname}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="0" width="64" height="15" uuid="db366cde-bf66-492f-8449-02e252267388"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{count}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##,##0.00" isBlankWhenNull="true">
+				<reportElement x="364" y="0" width="82" height="15" uuid="93063476-6d73-41d3-bcfe-91c608a3f193"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_local_amount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##,##0.00" isBlankWhenNull="true">
+				<reportElement x="445" y="0" width="90" height="15" uuid="b6b57c87-d8af-4a19-8b31-37ceabc7cd10"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_bdt_amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="10">
+			<textField pattern="">
+				<reportElement x="238" y="0" width="94" height="10" uuid="bcf84a52-1ea9-48a3-b456-a83996242e14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="100" height="10" uuid="7d9e5485-ae06-4178-9069-8509872598ab"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="364" y="1" width="171" height="9" uuid="ae5cec96-3eb3-4222-b49d-9167c533f618"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Report generated by Athena Software Associates Ltd.]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="15">
+			<staticText>
+				<reportElement x="0" y="0" width="300" height="15" uuid="38966078-aba1-4fb6-ba1b-d7bddbf5bea5"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Grand Total:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="300" y="0" width="64" height="15" uuid="0b6c82ea-21e7-46e1-b11d-bd14d03e0d8d"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumOfTotalTask}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##,##0.00" isBlankWhenNull="true">
+				<reportElement x="445" y="0" width="90" height="15" uuid="57117e9b-1387-4780-b9d8-d40d54640cc2"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumOfForeignAmount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##,##0.00" isBlankWhenNull="true">
+				<reportElement x="364" y="0" width="82" height="15" uuid="df524f38-2209-4e23-8ca4-795a85e4a5d4"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{sumOfLocalAmount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

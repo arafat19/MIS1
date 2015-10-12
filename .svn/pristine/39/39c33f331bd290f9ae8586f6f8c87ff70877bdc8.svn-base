@@ -1,0 +1,75 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* |  Show list for Manage "Task" in Landing Page | |
+*ActionService:* | ListForManageTaskListActionService | *Auditable:* | No
+*Url:* | /rmsTaskList/listForManageTaskList | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date* | *Reason for Changes* | *Version*
+Md. Shaheb Ali | 22th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click *Manage* link under Task list
+* [Show Landing Page for Manage "Task" list |guide:_ShowManageTaskList].
+* Enter Valid input.
+* Click "Search" button.
+* Show list for Manage "Task" in Landing Page
+
+h4. Pre-condition:
+* User must have "List for manage task list" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+[Status|guide:PopulateTaskStatus] | Drop Down List | Numeric | Required
+[Exchange House|guide:_PopulateFilterExchangeHouseList] | Drop Down List | Numeric | Required
+[Task List|guide:_PopulateTaskListDropDownList] | Drop Down List | Numeric | Required
+{table}
+
+
+h4. Process:
+* Get list of "Task" from server (default: 15 at Max) matching with search criteria.
+* Following columns should show in grid view:
+** Serial
+** Ref No
+** Account Name
+** Beneficiary Name
+** Amount
+** Mapping Bank Info
+** Mapping Decision
+
+h4. Post-condition:
+
+* *Success:*
+** List of Manage *Task* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* [Remove From List "Task"|guide:RemoveTaskFromListActionService].
+* [Rename List|guide:RenameTaskListActionService].
+* [Move to Another List|guide:MoveTaskToAnotherListActionService].
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].

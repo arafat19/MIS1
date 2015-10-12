@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of *Indent Item* | |
+ *ActionService:* | ShowIndentDetailsActionService| *Auditable:* | No
+ *Url*: | /procIndentDetails/show | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 7th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+All Users.
+
+h4. Description:
+This is landing page of "Indent Details" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Indent* link.
+* [Show Landing Page of "Indent"|guide:ShowIndentActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* Show Landing Page of *Indent Item*.
+
+h4. Pre-condition: 
+* User must have "Show Indent Details" privilege.
+
+h4. Process:
+* [Get List of all "Indent Item" from server|guide:ListIndentDetailsActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Item" of "Indent"|guide:CreateIndentDetailsActionService].
+** Show list of all *Indent Item* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [cancel|common Usecases].
+* [Open "Item" of "Indent" in Edit Mode|guide:SelectIndentDetailsActionService].
+* [Delete "Item" of "Indent"|guide:DeleteIndentDetailsActionService].
+
+!procurement/Indent_Items_Show.png!

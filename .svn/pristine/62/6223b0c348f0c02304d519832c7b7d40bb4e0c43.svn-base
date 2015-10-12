@@ -1,0 +1,73 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Generate "Voucher List" Report in HTML Format | |
+ *ActionService:* | SearchForVoucherListActionService | *Auditable:* | No
+ *Url:* | /accReport/searchVoucherList | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date* | *Reason for Changes*	| *Version*
+  Nahida Sultana | 29th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Voucher List" link.
+* [Show Landing Page of Voucher List Report|guide:ShowForVoucherListActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Voucher List" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "Search Voucher List Report" privilege.
+* Rules of Searching:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules* 	
+  From Date | Calender | Alpha Numeric | Required
+  To Date   | Text Box | Numeric | Required 
+  [Voucher Type|guide:PopulateVoucherTypeList] | Drop Down List | Numeric | Required 
+  Status Posted | Drop Down List | Numeric | All(Default) 
+ {table}
+
+* Given Date must be in between *Financial Year*.
+
+h4. Process:
+* Show a list of *Voucher* information, for the selected *Account Type*.
+* Following columns should show in grid view:
+** Serial
+** Voucher Date
+** ID (Default: Invisible)
+** Trace No
+** Amount
+** Posted (Status)
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Voucher List" information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show Landing Page of Voucher Details|guide:_showVoucherDetails].
+* [Post "Voucher"|guide:PostAccVoucherActionService].
+* [Un-Post "Voucher"|guide:UnPostAccVoucherActionService].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+
+!Acc/Voucher_List_Report_Generate.png!

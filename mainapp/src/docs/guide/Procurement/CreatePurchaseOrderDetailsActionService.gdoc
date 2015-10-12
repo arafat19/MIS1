@@ -1,0 +1,64 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Item* of *Purchase Order* | |
+*ActionService:* | CreatePurchaseOrderDetailsActionService | *Auditable:* | No
+*Url*: | /procPurchaseOrderDetails/create | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show Landing Page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* [Show Item of "Purchase Order" Landing Page|guide:ShowPurchaseOrderDetailsActionService].
+* User must insert valid input.
+* Click "Create" Button.
+* Create *Item* of *Purchase Order*
+
+h4. Pre-condition:
+* User must have "Create Purchase Order Details" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+ Project | Read Only | Alpha Numeric |
+ Budget Item | Read Only | Alpha Numeric |
+ "Purchase Order Id" | Read Only | Numeric |
+ [Populate Item Type List|application] | Drop-Down List | Numeric | Required
+ [*Item*|guide:GetForItemListForPurchaseOrderDetailsActionService] | Drop-Down List | Numeric | Required
+ Rate | Text Box | Numeric | Required
+ Quantity | Text Box | Numeric | Required
+ Vat/Tax | Text Box | Numeric | Optional
+ Comments | Text Area | Alpha Numeric | Optional
+ {table}
+* *Purchase Order* Item must be unique.
+* Sum of *Purchase Order* item quantity must not exceed *Purchase Request* Item Quantity.
+
+h4. Process:
+Create new *Item* of *Purchase Order*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Item* of *Purchase Order* into grid-view (should be 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!procurement/PO_Items_Create.png!

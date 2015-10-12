@@ -1,0 +1,258 @@
+package com.athena.mis.document.actions.appuserdoccategory
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocAllCategoryUserMapping
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.entity.DocCategoryUserMapping
+import com.athena.mis.document.entity.DocCategoryUserMapping
+import com.athena.mis.document.entity.DocSubCategory
+import com.athena.mis.document.entity.DocSubCategoryUserMapping
+import com.athena.mis.document.service.DocAllCategoryUserMappingService
+import com.athena.mis.document.service.DocCategoryUserMappingService
+import com.athena.mis.document.service.DocSubCategoryUserMappingService
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.document.utility.DocSubCategoryCacheUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class CreateAppUserDocCategoryActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String SAVE_SUCCESS_MESSAGE = "Member has been saved successfully"
+    private static final String SAVE_FAILURE_MESSAGE = "Failed to create member"
+    private static final String APP_USER_CATEGORY = "appUserCategory"
+    private static final String DOC_CATEGORY = "docCategory"
+    private static final String LST_SUB_CATEGORY = "lstSubCategory"
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String DEFAULT_CATEGORY_NAME = 'Category'
+    private static final String CATEGORY_ALREADY_MAPPED = 'This user already mapped with this '
+    private static final String OBJ_NOT_FOUND = " not found"
+
+    DocCategoryUserMappingService docCategoryUserMappingService
+    DocSubCategoryUserMappingService docSubCategoryUserMappingService
+
+    @Autowired
+    DocSubCategoryCacheUtility docSubCategoryCacheUtility
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+
+    /**
+     * 1. Get parameters from UI and build AllCategoryUserMapping object
+     * 2. get categoryLabel from System configuration
+     * 3. check if id is valid/invalid
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all object necessary for execute
+     */
+    public Object executePreCondition(Object params, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = DEFAULT_CATEGORY_NAME
+        try {
+            long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+            result.put(Tools.IS_ERROR, Boolean.TRUE)    // default value
+            GrailsParameterMap parameterMap = (GrailsParameterMap) params
+
+            long categoryId = Long.parseLong(parameterMap.categoryId.toString())
+            long userId = Long.parseLong(parameterMap.userId.toString())
+
+            DocCategoryUserMapping isCategoryUserMapping = docCategoryUserMappingService.findByCompanyIdAndUserIdAndCategoryId(companyId, userId, categoryId)
+
+            if (isCategoryUserMapping) {
+                result.put(Tools.MESSAGE, CATEGORY_ALREADY_MAPPED + categoryLabel)
+                return result
+            }
+
+            DocCategory docCategory = (DocCategory) docCategoryCacheUtility.read(categoryId)
+            if (!docCategory) {
+                result.put(Tools.MESSAGE, categoryLabel + OBJ_NOT_FOUND)
+                return result
+            }
+
+            List<DocSubCategory> docSubCategoryList = (List<DocSubCategory>) docSubCategoryCacheUtility.listByCategoryId(docCategory.id)
+
+            List<DocSubCategory> lstSubCategory = listSubCategory(docSubCategoryList, userId)
+
+
+            result.put(DOC_CATEGORY, docCategory)
+            result.put(LST_SUB_CATEGORY, lstSubCategory)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SAVE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Save AllCategoryUserMapping object in DB
+     * This method is in transactional boundary and will roll back in case of any exception
+     * @param parameters -N/A
+     * @param obj -a AllCategoryUserMapping obj returned from controller
+     * @return -a AllCategoryUserMapping object necessary for buildSuccessResultForUI
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (LinkedHashMap) obj
+        String categoryLabel = preResult.get(CATEGORY_LABEL)
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap parameterMap = (GrailsParameterMap) parameters
+            DocCategoryUserMapping categoryUserMapping = buildAppUserCategoryObject(parameterMap)
+            docCategoryUserMappingService.create(categoryUserMapping)
+            List<DocSubCategory> lstSubCategory = (List<DocSubCategory>) preResult.get(LST_SUB_CATEGORY)
+            for (int i = 0; i < lstSubCategory.size(); i++) {
+                DocSubCategoryUserMapping subCategoryUserMapping = buildAppUserSubCategoryObject(lstSubCategory[i], parameterMap)
+                docSubCategoryUserMappingService.create(subCategoryUserMapping)
+            }
+
+            result.put(APP_USER_CATEGORY, categoryUserMapping)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            //@todo:rollback
+            throw new RuntimeException(SAVE_FAILURE_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SAVE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Do nothing at post condition
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Show newly created AllCategoryUserMapping object in grid
+     * Show success message
+     * @param obj -map from execute method
+     * @return -a map containing all objects necessary for show
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map executeResult = (LinkedHashMap) obj
+        String categoryLabel = executeResult.get(CATEGORY_LABEL)
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            DocCategoryUserMapping docCategoryUserMapping = (DocCategoryUserMapping) executeResult.get(APP_USER_CATEGORY)
+            AppUser user = (AppUser) appUserCacheUtility.read(docCategoryUserMapping.userId)
+            GridEntity object = new GridEntity()
+            object.id = docCategoryUserMapping.id
+            object.cell = [
+                    Tools.LABEL_NEW,
+                    docCategoryUserMapping.id,
+                    user.username,
+                    docCategoryUserMapping.isCategoryManager ? Tools.YES : Tools.NO
+            ]
+            result.put(Tools.ENTITY, object)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.MESSAGE, SAVE_SUCCESS_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SAVE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (LinkedHashMap) obj
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (preResult.get(Tools.MESSAGE)) {
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, SAVE_FAILURE_MESSAGE)
+            }
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SAVE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build appUserCategory Object
+     * @param parameterMap - GrailsParameterMap from UI
+     * @return categoryUserMapping - An object of appUserCategoryMapping
+     */
+    private DocCategoryUserMapping buildAppUserCategoryObject(GrailsParameterMap parameterMap) {
+        DocCategoryUserMapping categoryUserMapping = new DocCategoryUserMapping(parameterMap)
+        categoryUserMapping.companyId = docSessionUtil.appSessionUtil.getCompanyId()
+        categoryUserMapping.createdBy = docSessionUtil.appSessionUtil.getAppUser().id
+        categoryUserMapping.createdOn = new Date()
+        categoryUserMapping.updatedBy = 0
+        categoryUserMapping.updatedOn = null
+        return categoryUserMapping
+    }
+
+    /**
+     * Build appUserCategory Object
+     * @param parameterMap - GrailsParameterMap from UI
+     * @return categoryUserMapping - An object of appUserCategoryMapping
+     */
+    private DocSubCategoryUserMapping buildAppUserSubCategoryObject(DocSubCategory subCategory, GrailsParameterMap parameterMap) {
+        DocSubCategoryUserMapping docSubCategoryUserMapping = new DocSubCategoryUserMapping()
+        docSubCategoryUserMapping.userId = Long.parseLong(parameterMap.userId)
+        docSubCategoryUserMapping.categoryId = subCategory.categoryId
+        docSubCategoryUserMapping.subCategoryId = subCategory.id
+        docSubCategoryUserMapping.companyId = docSessionUtil.appSessionUtil.getCompanyId()
+        docSubCategoryUserMapping.createdBy = docSessionUtil.appSessionUtil.getAppUser().id
+        docSubCategoryUserMapping.createdOn = new Date()
+        docSubCategoryUserMapping.updatedBy = 0
+        docSubCategoryUserMapping.updatedOn = null
+        return docSubCategoryUserMapping
+    }
+
+    private List<DocSubCategory> listSubCategory(List<DocSubCategory> lstDocSubCategory, long userId) {
+        List<DocSubCategory> lstSubCategory = []
+        for (int i = 0; i < lstDocSubCategory.size(); i++) {
+            DocSubCategoryUserMapping subCategoryUserMapping = docSubCategoryUserMappingService.findByCompanyIdAndUserIdAndCategoryIdAndSubCategoryId(lstDocSubCategory[i].companyId, lstDocSubCategory[i].categoryId, userId, lstDocSubCategory[i].id)
+            if (!subCategoryUserMapping) {
+                lstSubCategory << lstDocSubCategory[i]
+            }
+        }
+        return lstSubCategory
+    }
+}

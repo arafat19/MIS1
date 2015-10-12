@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open "Sprint Budget" in Edit Mode | |
+ *ActionService:* | SelectSprintBudgetActionService | *Auditable:* | No 
+ *Url:* | /budgSprintBudget/select | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 7th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Sprint" link
+* Show Landing Page of ["Budget Sprint"|guide:ShowBudgSprintActionService].
+* Select line item from grid.
+* Click "Budget" button from tool bar.
+* [Show Landing Page of "Sprint Budget"|guide:ShowSprintBudgetActionService].
+* [Show list of "Budget" in landing page|guide:ListSprintBudgetActionService].
+* Select line item from grid.
+* Click on "Edit" button from tool bar.
+* Open "Sprint Budget" in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select sprint budget" privilege.
+
+h4. Process:
+* Get *Sprint Budget* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Sprint Budget* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

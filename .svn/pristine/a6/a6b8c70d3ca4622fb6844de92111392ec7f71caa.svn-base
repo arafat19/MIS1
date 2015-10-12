@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="trialBalanceOfLevel2" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="565" leftMargin="15" rightMargin="15" topMargin="15" bottomMargin="15" uuid="5924b743-6fb0-4f2a-8827-201a4a179fab">
+	<property name="ireport.zoom" value="1.2100000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="divisionName" class="java.lang.String"/>
+	<parameter name="projectIdList" class="java.lang.Object"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="accTypeAssetId" class="java.lang.Long"/>
+	<parameter name="accTypeExpensesId" class="java.lang.Long"/>
+	<parameter name="accTypeLiabilitiesId" class="java.lang.Long"/>
+	<parameter name="accTypeIncomeId" class="java.lang.Long"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT t1.name AS description,
+            CASE
+            WHEN (coa.system_acc_type_id=$P{accTypeAssetId} OR coa.system_acc_type_id=$P{accTypeExpensesId})
+THEN COALESCE(SUM(vw_voucher_details.dr_balance),'0.00')
+            ELSE 0
+            END str_dr_balance,
+            CASE
+            WHEN (coa.system_acc_type_id=$P{accTypeAssetId} OR coa.system_acc_type_id=$P{accTypeExpensesId})
+THEN SUM(vw_voucher_details.dr_balance)
+            ELSE 0
+            END dr_balance,
+            CASE
+            WHEN (coa.system_acc_type_id=$P{accTypeLiabilitiesId} OR coa.system_acc_type_id=$P{accTypeIncomeId})
+THEN COALESCE(SUM(vw_voucher_details.cr_balance),'0.00')
+            ELSE 0
+            END str_cr_balance,
+            CASE
+            WHEN (coa.system_acc_type_id= $P{accTypeLiabilitiesId}OR coa.system_acc_type_id=$P{accTypeIncomeId})
+THEN SUM(vw_voucher_details.cr_balance)
+            ELSE 0
+            END cr_balance
+            FROM vw_acc_voucher_with_details vw_voucher_details
+            LEFT JOIN acc_chart_of_account coa ON coa.id = vw_voucher_details.coa_id
+	  LEFT JOIN acc_type type ON type.id = coa.acc_type_id
+            LEFT JOIN acc_tier1 t1 ON t1.id = coa.tier1
+            WHERE vw_voucher_details.voucher_date >= $P{fromDate}
+            AND vw_voucher_details.voucher_date <= $P{toDate}
+            AND vw_voucher_details.posted_by > $P{postedByParam}
+            AND ($X{IN,vw_voucher_details.project_id,projectIdList})
+            AND vw_voucher_details.company_id = $P{companyId}
+            AND coa.tier1 > 0
+            GROUP BY coa.system_acc_type_id,t1.name,type.order_id
+	 ORDER BY type.order_id,t1.name]]>
+	</queryString>
+	<field name="description" class="java.lang.String"/>
+	<field name="str_dr_balance" class="java.math.BigDecimal"/>
+	<field name="dr_balance" class="java.math.BigDecimal"/>
+	<field name="str_cr_balance" class="java.math.BigDecimal"/>
+	<field name="cr_balance" class="java.math.BigDecimal"/>
+	<title>
+		<band height="115">
+			<staticText>
+				<reportElement uuid="f10c2b04-0b66-4bc2-a7ac-9fea0843c82d" x="149" y="95" width="100" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Debit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="83a18f6e-b9ec-4db2-aa79-5d8feb00dc0a" x="0" y="95" width="149" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fcdbd3a5-bd38-4dbe-8b49-32ab34c3c19c" x="249" y="95" width="100" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e79e275a-f769-48c0-ac27-195c26d048cb" x="0" y="0" width="149" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Trial Balance(Hierarchy 2)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0fd501b3-bb7e-4ebf-8852-a47ffff13673" x="0" y="35" width="149" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy">
+				<reportElement uuid="c7e988ff-4b01-4525-b8f5-5e1377ba5cb1" x="149" y="35" width="200" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b5d63388-08fe-4acf-9101-313b32a6ea84" x="0" y="50" width="149" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy">
+				<reportElement uuid="8dd2ef27-e09d-4aa5-abd1-5d5c9b4fe583" x="149" y="50" width="200" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="65" width="149" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Project ]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="262b6395-8f55-4446-a439-b8700badde8e" x="149" y="65" width="200" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0fd501b3-bb7e-4ebf-8852-a47ffff13673" x="0" y="20" width="149" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy">
+				<reportElement uuid="c7e988ff-4b01-4525-b8f5-5e1377ba5cb1" x="149" y="20" width="200" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="262b6395-8f55-4446-a439-b8700badde8e" x="149" y="80" width="200" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{divisionName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="80" width="149" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Division]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="18">
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement uuid="74cf1812-f4be-41a7-8be1-685ae1e5cb4f" stretchType="RelativeToTallestObject" x="249" y="0" width="100" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cr_balance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement uuid="8db91706-215a-4ca6-8bc1-7baf9ef1934c" stretchType="RelativeToTallestObject" x="149" y="0" width="100" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dr_balance}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="81ce4f56-a584-4854-a132-f4bc37ac2f52" x="0" y="0" width="149" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

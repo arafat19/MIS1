@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search Un-approve "Inventory Out" From Grid View | |
+ *ActionService:* | SearchForUnApprovedInventoryOutDetailsActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/listUnApprovedInventoryOutDetails | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 1st July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+"Inventory Out Details" mean Item of unapproved "Inventory Out".
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu of left menu should show as default.
+* Click "Out" link.
+* [Show Group of "Inventory Out" Landing Page|guide:ShowForInventoryOutActionService].
+* Select a Line-Item from grid view.
+* Click "New" button.
+* [Show Landing Page of Un-Approved "Inventory Out"|guide:ShowForUnApprovedInventoryOutDetailsActionService].
+* Click the magnify icon from grid view.
+* Write about searching criteria.
+* Press "Enter" button.
+* Search Un-approve "Inventory Out" From Grid View.
+
+h4. Pre-condition:
+* User must have "List Unapproved Inventory Out Details" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*	
+ Find | Text Box | Numeric | Chalan
+ Find | Text Box | Alpha Numeric | *Item*
+ Find | Text Box | Numeric | Quantity
+{table}
+
+h4. Process:
+* Get list of Un-approve "Inventory Out"(Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all Un-approve "Inventory Out".
+
+h4. Post-condition:
+
+* *Success:*
+** Un-approve "Inventory Out" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of Un-approve "Inventory Out" in landing page|guide:ListForUnApprovedInventoryOutDetailsActionService].
+* [Show Group list  of "Inventory Out" in landing page|guide:ListForInventoryOutActionService].
+

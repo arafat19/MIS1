@@ -1,0 +1,35 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-43 | Priority: | High
+ *Name* | Show Move Fixed Asset | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fxdFixedAssetTrace/show | *Action Class:* | ShowForFixedAssetTraceActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th September 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+This is the landing page of Move Fixed Asset with input form on top and grid view at the bottom.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+# Show blank input form of Move Fixed Asset, so that actor can Move new Fixed Asset [Ref: Move Fixed Asset|guide:moveFixedAsset].
+# List all Move Fixed Asset [Ref: ListMoveFixedAsset|guide:listMoveFixedAsset].
+
+h4. Post-condition:
+
+# *Success:*
+## Show Move Fixed Asset page at grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

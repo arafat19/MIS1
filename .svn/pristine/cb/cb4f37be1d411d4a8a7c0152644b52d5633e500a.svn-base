@@ -1,0 +1,37 @@
+
+{table}
+ Use Case ID: | MIS-Budget-13 | Priority: | High
+ *Name* | Show Budget Line Item | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budget/show | *Action Class:* | ShowBudgetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 20th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+This is landing page of Budget Line Item with input form on top and grid view at the bottom.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+# Show blank input form of Budget Line Item, so that actor can create new Budget Line Item [Create Budget Line Item|guide:CreateBudgetActionService].
+# List all Budget Line Item [List Budget Line Item|guide:ListBudgetActionService].
+
+h4. Post-condition:
+
+# *Success:*
+## Show budget line item page at grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].
+
+!Budget.png!

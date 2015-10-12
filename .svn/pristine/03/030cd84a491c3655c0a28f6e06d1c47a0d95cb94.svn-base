@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of "Sprint Budget" in Landing Page | |
+ *ActionService:* | ListSprintBudgetActionService | *Auditable:* | No
+ *Url:* |/budgSprintBudget/list | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 07th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Sprint" link
+* [Show Landing Page of "Budget Sprint"|guide:ShowBudgSprintActionService].
+* Select line item from grid.
+* Click "Budget" button from tool bar.
+* [Show Landing Page of "Sprint Budget"|guide:ShowSprintBudgetActionService].
+* Show List of "Sprint Budget" in Landing Page.
+
+
+h4. Pre-condition:
+* User must have "List sprint budget" privilege.
+
+h4. Process:
+* Get list of all *Sprint Budget* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Budget
+** Quantity
+
+h4. Post-condition:
+
+* *Success:*
+** *Sprint Budget* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].

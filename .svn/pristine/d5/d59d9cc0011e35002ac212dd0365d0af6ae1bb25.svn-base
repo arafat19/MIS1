@@ -1,0 +1,47 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Approve *Indent* From Widget Grid View | |
+ *ActionService:* | ApproveIndentForDashBoardActionService| *Auditable:* | No
+ *Url*: | /procIndent/approveIndentDashBoard | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 8th October 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director,Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* Select *Indent* from grid of "Procurement widget".
+* Click "Approve" button.
+* Approve *Indent* From Widget Grid View.
+
+h4. Pre-condition:
+* User must have "Approve Indent at DashBoard" privilege.
+* Only unapproved *Indent* is approve-able.
+* *Indent* should have at least one item to approve.
+
+h4. Process:
+Approved Selected Un-approve *Indent* from dashboard.
+
+h4. Post-condition:
+
+* *Success:*
+** Remove newly approved *Indent* from widget grid-view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit. [Error Handler|common Usecases]
+
+h4. Related Usecase:
+* [Widget of "Procurement" Plugin|guide:_widgetofprocurement].
+* [Show List of Un-Approved *Indent* Widget tab of Procurement Option|guide:ListUnApprovedIndentActionService].
+

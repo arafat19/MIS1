@@ -1,0 +1,38 @@
+
+{table}
+ Use Case ID: | MIS-Budget-32 | Priority: | High
+ *Name* | Search Project Budget Type | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /projectBudgetType/select | *Action Class:* | SelectProjectBudgetTypeActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System Admin.
+
+h4. Description:
+Search available budget type & assigned budget type for the selected project.
+
+h4. Flow:
+# Select a project from drop down list.
+# Click "Search" button.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Get list of Project budget type from server.
+
+h4. Post-condition:
+
+# *Success:*
+## Show all project budget type lists.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

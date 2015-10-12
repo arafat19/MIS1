@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Task* For "Other Bank User" | |
+*ActionServices:* | ExhShowTasksForOtherBankUserActionService | *Auditable:* | No
+*Url:* |/exhTask/showForOtherBankUser  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Other User.
+
+h4. Description:
+This is the landing page of *Task* for "Other Bank User" with input form on top.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Other Bank Task" link.
+* Show Landing Page of *Task* For "Other Bank User".
+
+h4. Pre-condition:
+* User must have "Show task for other bank user" privilege.
+
+h4. Process:
+* Show search panel on top.
+* Show Start Date.
+* Show End Date.
+* [Populate "Task Status" List in drop down|guide:GetDropDownSystemEntityTagLibActionService].
+* [Populate "Bank" drop down to Search "Task"|guide:ExhListBanksForShowTaskOtherBankUserActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of *Task* For "Other Bank User".
+** Reset input form on top to search Task.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Exh/OtherBankTask_Show.png!

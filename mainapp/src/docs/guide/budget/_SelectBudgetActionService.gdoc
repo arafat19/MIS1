@@ -1,0 +1,44 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open "Production Budget" in Edit Mode | |
+*ActionService:* | SelectBudgetActionService | *Auditable:* | No
+*Url:* | /budgBudget/select | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Production" link.
+* [Show Landing Page of "Production Budget"|guide:_ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open "Production Budget" in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Budget" privilege.
+
+h4. Process:
+* Get "Production Budget" details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected "Production Budget" in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

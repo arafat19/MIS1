@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update "SMS" | |
+*ActionService:* | UpdateSmsActionService | *Auditable:* | No
+*Url:* | /sms/updateSms | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "SMS" link.
+* [Show Landing Page of "SMS"|guide:ShowSmsActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "SMS" in Edit Mode|guide:SelectSmsActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update "SMS".
+
+h4. Pre-condition:
+* User must have "Update sms" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Trans. Code | Read Only | Alpha Numeric | System Generated
+Active | Check Box | Boolean | Required
+Body | Text Area | Alpha Numeric | Required
+Description | Read Only | Alpha Numeric | System Generated
+{table}
+
+* Match expected version before updating a "SMS".
+
+h4. Process:
+* Update selected "SMS".
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected "SMS" into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!application/SMS_Update.png!

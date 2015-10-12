@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Custom Group* | |
+*ActionService:* | CreateAccCustomGroupActionService | *Auditable:* | No
+*Url:* | /accCustomGroup/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Custom Group* link.
+* [Show Landing Page of Custom Group|guide:ShowAccCustomGroupActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Custom Group*.
+
+h4. Pre-condition:
+* User must have "Create Custom Group" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Name | Text Box | Text | Required
+ Description | Text Box | Text | Optional
+ Is Active | Check Box | Boolean | Default Value False
+{table}
+
+* *Custom Group* "Name" must be unique.
+
+h4. Process:
+* Create a new *Custom Group*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Custom Group* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Acc/Custom_Group_Create.png!

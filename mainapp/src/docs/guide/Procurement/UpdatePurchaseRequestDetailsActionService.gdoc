@@ -1,0 +1,67 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update Item of *Purchase Request* | |
+*ActionService:* | UpdatePurchaseRequestDetailsActionService | *Auditable:* | No
+*Url*: | /procPurchaseRequestDetails/update | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show Landing Page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* [Show Item of "Purchase Request" Landing Page|guide:ShowPurchaseRequestDetailsActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* [Open Item of "Purchase Request" in Edit Mode|guide:SelectPurchaseRequestDetailsActionService].
+* User must insert valid input.
+* Click "Update" button.
+* Update *Item* of *Purchase Request*.
+
+h4. Pre-condition:
+* User must have "Update Purchase Request Details of Material" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Project | Read Only | Alpha Numeric |
+PR No. | Read Only | Numeric |
+Comments | Text Area | Alpha Numeric | Optional
+[Populate Item Type List|application] | Drop-Down List | Numeric | Required
+[Item|guide:getItemListForPRDetailsActionService] | Drop-Down List | Numeric | Required
+Quantity | Text Box | Numeric | Required
+Estimated Cost | Text Box | Numeric | Required
+Total Amount(estimated cost*quantity) | Read Only | Numeric | System Generated
+{table}
+
+* Updated *Purchase Request* items must be unique.
+* Match expected version before updating Item of *Purchase Request*.
+
+h4. Process:
+Update selected *Item* of *Purchase Request*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Item* of *Purchase Request* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+

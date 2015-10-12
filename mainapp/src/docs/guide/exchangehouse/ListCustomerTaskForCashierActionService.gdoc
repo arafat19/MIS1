@@ -1,0 +1,64 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Task* Created By *Customer* in Landing Page | |
+*ActionService:* | ListCustomerTaskForCashierActionService  | *Auditable:* | No
+*Url*: | /exhTask/listCustomerTaskForCashier | | 
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 19th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Task Customer* link.
+* Show List of *Task* Created By *Customer* in [Landing Page|guide:ShowCustomerTaskForCashierActionService].
+
+h4. Pre-condition:
+* User must have "List Customer Task for Cashier" privilege.
+* Customer's task which are send to exchange house  will be listed in grid view.
+
+h4. Process:
+* Get list of "Task" Created By "Customer" from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Id
+** Reference No
+** Amount(BDT)
+** Amount(AUD)
+** Total Due
+** Customer Name
+** Beneficiary Name
+** Payment Method
+** Regular fee
+** Discount
+
+h4. Post-condition:
+
+* *Success:*
+** "Task" list Created By "Customer" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "Task" From Grid View Created By "Customer"|guide:SearchCustomerTaskForCashierActionService].
+
+!Exh/Cashier_Customer Task_List.png!

@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete "Procurement Budget" | |
+*ActionService:* | DeleteBudgetActionService | *Auditable:* | No
+*Url:* | /budgBudget/delete | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* [Show Landing Page of "Procurement Budget"|guide:ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete "Procurement Budget".
+
+h4. Pre-condition:
+* User must have "Delete Budget" privilege.
+* If "Procurement Budget" has dependency with following business entity then "Procurement Budget" will not be delete-able:
+** Budget Schema
+** Budget Details
+** Budget Task
+** Purchase Request
+** Purchase Order
+** Inventory Consumption
+** QS Measurement (Internal)
+** QS Measurement (Government)
+
+
+h4. Process:
+* Delete a selected "Procurement Budget".
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected "Procurement Budget" from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+

@@ -1,0 +1,668 @@
+package com.athena.mis.projecttrack.controller
+
+import com.athena.mis.application.entity.EntityContent
+import com.athena.mis.projecttrack.actions.ptbug.*
+import grails.converters.JSON
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
+
+class PtBugController {
+
+    static allowedMethods = [
+            show: "POST", create: "POST", update: "POST", delete: "POST", select: "POST", list: "POST", showBugDetails: "POST",
+            showBugForSprint: "POST", createBugForSprint: "POST", deleteBugForSprint: "POST", listBugForSprint: "POST",
+            listOfBugByModule: "POST", showBugForMyTask: "POST", selectBugForMyTask: "POST", updateBugForMyTask: "POST",
+            reOpenBug: "POST", closeBug: "POST", showOrphanBug: "POST", createOrphanBug: "POST", updateOrphanBug: "POST",
+            listOrphanBug: "POST", showMyBug: "POST"
+    ]
+
+    ShowPtBugActionService showPtBugActionService
+    CreatePtBugActionService createPtBugActionService
+    UpdatePtBugActionService updatePtBugActionService
+    DeletePtBugActionService deletePtBugActionService
+    SelectPtBugActionService selectPtBugActionService
+    ListPtBugActionService listPtBugActionService
+    SearchPtBugActionService searchPtBugActionService
+    DownloadEntityContentForBugActionService downloadEntityContentForBugActionService
+    ShowPtBugForMyTaskActionService showPtBugForMyTaskActionService
+    SelectPtBugForMyTaskActionService selectPtBugForMyTaskActionService
+    UpdatePtBugForMyTaskActionService updatePtBugForMyTaskActionService
+
+    ShowPtBugDetailsActionService showPtBugDetailsActionService
+    ShowPtBugForSprintActionService showPtBugForSprintActionService
+    CreatePtBugForSprintActionService createPtBugForSprintActionService
+    DeletePtBugForSprintActionService deletePtBugForSprintActionService
+    ListPtBugForSprintActionService listPtBugForSprintActionService
+    SearchPtBugForSprintActionService searchPtBugForSprintActionService
+    GetBugForModuleActionService getBugForModuleActionService
+    ReOpenPtBugActionService reOpenPtBugActionService
+    ClosePtBugActionService closePtBugActionService
+
+    ShowOrphanBugActionService showOrphanBugActionService
+    CreateOrphanBugActionService createOrphanBugActionService
+    UpdateOrphanBugActionService updateOrphanBugActionService
+    ListOrphanBugActionService listOrphanBugActionService
+    SearchOrphanBugActionService searchOrphanBugActionService
+    AddMyPtBugActionService addMyPtBugActionService
+    ShowMyPtBugActionService showMyPtBugActionService
+    ListMyPtBugActionService listMyPtBugActionService
+    SearchMyPtBugActionService searchMyPtBugActionService
+
+    /**
+     * Show Bug list
+     */
+    def show() {
+        Map result
+        Map executeResult
+        Boolean isError
+
+        executeResult = (Map) showPtBugActionService.execute(params, null);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showPtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showPtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        String leftMenu = params.leftMenu
+        render(view: '/projectTrack/ptBug/show', model: [output: result as JSON, leftMenu: leftMenu])
+    }
+
+    /**
+     * Show Bug for Sprint
+     */
+    def showBugForSprint() {
+        Map result
+        Map preResult
+        String output
+        Map executeResult
+
+        if (params.sprintId) {
+            preResult = (Map) showPtBugForSprintActionService.executePreCondition(params, null)
+            Boolean isError = (Boolean) preResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) showPtBugForSprintActionService.buildFailureResultForUI(preResult)
+                output = result as JSON
+                render output
+                return
+            }
+
+            executeResult = (Map) showPtBugForSprintActionService.execute(params, preResult)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) showPtBugForSprintActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) showPtBugForSprintActionService.buildSuccessResultForUI(executeResult)
+            }
+
+            output = result as JSON
+            render(view: '/projectTrack/ptBug/showBugForSprint', model: [output: output])
+        }
+    }
+
+    /**
+     * Show Bug Details
+     */
+    def showBugDetails() {
+        Map result
+        Map executeResult
+        Boolean isError
+
+        executeResult = (Map) showPtBugDetailsActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showPtBugDetailsActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showPtBugDetailsActionService.buildSuccessResultForUI(executeResult)
+        }
+
+        String leftMenu = params.leftMenu
+        render(view: '/projectTrack/ptBug/showBugDetails', model: [result: result, leftMenu: leftMenu])
+    }
+
+    /**
+     * Create Bug object
+     */
+    def create() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+        String output
+
+        preResult = (Map) createPtBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createPtBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        executeResult = (Map) createPtBugActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createPtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) createPtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * Add Bug For Sprint
+     */
+
+    def createBugForSprint() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) createPtBugForSprintActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createPtBugForSprintActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) createPtBugForSprintActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createPtBugForSprintActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) createPtBugForSprintActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * Update Bug object
+     */
+    def update() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+        String output
+
+        preResult = (Map) updatePtBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updatePtBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        executeResult = (Map) updatePtBugActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updatePtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) updatePtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * Delete Bug object
+     */
+    def delete() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+        String output
+
+        preResult = (Map) deletePtBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deletePtBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        executeResult = (Map) deletePtBugActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deletePtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) deletePtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * Remove backlog for sprint
+     */
+    def deleteBugForSprint() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) deletePtBugForSprintActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deletePtBugForSprintActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) deletePtBugForSprintActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deletePtBugForSprintActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) deletePtBugForSprintActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * List and search backlog for sprint
+     */
+    def listBugForSprint() {
+        Map result
+        Map executeResult
+        Boolean isError
+        String output
+
+        if (params.query) {
+            executeResult = (Map) searchPtBugForSprintActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) searchPtBugForSprintActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) searchPtBugForSprintActionService.buildSuccessResultForUI(executeResult)
+            }
+        } else {
+            executeResult = (Map) listPtBugForSprintActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) listPtBugForSprintActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) listPtBugForSprintActionService.buildSuccessResultForUI(executeResult)
+            }
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * Select Bug
+     */
+    def select() {
+        Map executeResult
+        Map result
+        Boolean isError
+        String output
+
+        executeResult = (Map) selectPtBugActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) selectPtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (LinkedHashMap) selectPtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * Get list and Search Bug
+     */
+    def list() {
+        Map result;
+        Map executeResult
+        Boolean isError
+        String output
+
+        if (params.query) {
+            executeResult = (Map) searchPtBugActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) searchPtBugActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) searchPtBugActionService.buildSuccessResultForUI(executeResult)
+            }
+        } else {
+            executeResult = (Map) listPtBugActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) listPtBugActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) listPtBugActionService.buildSuccessResultForUI(executeResult)
+            }
+        }
+        output = result as JSON
+        render output
+    }
+
+    def downloadBugContent() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) downloadEntityContentForBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) downloadEntityContentForBugActionService.buildFailureResultForUI(preResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map executeResult = (Map) downloadEntityContentForBugActionService.execute(params, preResult);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) downloadEntityContentForBugActionService.buildFailureResultForUI(executeResult);
+            output = result as JSON
+            render output
+            return
+        }
+
+        EntityContent entityContent = (EntityContent) executeResult.entityContent
+        String fileName = executeResult.reportFileName
+
+        response.contentType = ConfigurationHolder.config.grails.mime.types[entityContent.extension]
+        response.setHeader("Content-disposition", "attachment;filename=${fileName}")
+        response.outputStream << entityContent.content
+    }
+
+    /**
+     * Show Bug list for my task
+     */
+    def showBugForMyTask() {
+        Map result
+
+        Map executeResult = (Map) showPtBugForMyTaskActionService.execute(params, null);
+        Boolean isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showPtBugForMyTaskActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showPtBugForMyTaskActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(view: '/projectTrack/ptBug/showBugForMyTask', model: [output: result as JSON])
+    }
+
+    /**
+     * Select Bug for my task
+     */
+    def selectBugForMyTask() {
+        Map result
+
+        Map executeResult = (Map) selectPtBugForMyTaskActionService.execute(params, null)
+        Boolean isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) selectPtBugForMyTaskActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (LinkedHashMap) selectPtBugForMyTaskActionService.buildSuccessResultForUI(executeResult)
+        }
+        String output = result as JSON
+        render output
+    }
+
+    /**
+     * Update Bug object for my task
+     */
+    def updateBugForMyTask() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) updatePtBugForMyTaskActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updatePtBugForMyTaskActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) updatePtBugForMyTaskActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updatePtBugForMyTaskActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) updatePtBugForMyTaskActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /**
+     * List of  bug for module
+     */
+    def listOfBugByModule() {
+        LinkedHashMap executeResult
+        LinkedHashMap result
+        Boolean isError
+        String output
+
+        LinkedHashMap preResult = (LinkedHashMap) getBugForModuleActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) getBugForModuleActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+
+        executeResult = (LinkedHashMap) getBugForModuleActionService.execute(params, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (LinkedHashMap) getBugForModuleActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render output
+            return
+        }
+
+        result = (LinkedHashMap) getBugForModuleActionService.buildSuccessResultForUI(executeResult)
+        output = result as JSON
+        render output
+    }
+
+    def reOpenBug() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) reOpenPtBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) reOpenPtBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) reOpenPtBugActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) reOpenPtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) reOpenPtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def closeBug() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) closePtBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) closePtBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) closePtBugActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) closePtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) closePtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def showOrphanBug() {
+        Map result
+        Map executeResult
+        Boolean isError
+
+        executeResult = (Map) showOrphanBugActionService.execute(params, null);
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showOrphanBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showOrphanBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(view: '/projectTrack/ptBug/showOrphanBug', model: [output: result as JSON])
+    }
+
+    def createOrphanBug() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) createOrphanBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createOrphanBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) createOrphanBugActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createOrphanBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) createOrphanBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def updateOrphanBug() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) updateOrphanBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateOrphanBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) updateOrphanBugActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateOrphanBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) updateOrphanBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def listOrphanBug() {
+        Map result
+        Map executeResult
+        Boolean isError
+        String output
+
+        if (params.query) {
+            executeResult = (Map) searchOrphanBugActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) searchOrphanBugActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) searchOrphanBugActionService.buildSuccessResultForUI(executeResult)
+            }
+        } else {
+            executeResult = (Map) listOrphanBugActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) listOrphanBugActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) listOrphanBugActionService.buildSuccessResultForUI(executeResult)
+            }
+        }
+        output = result as JSON
+        render output
+    }
+
+    def addToMyBug() {
+        Map result
+        Boolean isError
+        String output
+
+        Map preResult = (Map) addMyPtBugActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) addMyPtBugActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) addMyPtBugActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) addMyPtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) addMyPtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def showMyBug() {
+        Map result
+
+        Map executeResult = (Map) showMyPtBugActionService.execute(params, null)
+        Boolean isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showMyPtBugActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showMyPtBugActionService.buildSuccessResultForUI(executeResult)
+        }
+        String output = result as JSON
+        render(view: '/projectTrack/ptBug/showForMyBug', model: [output: output])
+    }
+
+    def listMyBug() {
+        Map result
+        Map executeResult
+        Boolean isError
+        String output
+
+        if (params.query) {
+            executeResult = (Map) searchMyPtBugActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) searchMyPtBugActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) searchMyPtBugActionService.buildSuccessResultForUI(executeResult)
+            }
+        } else {
+            executeResult = (Map) listMyPtBugActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) listMyPtBugActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) listMyPtBugActionService.buildSuccessResultForUI(executeResult)
+            }
+        }
+        output = result as JSON
+        render output
+    }
+}

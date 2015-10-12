@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Group of "Inventory In" From Supplier Landing Page | |
+ *ActionService:* | ShowForInventoryInFromSupplierActionService |  *Auditable:* | No
+ *Url:* | /invInventoryTransaction/showInventoryInFromSupplier | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 30th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Inventory Operator, Inventory Auditor, Production Operator.
+
+h4. Description:
+This is the landing page of "Inventory In" From Supplier Group with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks  [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Supplier" link.
+* Show Group of "Inventory In" From Supplier Landing Page.
+
+h4. Pre-condition:
+* User must have "Show Inventory-In" privilege.
+
+h4. Process:
+* [Get Group list of "Inventory In" from Supplier|guide:ListForInventoryInFromSupplierActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create Group of "Inventory In" From Supplier|guide:CreateForInventoryInFromSupplierActionService].
+** Show Group list of "Inventory In" From Supplier in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open Group of "Inventory In" From Supplier in Edit Mode|guide:SelectForInventoryInFromSupplierActionService].
+* [Delete Group of "Inventory In" From Supplier|guide:DeleteForInventoryInFromSupplierActionService].
+* [Search Group of "Inventory In" From Supplier From Grid View|guide:SearchForInventoryInFromSupplierActionService].
+* [Show Landing Page of Un-approve "Inventory In" From Supplier|guide:ShowForUnapprovedInvInFromSupplierActionService].
+* [Show Landing Page of Approved "Inventory In" From Supplier|guide:ShowForApprovedInvInFromSupplierActionService].
+
+!Inv/From_Supplier_Show.png!

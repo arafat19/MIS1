@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Send Mail to Approve Inventory Consumption | |
+*ActionService:* | CreateForInventoryConsumptionDetailsActionService | *Auditable:* | No
+*Url:* | /invInventoryTransactionDetails/deleteInventoryConsumptionDetails | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 23th June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Manager.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click Consumption link.
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+* Select a Line-Item from grid view.
+* Click "New" Button.
+* [Show Landing Page of Un-Approved "Inventory Consumption"|guide:ShowForUnApprovedInventoryConsumptionDetailsActionService].
+* User must enter valid input.
+* Click "Create" Button.
+* Send Mail to Approve Inventory Consumption.
+
+
+h4. Pre-condition:
+* User must have 'Create Inventory-Consumption Details Transaction' privilege.
+* Transaction Code "CreateForInventoryConsumptionDetailsActionService" must be active.
+* Must have Valid role id with comma delimited.
+* Inventory Consumption auto approve must be un-checked.
+
+h4. Process:
+* Send Mail to Approve Inventory Consumption in given role ids.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Send System generated e-mail for corresponding *User* to approve Inventory Consumption.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

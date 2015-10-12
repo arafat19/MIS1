@@ -1,0 +1,39 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* |  System Generated "Sprint Name" | |
+*Action:* | PtShowSprintActionService | *Auditable:* | No
+*Url:* | /ptSprint/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 9th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality. System will auto generate "Sprint Name".
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Generate "Sprint Name" with following logic:
+
+** 1st portion of name Represents "Project Name".
+** Next portion of name Represents "From Date" and "To Date".
+
+h4. Post-condition:
+
+* *Success:*
+** Send "Sprint Name" to caller user case.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Sprint"|guide:PtCreateSprintActionService].

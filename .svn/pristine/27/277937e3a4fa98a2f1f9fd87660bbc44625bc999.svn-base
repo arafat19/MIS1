@@ -1,0 +1,183 @@
+<%@ page import="com.athena.mis.document.config.DocSysConfigurationCacheUtility; com.athena.mis.PluginConnector; com.athena.mis.utility.DateUtility" %>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            <app:showSysConfig pluginId="${PluginConnector.DOCUMENT_ID}"
+                               key="${DocSysConfigurationCacheUtility.DOC_SUB_CATEGORY_LABEL}"></app:showSysConfig> Details
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <form id='categoryDetailForm' name='categoryDetailForm' class="form-horizontal" role="form"
+              method="post">
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="name">Name:</label>
+                <span id="name" class="col-md-9 pull-left">${subCategoryDetails?.name}</span>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="createdBy">Created:</label>
+                <span id="createdBy"
+                      class="col-md-9 pull-left">${subCategoryDetails?.createdBy}${subCategoryDetails?.createdOn}</span>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-3 control-label" for="members">Members:</label>
+                <span id="members" class="col-md-9 pull-left">${subCategoryDetails?.countMember}</span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-primary" id="lstManagerDiv">
+    <div class="panel-heading">
+        <div class="panel-title">Manager(s)</div>
+    </div>
+
+    <div class="panel-body">
+        <div class="form-group">
+            <div id="lstManager" style="border-style: none"></div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-primary uploadContentDiv" style="display: none">
+    <div class="panel-heading">
+        <div class="panel-title">Upload Content</div>
+    </div>
+
+    <form id='uploadSubCategoryDocumentForm' name='uploadSubCategoryDocumentForm' enctype="multipart/form-data"
+          class="form-horizontal form-widgets" role="form" method="post">
+        <div class="panel-body">
+            <input type="hidden" name="categoryId" id="categoryId"/>
+            <input type="hidden" name="subCategoryId" id="subCategoryId"/>
+
+            <div class="form-group">
+                <div class="col-md-2">
+                    <label id="labelUpload" class="col-md-3 control-label label-required"
+                           for="uploadDocument">Upload:</label>
+                </div>
+
+                <div class="col-md-10">
+                    <input type="file" class="form-control-static" id="uploadDocument" name="uploadDocument"
+                           validationMessage="Required"/>
+                    <span class="k-invalid-msg" data-for="uploadDocument"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button name="upload" id="upload" type="submit" data-role="button"
+                    class="k-button k-button-icontext"
+                    role="button" tabindex="3"
+                    aria-disabled="false"><span class="k-icon k-i-plus"></span>Upload
+            </button>
+            <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
+                    class="k-button k-button-icontext" role="button" tabindex="4"
+                    aria-disabled="false" onclick='resetEntityContentForm();'><span
+                    class="k-icon k-i-close"></span>Cancel
+            </button>
+        </div>
+    </form>
+</div>
+
+
+<script type="text/javascript">
+    var lstManagers, subCategoryId, categoryId, subCategoryLabel, subCategory, uploading, validatorAttachment;
+
+    $(document).ready(function () {
+        $('#lstManagerDiv').hide();
+        $('.uploadContentDiv').hide();
+        subCategoryId = ${(subCategoryDetails?.id)?subCategoryDetails?.id:[]};
+        categoryId = ${(subCategoryDetails?.categoryId)?subCategoryDetails?.categoryId:[]};
+        if (subCategoryId != 0) {
+            $('.uploadContentDiv').show();
+            $("#subCategoryId").val(subCategoryId);
+            $("#categoryId").val(categoryId);
+        }
+        lstManagers = ${(subCategoryDetails?.lstManager)?subCategoryDetails.lstManager:[]};
+        if (lstManagers.length > 0) {
+            $('#lstManagerDiv').show();
+            initManagerList();
+        }
+        onLoadUploadSubCategoryDocument();
+    });
+    function initManagerList() {
+        $("#lstManager").kendoListView({
+            dataSource: lstManagers,
+            template: "<div class='list-group-item'> #:manager#</div>"
+        });
+    }
+    function onLoadUploadSubCategoryDocument() {
+        initFormWithCustomRule();
+        $('#uploadDocument').kendoUpload({multiple: false});
+        bindFormEvents();
+    }
+    function initFormWithCustomRule() {
+        validatorAttachment = $("#uploadSubCategoryDocumentForm").kendoValidator({
+            validateOnBlur: false,
+            rules: {
+                upload: function (input) {
+                    if ((input[0].type == "file") && ($(input[0]).is('[validationMessage]'))) {
+                        return input.closest(".k-upload").find(".k-file").length;
+                    }
+                    return true;
+                }
+            }
+        }).data("kendoValidator");
+    }
+    function bindFormEvents() {
+        var actionUrl = "${createLink(controller: 'docSubCategory',action: 'uploadDocSubCategoryDocument')}";
+        $("#uploadSubCategoryDocumentForm").attr('action', actionUrl);
+
+        $('#uploadSubCategoryDocumentForm').iframePostForm({
+            post: function () {
+                uploading = true;
+                showLoadingSpinner(true);
+                setButtonDisabled($('#upload'), true);
+            },
+            complete: function (response) {
+                if (uploading == true) {
+                    showLoadingSpinner(false);
+                    executePostCondition(response);
+                    uploading = false;
+                    setButtonDisabled($('#upload'), false);
+                }
+            },
+            beforePost: function () {
+                if (executePreCondition() == false) {
+                    return false;
+                }
+                return true;
+            }
+        });
+    }
+    function executePreCondition() {
+        // trim field vales before process.
+        trimFormValues($("#uploadSubCategoryDocumentForm"));
+
+        if (!validatorAttachment.validate()) {
+            return false;
+        }
+        return true;
+    }
+    function executePostCondition(data) {
+        var result = eval('(' + data + ')');
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            resetEntityContentForm();
+            showSuccess(result.message);
+        }
+    }
+    function resetEntityContentForm() {
+        clearErrors($("#uploadSubCategoryDocumentForm"));
+        setButtonDisabled($('.save'), false);
+        // reset kando upload
+        $(".k-delete").parent().click();
+        $('#upload').html("<span class='k-icon k-i-plus'></span>Upload");
+        var actionUrl = "${createLink(controller: 'docSubCategory',action: 'uploadDocSubCategoryDocument')}";
+        $("#uploadSubCategoryDocumentForm").attr('action', actionUrl);
+    }
+
+</script>

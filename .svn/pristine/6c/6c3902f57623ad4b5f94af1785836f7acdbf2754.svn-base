@@ -1,0 +1,187 @@
+<script type="text/javascript">
+    var dropDownIdType,modelJsonForProduction,transactionId;
+
+    jQuery(function ($) {
+        modelJsonForProduction = ${modelJson};
+
+        $('#showReport').click(function () {
+            getProductionReport();
+            return false;
+        });
+
+        $('#printInventoryProductionReport').click(function () {
+            printProduction();
+            return false;
+        });
+
+        onLoadProduction();
+    });
+
+    function onLoadProduction() {
+        initializeForm($("#searchForm"),getProductionReport);
+        $('#IdType').kendoDropDownList({
+            dataTextField: "name",
+            dataValueField: "id"
+        });
+        dropDownIdType = $('#IdType').data("kendoDropDownList");
+
+        try {
+            $('.download_icon_set').hide();
+            if (modelJsonForProduction.transactionMap) {
+                populateProduction(modelJsonForProduction.transactionMap);
+                populateRawMaterials(modelJsonForProduction.lstRawMaterial);
+                populateFinishedProduct(modelJsonForProduction.lstFinishedProduct);
+                $("#transactionId").val(modelJsonForProduction.transactionMap.transactionId);
+                $('.download_icon_set').show();
+            }
+        } catch (e) {
+            showError(e.message);
+        }
+
+        // update page title
+        $(document).attr('title', "MIS - Inventory Production Report");
+        loadNumberedMenu(MENU_ID_INVENTORY, "#invReport/showInventoryProductionRpt");
+    }
+
+    function printProduction() {
+        var transactionId = $('#hidTransactionId').val();
+        if (transactionId.length <= 0) {
+            showError('First populate production details then click print');
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?transactionId=" + transactionId;
+        if (confirm('Do you want to download the production report now?')) {
+            var url = "${createLink(controller: 'invReport', action: 'downloadInventoryProductionRpt')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function executePreConditionToGetProductionReport() {
+        if (!validateForm($("#searchForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function getProductionReport() {
+
+        $('.download_icon_set').hide();
+        var transactionId = $('#transactionId').val();
+        if (executePreConditionToGetProductionReport() == false) {
+            $('#transactionDetails').hide();
+            $('.download_icon_set').hide();
+            return false;
+        }
+        var IdType = dropDownIdType.value();
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'invReport', action: 'searchInventoryProductionRpt')}?transactionId=" + transactionId + "&IdType=" + IdType,
+            success: executePostConditionForProductionReport,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForProductionReport(data) {
+
+        if (data.isError) {
+            showError(data.message);
+            $('#transactionDetails').hide();
+            $('.download_icon_set').hide();
+            return false;
+        }
+        populateProduction(data.transactionMap);
+        populateRawMaterials(data.lstRawMaterial);
+        populateFinishedProduct(data.lstFinishedProduct);
+
+        $('.download_icon_set').show();
+
+        return true;
+    }
+
+    function clearProductionForm() {
+        $('#hidTransactionId').val('');
+        $('#lblTransactionId').text('');
+        $('#lblTransactionDate').text('');
+        $('#lblInventoryName').text('');
+        $('#lblProductionLineItem').text('');
+        $('#lblTotalAmount').text('');
+        $('#lblRatePerUnit').text('');
+    }
+
+    function populateProduction(transactionMap) {
+        clearProductionForm();
+
+        $('#transactionDetails').show();
+
+        $('#lblTransactionId').text(transactionMap.transactionId);
+        $('#hidTransactionId').val(transactionMap.transactionId);
+        $('#lblTransactionDate').text(transactionMap.transactionDate);
+        $('#lblInventoryName').text(transactionMap.inventoryName);
+        $('#lblProductionLineItem').text(transactionMap.productionLineItem);
+        $('#lblTotalAmount').text(transactionMap.totalAmount);
+        $('#lblRatePerUnit').text(transactionMap.ratePerUnit);
+
+        $('#rawMaterial').show();
+    }
+
+    function populateRawMaterials(lstRawMaterial) {
+        var lstRawMaterials = $(lstRawMaterial);
+        if (lstRawMaterials.length <= 0) {
+            $('#rawMaterial').hide();
+            $('#tagRMList').hide();
+            return;
+        }
+        else {
+            $('#tagRMList').show();
+            $('#rawMaterial').show();
+            var tbodyItems = $('#tbodyMaterials');
+            tbodyItems.html('');
+            var htm = '';
+            for (var i = 0; i < lstRawMaterials.size(); i++) {
+                var eachObject = lstRawMaterials[i];
+                tbodyItems.append($('<tr></tr>')
+                        .append($('<td></td>').html(eachObject.id))
+                        .append($('<td></td>').html(eachObject.raw_material))
+                        .append($('<td class="align_right"></td>').html(eachObject.str_quantity))
+                        .append($('<td class="align_right"></td>').html(eachObject.str_rate))
+                        .append($('<td class="align_right"></td>').html(eachObject.str_total_amount))
+                );
+            }
+        }
+    }
+
+    function populateFinishedProduct(lstFinishedProduct) {
+        var lstFinishedProd = $(lstFinishedProduct);
+        if (lstFinishedProd.length <= 0) {
+            $('#finishedProduct').hide();
+            $('#tagFinishedProductList').hide();
+            return;
+        }
+        else {
+            $('#tagFinishedProductList').show();
+            $('#finishedProduct').show();
+            var tbodyItems = $('#trLabelsFinishedProduct');
+            tbodyItems.html('');
+            var htm = '';
+            for (var i = 0; i < lstFinishedProd.size(); i++) {
+                var eachObject = lstFinishedProd[i];
+                tbodyItems.append($('<tr></tr>')
+                        .append($('<td></td>').html(eachObject.id))
+                        .append($('<td></td>').html(eachObject.finished_product))
+                        .append($('<td class="align_right"></td>').html(eachObject.str_quantity))
+                        .append($('<td class="align_right"></td>').html(eachObject.str_rate))
+                        .append($('<td class="align_right"></td>').html(eachObject.str_overhead_cost))
+                        .append($('<td class="align_right"></td>').html(eachObject.str_total_amount))
+                );
+            }
+        }
+
+    }
+
+</script>

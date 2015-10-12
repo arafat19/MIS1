@@ -1,0 +1,165 @@
+package com.athena.mis.document.actions.appuserdoccategory
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocCategoryUserMapping
+import com.athena.mis.document.service.DocCategoryUserMappingService
+import com.athena.mis.document.service.DocSubCategoryUserMappingService
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class DeleteAppUserDocCategoryActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String NOT_FOUND_MESSAGE = "Selected member not found"
+    private static final String SUCCESS_MESSAGE = "Member has been successfully deleted"
+    private static final String FAILURE_MESSAGE = "Member could not be deleted"
+    private static final String APP_USER_CATEGORY = "appUserCategory"
+    private static final String DELETED = "deleted"
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String DEFAULT_CATEGORY_NAME = 'Category'
+
+    DocCategoryUserMappingService docCategoryUserMappingService
+    DocSubCategoryUserMappingService docSubCategoryUserMappingService
+
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+
+    /**
+     * Checking pre condition and association before deleting the AllCategoryUserMapping object
+     * @param parameters -parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     * This method is in transactional boundary and will roll back in case of any exception
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = DEFAULT_CATEGORY_NAME
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)    // default value
+            long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            // check existence of required parameter
+            if (!params.id) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long appUserCategoryMappingId = Long.parseLong(params.id)
+            DocCategoryUserMapping docCategoryUserMapping = docCategoryUserMappingService.read(appUserCategoryMappingId)
+            if (!docCategoryUserMapping) {
+                result.put(Tools.MESSAGE, NOT_FOUND_MESSAGE)
+                return result
+            }
+            result.put(APP_USER_CATEGORY, docCategoryUserMapping)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Delete AllCategoryUserMapping object from DB
+     * This function is in transactional boundary and will roll back in case of any exception
+     * @param params -serialized parameters from UI
+     * @param obj -a map from pre condition
+     * @return -a map containing isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object params, Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (Map) obj   // cast map returned from executePreCondition method
+        String categoryLabel = preResult.get(CATEGORY_LABEL)
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            DocCategoryUserMapping docCategoryUserMapping = (DocCategoryUserMapping) preResult.get(APP_USER_CATEGORY)
+            docCategoryUserMappingService.delete(docCategoryUserMapping.id) //delete object from DB
+            docSubCategoryUserMappingService.delete(docCategoryUserMapping) //delete object from DB
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            //@todo:rollback
+            throw new RuntimeException(FAILURE_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Do nothing for post condition
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Contains delete success message to show on UI
+     * @param obj -A map from execute method
+     * @return -a map contains boolean value(true/false) and delete success message
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(DELETED, Boolean.TRUE)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(Tools.MESSAGE, SUCCESS_MESSAGE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map receivedResult = (LinkedHashMap) obj
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                String receivedMessage = receivedResult.get(Tools.MESSAGE)
+                if (receivedMessage) {
+                    result.put(Tools.MESSAGE, receivedMessage)
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+}

@@ -1,0 +1,54 @@
+
+{table}
+ Use Case ID: | MIS-Budget-8 | Priority: | High
+ *Name* | Create Budget Line Item | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budget/create | *Action Class:* | CreateBudgetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 20th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+# User must enter valid value to create Budget Line Item.
+# Click "Create" Button.
+
+h4. Pre-condition:
+# Follow rules of validation:{table}
+ *Field* | *Input Type* | *Rules*
+ Project | Drop down list | Required
+ Budget Type | Drop down List | Required
+ Line Item | Plain text input box |Required and unique
+ Budget Quantity | Plain text input box | Required
+ Unit | Drop down list | Required
+ Contract Rate | Text input box | Optional(Required if billable enabled)
+ Billable | Check box | Optional
+ Details | Text area | Required
+{table}
+# Budget line items contain projects code.
+# Created budget line item must be unique.
+# If billable true contract rate is required.
+# Contract rate cannot be zero when billable true.
+
+h4. Process:
+Create a new budget line item for a project.
+
+h4. Post-condition:
+
+# *Success:*
+## New budget line item show in grid (should be 1st row of grid).
+## Show success message.
+## Reset the field for next inputs.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

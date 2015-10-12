@@ -1,0 +1,49 @@
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Open *Item* of *Indent* in Edit Mode | |
+ *ActionService:* | SelectIndentDetailsActionService| *Auditable:* | No
+ *Url*: | /procIndentDetails/select |  |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 7th October  2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+All Users.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Indent* link.
+* [Show Landing Page of "Indent"|guide:ShowIndentActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* [Show *Item* of Indent Landing Page|guide:ShowIndentDetailsActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* Open *Item* of *Indent* in Edit Mode
+
+h4. Pre-condition:
+* User must have "Select Indent Details" privilege.
+
+h4. Process:
+Get *Item* of *Indent* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Item* of *Indent* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Update Item of "Indent"|guide:UpdateIndentDetailsActionService].

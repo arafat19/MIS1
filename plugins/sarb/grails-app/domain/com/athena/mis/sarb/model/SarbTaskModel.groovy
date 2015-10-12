@@ -1,0 +1,92 @@
+package com.athena.mis.sarb.model
+
+class SarbTaskModel {
+
+	public static final String SQL_SARB_TASK_MODEL = """
+	DROP TABLE IF EXISTS vw_sarb_task_model;
+	DROP VIEW IF EXISTS vw_sarb_task_model;
+	CREATE OR REPLACE VIEW vw_sarb_task_model AS
+	SELECT
+    task.id AS id,
+    task.ref_no,
+    task.current_status,
+    task.remittance_purpose,
+    exh_remittance_purpose.code AS remittance_purpose_code,
+    task.payment_method,
+    task.customer_id,
+    task.customer_name,
+    task.beneficiary_id,
+    task.beneficiary_name,
+    task.refund_task_id,
+    ben.account_no AS beneficiary_account_no,
+    ben.bank AS beneficiary_bank,
+    ben_country.code AS beneficiary_country_code,
+    task.amount_in_foreign_currency,
+    task.amount_in_local_currency,
+    task.created_on AS created_on,
+    task.company_id AS company_id,
+    COALESCE(sarb_task.submitted_file_count,0) AS submitted_file_count,
+    sarb_task.original_file_name,
+    sarb_task.original_file_content,
+    sarb_task.original_response,
+    COALESCE(sarb_task.is_submitted_to_sarb,false) AS is_submitted_to_sarb,
+    COALESCE(sarb_task.is_cancelled,false) AS is_cancelled,
+    COALESCE(sarb_task.enabled,false) AS enabled,
+    sarb_task.response_of_retrieve_reference,
+    sarb_task.sarb_ref_no,
+    sarb_task.response_of_reference,
+    COALESCE(sarb_task.revise_status, 0) AS revise_status,
+    COALESCE(sarb_task.is_accepted_by_sarb,false) AS is_accepted_by_sarb
+    FROM exh_task task
+    LEFT JOIN sarb_task_details sarb_task
+        ON task.id = sarb_task.task_id  AND sarb_task.id = (SELECT MAX(sarb_task_details.id) FROM sarb_task_details WHERE sarb_task_details.task_id = task.id)
+    LEFT JOIN exh_remittance_purpose ON exh_remittance_purpose.id = task.remittance_purpose
+    LEFT JOIN exh_beneficiary ben ON ben.id = task.beneficiary_id
+    LEFT JOIN country ben_country ON ben_country.id = ben.country_id;
+	"""
+
+	long id								//ExhTask.id
+	String refNo						//ExhTask.refNo
+	long currentStatus                  //ExhTask.currentStatus
+	int remittancePurpose               //ExhTask.remittancePurpose
+	String remittancePurposeCode        //ExhRemittancePurpose.code
+	int paymentMethod                   //ExhTask.paymentMethod
+	long customerId                     //ExhTask.customerId
+	String customerName                 //ExhTask.customerName
+	long beneficiaryId                  //ExhTask.beneficiaryId
+
+    String beneficiaryName              //ExhTask.beneficiaryName
+    String beneficiaryCountryCode       //ExhBeneficiary.country.code
+    String beneficiaryAccountNo         //ExhBeneficiary.accountNo
+    String beneficiaryBank              //ExhBeneficiary.bank
+
+	double amountInForeignCurrency      //ExhTask.amountInForeignCurrency
+	double amountInLocalCurrency        //ExhTask.amountInLocalCurrency
+	Date createdOn                      //ExhTask.createdOn
+	long companyId                      //ExhTask.companyId
+    long refundTaskId                   //ExhTask.refundTaskId
+
+	long submittedFileCount				//SarbTaskDetails.submittedFileCount
+	String originalFileName				//SarbTaskDetails.originalFileName
+	String originalFileContent			//SarbTaskDetails.originalFileContent
+    String originalResponse             //SarbTaskDetails.originalResponse
+    boolean isSubmittedToSarb           //SarbTaskDetails.isSubmittedToSarb
+	String responseOfRetrieveReference	//SarbTaskDetails.responseOfRetrieveReference
+	String sarbRefNo					//SarbTaskDetails.sarbRefNo
+	String responseOfReference			//SarbTaskDetails.responseOfReference
+	boolean isAcceptedBySarb            //SarbTaskDetails.isAcceptedBySarb
+    boolean isCancelled                 //SarbTaskDetails.isCancelled
+    long reviseStatus                   //SarbTaskDetails.reviseStatus
+    boolean enabled                     //SarbTaskDetails.enabled
+
+	static mapping = {
+		table "vw_sarb_task_model"
+		version false
+		cache usage: "read-only"
+	}
+
+    static constraints = {
+        beneficiaryAccountNo(nullable: true)
+        beneficiaryBank(nullable: true)
+    }
+}

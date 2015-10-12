@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bankChequePreview" language="groovy" pageWidth="577" pageHeight="262" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="577" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="4fa950ab-a391-4b51-9479-deec20772e1f">
+	<property name="ireport.zoom" value="1.0245201830476087"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="voucherMap" class="java.lang.Object">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="code" class="java.lang.String"/>
+	<field name="head_name" class="java.lang.String"/>
+	<field name="created_on" class="java.sql.Timestamp"/>
+	<field name="amount_dr" class="java.lang.String"/>
+	<field name="amount_cr" class="java.lang.String"/>
+	<field name="particulars" class="java.lang.String"/>
+	<background>
+		<band height="262">
+			<image>
+				<reportElement uuid="0d1ca4fe-a942-43a2-8530-c9f5f7dd553e" x="0" y="0" width="577" height="261"/>
+				<imageExpression><![CDATA[$P{REPORT_DIR} +  "/" +  "cheque_prime_577_261.png"]]></imageExpression>
+			</image>
+		</band>
+	</background>
+	<title>
+		<band height="262">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="dc6f7e21-72e8-474f-a91b-e81f623bae15" x="55" y="92" width="400" height="20"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{voucherMap}.payTo]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="dc6f7e21-72e8-474f-a91b-e81f623bae15" x="421" y="44" width="151" height="20"/>
+				<textElement>
+					<font size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{voucherMap}.chequeDate]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="dc6f7e21-72e8-474f-a91b-e81f623bae15" x="38" y="120" width="360" height="129"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="8"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="38.0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{voucherMap}.theSumOfTaka]]></textFieldExpression>
+			</textField>
+			<textField pattern="=#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="dc6f7e21-72e8-474f-a91b-e81f623bae15" x="419" y="128" width="126" height="28"/>
+				<textElement>
+					<font fontName="Arial Narrow"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{voucherMap}.amount]]></textFieldExpression>
+			</textField>
+			<line direction="BottomUp">
+				<reportElement uuid="c58ca3ff-1876-4552-bf25-2fccf5d761b2" x="23" y="34" width="50" height="50">
+					<printWhenExpression><![CDATA[($P{voucherMap}.isAccountPayable==true)?Boolean.TRUE:Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+			</line>
+			<line direction="BottomUp">
+				<reportElement uuid="c58ca3ff-1876-4552-bf25-2fccf5d761b2" x="19" y="27" width="50" height="50">
+					<printWhenExpression><![CDATA[($P{voucherMap}.isAccountPayable==true)?Boolean.TRUE:Boolean.FALSE]]></printWhenExpression>
+				</reportElement>
+			</line>
+		</band>
+	</title>
+</jasperReport>

@@ -1,0 +1,66 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create "Customer User Account" | |
+*ActionService:* | ExhCreateForCustomerUserActionService | *Auditable:* | No
+*Url:* | /exhCustomer/createCustomerUser | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click "Create Customer Account" link.
+* [Show Landing Page of "Customer User Account"|guide:ExhShowForCustomerUserActionService].
+* User must enter valid input.
+* Click "Search" button.
+* [Search "Customer User"|guide:ExhSearchForCustomerUserActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create "Customer User Account".
+
+h4. Pre-condition:
+* User must have "Create for customer-user" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Login ID | Text Box | Alpha Numeric | Required & Valid
+ Password | Text Box | Alpha Numeric | Required
+ Confirm Password | Text Box | Alpha Numeric | Required & match with Password
+ Set Default Password | Check Box | Boolean | Optional(Default Value False)
+{table}
+
+* Log-in Id must be unique.
+* User's "Enabled" CheckBox by Default False.
+* User's "Account Locked" CheckBox by Default False.
+* User's "Power User" CheckBox by Default False.
+* User's "Config Manager" CheckBox by Default False.
+* User's "Disable Password Expiration" CheckBox by Default False.
+* User's "Account Expired" CheckBox by Default False.
+
+h4. Process:
+* Create a new "Customer User Account".
+
+h4. Post-condition:
+* [Send e-mail to corresponding *Customer*|guide:_SendMailForCreateUserAccountActionService].
+
+* *Success:*
+** Create a new Application user as a *Customer* role.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Exh/Cashier_Customer Account_Create.png!

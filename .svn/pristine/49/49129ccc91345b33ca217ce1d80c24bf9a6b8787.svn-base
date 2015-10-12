@@ -1,0 +1,30 @@
+package com.athena.mis.document.taglib
+
+import com.athena.mis.document.actions.taglib.GetDocMyCategoriesTaglibActionService
+import com.athena.mis.utility.Tools
+
+class DocMyCategoriesTagLib {
+
+    static namespace = "doc"
+
+    GetDocMyCategoriesTaglibActionService getDocMyCategoriesTaglibActionService
+
+    /**
+     * Render lisView of my categories
+     * example: <doc:myCategories name="listView"></doc:myCategories>
+     * @attr name REQUIRED - name & id of html component
+     * @attr onclick - on click event call
+     */
+
+    def myCategories = { attrs, body ->
+        Map preResult = (Map) getDocMyCategoriesTaglibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = getDocMyCategoriesTaglibActionService.execute(preResult, null)
+        out << output
+    }
+
+}

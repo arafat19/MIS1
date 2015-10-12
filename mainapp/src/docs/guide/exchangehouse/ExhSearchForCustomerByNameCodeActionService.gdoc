@@ -1,0 +1,69 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search "Customer List" | |
+*ActionService:* | ExhSearchForCustomerByNameCodeActionService | *Auditable:* | No
+*Url:* | /exhCustomer/searchForCustomerByNameAndCode | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 28th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent, Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursment" sub menu of left menu should show as default.
+* Click "Search Customer" link.
+* [Show Landing Page of "Search Customer"|guide:ExhShowForCustomerByNameCodeActionService].
+* User must enter valid input.
+* Click "Search" button.
+* Search "Customer List".
+
+h4. Pre-condition:
+* User must have "Search customer by name,code etc." privilege.
+* Rules of Searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+  [Search Type|guide:_PopulateSearchByList] | Drop down |  Numeric | Require
+  Search For | Text Box | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* Get list of *Customer* (default: 15 at Max) matching with search criteria.
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Full Name
+** Customer A/C No
+** Address
+** Phone Number
+** Photo Id No
+
+h4. Post-condition:
+
+* *Success:*
+** *Customer* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+
+!Exh/Cashier_Search Customer_Search.png!

@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Process Instrument Mapping* From Grid View | |
+*ActionService:* | SearchRmsProcessInstrumentMappingActionService | *Auditable:* | No
+*Url:* | /rmsProcessInstrumentMapping/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Process Instrument Mapping* link.
+* [Show Landing Page of "Process Instrument Mapping"|guide:ShowRmsProcessInstrumentMappingActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Process Instrument Mapping* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Process Instrument Mapping" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Searching Option*
+Find | Text Box | Alpha Numeric | Process Type
+Find | Text Box | Alpha Numeric | Instrument Type
+{table}
+
+
+h4. Process:
+* Get list of *Process Instrument Mapping* (default: 15 at Max) matching with search criteria.
+* Searching with zero length string will list all *Process Instrument Mapping*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Process Instrument Mapping* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [List "Process Instrument Mapping"|guide:ListRmsProcessInstrumentMappingActionService].

@@ -1,0 +1,61 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Purchase Order* | |
+*ActionService:* | CreatePurchaseOrderActionService | *Auditable:* | No
+*Url*: | /procPurchaseOrder/create |  |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show Landing Page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* User must insert valid input.
+* Click "Create" Button.
+* Create *Purchase Order*.
+
+h4. Pre-condition:
+* User must have "Create Purchase Order" privilege.
+* Follow rules of validation.
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Project | Read Only | Alpha Numeric |
+Budget Item | Read Only | Alpha Numeric |
+"Purchase Request Id" | Read Only | Numeric |
+[Populate All Supplier List|application] | Drop-Down List  | Numeric | Required
+[Payment Method|guide:populatepaymentmethodlist] | Drop-Down List | Numeric | Required
+Discount | Text Box | Numeric | Optional
+Mode of Payment | Text Box | Alpha Numeric | Required
+Comments | Text Area | Alpha Numeric | Optional
+{table}
+* Only approved *Purchase Request* (By Director and Project Director) can create new *Purchase Order*.
+* Each Approved *Purchase Request* can create one or more *Purchase Order*.
+
+h4. Process:
+Create a new *Purchase Order*.
+
+h4. Post-condition:
+* After Create *Purchase Order* e-mail must send to "priviledged user"(Director,Project Director).
+
+* *Success:*
+** Add newly created *Purchase Order* into grid-view (should be 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!procurement/PO_Create.png!

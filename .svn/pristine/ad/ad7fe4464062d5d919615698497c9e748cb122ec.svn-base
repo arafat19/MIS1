@@ -1,0 +1,35 @@
+
+{table}
+ Use Case ID: | MIS-Budget-52 | Priority: | High
+ *Name* | Show Consumption Deviation Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budgReport/showConsumptionDeviation | *Action Class:* | ShowForConsumptionDeviationActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 27th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+# Show blank input form of Consumption Deviation Report, so that actor can search Consumption Deviation Report. 
+# List all Consumption Deviation Report [Ref: List Consumption Deviation Report|guide:listConsumptionDeviationReport].
+
+h4. Post-condition:
+
+# *Success:*
+## Show Consumption Deviation report landing page.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

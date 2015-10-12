@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Upload "Sanction File" | |
+*ActionService:* | ExhImportSanctionFileActionService | *Auditable:* | No
+*Url:* | /exhSanction/uploadSanctionFile | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click "Upload Sanction" link.
+* [Show Landing Page of "Upload Sanction File"|guide:_ShowSanctionFileUploadPage].
+* Click "Select file" from input panel.
+* Browse your required "Sanction" CSV file.
+* Click "Upload Sanction(s)" button.
+* Upload "Sanction File".
+
+h4. Pre-condition:
+* User must have "Upload sanction" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ Sanction File | Upload Box | File | Required 
+{table}
+
+* Uploaded file must be in CSV format.
+* If any column or row of the file is invalid then file upload not possible.
+
+h4. Process:
+* Upload valid "Sanction File".
+
+h4. Post-condition:
+
+* Uploaded file show the founded error in grid view (Row wise).
+
+* *Success:*
+** Upload selected CSV file.
+** Show success message.
+
+* *Failure:* 
+** Show error message for details visit [Error Handler|common Usecases].
+

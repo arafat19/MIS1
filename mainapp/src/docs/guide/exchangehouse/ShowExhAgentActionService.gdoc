@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Agent* | |
+*ActionService:* | ShowExhAgentActionService | *Auditable:* | No
+*Url:* | /exhAgent/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Agent* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* Show Landing Page of *Agent*.
+
+h4. Pre-condition:
+* User must have "Show Agent Company" privilege.
+
+h4. Process:
+* Show blank input form on top to [Create new "Agent"|guide:CreateExhAgentActionService].
+* [List "Agent"|guide:ListExhAgentActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Agent* information in grid view.
+** Reset input form on top to create new *Agent*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Agent" in Edit Mode|guide:SelectExhAgentActionService].
+* [Delete "Agent"|guide:DeleteExhAgentActionService].
+* [Search "Agent" From Grid View|guide:SearchExhAgentActionService].
+
+!Exh/Agent_Show.png!

@@ -1,0 +1,44 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open "Mail" in Edit Mode | |
+*ActionService:* | SelectAppMailActionService | *Auditable:* | No
+*Url:* | /appMail/select | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "Mail" link.
+* [Show Landing Page of "Mail"|guide:ShowAppMailActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open "Mail" in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select App Mail" privilege.
+
+h4. Process:
+* Get "Mail" details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected "Mail" information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

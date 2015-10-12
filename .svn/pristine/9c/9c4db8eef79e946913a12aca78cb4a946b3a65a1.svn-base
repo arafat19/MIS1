@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Approve *Task* | |
+*ActionService:* | ExhApproveTaskForCashierActionService | *Auditable:* | No 
+*Url:* | /exhTask/approveTaskForCashier | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st February 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* [Show Landing Page of Cashier's "Task"|guide:ShowExhTaskForCashierActionService].
+* Select a Line-Item from grid view.
+* Click "Approve" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Approve *Task*.
+
+h4. Pre-condition:
+* User must have "Approve Task For Cashier" privilege.
+* Select a un-approved *Task* from grid view.
+* Beneficiary of corresponding *Task* must be approved.
+
+h4. Process:
+* Approve selected *Task*.
+* "Approved" status should show in grid view.
+
+h4. Post-condition:
+
+* *Success:*
+** Approve selected *Task*.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

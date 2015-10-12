@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Sprint Status Type" List in drop-down | |
+*ActionService:* | GetDropDownSystemEntityTagLibActionService | *Auditable:* | No
+*Url:* | /ptSprint/show  | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 7th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 10708.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Populate "Sprint Status Type" List in drop-down.
+
+h4. Pre-condition:
+* Key must be Active to populate in drop-down.
+
+h4. Process:
+* Get Active list of "Sprint Status Type" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate active "Sprint Status Type" in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Update "Sprint"|guide:PtUpdateSprintActionService].

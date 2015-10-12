@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Task* Created By *Customer* | |
+*ActionService:* | ShowCustomerTaskForCashierActionService | *Auditable:* | No
+*Url:* | /exhTask/showCustomerTaskForCashier | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 19th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+This is the landing page of "Task" Created By "Customer" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Task Customer* link.
+* Show Landing Page of *Task* Created By *Customer*.
+
+h4. Pre-condition:
+* User must have "Show Customer Task for Cashier" privilege.
+
+h4. Process:
+* Show blank input form to [Update "Task" Created By "Customer"|guide:_ExhUpdateCustomerTaskForCashierActionService].
+* [List "Task" Created By "Customer"|guide:ListCustomerTaskForCashierActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Task" Created By "Customer" in grid view.
+** Reset input form on top.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Task" in Edit Mode Created By "Customer"|guide:_ExhSelectCustomerTaskForCashierActionService].
+* [Search "Task" From Grid View Created By "Customer"|guide:SearchCustomerTaskForCashierActionService].
+* [Show "Customer Transaction Summary" Panel|guide:CustomerSummaryForTaskTagLibActionService].
+* [Approve "Task"|guide:ExhApproveTaskForCashierActionService].
+* [Show Landing Page of "Invoice" Report|guide:ExhShowInvoiceDetailsReportActionService].
+* [Show Landing Page of "Customer Note"|guide:ShowExhCustomerNoteActionService].
+
+!Exh/Cashier_Customer Task_Show.png!

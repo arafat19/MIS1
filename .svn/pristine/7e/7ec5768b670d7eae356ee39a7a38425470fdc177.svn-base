@@ -1,0 +1,202 @@
+package com.athena.mis.budget.actions.budget
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.PluginConnector
+import com.athena.mis.budget.entity.BudgBudget
+import com.athena.mis.budget.service.BudgSchemaService
+import com.athena.mis.budget.service.BudgSprintBudgetService
+import com.athena.mis.budget.service.BudgetService
+import com.athena.mis.integration.qsmeasurement.QsMeasurementPluginConnector
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ * Delete budget object from DB
+ * For details go through Use-Case doc named 'DeleteBudgetActionService'
+ */
+class DeleteBudgetActionService extends BaseService implements ActionIntf {
+
+    private static String DELETE_SUCCESS_MESSAGE = "Budget has been deleted successfully"
+    private static String DELETE_FAILURE_MESSAGE = "Budget could not be deleted, Please refresh budget grid"
+    private static String BUDGET_HAS_ITEM = "Budget could not be deleted due to the existence of it's item(s)"
+    private static String BUDGET_HAS_TASK = "Budget could not be deleted due to the existence of it's task(s)"
+    private static String BUDGET_HAS_SCHEMA = "Budget could not be deleted due to the existence of it's schema(s)"
+    private static String BUDGET_HAS_SPRINT = "Budget could not be deleted due to it's mapping with sprint(s)"
+    private static String BUDGET_HAS_EC = "Budget could not be deleted due to the existence of it's content"
+    private static String BUDGET_HAS_QSM = "Budget could not be deleted due to the existence of it's related QS Measurement"
+    private static String BUDGET_OBJ = "budget"
+    private static String DELETED = "deleted"
+
+    BudgetService budgetService
+    BudgSchemaService budgSchemaService
+    BudgSprintBudgetService budgSprintBudgetService
+    @Autowired(required = false)
+    QsMeasurementPluginConnector qsMeasurementImplService
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    /**
+     * Checking different criteria before deleting the budget object
+     *      1) Check existence of budget object
+     *      2) Check existence of schema for procurement budget
+     *      3) Check existence of item
+     *      4) Check existence of task
+     *      5) Check existence of content
+     *      6) Check existence of sprint budget mapping
+     *      6) count QS Measurement
+     * @param parameters -parameters from UI
+     * @param obj - N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            long budgetId = Long.parseLong(params.id.toString())
+            BudgBudget budget = (BudgBudget) budgetService.read(budgetId)
+            // check budget object existence
+            if (!budget) {
+                result.put(Tools.MESSAGE, ENTITY_NOT_FOUND_ERROR_MESSAGE)
+                return result
+            }
+            // check if budget has schema(s) for procurement budget
+            if (!budget.isProduction) {
+                int count = budgSchemaService.countByBudgetIdAndCompanyId(budget.id, budget.companyId)
+                if (count > 0) {
+                    result.put(Tools.MESSAGE, BUDGET_HAS_SCHEMA)
+                    return result
+                }
+            }
+            // Check whether budget has item or not
+            if (budget.itemCount > 0) {
+                result.put(Tools.MESSAGE, BUDGET_HAS_ITEM)
+                return result
+            }
+            // check if budget has task(s)
+            if (budget.taskCount > 0) {
+                result.put(Tools.MESSAGE, BUDGET_HAS_TASK)
+                return result
+            }
+            // Check whether budget has content or not
+            if (budget.contentCount > 0) {
+                result.put(Tools.MESSAGE, BUDGET_HAS_EC)
+                return result
+            }
+            // check if budget is mapped with any sprint
+            int countSprintBudget = budgSprintBudgetService.countByBudgetId(budget.id)
+            if (countSprintBudget) {
+                result.put(Tools.MESSAGE, BUDGET_HAS_SPRINT)
+                return result
+            }
+            // Check whether budget has QS measurement or not
+            if (PluginConnector.isPluginInstalled(PluginConnector.QS)) {
+                int countQSM = qsMeasurementImplService.countQSMeasurementByBudgetId(budget.id)
+                if (countQSM > 0) {
+                    result.put(Tools.MESSAGE, BUDGET_HAS_QSM)
+                    return result
+                }
+            }
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(BUDGET_OBJ, budget)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DELETE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Delete budget object from DB
+     * 1. This function is in transactional boundary and will roll back in case of any exception
+     * 2. Get budget object from executePreCondition
+     * 3. If budget object doesn't delete from DB successfully then DELETE_FAILURE_MESSAGE will be shown
+     * @param params - N/A
+     * @param obj - parameters from UI
+     * @return -a map containing isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj
+            BudgBudget budget = (BudgBudget) preResult.get(BUDGET_OBJ)
+            Boolean updateStatus = budgetService.delete(budget.id)
+            if (!updateStatus.booleanValue()) {
+                result.put(Tools.MESSAGE, DELETE_FAILURE_MESSAGE)
+                return result
+            }
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DELETE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Remove object from grid
+     * Show success message
+     * @param obj -N/A
+     * @return -a map containing success message for UI
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(DELETED, Boolean.TRUE.booleanValue())
+            result.put(Tools.MESSAGE, DELETE_SUCCESS_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DELETE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                LinkedHashMap preResult = (LinkedHashMap) obj
+                if (preResult.message) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, DELETE_FAILURE_MESSAGE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DELETE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+}

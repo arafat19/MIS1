@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="consumptionAgainstAssetDetailsCsv" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15" uuid="8fa5faa7-d462-4a01-b835-787865c9ddce">
+	<property name="ireport.zoom" value="1.0245201830476114"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="inventoryIds" class="java.util.List">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="inventoryName" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<parameter name="dbQuantityFormat" class="java.lang.String"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="projectIds" class="java.util.List"/>
+	<parameter name="transactionTypeConId" class="java.lang.Long"/>
+	<parameter name="userProjectIds" class="java.util.List"/>
+	<parameter name="fixedAssetDetailsIds" class="java.util.List"/>
+	<parameter name="itemId" class="java.lang.Long"/>
+	<parameter name="itemName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT iitd.id, inv.name AS inventory_name, fad.name AS fixed_asset_name, iitd.transaction_date,
+item.unit, iitd.actual_quantity,
+        to_char(iitd.actual_quantity,$P{dbQuantityFormat}) || ' ' || item.unit AS str_quantity
+            FROM vw_inv_inventory_transaction_with_details iitd
+            LEFT JOIN inv_inventory inv ON inv.id = iitd.inventory_id
+	  LEFT JOIN fxd_fixed_asset_details fad ON fad.id = iitd.fixed_asset_details_id
+            LEFT JOIN item ON item.id = iitd.item_id
+            WHERE  iitd.transaction_type_id = $P{transactionTypeConId} AND
+                   iitd.approved_by > 0 AND
+                   iitd.fixed_asset_details_id > 0 AND
+                   iitd.is_current = TRUE AND
+                   iitd.item_id = $P{itemId} AND
+	         ($X{IN,iitd.project_id,userProjectIds}) AND
+	         ($X{IN,iitd.fixed_asset_details_id,fixedAssetDetailsIds}) AND
+                   (iitd.transaction_date BETWEEN $P{fromDate} AND $P{toDate})
+            ORDER BY fad.name, iitd.transaction_date]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="inventory_name" class="java.lang.String"/>
+	<field name="fixed_asset_name" class="java.lang.String"/>
+	<field name="transaction_date" class="java.sql.Date"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="actual_quantity" class="java.math.BigDecimal"/>
+	<field name="str_quantity" class="java.lang.String"/>
+	<variable name="serialGroup" class="java.lang.Integer" incrementType="Group" incrementGroup="grp_fixed_asset" calculation="Count">
+		<variableExpression><![CDATA[$V{serialGroup}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
+	</variable>
+	<variable name="serialGroupElement" class="java.lang.Integer" resetType="Group" resetGroup="grp_fixed_asset" calculation="Count">
+		<variableExpression><![CDATA[$V{serialGroupElement}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
+	</variable>
+	<variable name="groupTotal" class="java.math.BigDecimal" resetType="Group" resetGroup="grp_fixed_asset" calculation="Sum">
+		<variableExpression><![CDATA[$F{actual_quantity}]]></variableExpression>
+	</variable>
+	<variable name="grandTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{actual_quantity}]]></variableExpression>
+	</variable>
+	<group name="grp_fixed_asset">
+		<groupExpression><![CDATA[$F{fixed_asset_name}]]></groupExpression>
+	</group>
+	<title>
+		<band height="140">
+			<textField pattern="dd-MMM-yy">
+				<reportElement uuid="dad78359-3c29-4bb3-bac0-fac61fa724b9" x="143" y="80" width="240" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f4c39017-a0fd-4b9c-b2df-a474fc93150e" x="143" y="41" width="240" height="20"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="80" width="143" height="20"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[From Date ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="100" width="143" height="20"/>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[To Date ]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yy">
+				<reportElement uuid="1238d4c4-d1e4-4aac-8841-8600e70d0b3c" x="143" y="100" width="240" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f4c39017-a0fd-4b9c-b2df-a474fc93150e" x="143" y="61" width="240" height="20"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{itemName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="64e6b042-7e8e-4efc-8ef5-4b43b6941d60" x="0" y="120" width="143" height="20"/>
+				<textElement/>
+				<text><![CDATA[Transaction Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c769f2f7-de07-4977-9903-a509724ace72" x="143" y="120" width="240" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="157dec78-47c0-46da-8cb9-123096a2dda0" x="383" y="120" width="172" height="20"/>
+				<textElement/>
+				<text><![CDATA[Inventory Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7ce1768f-3d9a-4319-ab8e-b4882b01496f" x="0" y="41" width="143" height="20"/>
+				<textElement/>
+				<text><![CDATA[Project Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7ce1768f-3d9a-4319-ab8e-b4882b01496f" x="0" y="61" width="143" height="20"/>
+				<textElement/>
+				<text><![CDATA[Item Name ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1294fc28-803d-48b5-92e6-a4ea64e066aa" x="0" y="2" width="143" height="20"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIXED ASSET DETAILS (CSV)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7ce1768f-3d9a-4319-ab8e-b4882b01496f" x="0" y="21" width="143" height="20"/>
+				<textElement/>
+				<text><![CDATA[Printed On ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f4c39017-a0fd-4b9c-b2df-a474fc93150e" x="143" y="21" width="240" height="20"/>
+				<textElement verticalAlignment="Top">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50"/>
+	</pageHeader>
+	<detail>
+		<band height="20">
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="8ac17bf1-4e5b-43cf-b470-3272aa88efde" x="0" y="0" width="143" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{transaction_date}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement uuid="cf2cdd77-1f3b-4479-876e-25a0f1651830" x="143" y="0" width="240" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{str_quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6bc21c64-9625-4951-b403-edd7e5079558" x="383" y="0" width="172" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{inventory_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

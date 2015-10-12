@@ -1,0 +1,43 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show "Exchange House" Plugin | |
+*Action:* | N/A | *Auditable:* | No
+*Url:* | /exhExchangeHouse/renderExchangeHouseMenu | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier, Customer, Agent, Other Bank User.
+
+h4. Description:
+This is the landing page of "Exchange House" Plugin.
+
+h4. Flow:
+* Click "Exchange House" option from top menu bar.
+* Show "Exchange House" Plugin.
+
+h4. Pre-condition:
+* MIS Platform must be Installed.
+* MIS Project must contain "Exchange House" Plugin.
+* User must have "Exchange House Module" privilege to access "Exchange House" option from menu bar.
+
+h4. Process:
+* Show "Distribution Point" Widget based on user privilege. [Widget of "Exchange House" Option|guide:_WidgetofExchangeHouseOption]
+* "Exchange House" Left menu must be generate based on user privilege.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Distribution Point" widget in landing page.
+** Show "Exchange House" left menu based on log in user privilege.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

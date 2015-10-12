@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Tier-1* | |
+*ActionService:* | CreateAccTier1ActionService | *Auditable:* | No 
+*Url:* | /accTier1/create | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Tier-1* link.
+* [Show Landing Page of Tier-1|guide:ShowAccTier1ActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Tier-1*.
+
+h4. Pre-condition:
+* User must have "Create Tier 1" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Account Type|guide:GetDropDownAccTypeTagLibActionService] | Drop Down List | Numeric | Required
+ Name | Text Box | Text | Required & Unique
+ Is Active | Check Box | Boolean | Default Value False
+{table}
+
+
+h4. Process:
+* Create a new Account Hierarchy, *Tier-1*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Tier-1* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Acc/Tier_1_Create.png!

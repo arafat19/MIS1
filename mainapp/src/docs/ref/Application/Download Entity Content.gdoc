@@ -1,0 +1,35 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download *Entity Content* | |
+*ActionService:* | DownloadEntityContentActionService | *Auditable:* | No
+*Url:* | /entityContent/downloadContent | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 11th June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Pre-condition:
+* User must have "Download entity content" privilege.
+
+h4. Process:
+* Download the selected *Entity Content*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Entity Content* will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,38 @@
+
+{table}
+ Use Case ID: | MIS-Budget-43 | Priority: | High
+ *Name* | Search Budget Wise PO Summary Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budgetqReport/listBudgetWisePOSummary | *Action Class:* | ListForBudgetWisePOSummaryActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 9th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select project from drop down list.
+# Click "Search" button.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Get a details information of the Budget Wise PO Summary Report from server.
+
+h4. Post-condition:
+
+# *Success:*
+## Show Budget Wise PO Summary Report.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

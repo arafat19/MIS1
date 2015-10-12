@@ -1,0 +1,46 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Invoice" Report | |
+*ActionServices:* | showInvoice | *Auditable:* | No
+*Url:* | /exhReport/showInvoice | | 
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 27th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier, Agent.
+
+h4. Description:
+This is the landing page of "Invoice" Report with input form on top.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Show Invoice" link.
+* Show Landing Page of "Invoice" Report.
+
+h4. Pre-condition:
+* User must have "Show Invoice" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Invoice" report.
+** Reset input form on top to search new report.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Invoice" Report in HTML Format|guide:ExhGetInvoiceDetailsReportActionService].
+
+!Exh/Invoice_Report_Show.png!

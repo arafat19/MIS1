@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete the *Purpose* of *IOU Slip* | |
+*ActionService:* | DeleteAccIouPurposeActionService | *Auditable:* | No
+*Url:* | /accIouPurpose/delete | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5nd May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click *IOU Slip* link.
+* [Show Landing Page of IOU Slip|guide:ShowAccIouSlipActionService].
+* Select a Line-Item from grid view.
+* Click "Purpose" button from tool bar.
+* [Show Landing Page of the Purpose of IOU Slip|guide:ShowAccIouPurposeActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor Click "Yes" button.
+* Delete *IOU Slip Purpose*.
+
+h4. Pre-condition:
+* User must have "Delete For Acc Iou Purpose" privilege.
+* Approved *IOU Slip Purpose* cannot delete-able.
+
+h4. Process:
+* Delete selected *IOU Slip Purpose*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *IOU Slip Purpose* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

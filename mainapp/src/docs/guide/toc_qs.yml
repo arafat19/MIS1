@@ -1,0 +1,62 @@
+quantitySurvey:
+         title: Quantity Survey Plugin
+
+
+         addBudget(RightPanel)toCreateQuantitySurvey: Add Budget (Right Panel) to Create Quantity Survey
+         searchBudgetonQSRightPanel: Search Budget on QS Right Panel
+         listofBudgetRightPanelinQS: List of Budget Right Panel in QS
+         showBudgetDetailstoSelectBudgetLineItemFromGridView: Show Budget Details to Select Budget Line Item From Grid View
+
+         showInternalQSMeasurement: Show Landing Page of Internal QS Measurement
+         createInternalQSMeasurement: Create Internal QS Measurement
+         openInternalQSMeasurementinEditMode: Open Internal QS Measurement in Edit Mode
+         updateInternalQSMeasurement: Update Internal QS Measurement
+         listInternalQSMeasurement: List Internal QS Measurement
+         searchInternalQSMeasurement: Search Internal QS Measurement From Grid View
+         deleteInternalQSMeasurement: Delete Internal QS Measurement
+
+         showGovernmentQSMeasurement: Show Landing Page of Government QS Measurement
+         createGovernmentQSMeasurement: Create Government QS Measurement
+         openGovernmentQSMeasurementinEditMode: Open Government QS Measurement in Edit Mode
+         updateGovernmentQSMeasurement: Update Government QS Measurement
+         listGovernmentQSMeasurement: List Government QS Measurement
+         searchGovernmentQSMeasurement: Search Government QS Measurement From Grid View
+         deleteGovernmentQSMeasurement: Delete Government QS Measurement
+
+         showQSMeasurementReport: Show Landing Page of QS Measurement Report
+         searchQSMeasurementReport: Search QS Measurement Report
+         listQSMeasurementReport: List QS Measurement Report
+
+         downloadQSMeasurementReport: Download QS Measurement PDF Report
+         downloadQSMeasurementCSVReport: Download QS Measurement CSV Report
+
+         showBudgetContractDetailsReport: Show Landing Page of Budget Contract Details Report
+         searchBudgetContractDetailsReport: Search Budget Contract Details Report
+         listBudgetContractDetailsReport: List Budget Contract Details Report
+
+         downloadBudgetContractDetailsReport: Download Budget Contract Details PDF Report
+         downloadBudgetContractDetailsCSVReport: Download Budget Contract Details CSV Report
+
+         showBudgetFinancialSummaryReport: Show Landing Page of Budget Financial Summary Report
+         searchBudgetFinancialSummaryReport: Search Budget Financial Summary Report
+         listBudgetFinancialSummaryReport: List Budget Financial Summary Report
+
+         downloadBudgetFinancialSummaryReport: Download Budget Financial Summary PDF Report
+         downloadBudgetFinancialSummaryCSVReport: Download Budget Financial Summary CSV Report
+
+         showBudgetWiseQSReport: Show Landing Page of Budget Wise QS Report
+         searchBudgetWiseQSReport: Search Budget Wise QS Report
+         listBudgetWiseQSReport: List Budget Wise QS Report
+
+         downloadBudgetWiseQSReport: Download Budget Wise QS PDF Report
+         downloadBudgetWiseQSCSVReport: Download Budget Wise QS CSV Report
+
+         showCombinedQSMeasurementReport: Show Landing Page of Combined QS Measurement Report
+         searchCombinedQSMeasurementReport: Search Combined QS Measurement Report
+         listCombinedQSMeasurementReport: List Combined QS Measurement Report
+
+         downloadCombinedQSMeasurementReport: Download Combined QS Measurement PDF Report
+         downloadCombinedQSMeasurementCSVReport: Download Combined QS Measurement CSV Report
+
+         showQSStatusDashboard: Show QS Status Dashboard
+         listQSStatusDashboard: List QS Status Dashboard

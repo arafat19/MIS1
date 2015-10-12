@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate "Stock Details" By Select Item(Item stock Report) | |
+ *ActionService:* | GetForStockDetailsListByItemIdActionService | *Auditable:* | No
+ *Url:* | /invReport/getStockDetailsListByItem | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of the usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Item Stock" link.
+* [Show Landing Page of "Item Stock" Report|guide:ShowForItemStockListActionService].
+* Select "Item" from Item Stock report.
+* Populate "Stock Details" By Select Item.
+
+h4. Pre-condition:
+* User must have "Get Item Stock Details" privilege.
+* Unapproved inventory in show as "Unapproved (+)" Column.
+* Unapproved inventory out show as "Unapproved (-)" Column.
+
+h4. Process:
+* Get Item details from server with following columns:
+** Serial
+** Inventory Type
+** Inventory name
+** Stock Quantity
+** Un-Approved(+)
+** Un-Approved(-)
+
+h4. Post-condition:
+
+* *Success:*
+** "Item stock" details will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

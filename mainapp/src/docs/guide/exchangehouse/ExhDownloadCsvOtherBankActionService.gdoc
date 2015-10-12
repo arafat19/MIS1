@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Other Bank Task" Report in CSV Format | |
+*ActionService:* | ExhDownloadCsvOtherBankActionService | *Auditable:* | No
+*Url:* | /exhTask/downloadCsvForOtherBank | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Nahida Sultana | 2nd February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Other Bank User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Other Bank Task" link.
+* [Show Landing Page of "Other Bank User Task"|guide:ExhShowTasksForOtherBankUserActionService].
+* Enter valid input.
+* Click "CSV" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Other Bank Task" Report in CSV Format.
+
+h4. Pre-condition:
+* User must have "Download CSV for other bank user" privilege.
+* Rules of Searching:
+{table}
+*Field*   | *Input Type* | *Rules*
+Start Date | Calender |Required
+End Date | Calender | Required
+[Task Status|guide:GetDropDownSystemEntityTagLibActionService] |  Drop Down List | Required
+[Populate Bank List for "Other Bank User"|guide:ExhListBanksForShowTaskOtherBankUserActionService] | Drop Down List | Required
+{table}
+
+
+h4. Process:
+* Download the report as CSV format.
+* CSV footer should show page no, print date.
+
+h4. Post-condition:
+
+* *Success:*
+** CSV Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+

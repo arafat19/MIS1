@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Task Status" Report | |
+*ActionService:* | showForTaskSearch | *Auditable:* | No
+*Url:* | /exhTask/showForTaskSearch | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 28th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier, Customer, Other Bank.
+
+h4. Description:
+This is the landing page of "Task Status" Report with search panel on top.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Task Status" link.
+* Show Landing Page of "Task Status" Report.
+
+h4. Pre-condition:
+* User must have "Show for task search" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+* Show From date.
+* Show To Date.
+* [Search By List|guide:_PopulateSearchByList].
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Task status" Report.
+** Reset input form on top to search new Report.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Task Status" Report in HTML Format|guide:ExhGetDetailsByRefOrPinActionService].
+
+!Exh/Task Status Report_Show.png!

@@ -1,0 +1,17 @@
+<head>
+<meta name='layout' content='main' />
+<title>Access Denied</title>
+</head>
+<body>
+<div class='body'>
+    <script type="text/javascript">
+  $('span.headingText').html('Access Denied');
+  $('#icon_box').attr('class', 'pre-icon-header lock-task-list');
+  $(document).attr('title', "MIS - Access Denied");
+  </script>
+	<g:render template='/application/login/noAccess'/>
+</div>
+</body>
+
+
+

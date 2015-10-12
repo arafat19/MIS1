@@ -1,0 +1,52 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Bug Details" In PDF Format | |
+*ActionService:* | DownloadPtBugDetailsActionService | *Auditable:* | No
+*Url:* | /ptReport/downloadPtBugDetails | | 
+{table}
+
+ 
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 15th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Bug" button from tool bar.
+* [ Show Landing Page of "Sprint's Bug"|guide:ShowPtBugForSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Report" button from tool bar.
+* [Show landing page of *Bug Details* in html format|guide:ShowPtBugDetailsActionService].
+* Click on *PDF* Icon to download the pdf.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Bug Details" In PDF Format
+
+h4. Pre-condition:
+* User must have "Download individual Pt Bug Details" privilege.
+
+h4. Process:
+* To get *Bug Details* Report in PDF Format "Click Here":bugDetails.pdf
+* Download the report as PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search Approved "Inventory Out" From Grid View | |
+ *ActionService:* | SearchForApprovedInventoryOutDetailsActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/listApprovedInventoryOutDetails | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 1st July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu of left menu should show as default.
+* Click "Out" link.
+* [Show Group of "Inventory Out" Landing Page|guide:ShowForInventoryOutActionService].
+* Select a Line-Item from grid view.
+* Click "Approve" button.
+* [Show Landing Page of Approved "Inventory Out"|guide:ShowForApprovedInventoryOutDetailsActionService].
+* Click the magnify icon from grid view.
+* Write about searching criteria.
+* Press "Enter" button.
+* Search Approved "Inventory Out" From Grid View.
+
+h4. Pre-condition:
+* User must have "List Approved Inv Out Details" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Search Type*
+ Find | Text Box | Chalan
+ Find | Text Box | *Item*
+ Find | Text Box | Actual Quantity
+{table}
+
+h4. Process:
+* Get Approved "Inventory Out" list (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all Approved "Inventory Out.
+
+h4. Post-condition:
+
+* *Success:*
+** Approved "Inventory Out" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show List of Approved "Inventory Out"|guide:ListForApprovedInventoryOutDetailsActionService].
+
+

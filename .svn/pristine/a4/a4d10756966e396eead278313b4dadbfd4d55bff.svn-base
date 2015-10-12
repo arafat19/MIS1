@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cancelledPurchaseOrder" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="160" bottomMargin="50" isSummaryWithPageHeaderAndFooter="true" uuid="a72b2fa3-5788-42e6-b75a-5edf6182fdd8">
+	<property name="ireport.zoom" value="1.0245201830476074"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1" uuid="7d05a770-a614-4415-bfc5-bd3faf7cdd60"/>
+	<subDataset name="Table Dataset 2" uuid="87671a80-93db-4d12-bbe1-9ef14104d416"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="purchaseOrderMap" class="java.lang.Object"/>
+	<parameter name="purchaseOrderId" class="java.lang.Long"/>
+	<parameter name="supplierName" class="java.lang.String"/>
+	<parameter name="supplierAddress" class="java.lang.String"/>
+	<parameter name="invItemTypeMaterialId" class="java.lang.Integer"/>
+	<parameter name="invItemTypeWorkId" class="java.lang.Integer"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="totalTransportCost" class="java.lang.Float"/>
+	<parameter name="dbQuantityFormat" class="java.lang.String"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT item.name,item.code, to_char(quantity,$P{dbQuantityFormat})||' '||item.unit as quantity, to_char(rate,$P{dbCurrencyFormat}) AS rate, (rate*quantity) AS total_cost, to_char((rate*quantity),$P{dbCurrencyFormat}) AS total_cost_str,
+(rate*quantity) AS total_cost,
+to_char(vat_tax,$P{dbCurrencyFormat}) AS vat_tax, item_type.name item_type_name
+FROM proc_cancelledpodetails AS proc_purchase_order_details
+LEFT JOIN item item ON item.id= proc_purchase_order_details.item_id
+LEFT JOIN item_type ON item_type.id= item.item_type_id
+WHERE purchase_order_id=$P{purchaseOrderId}
+AND proc_purchase_order_details.item_id > 0
+ORDER BY item_type.id, item.name]]>
+	</queryString>
+	<field name="name" class="java.lang.String"/>
+	<field name="code" class="java.lang.String"/>
+	<field name="quantity" class="java.lang.String"/>
+	<field name="rate" class="java.lang.String"/>
+	<field name="total_cost" class="java.math.BigDecimal"/>
+	<field name="total_cost_str" class="java.lang.String"/>
+	<field name="vat_tax" class="java.lang.String"/>
+	<field name="item_type_name" class="java.lang.String"/>
+	<variable name="grandTotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_cost}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="162" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4a790b4b-eec1-469e-98e3-c0e75b2afc7e" x="2" y="2" width="98" height="15" forecolor="#000000"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PURCHASE ORDER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f5b628e3-8d3a-4ff3-952e-efe17ac8398c" x="297" y="22" width="80" height="15" forecolor="#FF0033" backcolor="#FFFFFF"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cancelled On]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="2" y="22" width="84" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PO Trace No]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ab2f64ef-41c3-4bbb-989a-41fead5ed671" x="86" y="22" width="197" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.purchaseOrderId]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="26e18af3-fbf0-45be-a004-7caf9c2d339a" x="371" y="22" width="181" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.lastUpdatedOn]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="06c038a1-ef29-4d3d-b9df-dc68c9014e8b" x="371" y="37" width="181" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.lastUpdatedBy]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9d00ca8b-8192-4c3d-9c0e-06fa094bbe51" x="2" y="67" width="84" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project Name]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3988cefb-5c17-4368-9193-691521b2d330" x="86" y="67" width="266" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.projectName]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="105ccf3d-a16b-4956-ab0a-bd19d25fdde0" x="2" y="37" width="84" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Payment Method]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="36fb15b6-5ec2-4152-b092-616a73a8d9d4" x="86" y="37" width="197" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.paymentMethod]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6a54067b-eefa-4aa4-b872-6cf722a6a3ae" x="2" y="82" width="84" height="25"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Mode of Payment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5f87f7a2-957f-405c-8aad-8fc5b84eeb00" x="297" y="37" width="80" height="15" forecolor="#FF0033" backcolor="#FFFFFF"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cancelled By]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7e75dda7-ed5f-438d-9a8a-55357cde91f7" isPrintRepeatedValues="false" x="86" y="82" width="466" height="25"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.paymentTerms]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="506b0c1d-5720-4298-a6e2-908ef46863dc" x="2" y="52" width="84" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Supplier]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b0358b04-ff86-4aeb-b74b-ffe0ea1b7651" x="86" y="52" width="197" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.supplierName]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="99a3b818-5708-4130-a49d-0854c64a48e1" x="297" y="52" width="80" height="15"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Supplier Address]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="e1bedd2c-3ad4-4961-b0ba-75d5e697c631" x="371" y="52" width="181" height="30"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($P{purchaseOrderMap}.supplierAddress?$P{purchaseOrderMap}.supplierAddress:'')]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a790b4b-eec1-469e-98e3-c0e75b2afc7e" x="1" y="142" width="100" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="false" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[ITEM LIST:]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="1698eb38-191a-43aa-b091-14bf6a92f021" x="2" y="17" width="170" height="1" forecolor="#000000"/>
+			</line>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7e75dda7-ed5f-438d-9a8a-55357cde91f7" positionType="Float" isPrintRepeatedValues="false" x="86" y="107" width="466" height="25"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$P{purchaseOrderMap}.cancelReason]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6a54067b-eefa-4aa4-b872-6cf722a6a3ae" positionType="Float" x="2" y="107" width="84" height="25" forecolor="#FF0033" backcolor="#FFFFFF"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cancellation Reason]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f69c4bab-72a3-4a93-93ef-c19c5ce26c72" x="100" y="2" width="100" height="16" forecolor="#FF0033"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[(CANCELLED)]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="3aea883a-bc1b-46cf-ad97-227c95f33d9d" x="346" y="0" width="75" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Rate]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8ebf5dd-c4a6-4879-9a40-bf4674e9511c" x="1" y="0" width="30" height="20"/>
+				<box leftPadding="2" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f174d377-2837-4d44-b6d7-fb341e0e70c7" x="271" y="0" width="75" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61b5d9ca-136d-4442-bb45-56f1b7e7e43a" x="81" y="0" width="145" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5b3fec58-3be9-4227-9c7f-298665158053" x="31" y="0" width="50" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2824c606-92bc-4e36-ad04-6bec0809876f" x="226" y="0" width="45" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="416970a8-99d3-462a-b3c5-7e2e5f30529c" x="477" y="0" width="75" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Cost]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="416970a8-99d3-462a-b3c5-7e2e5f30529c" x="421" y="0" width="56" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[VAT/Tax]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="f37e42f6-8e8f-4682-937d-dd5fc9bbcd14" stretchType="RelativeToTallestObject" x="271" y="0" width="75" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="5dec1857-3c0e-4797-8c62-46d6d455cc1e" stretchType="RelativeToTallestObject" x="226" y="0" width="45" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cc6e77cc-db0d-4df2-8f60-df82cb0fecb1" stretchType="RelativeToTallestObject" x="81" y="0" width="145" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement uuid="c9446714-8492-49a7-9be6-5ad28812e481" stretchType="RelativeToTallestObject" x="346" y="0" width="75" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="bf53a3e3-2baf-47b5-9a1a-2711a7c2d45b" stretchType="RelativeToTallestObject" x="1" y="0" width="30" height="20"/>
+				<box leftPadding="2" rightPadding="5">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="3e8126e9-0068-4964-b9ea-ee7b5cbe1257" stretchType="RelativeToTallestObject" x="477" y="0" width="75" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_cost_str}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0b85d548-c530-4d70-be1e-4274555c5dbb" stretchType="RelativeToTallestObject" x="31" y="0" width="50" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_type_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="3e8126e9-0068-4964-b9ea-ee7b5cbe1257" stretchType="RelativeToTallestObject" x="421" y="0" width="56" height="20"/>
+				<box leftPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{vat_tax}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="216">
+			<subreport>
+				<reportElement uuid="e8c539d9-3f8b-4ea5-923e-dcd280e9e696" x="0" y="201" width="555" height="15"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="3058342c-7bbc-4f79-a938-2944324a23ed" positionType="Float" x="371" y="135" width="170" height="20"/>
+				<box>
+					<pen lineStyle="Dashed"/>
+					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+					<leftPen lineStyle="Dashed"/>
+					<bottomPen lineStyle="Dashed"/>
+					<rightPen lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Agreed, Accepted and Recieved]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8b2d2846-1907-4b35-9222-8476c35fd3c3" positionType="Float" x="0" y="66" width="183" height="14"/>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$P{purchaseOrderMap}.directorName]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ae3b1e8e-abf7-433e-8b76-cf97e243266d" positionType="Float" x="0" y="0" width="555" height="15"/>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Approval Details]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="1140f709-44d0-4163-a556-4c3cab7ee63c" positionType="Float" x="371" y="66" width="183" height="14"/>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""+$P{purchaseOrderMap}.pdName]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RealSize" isUsingCache="true" onErrorType="Blank">
+				<reportElement uuid="41f0ef60-7cd5-4d26-bd83-c80214aa5a59" x="0" y="16" width="200" height="50"/>
+				<imageExpression><![CDATA[$P{purchaseOrderMap}.directorImageStream]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="76bf7fe1-ae3e-4e5f-8170-1264a61f3ab3" positionType="Float" x="0" y="80" width="100" height="16"/>
+				<textElement verticalAlignment="Top">
+					<font size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Director]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f42cc29c-5ba4-4256-a6b8-80efd00ec7f4" positionType="Float" x="0" y="135" width="170" height="20"/>
+				<box>
+					<pen lineStyle="Dashed"/>
+					<topPen lineWidth="0.5" lineStyle="Dashed"/>
+					<leftPen lineStyle="Dashed"/>
+					<bottomPen lineStyle="Dashed"/>
+					<rightPen lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[EMPLOYER'S REPRESENTATIVE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a06f003-4c1d-4933-b06c-81b45056214f" positionType="Float" x="0" y="155" width="555" height="35"/>
+				<box topPadding="2" bottomPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[We order according to conditions and specifications above. Contracts based on this purchase order shall, if not other written agreement has been made between the parties. Please acknowledge this order according to the purchase order. This purchases order can be terminated by the employer at any time with notice.
+*Any VAT and Taxes arising from this Purchase Order is at the responsibility of the supplier.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4df5c424-f9c4-4dc4-9d44-28319736a6de" positionType="Float" x="371" y="80" width="100" height="16"/>
+				<textElement verticalAlignment="Top">
+					<font size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Project Director]]></text>
+			</staticText>
+			<image scaleImage="RealSize" isUsingCache="true" onErrorType="Blank">
+				<reportElement uuid="f884b6ff-1f7e-46ea-ab2c-ed0359503543" x="355" y="16" width="200" height="50"/>
+				<imageExpression><![CDATA[$P{purchaseOrderMap}.pdImageStream]]></imageExpression>
+			</image>
+			<textField pattern="">
+				<reportElement uuid="60f06f14-12bd-4b36-8da7-6258a7b15f9b" x="0" y="201" width="29" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="125e7888-8328-4515-b276-2197521e4a3c" x="28" y="201" width="40" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="d695a198-20bc-4427-8312-590764fc402b" x="221" y="201" width="102" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="112">
+			<subreport>
+				<reportElement uuid="29389168-cd61-474a-8b82-844d13c6a571" x="0" y="77" width="554" height="35"/>
+				<subreportParameter name="dbQuantityFormat">
+					<subreportParameterExpression><![CDATA[$P{dbQuantityFormat}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="purchaseOrderId">
+					<subreportParameterExpression><![CDATA[$P{purchaseOrderId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="dbCurrencyFormat">
+					<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} + "/" + "sub_termsAndConditions.jasper"]]></subreportExpression>
+			</subreport>
+			<textField evaluationTime="Report" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="873b4a04-c460-4d61-86d7-e0a86f3a4118" x="477" y="0" width="75" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{purchaseOrderMap}.netPrice + $P{purchaseOrderMap}.discount+$P{purchaseOrderMap}.totalVatTax-$P{purchaseOrderMap}.totalTransportCost]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="33b56c04-d28e-49ca-ad75-8dde15912bfd" x="2" y="0" width="70" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[No. of Item(s):]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0b25b3c5-7e88-4e7a-89db-c6fbf2d10f0f" x="72" y="0" width="100" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fda3707f-6cf5-4d57-81e8-73756df721b1" x="391" y="0" width="86" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item Total:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fda3707f-6cf5-4d57-81e8-73756df721b1" x="391" y="15" width="86" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Discount:]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="873b4a04-c460-4d61-86d7-e0a86f3a4118" x="477" y="15" width="75" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["("+ (new DecimalFormat("#,##0.00")).format($P{purchaseOrderMap}.discount)+")"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="873b4a04-c460-4d61-86d7-e0a86f3a4118" x="477" y="60" width="75" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{purchaseOrderMap}.netPrice]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fda3707f-6cf5-4d57-81e8-73756df721b1" x="391" y="60" width="86" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Grand Total:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fda3707f-6cf5-4d57-81e8-73756df721b1" x="391" y="30" width="86" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total VAT/Tax:]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="873b4a04-c460-4d61-86d7-e0a86f3a4118" x="477" y="30" width="75" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["("+ (new DecimalFormat("#,##0.00")).format($P{purchaseOrderMap}.totalVatTax)+")"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="fda3707f-6cf5-4d57-81e8-73756df721b1" x="391" y="45" width="86" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Tr. Cost:]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="873b4a04-c460-4d61-86d7-e0a86f3a4118" x="477" y="45" width="75" height="15"/>
+				<box leftPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{purchaseOrderMap}.totalTransportCost]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

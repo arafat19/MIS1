@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Photo Id Type* | |
+*ActionService:* | ExhShowPhotoIdTypeActionService | *Auditable:* | No
+*Url:* | /exhPhotoIdType/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Photo Id Type* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Photo Id Type* link.
+* Show Landing Page of *Photo Id Type*.
+
+h4. Pre-condition:
+* User must have "Show Photo-Id-Type" privilege.
+
+h4. Process:
+* [Get list of "Photo Id Type"|guide:ExhListPhotoIdTypeActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Photo Id Type"|guide:ExhCreatePhotoIdTypeActionService].
+** Show list of "Photo Id Type" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Photo Id Type" in Edit Mode|guide:ExhSelectPhotoIdTypeActionService].
+* [Delete "Photo Id Type"|guide:ExhDeletePhotoIdTypeActionService].
+* [Search "Photo Id Type" From Grid View|guide:ExhSearchPhotoIdTypeActionService].
+
+!Exh/Photo Id Type_Show.png!

@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of "Task Status Details" in Landing Page | |
+*ActionService:* | ListSarbTaskForShowStatusActionService | *Auditable:* | No
+*Url:* | /sarbTaskModel/listTaskStatus | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [SARB|guide:_ShowSARBPlugin] option from top menu bar.
+* "SARB" sub menu of left menu should show as default.
+* Click "Task Status Details" link.
+* Show List of "Task Status Details" in [Landing Page|guide:_ShowSarbTaskForShowStatusActionService].
+
+h4. Pre-condition:
+* User must have "List Task Status" privilege.
+
+h4. Process:
+* Get list of "List Task Status" from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Ref No
+** Customer Name
+** Beneficiary Name
+** Payment Method
+** Submitted File
+** Amount(BDT)
+** Amount(ZAR)
+** Accepted
+
+h4. Post-condition:
+
+* *Success:*
+** "Task Status Details" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+
+!sarb/SARB_Task Status Details_List.png!

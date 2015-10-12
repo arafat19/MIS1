@@ -1,0 +1,101 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create Cashier's *Task* | |
+*ActionService:* | ExhCreateTaskActionService | *Auditable:* | No
+*Url:* | /exhTask/create | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* [Show Landing Page of Cashier's "Task"|guide:ShowExhTaskForCashierActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create Cashier's *Task*.
+
+h4. Pre-condition:
+* User must have "Create Task" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [RemittancePurpose|guide:ExhRemittancePurposeDropDownTagLib] | Drop Down List | Numeric | Required
+ [Ref No|guide:GenerateRefNo] | Auto Generated | Alpha Numeric | System Generated
+ [Customer A/C No|guide:GenerateCustomerNo]| Read Only | Alpha Numeric | System Generated
+ Customer Name| Read Only | Alpha Numeric |
+ Beneficiary ID | Read Only | Numeric | System Generated
+ Beneficiary Name | Read Only |  Alpha Numeric |
+ [Payment Method|guide:PopulatePaymentMethodList] | Drop Down List | Numeric | Required
+ Account Number | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ Bank | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ Branch | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ District | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ [Pin Number|guide:GeneratePinNumber] | Auto Generated | Alpha Numeric | Required (If "Payment Method" is "Cash Collection")
+ Identity Type | Text Box | Alpha Numeric | Required (If "Payment Method" is "Cash Collection")
+ Identity No | Text Box | Alpha Numeric | Optional
+ Select Other Bank |  Check Box | Boolean | Optional(Default Value False)
+ [District|guide:GetDropDownDistrictTagLibActionService] | Drop Down List | Numeric | Required(If Other bank is Selected)
+ [District wise Bank List|guide:ExhListBankByDistrictActionService] | Drop Down List | Numeric | Required(If Other bank is Selected)
+ [Bank and District wise Branch List|guide:ExhListByBankAndDistrictActionService] | Drop Down List | Numeric | Required(If Other bank is Selected)
+ BDT Amount | Read Only | Numeric | System Generated(Calculated)
+ GBP Amount | Read Only | Numeric | System Generated(Match with Source Amount)
+ Regular Fee | Read Only | Numeric | System Generated
+ Total | Read Only | Numeric | System Generated(GBP Amount+Regular Fee)
+ Discount | Text Box | Numeric | Optional
+ Grand Total | Read only | Numeric | System Generated(GBP Amount+Regular Fee-Discount)
+ [From Amount|guide:_PopulateSupportedCurrency] | Drop Down List | Numeric | Required
+ Source Amount |  Text Box | Numeric | Required
+ Rate |  Read Only | Numeric | System Generated
+ Given Amount | Text Box | Numeric | Optional
+ Change | Read Only | Numeric | Optional (Given Amount-Grand Total)
+ [Paid By|guide:PopulatePaidByList] | Drop Down List | Numeric | Required
+ Reference No | Text Box | Alpha Numeric | Required (If Paid By= Online Transfer)
+{table}
+
+* Visa Date must not expired.
+* Total Task amount for a *Customer* must not exceed Customer's "Declaration Amount" within declare date range
+          (If mis.exchangehouse.customerDeclarationAmountRequired=1).
+* Task Create Date must be within "Declaration Start" and "Declaration End" date range
+          (If mis.exchangehouse.customerDeclarationAmountRequired=1).
+* "Photo Id" date must not expired.
+
+h4. Process:
+* Create a new Cashier's *Task*.
+
+h4. Post-condition:
+* [Send e-mail to corresponding *Customer*|guide:_SendMailForCreateTaskActionService].
+* Send sms to corresponding *Customer*.
+
+* *Success:*
+** Add newly created Cashier's *Task* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show "Customer Transaction Summary Panel"|guide:CustomerSummaryForTaskTagLibActionService].
+
+!Exh/Cashier_Create Task_Create.png!

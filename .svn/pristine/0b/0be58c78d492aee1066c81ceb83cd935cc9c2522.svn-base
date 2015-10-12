@@ -1,0 +1,55 @@
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Show Requested Member(s)
+        </div>
+    </div>
+
+    <form id='joinRequestForm' name="joinRequestForm" class="form-horizontal form-widgets" role="form"
+          method="post">
+        <div class="panel-body">
+
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label label-required" for="fromDate">From Date:</label>
+
+                        <div class="col-md-6">
+                            <app:dateControl
+                                    name="fromDate"
+                                    tabindex="1">
+                            </app:dateControl>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label label-required" for="toDate">To Date:</label>
+
+                        <div class="col-md-6">
+                            <app:dateControl
+                                    name="toDate"
+                                    diffWithCurrent="30"
+                                    tabindex="2">
+                            </app:dateControl>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button name="create" id="create" type="submit" data-role="button"
+                    class="k-button k-button-icontext"
+                    role="button" tabindex="3"
+                    aria-disabled="false"><span class="k-icon k-i-plus"></span>Search
+            </button>
+
+        </div>
+    </form>
+</div>
+

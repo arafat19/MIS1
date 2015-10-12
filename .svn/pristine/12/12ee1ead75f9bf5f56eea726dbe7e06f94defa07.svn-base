@@ -1,0 +1,38 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate *Item Type* | | 
+ *ActionService:* | GetDropDownItemTypeTagLibActionService | *Auditable:* | No
+ *Url:* | Taglib:ItemTypeDropDownTagLib | | 
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 12th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description: 
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 401.
+
+h4. Pre-condition: 
+N/A.
+
+h4. Process: 
+* Get Active list of *Item Type* from server. 
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate *Item Type* in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *System Entity* | |
+*ActionService:* | DeleteSystemEntityActionService | *Auditable:* | No
+*Url:* | /systemEntity/delete | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 18th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click *System Entity Type* link.
+* [Show Landing Page of System Entity Type|guide:ShowSystemEntityTypeActionService].
+* Select a Line-Item from grid view.
+* Click *System Entity* button from tool bar.
+* [Show Landing Page of System Entity|guide:ShowSystemEntityActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *System Entity*.
+
+h4. Pre-condition:
+* User must have "Delete system entity" privilege.
+* Reserved *System Entity* must not delete-able.
+
+h4. Process:
+* Delete a selected *System Entity*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *System Entity* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,64 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Create Group of "Inventory Consumption" | |
+ *ActionService:* | CreateForInventoryConsumptionActionService | *Auditable:* | No
+ *Url:* | /invInventorytransaction/createInventoryConsumption | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Create Group of "Inventory Consumption" by "Name of Inventory" and "Budget Line Item". So that user have better accessibility to items those are Consumed from Inventory.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "Consumption" link.
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+* [Show searchable "Budget Line Item" grid list at right panel|guide:ListForBudgetOfConsumptionActionService].
+* [Select "Budget Line Item" From right Panel|guide:_selectBudgetLineItemFromRightPanel].
+* Click "Add" button.
+* User must insert valid input.
+* Click "Create" Button.
+* Create Group of "Inventory Consumption".
+
+h4. Pre-condition:
+* User must have "Create Inventory-Consumption Transaction" privilege.
+* Follow the rules of validation:{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* |
+ "Project Name" | Read Only | Alpha Numeric |  |
+ Budget Item | Read Only | Alpha Numeric | |
+ Budget details | Read Only | Alpha Numeric |  |
+ [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required |
+ Comments | Text Area | Alpha Numeric | Optional | 
+ [Populate Inventory Name List|guide:GetInventoryListByInventoryTypeActionService] | Drop-Down List | Numeric | Required |
+{table}
+
+* Created Group of "Inventory Consumption" must be unique.
+
+h4. Process:
+Create a new Group of "Inventory Consumption".
+
+h4. Post-condition:
+
+* *Success:*
+** Add Newly Created Group of "Inventory Consumption" into grid view (should be 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Select "Budget Line Item" From right Panel|guide:_selectBudgetLineItemFromRightPanel].
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+
+!Inv/Inventory_Consumption_Create.png!

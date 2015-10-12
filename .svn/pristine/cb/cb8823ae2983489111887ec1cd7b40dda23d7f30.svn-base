@@ -1,0 +1,253 @@
+package com.athena.mis.budget.actions.budgetdetails
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.PluginConnector
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.Item
+import com.athena.mis.application.entity.ItemType
+import com.athena.mis.application.utility.ItemCacheUtility
+import com.athena.mis.application.utility.ItemTypeCacheUtility
+import com.athena.mis.budget.entity.BudgBudget
+import com.athena.mis.budget.entity.BudgBudgetDetails
+import com.athena.mis.budget.model.BudgetProjectItemModel
+import com.athena.mis.budget.service.BudgetDetailsService
+import com.athena.mis.budget.utility.BudgSessionUtil
+import com.athena.mis.integration.inventory.InventoryPluginConnector
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ *  Update Budget details object and grid data
+ *  For details go through Use-Case doc named 'UpdateBudgetDetailsActionService'
+ */
+class UpdateBudgetDetailsActionService extends BaseService implements ActionIntf {
+
+    private static final String UPDATE_SUCCESS_MESSAGE = "Budget details has been updated successfully"
+    private static final String UPDATE_FAILURE_MESSAGE = "Can not update budget details"
+    private static final String INPUT_VALIDATION_ERROR = "Error occurred for invalid input"
+    private static final String BUDGET_NOT_FOUND = "Budget not found"
+    private static final String QUANTITY_LESS_THAN_PR = "Budget Item Quantity can not be lower than already issued PR Item Quantity "
+    private static final String FAILURE_DUE_TO_CONSUME_MESSAGE = "Budget Item Quantity can not be lower than Consumed Item Quantity "
+    private static final String BUDGET_DETAILS_OBJ = "budgetDetails"
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    BudgetDetailsService budgetDetailsService
+    InventoryPluginConnector inventoryImplService
+    @Autowired
+    BudgSessionUtil budgSessionUtil
+    @Autowired
+    ItemCacheUtility itemCacheUtility
+    @Autowired
+    ItemTypeCacheUtility itemTypeCacheUtility
+
+    /**
+     * Get parameters from UI and build budget details object for update
+     * 1. Checking params for INPUT_VALIDATION_ERROR
+     * 2. Get Budget id from params and pull budget object
+     * 3. Check budget object existence
+     * 4. Get budget details id from params
+     * 5. Pull Budget details object by budget details id
+     * 6. Check params quantity is less then oldBudgetDetails purchase request details quantity
+     * 7. Check budget item quantity can not be lower than consumed Item Quantity
+     * 8. Build budget details for update
+     * @param params -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap parameterMap = (GrailsParameterMap) params
+            // check here for required params are present
+            if ((!parameterMap.id) || (!parameterMap.version) || (!parameterMap.budgetId) || (!parameterMap.quantity)) {
+                result.put(Tools.MESSAGE, INPUT_VALIDATION_ERROR)
+                return result
+            }
+            // check if budget object exist
+            long budgetId = Long.parseLong(parameterMap.budgetId.toString())
+            BudgBudget budget = BudgBudget.read(budgetId)
+            if (!budget) {
+                result.put(Tools.MESSAGE, BUDGET_NOT_FOUND)
+                return result
+            }
+            long id = Long.parseLong(parameterMap.id.toString())
+            double quantity = Double.parseDouble(parameterMap.quantity.toString())
+            BudgBudgetDetails oldBudgetDetails = BudgBudgetDetails.read(id)
+            // check total budget quantity with total pr quantity from view
+            BudgetProjectItemModel budgetProjectItem = BudgetProjectItemModel.findByProjectIdAndItemId(oldBudgetDetails.projectId, oldBudgetDetails.itemId)
+            if ((budgetProjectItem.totalBudgetQuantity - oldBudgetDetails.quantity + quantity) < budgetProjectItem.totalPrQuantity) {
+                result.put(Tools.MESSAGE, QUANTITY_LESS_THAN_PR)
+                return result
+            }
+            // Check budget item quantity is lower than consumed item quantity or not
+            if (PluginConnector.isPluginInstalled(PluginConnector.INVENTORY)) {
+                int countConsumeItem = inventoryImplService.getConsumeItemByBudgetAndItemId(oldBudgetDetails.budgetId, oldBudgetDetails.itemId)
+                if (quantity < countConsumeItem) {
+                    result.put(Tools.MESSAGE, FAILURE_DUE_TO_CONSUME_MESSAGE)
+                    return result
+                }
+            }
+            BudgBudgetDetails budgetDetails = buildBudgetDetails(parameterMap, oldBudgetDetails) // get budget details
+            // checks input validation
+            budgetDetails.validate()
+            if (budgetDetails.hasErrors()) {
+                result.put(Tools.MESSAGE, INPUT_VALIDATION_ERROR)
+                return result
+            }
+            result.put(BUDGET_DETAILS_OBJ, budgetDetails)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Update budget details object in DB
+     * 1. This function is in transactional boundary and will roll back in case of any exception
+     * 2. Get budget details from executePreCondition
+     * @param parameters - N/A
+     * @param obj - serialized parameters from UI
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj
+            BudgBudgetDetails budgetDetails = (BudgBudgetDetails) preResult.get(BUDGET_DETAILS_OBJ)
+            budgetDetailsService.update(budgetDetails)
+            result.put(BUDGET_DETAILS_OBJ, budgetDetails)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Give total object and update success message
+     * 1. Get budget details object from execute
+     * 2. Get item & item type from corresponding cacheUtility
+     * @param obj - a map from execute
+     * @return -a map containing all objects necessary for show
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            LinkedHashMap receiveResult = (LinkedHashMap) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            BudgBudgetDetails budgetDetails = (BudgBudgetDetails) receiveResult.get(BUDGET_DETAILS_OBJ)
+            GridEntity object = new GridEntity()
+            Item item = (Item) itemCacheUtility.read(budgetDetails.itemId)
+            ItemType itemType = (ItemType) itemTypeCacheUtility.read(item.itemTypeId)
+            String quantityWithUnit = Tools.formatAmountWithoutCurrency(budgetDetails.quantity) + Tools.SINGLE_SPACE + item.unit
+            String totalConsumptionWithUnit = Tools.formatAmountWithoutCurrency(budgetDetails.totalConsumption) + Tools.SINGLE_SPACE + item.unit
+            Double balance = budgetDetails.quantity - budgetDetails.totalConsumption
+            String balanceWithUnit = Tools.formatAmountWithoutCurrency(balance)+ Tools.SINGLE_SPACE + item.unit
+
+            if(balance < 0){
+                balanceWithUnit = "<span style:'color:red'>${balanceWithUnit}</span>"
+            }
+            object.id = budgetDetails.id
+            object.cell = [
+                    Tools.LABEL_NEW,
+                    itemType.name,
+                    item.name,
+                    quantityWithUnit,
+                    totalConsumptionWithUnit,
+                    balanceWithUnit,
+                    Tools.makeAmountWithThousandSeparator(budgetDetails.rate),
+                    Tools.makeAmountWithThousandSeparator(budgetDetails.quantity * budgetDetails.rate)
+            ]
+
+            result.put(Tools.MESSAGE, UPDATE_SUCCESS_MESSAGE)
+            result.put(Tools.ENTITY, object)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            LinkedHashMap receiveResult = (LinkedHashMap) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (receiveResult.message) {
+                result.put(Tools.MESSAGE, receiveResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            }
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build budget details object for update
+     * @param parameterMap - serialized parameters from UI
+     * @param oldBudgetDetails - old budget details object from executePreCondition
+     * @return - updated budget details object
+     */
+    private BudgBudgetDetails buildBudgetDetails(GrailsParameterMap parameterMap, BudgBudgetDetails oldBudgetDetails) {
+
+        BudgBudgetDetails budgetDetails = new BudgBudgetDetails(parameterMap)
+        AppUser systemUser = budgSessionUtil.appSessionUtil.getAppUser()
+
+        //ensure internal inputs
+        budgetDetails.updatedOn = new Date()
+        budgetDetails.updatedBy = systemUser.id
+
+        // set old budgetDetails property to new budgetDetails for validation
+        budgetDetails.totalConsumption = oldBudgetDetails.totalConsumption
+        budgetDetails.budgetId = oldBudgetDetails.budgetId
+        budgetDetails.projectId = oldBudgetDetails.projectId
+        budgetDetails.itemId = oldBudgetDetails.itemId  // update not allowed
+        budgetDetails.createdOn = oldBudgetDetails.createdOn
+        budgetDetails.createdBy = oldBudgetDetails.createdBy
+        budgetDetails.id = oldBudgetDetails.id
+        budgetDetails.version = oldBudgetDetails.version
+        budgetDetails.isUpToDate = oldBudgetDetails.isUpToDate
+
+        return budgetDetails
+    }
+}

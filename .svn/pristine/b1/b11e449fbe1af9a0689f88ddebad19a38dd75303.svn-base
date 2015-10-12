@@ -1,0 +1,261 @@
+<script type="text/javascript">
+    var output = false
+    var sysConfigurationListModel = false;
+
+    $(document).ready(function () {
+        onLoadSysConfigurationPage()
+    });
+
+    function onLoadSysConfigurationPage() {
+
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#sysConfigurationForm"), onSubmitSysConfiguration);
+
+        output =${output ? output : ''};
+
+        if (output.isError) {
+            showError(output.message);
+        } else {
+            sysConfigurationListModel = output.sysConfigurationList;
+        }
+
+        var pluginId = output.pluginId;
+        initFlex1();
+        populateFlex1(pluginId);
+        // update page title
+        $(document).attr('title', "MIS - Edit System configuration Information");
+        loadMenu(pluginId);
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#sysConfigurationForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitSysConfiguration() {
+
+        if (executePreCondition() == false) {
+            return false;
+        }
+        setButtonDisabled($('#create'), true);
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            showError('Please select a system configuration to update');
+        } else {
+            actionUrl = "${createLink(controller: 'systemConfiguration', action: 'update')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#sysConfigurationForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                var newEntry = result;
+                if ($('#id').val().isEmpty() && newEntry.entity != null) { // newly created
+                    var previousTotal = parseInt(sysConfigurationListModel.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (sysConfigurationListModel.rows.length > 0) {
+                        firstSerial = sysConfigurationListModel.rows[0].cell[0];
+                        regenerateSerial($(sysConfigurationListModel.rows), 0);
+                    }
+                    newEntry.entity.cell[0] = firstSerial;
+                    sysConfigurationListModel.rows.splice(0, 0, newEntry.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        sysConfigurationListModel.rows.pop();
+                    }
+
+                    sysConfigurationListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(sysConfigurationListModel);
+
+                } else if (newEntry.entity != null) { // updated existing
+                    updateListModel(sysConfigurationListModel, newEntry.entity, 0);
+                    $("#flex1").flexAddData(sysConfigurationListModel);
+                }
+
+                resetForm();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#sysConfigurationForm"), $('#value'));
+        $('#key').text('');
+        $('#description').text('');
+    }
+
+
+    function initFlex1() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Key", name: "key", width: 280, sortable: false, align: "left"},
+                        {display: "Value", name: "value", width: 130, sortable: false, align: "left"},
+                        {display: "Description", name: "description", width: 560, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/systemConfiguration/select,/systemConfiguration/update">
+                        {name: 'Edit', bclass: 'edit', onpress: editSysConfiguration},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ], searchitems: [
+                    {display: "Key", name: "key", width: 180, sortable: true, align: "left"}
+                ],
+                    sortname: "key",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'System Configuration Information',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    customPopulate: customPopulateSysConfigurationGrid
+                }
+        );
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flex1').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function customPopulateSysConfigurationGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            sysConfigurationListModel = getEmptyGridModel();
+        } else {
+            sysConfigurationListModel = data;
+        }
+        $('#flex1').flexAddData(sysConfigurationListModel);
+        return false;
+    }
+
+    function editSysConfiguration(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'module') == false) {
+            return;
+        }
+        resetForm();
+        showLoadingSpinner(true);
+        var sysConfigurationId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'systemConfiguration', action: 'select')}?id=" + sysConfigurationId,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showSysConfiguration(data);
+        }
+    }
+
+    function showSysConfiguration(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+
+        $('#key').text(entity.key);
+        $('#value').val(entity.value);
+        $('#description').text(entity.description);
+    }
+
+    <%-- End: Edit operation --%>
+
+
+    function populateFlex1(pluginId) {      
+        <sec:access url="/systemConfiguration/list">
+        var strUrl = "${createLink(controller:'systemConfiguration', action: 'list')}?plugin=" + pluginId;
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (sysConfigurationListModel) {
+            $("#flex1").flexAddData(sysConfigurationListModel);
+        }
+        </sec:access>
+    }
+    <%-- Load Menu and set left-menu selected  --%>
+
+    function loadMenu(pluginId) {
+        var menuId;
+
+        switch (pluginId) {
+            case 1:
+                menuId = MENU_ID_APPLICATION
+                break
+            case 2:
+                menuId = MENU_ID_ACCOUNTING
+                break
+            case 3:
+                menuId = MENU_ID_BUDGET
+                break
+            case 4:
+                menuId = MENU_ID_INVENTORY
+                break
+            case 5:
+                menuId = MENU_ID_PROCUREMENT
+                break
+            case 6:
+                menuId = MENU_ID_QS
+                break
+            case 7:
+                menuId = MENU_ID_FIXED_ASSET
+                break
+            case 9:
+                menuId = MENU_ID_EXCHANGE_HOUSE
+                break
+            case 10:
+                menuId = MENU_ID_PROJECT_TRACK
+                break
+            case 12:
+                menuId = MENU_ID_SARB
+                break
+            case 13:
+                menuId = MENU_ID_DOCUMENT
+                break
+            default:
+                menuId = MENU_ID_APPLICATION
+        }
+        loadNumberedMenu(menuId, "#systemConfiguration/show?plugin=" + pluginId);
+    }
+
+</script>

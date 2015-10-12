@@ -1,0 +1,39 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-65 | Priority: | High
+ *Name* | Download Current Fixed Asset CSV Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | N/A | *Action Class:* | DownloadForCurrentFixedAssetCsvActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th September 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Printed Current Fixed Asset CSV Report show in CSV format.
+
+h4. Flow:
+# Click "PDF" icon upper right side of the page.
+# System will show conformation message of download.
+# Actor clicks "Ok" button.
+
+h4. Pre-condition: 
+# Downloded CSV Report is same as grid view.
+
+h4. Process:
+Create a printable CSV report of Current Fixed Asset for the selecting Category.
+
+h4. Post-condition:
+
+# *Success:*
+## Current Fixed Asset CSV Report will successfully download to user's computer.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

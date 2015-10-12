@@ -1,0 +1,442 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.integration.exchangehouse.ExchangeHousePluginConnector
+import com.athena.mis.sarb.config.SarbSysConfigurationCacheUtility
+import com.athena.mis.sarb.entity.SarbTaskDetails
+import com.athena.mis.sarb.model.SarbCustomerModel
+import com.athena.mis.sarb.model.SarbTaskModel
+import com.athena.mis.sarb.service.SarbTaskDetailsService
+import com.athena.mis.sarb.service.SarbTaskModelService
+import com.athena.mis.sarb.utility.SarbSessionUtil
+import com.athena.mis.sarb.utility.SarbTaskReviseStatusCacheUtility
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import groovy.xml.MarkupBuilder
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+import java.sql.Timestamp
+
+/**
+ * Send replace task to SARB
+ * for details go through use-case named "SendReplaceTaskToSarbActionService"
+ */
+class SendReplaceTaskToSarbActionService extends BaseService implements ActionIntf{
+
+    private static final String FAILED_TO_SEND = "Failed to send task to SARB"
+    private static final String TASK_NOT_FOUND = "Task not found"
+    private static final String TASK_ALREADY_SENT = "Task already sent"
+    private static final String TASK_SENT = "Task sent to SARB successfully"
+    private static final String TASK_MODEL = "taskModel"
+    private static final String CONTENT_TYPE = "Content-type"
+    private static final String TEXT_XML = "text/xml"
+    private static final String CHARSET_UTF8 = "UTF-8"
+    private static final String POST = "POST"
+    private static final String ERROR_IN_CONNECTION = "Connection to SARB failed. Exception: "
+    private Logger log = Logger.getLogger(getClass())
+
+    SarbTaskModelService sarbTaskModelService
+    SarbTaskDetailsService sarbTaskDetailsService
+    @Autowired
+    SarbSessionUtil sarbSessionUtil
+    @Autowired
+    SarbSysConfigurationCacheUtility sarbSysConfigurationCacheUtility
+    @Autowired(required = false)
+    ExchangeHousePluginConnector exchangeHouseImplService
+    @Autowired
+    SarbTaskReviseStatusCacheUtility sarbTaskReviseStatusCacheUtility
+
+    /**
+     * check if task exists and if already submitted
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (!params.id) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long taskId = Long.parseLong(params.id)
+            SarbTaskModel taskModel = sarbTaskModelService.read(taskId)
+            if (!taskModel) {
+                result.put(Tools.MESSAGE, TASK_NOT_FOUND)
+                return result
+            }
+            if (taskModel.isSubmittedToSarb) {
+                result.put(Tools.MESSAGE, TASK_ALREADY_SENT)
+                return result
+            }
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(TASK_MODEL, taskModel)
+            return result
+        }
+        catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILED_TO_SEND)
+            return result
+        }
+    }
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * send task file to sarb and create new SarbTaskDetails in DB
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            Map preResult = (Map) obj
+            SarbTaskModel taskModel = (SarbTaskModel) preResult.get(TASK_MODEL)
+            buildXml(taskModel)
+            String strException = sendFile(taskModel)
+            if (strException) {
+                result.put(Tools.MESSAGE, strException)
+                return result
+            }
+            SarbTaskDetails sarbTaskDetails = buildSarbTaskDetails(taskModel)
+            sarbTaskDetailsService.create(sarbTaskDetails)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        }
+        catch (Exception ex) {
+            log.error(ex.getMessage())
+            throw new RuntimeException(FAILED_TO_SEND)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILED_TO_SEND)
+            return result
+        }
+    }
+
+    /**
+     * build success result for ui
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(Tools.MESSAGE, TASK_SENT)
+            return result
+        }
+        catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILED_TO_SEND)
+            return result
+        }
+    }
+
+    /**
+     * build failure result for ui
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (preResult.get(Tools.MESSAGE)) {
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, FAILED_TO_SEND)
+            }
+            return result
+        }
+        catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILED_TO_SEND)
+            return result
+        }
+    }
+
+
+    private static final String SOUTHEAST = 'SOUTHEAST'
+    private static final String ZA = 'ZA'
+    private static final String SARB = 'SARB'
+    private static final String FINSURV = 'FINSURV'
+    private static final String BOPCUS = 'BOPCUS'
+    private static final String OUT = 'OUT'
+    private static final char Y = 'Y'
+    private static final char T = 'T'
+    private static final char P = 'P'
+    private static final String STR_TIME_FORMAT = 'hh:mm:ss+02:00'
+    private static final String FOREIGN_IDNUMBER = 'ForeignIDNumber'
+    private static final String ACC_IDENTIFIER_NON_RESIDENT_FCA = 'NON RESIDENT FCA'
+    private static final String ACC_IDENTIFIER_CASH = 'CASH'
+    private static final String CURRENCY_BDT = 'BDT'
+
+    private void buildXml(SarbTaskModel taskModel, SarbCustomerModel custModel) {
+
+        taskModel.submittedFileCount = getNextFileCount()
+        taskModel.originalFileName = taskModel.submittedFileCount + Tools.XML_EXTENSION
+        // populate required variables
+        String userName = getSarbUserName()
+        String passWord = getSarbPassword()
+        Calendar calCurrent = Calendar.getInstance()
+        calCurrent.add(Calendar.HOUR, -2)    // subtract 2 hour to get GMT
+        Date currGmtDate = calCurrent.getTime()
+        String strCurrDateTime = currGmtDate.format(DateUtility.yyyy_MM_dd_DASH) + T + currGmtDate.format(STR_TIME_FORMAT)
+        String environment = getEnvironmentPrefix()
+        String strDate = taskModel.createdOn.format(DateUtility.yyyy_MM_dd_DASH)
+        String branchCode = getSarbBranchCode()
+        double totalValue = (taskModel.amountInLocalCurrency + taskModel.amountInForeignCurrency).round(2)
+        String beneficiarySurName = taskModel.beneficiaryName.tokenize(Tools.SINGLE_SPACE).last()
+        String beneficiaryName = taskModel.beneficiaryName.replaceAll(' [^ ]+$', Tools.EMPTY_SPACE)
+        String customerDOB = custModel.dateOfBirth.format(DateUtility.yyyy_MM_dd_DASH)
+        String foreignIDCountry = null
+        if (custModel.photoIdCode.equals(FOREIGN_IDNUMBER)) {
+            foreignIDCountry = custModel.countryCode
+        }
+        String accountIdentifier = ACC_IDENTIFIER_CASH   // default cash-collection
+        String accountNumber = null
+        String receivingBank = null
+        String receivingCountry = null
+        // if paymentMethod is BankDeposit then populate corresponding properties
+        SystemEntity payMethodBankDeposit = exchangeHouseImplService.readBankDepositPaymentMethod(taskModel.companyId)
+        if (taskModel.paymentMethod == payMethodBankDeposit.id) {
+            accountIdentifier = ACC_IDENTIFIER_NON_RESIDENT_FCA
+            accountNumber = taskModel.beneficiaryAccountNo
+            receivingBank = taskModel.beneficiaryBank
+            receivingCountry = taskModel.beneficiaryCountryCode
+        }
+
+        StringWriter writer = new StringWriter()
+        MarkupBuilder xmlBuilder = new MarkupBuilder(writer)
+        xmlBuilder.omitNullAttributes = true
+        xmlBuilder.
+                'sarbdex:SARBDEXEnvelope'('xmlns:sarbdex': 'x-schema:http://sarbdex.resbank.co.za/schemas/sarbdex_schema.xml') {
+                    'sarbdex:SARBDEXHeader'(Sender: userName, Recipient: SARB, Identity: passWord, IdentityType: 1, SentAt: strCurrDateTime, Type: FINSURV, Version: 1, Reference: taskModel.submittedFileCount.toString()) {
+                    }
+                    'sarbdex:SARBDEXBody'() {
+                        FINSURV('xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance', 'xsi:noNamespaceSchemaLocation': 'http://www.w3.org/2001/XMLSchema-instance',
+                                'xmlns:xs': 'http://www.w3.org/2001/XMLSchema', 'xmlns:wmh': 'http://www.wmhelp.com/2003/eGenerator',
+                                'xmlns:finsurv': 'www.finsurv.com', Reference: taskModel.submittedFileCount.toString(), Environment: environment, Version: 1) {
+                            OriginalTransaction(LineNumber: 1, ReportingQualifier: BOPCUS, Flow: OUT, ReplacementTransaction: Y,
+                                    ReplacementOriginalReference:taskModel.refNo, Date: strDate,
+                                    TrnReference: taskModel.refNo, BranchCode: branchCode, BranchName: SOUTHEAST, OriginatingBank: SOUTHEAST,
+                                    OriginatingCountry: ZA, TotalValue: totalValue, ReceivingBank: receivingBank, ReceivingCountry: receivingCountry) {
+                                NonResident() {
+                                    Individual(Surname: beneficiarySurName, Name: beneficiaryName) {
+                                        AdditionalNonResidentData(AccountIdentifier: accountIdentifier, AccountNumber: accountNumber, Country: taskModel.beneficiaryCountryCode)
+                                    }
+                                }
+                                ResidentCustomerAccountHolder() {
+                                    IndividualCustomer(Surname: custModel.surname, Name: custModel.name, Gender: custModel.genderCode, DateOfBirth: customerDOB, (custModel.photoIdCode): custModel.photoIdNo, ForeignIDCountry: foreignIDCountry) {
+                                        AdditionalCustomerData(AccountIdentifier: ACC_IDENTIFIER_CASH, StreetAddressLine1: custModel.address, StreetSuburb: custModel.suburb, StreetCity: custModel.city,
+                                                StreetProvince: custModel.provinceName, StreetPostalCode: custModel.postCode, PostalAddressLine1: custModel.address, PostalSuburb: custModel.suburb,
+                                                PostalCity: custModel.city, PostalProvince: custModel.provinceName, PostalCode: custModel.postCode, ContactSurname: custModel.contactSurname,
+                                                ContactName: custModel.contactName, Telephone: custModel.phone) {
+
+                                        }
+                                    }
+                                }
+                                MonetaryDetails(SequenceNumber: 1, MoneyTransferAgentIndicator: SOUTHEAST, RandValue: taskModel.amountInLocalCurrency.round(2), ForeignValue: taskModel.amountInForeignCurrency.round(2),
+                                        ForeignCurrencyCode: CURRENCY_BDT, BoPCategory: taskModel.remittancePurposeCode, RulingsSection: 'B4(D)', LocationCountry: taskModel.beneficiaryCountryCode) {
+
+                                }
+                            }
+                        }
+                    }
+                }
+
+        //println writer.toString()
+        String xmlContent = writer.toString()
+        taskModel.originalFileContent = xmlContent
+    }
+
+    private static final String STR_QUERY_FILE_COUNT = """
+        SELECT created_on, submitted_file_count count
+        FROM sarb_task_details
+        WHERE company_id = :companyId
+        ORDER BY submitted_file_count DESC LIMIT 1
+    """
+    private static final String DEALER_CODE = '108'
+    private static final String YYYY = 'yyyy'
+    //private static final String START_COUNTER = '0000001'
+    private static final String START_COUNTER = '0000025'
+
+    private long getNextFileCount() {
+        List result = executeSelectSql(STR_QUERY_FILE_COUNT, [companyId: sarbSessionUtil.appSessionUtil.getCompanyId()])
+        if (result.size() == 0) {
+            String strCount = DEALER_CODE + new Date().format(YYYY) + START_COUNTER
+            //@todo: change counter for production mode
+            return Long.parseLong(strCount)
+        }
+        // check if sequence should start from a new year
+        Timestamp createdOn = result[0].created_on
+        Calendar cal = Calendar.getInstance()
+        cal.setTimeInMillis(createdOn.getTime())
+        int yearInMaxCount = cal.get(Calendar.YEAR);
+        Calendar calCurrent = Calendar.getInstance()
+        int yearCurrent = calCurrent.get(Calendar.YEAR)
+        if (yearCurrent > yearInMaxCount) {
+            String strCount = DEALER_CODE + yearCurrent + START_COUNTER
+            return Long.parseLong(strCount)
+        }
+        long count = result[0].count
+        return count + 1L
+    }
+
+    /*
+     * check if production/ development mode from sys_config
+     * return "T" (if development) / "P" (if production)
+    */
+
+    private String getEnvironmentPrefix() {
+        String env = T
+        boolean isProd = sarbSysConfigurationCacheUtility.isProductionMode(sarbSessionUtil.appSessionUtil.getCompanyId())
+        if (isProd) {
+            env = P
+        }
+        return env
+    }
+
+    /**
+     * Read sendTaskToSarbUrl sysConfig and send file to SARB
+     * @param taskModel
+     * @return
+     */
+    private String sendFile(SarbTaskModel taskModel) {
+        String strXml = taskModel.originalFileContent
+        HttpURLConnection myConnection = null
+        try {
+            String urlSendTaskToSarb = getSendToSarbUrl()
+            URL url = new URL(urlSendTaskToSarb)
+            try {
+                myConnection = (HttpURLConnection) url.openConnection()
+                myConnection.setDoOutput(true)
+                myConnection.setDoInput(true)
+                myConnection.setUseCaches(false)
+                myConnection.setDefaultUseCaches(false)
+
+                myConnection.setRequestMethod(POST)
+                myConnection.setRequestProperty(CONTENT_TYPE, TEXT_XML)
+                myConnection.connect()
+            } catch (ProtocolException e) {
+                return ERROR_IN_CONNECTION + e.getMessage()
+            }
+
+            byte[] byteArrXml = strXml.getBytes(CHARSET_UTF8)
+            OutputStream myOutputStream = myConnection.getOutputStream()
+            myOutputStream.write(byteArrXml)
+            myOutputStream.flush()
+            myOutputStream.close()
+
+            InputStream inputStream;
+            int responseCode = myConnection.getResponseCode()
+            if ((responseCode >= 200) && (responseCode <= 202)) {
+                inputStream = myConnection.getInputStream()
+                taskModel.originalResponse = convertToString(inputStream)
+                taskModel.isSubmittedToSarb = true
+            } else {
+                inputStream = myConnection.getErrorStream()
+                taskModel.originalResponse = convertToString(inputStream)
+                taskModel.isSubmittedToSarb = false
+            }
+            myConnection.disconnect()
+
+        } catch (Exception e) {
+            return 'Error in Connection: ' + e.getMessage()
+        }
+        return null
+    }
+
+    private String convertToString(InputStream inputStream) {
+        String inputStreamString = new Scanner(inputStream, CHARSET_UTF8).useDelimiter("\\A").next();
+        return inputStreamString
+    }
+
+    /**
+     * Check prod/dev mode and retrieve sendTaskToSarbUrl from sys_config
+     * @return - sendTaskToSarbUrl
+     */
+    private String getSendToSarbUrl() {
+        long companyId = sarbSessionUtil.appSessionUtil.getCompanyId()
+        String url = Tools.EMPTY_SPACE
+        boolean isProd = sarbSysConfigurationCacheUtility.isProductionMode(companyId)
+        if (isProd) {
+            SysConfiguration prodSendToSarb = sarbSysConfigurationCacheUtility.readByKeyAndCompanyId(SarbSysConfigurationCacheUtility.SARB_URL_SEND_TASK_TO_SARB_PROD, companyId)
+            url = prodSendToSarb.value
+        } else {
+            SysConfiguration devSendToSarb = sarbSysConfigurationCacheUtility.readByKeyAndCompanyId(SarbSysConfigurationCacheUtility.SARB_URL_SEND_TASK_TO_SARB_DEV, companyId)
+            url = devSendToSarb.value
+        }
+        return url
+    }
+
+    /**
+     * Get sarb branch code from sys_config
+     * @return - branchCode
+     */
+
+    private String getSarbBranchCode() {
+        String branchCode = Tools.EMPTY_SPACE   //default value
+        SysConfiguration branchCodeObj = sarbSysConfigurationCacheUtility.readByKeyAndCompanyId(SarbSysConfigurationCacheUtility.SARB_BRANCH_CODE, sarbSessionUtil.appSessionUtil.getCompanyId())
+        if (branchCodeObj) {
+            branchCode = branchCodeObj.value
+        }
+        return branchCode
+    }
+
+    /**
+     * Get sarb user name from sys_config
+     * @return - username
+     */
+    private String getSarbUserName() {
+        String userName = Tools.EMPTY_SPACE //default value
+        SysConfiguration userNameConfig = sarbSysConfigurationCacheUtility.readByKeyAndCompanyId(SarbSysConfigurationCacheUtility.SARB_USER_NAME, sarbSessionUtil.appSessionUtil.getCompanyId())
+        if (userNameConfig) {
+            userName = userNameConfig.value
+        }
+        return userName
+    }
+
+    /**
+     * Get sarb password from sys_config
+     * @return - password
+     */
+    private String getSarbPassword() {
+        String pwd = Tools.EMPTY_SPACE //default value
+        SysConfiguration passwordConfig = sarbSysConfigurationCacheUtility.readByKeyAndCompanyId(SarbSysConfigurationCacheUtility.SARB_PASSWORD, sarbSessionUtil.appSessionUtil.getCompanyId())
+        if (passwordConfig) {
+            pwd = passwordConfig.value
+        }
+        return pwd
+    }
+
+    /**
+     * build SarbTaskDetails obj
+     * @param taskModel
+     * @return
+     */
+    private SarbTaskDetails buildSarbTaskDetails(SarbTaskModel taskModel) {
+        SystemEntity movedForReplace = (SystemEntity) sarbTaskReviseStatusCacheUtility.readByReservedAndCompany(SarbTaskReviseStatusCacheUtility.MOVED_FOR_REPLACE, sarbSessionUtil.appSessionUtil.getCompanyId())
+        SarbTaskDetails sarbTaskDetails = new SarbTaskDetails()
+        sarbTaskDetails.submittedFileCount = taskModel.submittedFileCount
+        sarbTaskDetails.originalFileName = taskModel.originalFileName
+        sarbTaskDetails.originalFileContent = taskModel.originalFileContent
+        sarbTaskDetails.isSubmittedToSarb = taskModel.isSubmittedToSarb
+        sarbTaskDetails.originalResponse = taskModel.originalResponse
+        sarbTaskDetails.companyId = taskModel.companyId
+        sarbTaskDetails.taskId = taskModel.id
+        sarbTaskDetails.enabled = Boolean.TRUE
+        sarbTaskDetails.reviseStatus = movedForReplace.id
+        sarbTaskDetails.isCancelled = Boolean.FALSE
+        sarbTaskDetails.createdOn = new Date()
+        sarbTaskDetails.createdBy = sarbSessionUtil.appSessionUtil.getAppUser().id
+        return sarbTaskDetails
+    }
+}

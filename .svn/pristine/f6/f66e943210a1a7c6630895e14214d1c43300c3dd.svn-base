@@ -1,0 +1,426 @@
+<%@ page import="com.athena.mis.application.utility.RoleUtility" %>
+<script type="text/javascript">
+    var output =${output ? output : ''};
+    var purchaseOrderDetailsListModel = false;
+    var purchaseOrderMap;
+    var storeInQuantity, dropDownItemType, dropDownItem, rate, quantity, vatTax;
+
+
+    function updateMaterial() {
+        $('#unit').text('');
+        $('#purchaseRequestDetailsId').val('');
+        $('#purchaseRequestDetailsAvailableQuantity').val('');
+        if (dropDownItem.value() == '') {
+            return;
+        }
+        $('#unit').text('of ' + dropDownItem.dataItem().quantity + ' ' + dropDownItem.dataItem().unit);
+        $('#purchaseRequestDetailsId').val(dropDownItem.dataItem().purchase_request_details_id);
+        $('#purchaseRequestDetailsAvailableQuantity').val(dropDownItem.dataItem().quantity);
+        rate.focus();
+    }
+
+
+    function onLoadPurchaseOrder() {
+
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#purchaseOrderDetailsForm"), onSubmitPurchaseOrderDetails);
+
+        $('#rate').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.9999,
+            format: "৳ #.####"
+
+        });
+        rate = $("#rate").data("kendoNumericTextBox");
+
+        $('#quantity').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.99,
+            format: "#.##"
+
+        });
+        quantity = $("#quantity").data("kendoNumericTextBox");
+
+        $('#vatTax').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.9999,
+            format: "#.####"
+
+        });
+        vatTax = $("#vatTax").data("kendoNumericTextBox");
+        dropDownItem = initKendoDropdown($('#itemId'), null, null, null);
+
+        if (output.isError) {
+            showError(output.message);
+            return;
+        }
+        initFlexGrid();
+        purchaseOrderDetailsListModel = output.purchaseOrderDetailsList;
+        purchaseOrderMap = output.purchaseOrderMap;
+
+        populatePurchaseOrder(purchaseOrderMap);
+        populateGrid();
+
+        // update page title
+        $(document).attr('title', "MIS - Create Purchase Order Details");
+        loadNumberedMenu(MENU_ID_PROCUREMENT, "#procPurchaseOrder/show");
+    }
+
+    function onChangeItemType() {
+        var itemTypeId = dropDownItemType.value();
+        if (itemTypeId == '') {
+            return;
+        }
+
+        var purchaseRequestId = $('#purchaseRequestId').attr('value');
+        var purchaseOrderId = $('#purchaseOrderId').attr('value');
+
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller:'procPurchaseOrderDetails', action: 'getItemListPurchaseOrderDetails')}?purchaseOrderId=" + purchaseOrderId + "&purchaseRequestId=" + purchaseRequestId + "&itemTypeId=" + itemTypeId,
+            success: function (data) {
+                updateItemListDropDown(data);
+            }, complete: onCompleteAjaxCall(),
+            dataType: 'json',
+            type: 'post'
+        });
+        $('#itemId').focus();
+    }
+
+    function updateItemListDropDown(data) {
+        if (data.isError) {
+            showError(data.message);
+            dropDownItem.setDataSource(getKendoEmptyDataSource());
+            return false;
+        } else {
+            dropDownItem.setDataSource(data.itemList);
+            dropDownItem.value('');
+        }
+        updateMaterial();
+    }
+    function populateGrid() {
+
+        var purchaseOrderId = purchaseOrderMap.purchaseOrderId;
+        if (purchaseOrderId) {
+            var strUrl = "${createLink(controller: 'procPurchaseOrderDetails', action: 'list')}?purchaseOrderId=" + purchaseOrderMap.purchaseOrderId;
+        }
+
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (purchaseOrderDetailsListModel) {
+            $("#flex1").flexAddData(purchaseOrderDetailsListModel);
+        }
+
+        if (purchaseOrderDetailsListModel) {
+            $("#flex1").flexAddData(purchaseOrderDetailsListModel);
+
+            var gridTitle;
+            if (purchaseOrderId) {
+                gridTitle = "Purchase Order Details for [Purchase Order No - " + purchaseOrderId + " ]";
+            }
+            else {
+                gridTitle = "All Purchase Order Details";
+            }
+            $('div.mDiv > div.ftitle').text(gridTitle);
+        }
+    }
+
+    function populatePurchaseOrder(purchaseOrderMap) {
+        if (!purchaseOrderMap) {
+            return false;
+        }
+        $('#purchaseOrderId').val(purchaseOrderMap.purchaseOrderId);
+        $('#lblPurchaseOrderId').html(purchaseOrderMap.purchaseOrderId);
+        $('#purchaseRequestId').html(purchaseOrderMap.purchaseRequestId);
+        $('#purchaseRequestId').val(purchaseOrderMap.purchaseRequestId);
+        $('#projectId').val(purchaseOrderMap.projectId);
+        $('#projectName').html(purchaseOrderMap.projectName);
+        return true;
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#purchaseOrderDetailsForm"))) {
+            return false;
+        }
+
+        if (dropDownItemType.value() == '') {
+            showError('Please select an Item type');
+            return false;
+        }
+
+        var availableBDQuantity = parseFloat($('#purchaseRequestDetailsAvailableQuantity').val());
+        var quantityVar = parseFloat(quantity.value());
+        if (quantityVar > availableBDQuantity) {
+            showError("Purchase Order Details Quantity Exceeds Purchase Request Quantity.");
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitPurchaseOrderDetails() {
+
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller: 'procPurchaseOrderDetails', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller: 'procPurchaseOrderDetails', action: 'update')}";
+        }
+        var formDate = jQuery("#purchaseOrderDetailsForm").serialize();
+        jQuery.ajax({
+            type: 'post',
+            data: formDate,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(purchaseOrderDetailsListModel.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (purchaseOrderDetailsListModel.rows.length > 0) {
+                        firstSerial = purchaseOrderDetailsListModel.rows[0].cell[0];
+                        regenerateSerial($(purchaseOrderDetailsListModel.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+                    purchaseOrderDetailsListModel.rows.splice(0, 0, result.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        purchaseOrderDetailsListModel.rows.pop();
+                    }
+
+                    purchaseOrderDetailsListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(purchaseOrderDetailsListModel);
+
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(purchaseOrderDetailsListModel, result.entity, 0);
+                    $("#flex1").flexAddData(purchaseOrderDetailsListModel);
+                }
+                resetForm();
+                showSuccess(result.message);
+                $('#itemTypeId').focus();
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#purchaseOrderDetailsForm"), dropDownItemType);
+        dropDownItem.enable(true);
+        dropDownItemType.enable(true);
+        storeInQuantity = 0;
+        dropDownItem.setDataSource(getKendoEmptyDataSource(dropDownItem, null));
+
+        purchaseOrderMap = output.purchaseOrderMap
+        populatePurchaseOrder(purchaseOrderMap);
+
+        $('#unit').text('');
+
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+
+    function initFlexGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "id", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Item Type", name: "itemTypeId", width: 110, sortable: false, align: "left"},
+                        {display: "Item", name: "itemId", width: 200, sortable: false, align: "left"},
+                        {display: "Quantity", name: "quantity", width: 110, sortable: true, align: "right"},
+                        {display: "Rate", name: "rate", width: 100, sortable: true, align: "right"},
+                        {display: "Total", name: "total", width: 100, sortable: false, align: "right"},
+                        {display: "Created By", name: "createdBy", width: 100, sortable: false, align: "left"},
+                        {display: "Created On", name: "createdOn", width: 100, sortable: true, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/procPurchaseOrderDetails/select,/procPurchaseOrderDetails/update">
+                        {name: 'Edit', bclass: 'edit', onpress: editPurchaseOrderDetails},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/procPurchaseOrderDetails/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteMaterial},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ], searchitems: [
+                    {display: "Item", name: "itemId", width: 180, sortable: true, align: "left"},
+                    {display: "Item Type", name: "itemTypeId", width: 180, sortable: true, align: "left"}
+                ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Purchase Order Material',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 35,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);// Spinner hide after AJAX Call
+                    },
+                    preProcess: onLoadPurchaseOrderListJSON
+                }
+        );
+    }
+
+    function deleteMaterial(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+
+        var purchaseOrderDetailsId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller: 'procPurchaseOrderDetails', action: 'delete')}?id=" + purchaseOrderDetailsId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'purchase order details') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected purchase order details?')) {
+            return false;
+        }
+        return true;
+    }
+
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            purchaseOrderDetailsListModel.total = parseInt(purchaseOrderDetailsListModel.total) - 1;
+            removeEntityFromGridRows(purchaseOrderDetailsListModel, selectedRow);
+            resetForm();
+            showSuccess(data.message);
+
+        } else {
+            // show delete error
+            showError(data.message);
+        }
+    }
+
+    function viewPurchaseOrderReport(com, grid) {
+        var ids = $('.trSelected', grid);
+        if (executePreConditionForEdit(ids) == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+
+        var purchaseOrderId = $(ids[ids.length - 1]).attr('id').replace('row', '');
+
+        var loc = "${createLink(controller: 'procReport', action: 'showPurchaseOrderRpt')}?purchaseOrderId=" + purchaseOrderId;
+        $.post(loc, function (data) {
+            $('#contentHolder').html(data);
+            showLoadingSpinner(false);
+        });
+        return false;
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flex1').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function onLoadPurchaseOrderListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            purchaseOrderDetailsListModel = null;
+        } else {
+            purchaseOrderDetailsListModel = data;
+        }
+        return data;
+    }
+
+    function editPurchaseOrderDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'purchase order details') == false) {
+            return;
+        }
+
+        resetForm();
+        showLoadingSpinner(true);
+        var purchaseOrderDetailsId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'procPurchaseOrderDetails', action: 'select')}?id=" + purchaseOrderDetailsId,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.entity == null) {
+            showError(result.message);
+        } else {
+            showPurchaseOrderDetailsForEdit(data);
+        }
+    }
+
+    function showPurchaseOrderDetailsForEdit(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        $('#comments').val(entity.comments);
+        quantity.value(entity.quantity);
+        rate.value(entity.rate);
+        vatTax.value(entity.vatTax);
+
+        dropDownItemType.value(data.item.itemTypeId);
+        $('#itemId').refreshDropDown(data.itemList, {addAllAttributes: true});
+        dropDownItem.setDataSource(data.itemList);
+        dropDownItem.value(entity.itemId);
+        dropDownItemType.enable(false);
+        dropDownItem.enable(false);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+
+        updateMaterial();
+        storeInQuantity = entity.storeInQuantity;
+    }
+
+    window.onload = onLoadPurchaseOrder();
+</script>

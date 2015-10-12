@@ -1,0 +1,46 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Currency" List in drop-down | |
+*Action:* | ExhCurrencyConversionDropDownTagLib | *Auditable:* | No
+*Url:* | /exhCurrencyConversion/show | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description: 
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Currency Conversion* link.
+* [Show Landing Page of "Currency Conversion"|guide:ExhShowCurrencyConversionActionService].
+* Populate "Currency" list in drop down.
+
+h4. Pre-condition: 
+N/A.
+
+h4. Process: 
+* Get "Currency" list from server.
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate all "Currency" list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase: 
+* [Create "Currency Conversion"|guide:ExhCreateCurrencyConversionActionService].
+* [Update "Currency Conversion"|guide:ExhUpdateCurrencyConversionActionService].
+

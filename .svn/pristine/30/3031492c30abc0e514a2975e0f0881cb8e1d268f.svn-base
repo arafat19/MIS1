@@ -1,0 +1,43 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open *Task* in Edit Mode Created By *Customer* | |
+*Action:* | ExhSelectTaskActionService | *Auditable:* | No
+*Url:* |/exhTask/edit  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 19th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Task Customer* link.
+* [Show Landing Page of "Task" Created By "Customer"|guide:ShowCustomerTaskForCashierActionService].
+* Select a Line-Item from grid view.
+* Open *Task* in Edit Mode Created By *Customer*.
+
+h4. Pre-condition:
+* User must have "Select Task" privilege.
+
+h4. Process:
+* Get *Task* created by *Customer* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Task* created By *Customer* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

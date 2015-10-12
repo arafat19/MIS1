@@ -1,0 +1,136 @@
+package com.athena.mis.document.actions.articlequery
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.document.entity.DocArticleQuery
+import com.athena.mis.document.service.DocArticleQueryService
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class DeleteDocArticleQueryActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass());
+
+    private static final String DELETE_SUCCESS_MSG = "Article query has been successfully deleted!"
+    private static final String DEFAULT_ERROR_MESSAGE = "Failed to delete article query."
+    private static final String OBJ_NOT_FOUND = "Article query not found"
+    private static final String DOC_ARTICLE_QUERY = 'docArticleQuery'
+
+    DocArticleQueryService docArticleQueryService
+    @Autowired
+    DocSessionUtil docSessionUtil
+
+    /*
+    * @params parameters - Serialize parameters from UI
+    * @params obj - N/A
+    * Category Label from System configuration
+    * Check for invalid input, object
+    * Check association
+    * @return - A map of containing category label or error messages
+    * */
+
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            if (!params.id) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long id = Long.parseLong(params.id.toString())
+            DocArticleQuery articleQuery = (DocArticleQuery) docArticleQueryService.read(id)
+            if (!articleQuery) {
+                result.put(Tools.MESSAGE, OBJ_NOT_FOUND)
+                return result
+            }
+            result.put(DOC_ARTICLE_QUERY, articleQuery)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        //Do nothing for post - operation
+        return null
+    }
+
+    /**
+     * Delete Category object in DB & delete cache utility accordingly
+     * This function is in transactional block and will roll back in case of any exception
+     * @param parameters -N/A
+     * @param obj -map returned from executePreCondition method
+     * @return -a map containing all objects necessary for build result
+     */
+
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            DocArticleQuery articleQuery = (DocArticleQuery) preResult.get(DOC_ARTICLE_QUERY)
+            docArticleQueryService.delete(articleQuery.id)
+            result.put(DOC_ARTICLE_QUERY, articleQuery)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            throw new RuntimeException(DEFAULT_ERROR_MESSAGE)
+
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+    * @params obj - map from execute method
+    * Show success message
+    * @return - A map containing all necessary object for show
+    * */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        result.put(Tools.DELETED, Boolean.TRUE)
+        result.put(Tools.MESSAGE, DELETE_SUCCESS_MSG)
+        result.put(Tools.IS_ERROR, Boolean.FALSE)
+        return result
+    }
+
+    /*
+   * Build Failure result in case of any error
+   * @params obj - A map from execute method
+   * @return - A map containing all necessary message for show
+   * */
+
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            Map preResult = (Map) obj
+            if (obj) {
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                } else {
+                    result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+                }
+            }
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+}

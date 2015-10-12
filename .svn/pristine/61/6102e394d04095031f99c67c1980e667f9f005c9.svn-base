@@ -1,0 +1,40 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show landing page for Manage "Task" list | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* |/rmsTaskList/showForManageTaskList | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 21th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page for Manage "Task" list Search Panel on top grid view at bottom.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click "Manage" link from left menu under task list .
+* Show landing page for Manage "Task" list.
+
+h4. Pre-condition:
+* User must have "Show for manage task list" privilege.
+
+h4. Process:
+* Get list of "Task" from server in grid view.
+
+h4. Post-condition:
+
+* *Success:*
+** Show blank input form on top to search "Task" for manage
+** Show blank "Task" list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

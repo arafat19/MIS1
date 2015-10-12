@@ -1,0 +1,50 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Resolve *Task* For "Other Bank User" | |
+*ActionService:* | ExhResolveTaskOtherBankActionService | *Auditable:* | No
+*Url*: | /exhTask/resolveTaskForOtherBank | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Other User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Other Bank Task" link.
+* [Show Landing Page of *Task* For "Other Bank User"|guide:ExhShowTasksForOtherBankUserActionService].
+* User must insert valid input.
+* Click Search Button.
+* [Generate "Task" List By "Other Bank User"|guide:ExhSearchTaskForOtherBankUserActionService].
+* Select a Line-Item from grid view.
+* Click "Mark as Resolved" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Resolve *Task* For "Other Bank User".
+
+h4. Pre-condition:
+* User must have "Resolve task for other bank user" privilege.
+* Only "Send to Other bank" *Task* can be Resolved.
+* Only "Un-Resolved Task" can be Resolved.
+
+h4. Process:
+* Resolved Selected *Task* For "Other Bank User".
+
+h4. Post-condition:
+
+* *Success:*
+** Remove newly resolved *Task* from grid-view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit. [Error Handler|common Usecases]

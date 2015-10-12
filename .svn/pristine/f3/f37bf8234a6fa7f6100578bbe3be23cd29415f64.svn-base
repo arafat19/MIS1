@@ -1,0 +1,43 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate Customer Account Number | |
+*ActionService:* | ExhCreateTaskActionService | *Auditable:* | No
+*Url:* | /exhTask/create | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*    | *Reason for Changes*    | *Version*
+Nahida Sultana | 19th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System.
+
+h4. Description:
+Name of use case represents its functionality. System will auto generate 7 digits Reference number and will return to caller user-case.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Generate 7 digits Reference Number with following logic:
+
+** 1st 3 digits Represents Company ID.
+** Next 4 digits Represents Customer Object ID.
+
+h4. Post-condition:
+
+* *Success:*
+** Send 7 digits Ref number to caller user case.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create Cashier's "Task"|guide:_ExhCreateTaskForCashierActionService].
+* [Create Customer's "Task"|guide:_ExhCreateTaskForCustomerActionService].
+* [Create Agent's "Task"|guide:ExhCreateTaskActionService].

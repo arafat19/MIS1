@@ -1,0 +1,347 @@
+package com.athena.mis.arms.actions.taglib
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.*
+import com.athena.mis.application.utility.*
+import com.athena.mis.arms.entity.RmsExchangeHouse
+import com.athena.mis.arms.entity.RmsTask
+import com.athena.mis.arms.entity.RmsTaskList
+import com.athena.mis.arms.service.RmsTaskListService
+import com.athena.mis.arms.utility.*
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * build html of task details
+ * for details go through use-case "GetRmsTaskDetailsTagLibActionService"
+ */
+class GetRmsTaskDetailsTagLibActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+    @Autowired
+    RmsSessionUtil rmsSessionUtil
+    @Autowired
+    RmsExchangeHouseCacheUtility rmsExchangeHouseCacheUtility
+    @Autowired
+    CountryCacheUtility countryCacheUtility
+    @Autowired
+    BankCacheUtility bankCacheUtility
+    @Autowired
+    RmsPaymentMethodCacheUtility rmsPaymentMethodCacheUtility
+    @Autowired
+    RmsInstrumentTypeCacheUtility rmsInstrumentTypeCacheUtility
+    @Autowired
+    RmsProcessTypeCacheUtility rmsProcessTypeCacheUtility
+    @Autowired
+    RmsTaskStatusCacheUtility rmsTaskStatusCacheUtility
+    @Autowired
+    BankBranchCacheUtility bankBranchCacheUtility
+    @Autowired
+    DistrictCacheUtility districtCacheUtility
+    @Autowired
+    RoleTypeCacheUtility roleTypeCacheUtility
+    @Autowired
+    BankBranchCacheUtility bankBranchCacheUtility1
+    @Autowired
+    RmsTaskStatusCacheUtility rmsTaskStatusCacheUtility1
+
+    RmsTaskListService rmsTaskListService
+
+    private static final String ID = "id"
+    private static final String PROPERTY_NAME = "property_name"
+    private static final String PROPERTY_VALUE = "property_value"
+    private static final String TASK_OBJECT = "task_object"
+    private static final String FROM_DATE = "from_date"
+    private static final String TO_DATE = "to_date"
+    private static final String URL = "url"
+    private static final String LABEL_PAID = "<label style='color:green;font-weight:bold'>Paid<label>"
+    private static final String LABEL_UNPAID = "<label style='color:blue;font-weight:bold'>Unpaid<label>"
+    private static final String LABEL_CANCELED = "<label style='color:red;font-weight:bold'>Canceled<label>"
+    private static final String HAS_EXH_ROLE = "hasExhRole"
+    private static final String HAS_BRANCH_ROLE = "hasBranchRole"
+    private static final String HAS_OTHER_ROLE = "hasOtherRole"
+
+    /**
+     * check if propertyName and propertyValue exists
+     * @param parameters - attr of tagLib
+     * @param obj - N/A
+     * @return - Map containing attr
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map attrMap = new LinkedHashMap()
+        try {
+            Map attrs = (Map) parameters
+            attrMap.put(Tools.IS_ERROR, Boolean.TRUE)
+            String strId = attrs.get(ID)
+            String propertyName = attrs.get(PROPERTY_NAME)
+            def propertyValue = attrs.get(PROPERTY_VALUE)
+            String fromDate = attrs.get(FROM_DATE)
+            String toDate = attrs.get(TO_DATE)
+            String url = attrs.get(URL)
+            RmsTask task = (RmsTask) attrs.get(TASK_OBJECT)
+            if (!task) {
+                if (!propertyName || !propertyValue) {
+                    return attrMap
+                }
+            }
+            attrMap.put(ID, strId)
+            attrMap.put(TASK_OBJECT, task)
+            attrMap.put(PROPERTY_NAME, propertyName)
+            attrMap.put(PROPERTY_VALUE, propertyValue)
+            attrMap.put(FROM_DATE, fromDate)
+            attrMap.put(TO_DATE, toDate)
+            attrMap.put(URL, url)
+            attrMap.put(Tools.IS_ERROR, Boolean.FALSE)
+            boolean hasExhRole = rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_EXCHANGE_HOUSE_USER)
+            boolean hasBranchRole = rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_BRANCH_USER)
+            boolean hasOtherBankRole = rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_OTHER_BANK_USER)
+            attrMap.put(HAS_EXH_ROLE, hasExhRole)
+            attrMap.put(HAS_BRANCH_ROLE, hasBranchRole)
+            attrMap.put(HAS_OTHER_ROLE, hasOtherBankRole)
+            return attrMap
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            attrMap.put(Tools.IS_ERROR, Boolean.TRUE)
+            return attrMap
+        }
+    }
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * get the rmsTask and build taskDetails html
+     * @param parameters
+     * @param obj - preResult from preCondition
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object parameters, Object obj) {
+        try {
+            Map preResult = (Map) obj
+            String strFromDate = preResult.get(FROM_DATE)
+            String strToDate = preResult.get(TO_DATE)
+            boolean isRestrictExchangeHouse = false
+            boolean isRestrictBranch = false
+            if (
+            (!rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_REMITTANCE_USER)) &&
+                    (!rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_TYPE_ADMIN))
+            ) {
+                if (rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_EXCHANGE_HOUSE_USER)) {
+                    isRestrictExchangeHouse = true
+                }
+                if (rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_BRANCH_USER) ||
+                        rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_BRANCH_USER)) {
+                    isRestrictBranch = true
+                }
+            }
+            Date fromDate = DateUtility.parseMaskedFromDate(strFromDate)
+            Date toDate = DateUtility.parseMaskedToDate(strToDate)
+            RmsTask task = (RmsTask) preResult.get(TASK_OBJECT)
+            String propertyName = preResult.get(PROPERTY_NAME)
+            def propertyValue = preResult.get(PROPERTY_VALUE)
+            RmsTask rmsTask = task ? task : getRmsTask(fromDate, toDate, propertyName, propertyValue, isRestrictExchangeHouse, isRestrictBranch)
+            String taskDetails = buildTaskDetails(rmsTask, preResult)
+            return taskDetails
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            return Boolean.FALSE
+        }
+    }
+
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    public Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * find the rmsTask
+     * @return - RmsTask obj
+     */
+    private RmsTask getRmsTask(Date fromDate, Date toDate, String propertyName,
+                               def propertyValue, boolean isRestrictExchangeHouse, boolean isRestrictBranch) {
+        long companyId = rmsSessionUtil.appSessionUtil.getCompanyId()
+        List<Long> lstValidStatus = rmsTaskStatusCacheUtility.listAllValidTaskStatusIds()
+        List<RmsTask> lstRmsTask = RmsTask.withCriteria {
+            if (propertyName.equals(ID)) {
+                eq(propertyName, Long.valueOf(propertyValue))
+            } else {
+                ilike(propertyName, propertyValue)
+            }
+            if (fromDate && toDate) {
+                between('createdOn', fromDate, toDate)
+            }
+            if (isRestrictExchangeHouse) {
+                long exhHouseId = rmsSessionUtil.getUserExchangeHouseId()
+                eq('exchangeHouseId', exhHouseId)
+            }
+            if (isRestrictBranch) {
+                long bankBranchId = rmsSessionUtil.appSessionUtil.getUserBankBranchId()
+                BankBranch bankBranch = (BankBranch) bankBranchCacheUtility.read(bankBranchId)
+                eq('mappingBankId', bankBranch.bankId)
+            }
+            'in'('currentStatus', lstValidStatus)
+            eq('companyId', companyId)
+            setReadOnly(true)
+        }
+        if (lstRmsTask.size() > 0) {
+            return lstRmsTask[0]
+        }
+        return null
+    }
+
+    /**
+     * build taskDetails html
+     * @param rmsTask - RmsTaskObj
+     * @param attrMap
+     * @return - html
+     */
+    private String buildTaskDetails(RmsTask rmsTask, Map attrMap) {
+        if (!rmsTask) return Tools.EMPTY_SPACE
+        String strId = attrMap.get(ID) ? "id='${attrMap.get(ID)}'" : Tools.EMPTY_SPACE
+        String strUrl = attrMap.get(URL) ? "url='${attrMap.get(URL)}'" : Tools.EMPTY_SPACE
+        String strFromDate = attrMap.get(FROM_DATE) ? "from_date='${attrMap.get(FROM_DATE)}'" : Tools.EMPTY_SPACE
+        String strToDate = attrMap.get(TO_DATE) ? "to_date='${attrMap.get(TO_DATE)}'" : Tools.EMPTY_SPACE
+        long companyId = rmsSessionUtil.appSessionUtil.getCompanyId()
+        RmsExchangeHouse rmsExchangeHouse = (RmsExchangeHouse) rmsExchangeHouseCacheUtility.read(rmsTask.exchangeHouseId)
+        Country country = (Country) countryCacheUtility.read(rmsExchangeHouse.countryId)
+        RmsTaskList taskList = rmsTaskListService.read(rmsTask.taskListId)
+        SystemEntity taskStatus = (SystemEntity) rmsTaskStatusCacheUtility.read(rmsTask.currentStatus)
+        SystemEntity paymentMethod = (SystemEntity) rmsPaymentMethodCacheUtility.read(rmsTask.paymentMethod)
+        SystemEntity instrument = (SystemEntity) rmsInstrumentTypeCacheUtility.read(rmsTask.instrumentTypeId)
+        SystemEntity process = (SystemEntity) rmsProcessTypeCacheUtility.read(rmsTask.processTypeId)
+        Bank bank = (Bank) bankCacheUtility.read(rmsTask.mappingBankId)
+        BankBranch bankBranch = (BankBranch) bankBranchCacheUtility.read(rmsTask.mappingBranchId)
+        District district = (District) districtCacheUtility.read(rmsTask.mappingDistrictId)
+        String destinationBank = (bank ? bank.name : Tools.EMPTY_SPACE) + (bankBranch ? (Tools.COMA + Tools.SINGLE_SPACE + bankBranch.name) : Tools.EMPTY_SPACE) + (district ? (Tools.COMA + Tools.SINGLE_SPACE + district.name) : Tools.NOT_APPLICABLE)
+        SystemEntity currentStatus = (SystemEntity) rmsTaskStatusCacheUtility.read(rmsTask.currentStatus)
+        SystemEntity disbursedObj = (SystemEntity) rmsTaskStatusCacheUtility.readByReservedAndCompany(RmsTaskStatusCacheUtility.DISBURSED, companyId)
+        SystemEntity canceledObj = (SystemEntity) rmsTaskStatusCacheUtility.readByReservedAndCompany(RmsTaskStatusCacheUtility.CANCELED, companyId)
+        String paymentStatus = LABEL_UNPAID
+        if (currentStatus.id == disbursedObj.id) {
+            paymentStatus = LABEL_PAID
+        } else if (currentStatus.id == canceledObj.id) {
+            paymentStatus = LABEL_CANCELED
+        }
+        String identity = (rmsTask.identityType ? rmsTask.identityType : Tools.EMPTY_SPACE) + (rmsTask.identityNo ? (Tools.PARENTHESIS_START + rmsTask.identityNo + Tools.PARENTHESIS_END) : Tools.EMPTY_SPACE)
+        identity = identity ? identity : Tools.EMPTY_SPACE
+        String historyLink = """
+        <a style='float:right; text-decoration:none' href="#rmsTaskTrace/showRmsTaskHistory?propertyName=refNo&propertyValue=${
+            rmsTask.refNo
+        }">Task History <span class="glyphicon glyphicon-hand-right"></span></a>
+        """
+        boolean hasAccess = rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_TYPE_ADMIN)
+        if (!hasAccess) {
+            hasAccess = rmsSessionUtil.appSessionUtil.hasRole(roleTypeCacheUtility.ROLE_ARMS_REMITTANCE_USER)
+        }
+        if (!hasAccess) {
+            historyLink = Tools.EMPTY_SPACE
+        }
+        String html = """
+        <div ${strId} ${strUrl} ${strFromDate} ${strToDate} property_name="id" property_value="${rmsTask.id}">
+            <input type='hidden' id='hiddenTaskId' value='${rmsTask.id}' />
+            <table class="table table-bordered table-condensed" style="margin-bottom: 0px">
+                <tbody>
+                <tr>
+                    <td colspan="2" class="active" style="font-weight:bold">TASK DETAILS ${historyLink}</td>
+                </tr>
+                <tr>
+                    <td class="active" style='width:30%'>Exchange House:</td>
+                    <td><span id='lblExchangeHouse'>${rmsExchangeHouse?.name + ', ' + country?.name}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Ref No:</td>
+                    <td><span id='lblRefNo'>${rmsTask.refNo}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Created On:</td>
+                    <td><span id='lblTransactionDate'>${DateUtility.getDateFormatAsString(rmsTask.createdOn)}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Amount:</td>
+                    <td><span id='lblAmount' style='font-weight:bold'>${rmsTask.amount.round(2)} BDT</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Task List Name:</td>
+                    <td><span id='lblTaskListName'>${taskList ? taskList.name : Tools.EMPTY_SPACE}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Current Status:</td>
+                    <td><span id='lblCurrentStatus' style='color:black;font-weight:bold'>${
+            taskStatus ? taskStatus.key : Tools.EMPTY_SPACE
+        }</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Payment Status:</td>
+                    <td><span id='lblPaymentStatus'>${paymentStatus}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Payment Method:</td>
+                    <td><span id='lblDeliveryInstruction'>${paymentMethod ? paymentMethod.key : Tools.EMPTY_SPACE}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Destination Bank:</td>
+                    <td><span id='lblDestinationBank'>${destinationBank}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Instrument:</td>
+                    <td><span id='lblInstrument'>${
+            (process ? process.key : Tools.EMPTY_SPACE) + (instrument ? (Tools.COMA + Tools.SINGLE_SPACE + instrument.key) : Tools.EMPTY_SPACE)
+        }</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="active" style="font-weight:bold">BENEFICIARY INFORMATION</td>
+                </tr>
+                <tr>
+                    <td class="active">Receiver Name:</td>
+                    <td><span id='lblReceiverName'>${
+            rmsTask.beneficiaryName ? rmsTask.beneficiaryName : Tools.EMPTY_SPACE
+        }</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Telephone:</td>
+                    <td><span id='lblReceiverTelephone'>${
+            rmsTask.beneficiaryPhone ? rmsTask.beneficiaryPhone : Tools.EMPTY_SPACE
+        }</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Identity:</td>
+                    <td><span id='lblIdentity'>${identity}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Account Number:</td>
+                    <td><span id='lblAccountNumber'>${rmsTask.accountNo ? rmsTask.accountNo : Tools.EMPTY_SPACE}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Beneficiary Bank:</td>
+                    <td><span
+                            id='lblBeneficiaryBank'>${rmsTask.getFullOutletName()}</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2" class="active" style="font-weight:bold">SENDER INFORMATION</td>
+                </tr>
+                <tr>
+                    <td class="active">Sender Name:</td>
+                    <td><span id='lblSenderName'>${rmsTask.senderName ? rmsTask.senderName : Tools.EMPTY_SPACE}</span></td>
+                </tr>
+                <tr>
+                    <td class="active">Telephone:</td>
+                    <td><span id='lblSenderTelephone'>${rmsTask.senderMobile ? rmsTask.senderMobile : Tools.EMPTY_SPACE}</span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        """
+        return html
+    }
+}

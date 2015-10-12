@@ -1,0 +1,63 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Add *Sprint's Bug* | |
+*ActionService:* | CreatePtBugForSprintActionService | *Auditable:* | No
+*Url:* | /ptBug/createBugForSprint | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Bug" button from tool bar.
+* [Show Landing Page of "Sprint's Bug"|guide:ShowPtBugForSprintActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Add *Sprint's Bug*.
+
+h4. Pre-condition:
+* User must have "Create Bug for sprint" privilege.
+* Completed Sprint can not add bug.
+* Define and in progress sprint can add bug.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+Sprint | Read Only | Alpha Numeric | 
+[Module|guide:GetDropDownPtModuleTagLibActionService] | Drop Down List | Text | Required
+[Bug|guide:GetBugForModuleActionService] | Drop Down List | Text | Required
+{table}
+
+
+h4. Process:
+* Add a new *Sprint's Bug*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Sprint's Bug* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+

@@ -1,0 +1,76 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Generate *Source Ledger* Report in HTML Format | |
+ *ActionService:* | ListForSourceLedgerActionService | *Auditable:* | No
+ *Url:* | /accReport/listSourceLedger | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date* | *Reason for Changes*	| *Version*
+  Nahida Sultana | 29th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Source Ledger* link.
+* [Show Landing Page of Source Ledger Report|guide:ShowForSourceLedgerActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate *Source Ledger* Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List Source Ledger Report" privilege.
+* Rules of Searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+  From Date | Calender | Alpha Numeric | Required
+  To Date | Calender | Alpha Numeric | Required
+  [Populate Project List|application] | Drop Down List | Numeric | All(Default)
+  [Source Type|guide:PopulateSourceTypeList] | Drop Down List | Numeric | Required
+  [Source Category|guide:GetSourceCategoryByAccSourceIdActionService] | Drop Down List | Numeric | All(Default)
+  [Source|guide:GetSourceListBySourceCategoryAndAccSourceIdActionService] | Drop Down List | Numeric | All(Default)
+{table}
+
+* Given Date must be in between *Financial Year*.
+
+h4. Process:
+* Show list of *Source Ledger* information.
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Voucher Date
+** Trace No
+** Account Code
+** Head Name
+** Division
+** Particulars
+** Debit
+** Credit
+** Voucher Type Id (Default: Invisible)
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Source Ledger* information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+
+!Acc/Source_Ledger_Report_Generate.png!

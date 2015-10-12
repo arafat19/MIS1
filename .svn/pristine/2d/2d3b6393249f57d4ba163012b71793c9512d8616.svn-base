@@ -1,0 +1,84 @@
+package com.athena.mis.document.taglib
+
+import com.athena.mis.document.actions.taglib.GetCountDocMyCategoriesTaglibActionService
+import com.athena.mis.document.actions.taglib.GetDocMyCategoriesDetailsTaglibActionService
+import com.athena.mis.document.actions.taglib.GetDocMyCategoriesManagersTaglibActionService
+import com.athena.mis.document.actions.taglib.GetDocMyCategoriesTaglibActionService
+import com.athena.mis.utility.Tools
+
+class DocMyCategoriesTagLib {
+
+    static namespace = "doc"
+
+    GetDocMyCategoriesTaglibActionService getDocMyCategoriesTaglibActionService
+    GetDocMyCategoriesDetailsTaglibActionService getDocMyCategoriesDetailsTaglibActionService
+    GetCountDocMyCategoriesTaglibActionService getCountDocMyCategoriesTaglibActionService
+    GetDocMyCategoriesManagersTaglibActionService getDocMyCategoriesManagersTaglibActionService
+
+    /**
+     * Render lisView of my categories
+     * example: <doc:myCategories name="listView"></doc:myCategories>
+     * @attr name REQUIRED - name & id of html component
+     * @attr onclick - on click event call
+     */
+
+    def listMyCategories = { attrs, body ->
+        Map preResult = (Map) getDocMyCategoriesTaglibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = getDocMyCategoriesTaglibActionService.execute(preResult, null)
+        out << output
+    }
+
+    /**
+     * Render details of my categories
+     * example: <doc:myCategoriesDetails id="cagegoryId"></doc:myCategoriesDetails>
+     * @attr category_id REQUIRED - id of html component
+     */
+    def countSubCategories = { attrs, body ->
+        Map preResult = (Map) getCountDocMyCategoriesTaglibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = getCountDocMyCategoriesTaglibActionService.execute(preResult, null)
+        out << output
+    }
+
+    /**
+     * Render details of my categories
+     * example: <doc:myCategoriesDetails id="cagegoryId"></doc:myCategoriesDetails>
+     * @attr category_id REQUIRED - id of html component
+     */
+    def categoriesDetails = { attrs, body ->
+        Map preResult = (Map) getDocMyCategoriesDetailsTaglibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = getDocMyCategoriesDetailsTaglibActionService.execute(preResult, null)
+        out << output
+    }
+
+    /**
+     * Render lisView of my categories
+     * example: <doc:myCategories name="listView"></doc:myCategories>
+     * @attr category_id REQUIRED - name & id of html component
+     */
+    def categoryManagers = { attrs, body ->
+        Map preResult = (Map) getDocMyCategoriesManagersTaglibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = getDocMyCategoriesManagersTaglibActionService.execute(preResult, null)
+        out << output
+    }
+
+}

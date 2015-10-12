@@ -1,0 +1,44 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate "Content Type" List | | 
+ *ActionService:* | GetDropDownSystemEntityTagLibActionService | *Auditable:* | No
+ *Url:* | Taglib:SystemEntityDropDownTagLib | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 19th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 702.
+
+h4. Pre-condition: 
+N/A.
+
+h4. Process: 
+* Get Active list of "Content Type" from server. 
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate "Content Type" in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Customer Content"|guide:CreateExhCustomerContentActionService].
+* [Update "Customer Content"|guide:UpdateExhCustomerContentActionService].
+* [Create "Content Category"|guide:CreateContentCategoryActionService].
+* [Update "Content Category"|guide:UpdateContentCategoryActionService].
+* [Create Entity Content|application].
+* [Update Entity Content|application].

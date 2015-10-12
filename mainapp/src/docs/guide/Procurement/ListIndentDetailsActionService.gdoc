@@ -1,0 +1,60 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show *Item* List of *Indent* in Landing Page | |
+ *ActionService:* | ListIndentDetailsActionService| *Auditable:* | No
+ *Url*: | /procIndentDetails/list |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 7th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+All Users.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Indent* link.
+* [Show Landing Page of "Indent"|guide:ShowIndentActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* Show *Item* List of *Indent* in [Landing Page|guide:ShowIndentDetailsActionService].
+
+h4. Pre-condition:
+* User must have "List Indent Details" privilege.
+
+h4. Process:
+* Get *Item* list of *Indent* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Item
+** Quantity
+** Rate
+** Total (Quantity * Rate)
+
+h4. Post-condition:
+
+* *Success:*
+** *Item* of *Indent* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search Item of "Indent" From Grid View|guide:SearchIndentDetailsActionService].
+
+!procurement/Indent_Items_List.png!

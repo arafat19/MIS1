@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Send E-mail for "Create User Account" | |
+*ActionServices:* | ExhCreateForCustomerUserActionService | *Auditable:* | No
+*Url:* | /exhCustomer/createCustomerUser | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 2nd June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click "Create Customer Account" link.
+* [Show Landing Page of "Customer User Account"|guide:ExhShowForCustomerUserActionService].
+* User must enter valid input.
+* Click "Search" button.
+* [Search "Customer User"|guide:ExhSearchForCustomerUserActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create "Customer User Account".
+* Send E-mail for "Create User Account".
+
+h4. Pre-condition:
+* Transaction code "ExhCreateForCustomerUserActionService" must be active.
+* *User* must insert valid e-mail address.
+
+h4. Process:
+* Send e-mail to corresponding *Customer*.
+
+h4. Post-condition:
+
+* *Success:*
+** Send System generated e-mail for corresponding *Customer*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Customer User Account"|guide:ExhCreateForCustomerUserActionService].

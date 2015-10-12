@@ -1,0 +1,452 @@
+package com.athena.mis.projecttrack.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.projecttrack.entity.PtBug
+import com.athena.mis.projecttrack.utility.PtBugStatusCacheUtility
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * PtBugService is used to handle only CRUD related object manipulation (e.g. read, create, update, delete)
+ */
+class PtBugService extends BaseService {
+
+    @Autowired
+    PtSessionUtil ptSessionUtil
+    @Autowired
+    PtBugStatusCacheUtility ptBugStatusCacheUtility
+
+    /**
+     * Get  Bug object by Id
+     * @param id -Id of  Bug
+     * @return -object of  Bug
+     */
+    public PtBug read(long id) {
+        PtBug bug = PtBug.read(id)
+        return bug
+    }
+
+    /**
+     * @return - a list of bugs
+     */
+    public List list() {
+        List lstPtBug = PtBug.list(readOnly: true)
+        return lstPtBug
+    }
+
+    /**
+     * Get count of Bug by companyId and backlogId
+     * @return -int count
+     */
+    public int countByCompanyIdAndBacklogId(long companyId, long backlogId) {
+        int count = PtBug.countByCompanyIdAndBacklogId(companyId, backlogId)
+        return count
+    }
+
+    /**
+     * Get count of Un-resolved Bug(re-opened & submitted)
+     * @return -int count
+     */
+    public int countByCompanyIdAndBacklogIdAndStatusInList(long companyId, long backlogId, List  statusIds) {
+        int count = PtBug.countByCompanyIdAndBacklogIdAndStatusInList(companyId, backlogId, statusIds)
+        return count
+    }
+
+
+    private static final String STATUS_UPDATE_QUERY =
+            """
+			UPDATE pt_bug SET
+			      version=:newVersion,
+				  status=:statusId,
+				  status_updated_on=:statusUpdatedOn,
+				  status_updated_by=:statusUpdatedBy,
+				  closed_on=:closedOn,
+				  closed_by=:closedBy
+			WHERE
+				  id=:id AND
+                  version=:version
+
+			"""
+    /**
+     * update ptBug object status in DB
+     * @param ptBug - PtBug object
+     * @param status - bug status id
+     * @return - integer value of update count
+     */
+    public int updateBugStatus(PtBug ptBug, long status) {
+        Map queryParams = [
+                id: ptBug.id,
+                version: ptBug.version,
+                newVersion: ptBug.version + 1,
+                statusId: status,
+                statusUpdatedOn: DateUtility.getSqlDateWithSeconds(ptBug.statusUpdatedOn),
+                statusUpdatedBy: ptBug.statusUpdatedBy,
+                closedBy: ptBug.closedBy,
+                closedOn: DateUtility.getSqlDateWithSeconds(ptBug.closedOn)
+        ]
+
+        int updateCount = executeUpdateSql(STATUS_UPDATE_QUERY, queryParams)
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update bug information')
+        }
+        return updateCount
+    }
+
+    /**
+     * Get search count through specific search by companyId and backlogId
+     * @param baseService
+     * @return -int of search count
+     */
+    public int searchCount(BaseService baseService, long backlogId) {
+        String searchCountQuery = """
+            SELECT COUNT(id)
+            FROM pt_bug
+            WHERE company_id = :companyId
+            AND backlog_id = :backlogId
+            AND ${baseService.queryType} ilike :query
+        """
+        Map queryParams = [
+                query: Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE,
+                companyId: ptSessionUtil.appSessionUtil.getCompanyId(),
+                backlogId: backlogId
+        ]
+        List<PtBug> result = (List<PtBug>) executeSelectSql(searchCountQuery, queryParams)
+        int count = (int) result[0][0]
+        return count
+    }
+
+    private static final String INSERT_QUERY = """
+        INSERT INTO pt_bug(id, version, title, step_to_reproduce, status, severity, type, company_id, backlog_id,
+        created_on, created_by, updated_by, module_id, sprint_id, note, has_attachment, status_updated_on, status_updated_by,
+        project_id, fixed_on, fixed_by, closed_on, closed_by, owner_id)
+        VALUES (NEXTVAL('pt_bug_id_seq'), :version, :title, :stepToReproduce, :status, :severity, :type, :companyId, :backlogId,
+        :createdOn, :createdBy, :updatedBy, :moduleId, :sprintId, :note, :hasAttachment, :statusUpdatedOn, :statusUpdatedBy,
+        :projectId, null, :fixedBy, null, :closedBy, :ownerId);
+    """
+
+    /**
+     * Save Bug object into DB
+     * @param bug -Bug object
+     * @return -saved Bug object
+     */
+    public PtBug create(PtBug bug) {
+        Map queryParams = [
+                version: bug.version,
+                title: bug.title,
+                stepToReproduce: bug.stepToReproduce,
+                status: bug.status,
+                severity: bug.severity,
+                type: bug.type,
+                companyId: bug.companyId,
+                backlogId: bug.backlogId,
+                createdOn: DateUtility.getSqlDateWithSeconds(bug.createdOn),
+                createdBy: bug.createdBy,
+                updatedBy: bug.updatedBy,
+                moduleId: bug.moduleId,
+                sprintId: bug.sprintId,
+                note: bug.note,
+                hasAttachment: bug.hasAttachment,
+                statusUpdatedOn: DateUtility.getSqlDateWithSeconds(bug.statusUpdatedOn),
+                statusUpdatedBy: bug.statusUpdatedBy,
+                projectId: bug.projectId,
+                fixedBy: bug.fixedBy,
+                closedBy: bug.closedBy,
+                ownerId: bug.ownerId
+        ]
+
+        List result = executeInsertSql(INSERT_QUERY, queryParams)
+
+        if (result.size() <= 0) {
+            throw new RuntimeException('Error occurred while insert Bug information')
+        }
+        int bugId = (int) result[0][0]
+        bug.id = bugId
+        return bug
+    }
+
+    private static final String UPDATE_QUERY = """
+        UPDATE pt_bug SET
+            version=:newVersion,
+            title=:title,
+            step_to_reproduce=:stepToReproduce,
+            status=:status,
+            severity=:severity,
+            type=:type,
+            company_id=:companyId,
+            updated_on=:updatedOn,
+            updated_by=:updatedBy,
+            note=:note,
+            has_attachment=:hasAttachment,
+            status_updated_on=:statusUpdatedOn,
+            status_updated_by=:statusUpdatedBy,
+            fixed_by=:fixedBy,
+            fixed_on=:fixedOn
+        WHERE
+            id=:id AND
+            version=:version
+    """
+
+    /**
+     * Update Bug object into DB
+     * @param bug -Bug object
+     * @return -an integer containing the value of update count
+     */
+    public int update(PtBug bug) {
+        Map queryParams = [
+                id: bug.id,
+                newVersion: bug.version + 1,
+                version: bug.version,
+                title: bug.title,
+                stepToReproduce: bug.stepToReproduce,
+                status: bug.status,
+                severity: bug.severity,
+                type: bug.type,
+                companyId: bug.companyId,
+                updatedOn: DateUtility.getSqlDateWithSeconds(bug.updatedOn),
+                updatedBy: bug.updatedBy,
+                note: bug.note,
+                hasAttachment: bug.hasAttachment,
+                statusUpdatedOn: DateUtility.getSqlDateWithSeconds(bug.statusUpdatedOn),
+                statusUpdatedBy: bug.statusUpdatedBy,
+                fixedBy: bug.fixedBy,
+                fixedOn: DateUtility.getSqlDateWithSeconds(bug.fixedOn)
+        ]
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams)
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update Bug information')
+        }
+        return updateCount
+    }
+
+
+    private static final String UPDATE_QUERY_BUG_FOR_SPRINT =
+            """
+			UPDATE pt_bug SET
+				  version=:newVersion,
+				  sprint_id=:sprintId,
+				  updated_on=:updatedOn,
+				  updated_by=:updatedBy
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+
+    //Update bug for Sprint
+    public int updateBugForSprint(PtBug ptBug) {
+        Map queryParams = [
+                id: ptBug.id,
+                newVersion: ptBug.version + 1,
+                version: ptBug.version,
+                sprintId: ptBug.sprintId,
+                updatedBy: ptBug.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBug.updatedOn)
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY_BUG_FOR_SPRINT, queryParams)
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update bug information')
+        }
+        ptBug.version = ptBug.version + 1
+        return updateCount
+    }
+
+    private static final String UPDATE_QUERY_BUG_SPRINT =
+            """
+			UPDATE pt_bug SET
+				  version=:newVersion,
+				  sprint_id=:sprintId,
+				  status=:status,
+                  updated_on=:updatedOn,
+                  updated_by=:updatedBy,
+                  status_updated_on=:statusUpdatedOn,
+                  status_updated_by=:statusUpdatedBy,
+                  fixed_on=:fixedOn,
+                  fixed_by=:fixedBy,
+                  closed_on=:closedOn,
+                  closed_by=:closedBy
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+
+    //Update bug for Sprint
+    public int updateBugSprint(PtBug ptBug) {
+        Map queryParams = [
+                id: ptBug.id,
+                newVersion: ptBug.version + 1,
+                version: ptBug.version,
+                sprintId: ptBug.sprintId,
+                status: ptBug.status,
+                updatedBy: ptBug.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBug.updatedOn),
+                statusUpdatedOn: DateUtility.getSqlDateWithSeconds(ptBug.statusUpdatedOn),
+                statusUpdatedBy: ptBug.statusUpdatedBy,
+                fixedBy: ptBug.fixedBy,
+                fixedOn: DateUtility.getSqlDateWithSeconds(ptBug.fixedOn),
+                closedBy: ptBug.closedBy,
+                closedOn: DateUtility.getSqlDateWithSeconds(ptBug.closedOn)
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY_BUG_SPRINT, queryParams)
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update bug sprint information')
+        }
+        ptBug.version = ptBug.version + 1
+        return updateCount
+    }
+
+
+    private static final String DELETE_QUERY_BUG_FOR_SPRINT = """
+			UPDATE pt_bug SET
+				  version=:newVersion,
+				  sprint_id = 0,
+				  updated_on=:updatedOn,
+				  updated_by=:updatedBy
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+    // delete bug for sprint
+    public int deleteBugForSprint(PtBug ptBug) {
+        Map queryParams = [
+                id: ptBug.id,
+                newVersion: ptBug.version + 1,
+                version: ptBug.version,
+                updatedBy: ptBug.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBug.updatedOn)
+        ]
+
+        int updateCount = executeUpdateSql(DELETE_QUERY_BUG_FOR_SPRINT, queryParams)
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while delete bug for sprint')
+        }
+        ptBug.version = ptBug.version + 1
+        return updateCount
+    }
+
+    private static final String DELETE_QUERY = """
+        DELETE FROM pt_bug
+        WHERE
+            id=:id
+    """
+
+    /**
+     * Delete Bug object from DB
+     * @param id -id of Bug object
+     * @return -an integer containing the value of delete count
+     */
+    public int delete(long id) {
+        Map queryParams = [
+                id: id
+        ]
+        int deleteCount = executeUpdateSql(DELETE_QUERY, queryParams)
+
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Error occurred while delete Bug information')
+        }
+        return deleteCount;
+    }
+
+    public List<PtBug> findAllByModuleIdAndStatusAndCompanyId(PtBug ptBug) {
+        SystemEntity submitted = (SystemEntity) ptBugStatusCacheUtility.readByReservedAndCompany(ptBugStatusCacheUtility.SUBMITTED_RESERVED_ID, ptBug.companyId)
+        SystemEntity reopened = (SystemEntity) ptBugStatusCacheUtility.readByReservedAndCompany(ptBugStatusCacheUtility.RE_OPENED_RESERVED_ID, ptBug.companyId)
+        List<PtBug> lstBugs = PtBug.findAllByModuleIdAndStatusInListAndCompanyIdAndSprintId(ptBug.moduleId, [submitted.id, reopened.id], ptBug.companyId, 0)
+        return lstBugs
+    }
+
+    public List<PtBug> findAllByBacklogIdAndCompanyId(long backlogId, long companyId) {
+        List<PtBug> lstBugs = PtBug.findAllByBacklogIdAndCompanyId(backlogId, companyId)
+        return lstBugs
+    }
+
+    public List<PtBug> findAllBySprintIdAndCompanyId(BaseService baseService, long sprintId, long companyId) {
+        List<PtBug> lstBugs = PtBug.findAllBySprintIdAndCompanyId(sprintId, companyId, [readOnly: true, offset: baseService.start, max: baseService.resultPerPage])
+        return lstBugs
+    }
+
+    public int countBySprintIdAndCompanyId(long sprintId, long companyId) {
+        int count = PtBug.countBySprintIdAndCompanyId(sprintId, companyId)
+        return count
+    }
+
+    public int countByBacklogIdAndCompanyId(long backlogId, long companyId) {
+        int count = PtBug.countByBacklogIdAndCompanyId(backlogId, companyId)
+        return count
+    }
+
+    //search sub list of PtBug for sprint
+    public Map searchBugForSprint(BaseService baseService, long sprintId) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List<PtBug> lstPtBug = PtBug.withCriteria {
+            eq('companyId', companyId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            eq('sprintId', sprintId)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        }
+        List counts = PtBug.withCriteria {
+            eq('companyId', companyId)
+            eq('sprintId', sprintId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            projections { rowCount() }
+        }
+        int total = counts[0]
+        return [lstPtBug: lstPtBug, count: total.toInteger()]
+    }
+
+    public void createDefaultDataForPtBug(long companyId) {
+//		new PtBug(version: 0, title: '', stepToReproduce: '',severity: 0,status: 0,type: 0,backlogId: 0,createdBy: 0, createdOn: new Date(), updatedOn: new Date(), updatedBy: 0,companyId: companyId).save()
+//		new PtBug(version: 0, title: '', stepToReproduce: '',severity: 0,status: 0,type: 0,backlogId: 0,createdBy: 0, createdOn: new Date(), updatedOn: new Date(), updatedBy: 0,companyId: companyId).save()
+//		new PtBug(version: 0, title: '', stepToReproduce: '',severity: 0,status: 0,type: 0,backlogId: 0,createdBy: 0, createdOn: new Date(), updatedOn: new Date(), updatedBy: 0,companyId: companyId).save()
+//		new PtBug(version: 0, title: '', stepToReproduce: '',severity: 0,status: 0,type: 0,backlogId: 0,createdBy: 0, createdOn: new Date(), updatedOn: new Date(), updatedBy: 0,companyId: companyId).save()
+//		new PtBug(version: 0, title: '', stepToReproduce: '',severity: 0,status: 0,type: 0,backlogId: 0,createdBy: 0, createdOn: new Date(), updatedOn: new Date(), updatedBy: 0,companyId: companyId).save()
+//		new PtBug(version: 0, title: '', stepToReproduce: '',severity: 0,status: 0,type: 0,backlogId: 0,createdBy: 0, createdOn: new Date(), updatedOn: new Date(), updatedBy: 0,companyId: companyId).save()
+//		new PtBug(version: 0, title: '', stepToReproduce: '',severity: 0,status: 0,type: 0,backlogId: 0,createdBy: 0, createdOn: new Date(), updatedOn: new Date(), updatedBy: 0,companyId: companyId).save()
+    }
+
+    /**
+     * Select bug details from DB
+     * id- backlogId
+     * return bug list
+     */
+    public Map lstBugDetails(long backlogId, BaseService baseService) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List<PtBug> lstBug = PtBug.findAllByBacklogIdAndCompanyId(backlogId, companyId, [readOnly: true, max: baseService.resultPerPage, offset: baseService.start])
+        int count = PtBug.countByBacklogId(backlogId)
+        return [lstBug: lstBug, count: count.toInteger()]
+    }
+
+    /**
+     * update ptBug object ownerId in DB
+     * @param buIds -list of bug ids
+     * @return -an integer containing no. of update count
+     */
+    public int addToMyBug(List<Long> bugIds) {
+        String strIds = Tools.buildCommaSeparatedStringOfIds(bugIds)
+        String owner_update_query = """
+			UPDATE pt_bug SET
+				  owner_id=:ownerId
+			WHERE id IN (${strIds})
+
+	    """
+
+        Map queryParams = [
+                ownerId: ptSessionUtil.appSessionUtil.appUser.id
+        ]
+
+        int updateCount = executeUpdateSql(owner_update_query, queryParams)
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update bug information')
+        }
+        return updateCount
+    }
+}

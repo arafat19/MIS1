@@ -1,0 +1,56 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of *I.P.C* in Landing Page | |
+ *ActionService:* | ListAccIpcActionService | *Auditable:* | No
+ *Url:* | /accIpc/list | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 12th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *I.P.C* link.
+* Show List of *I.P.C* in [Landing Page|guide:ShowAccIpcActionService].
+
+h4. Pre-condition:
+* User must have "List IPC" privilege.
+
+h4. Process:
+* Get list of *I.P.C* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** IPC No
+** Project Name
+
+h4. Post-condition:
+
+* *Success:*
+** *I.P.C* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search I.P.C From Grid View|guide:SearchAccIpcActionService].
+
+!Acc/IPC_List.png!

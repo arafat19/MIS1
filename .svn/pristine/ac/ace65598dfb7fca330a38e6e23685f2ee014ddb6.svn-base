@@ -1,0 +1,221 @@
+package com.athena.mis.budget.actions.report.projectstatus
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.Project
+import com.athena.mis.application.utility.AppUserEntityTypeCacheUtility
+import com.athena.mis.application.utility.ProjectCacheUtility
+import com.athena.mis.budget.utility.BudgSessionUtil
+import com.athena.mis.integration.inventory.InventoryPluginConnector
+import com.athena.mis.integration.qsmeasurement.QsMeasurementPluginConnector
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ * UI level Search for Project status.
+ * For details go through Use-Case doc named 'SearchForProjectStatusActionService'
+ */
+class SearchForProjectStatusActionService extends BaseService implements ActionIntf {
+
+    InventoryPluginConnector inventoryImplService
+    QsMeasurementPluginConnector qsMeasurementImplService
+    @Autowired
+    BudgSessionUtil budgSessionUtil
+    @Autowired
+    AppUserEntityTypeCacheUtility appUserEntityTypeCacheUtility
+    @Autowired
+    ProjectCacheUtility projectCacheUtility
+
+
+    private static final String PROJECT_NOT_FOUND = "Project not found"
+    private static final String FAILURE_MSG = "Fail to generate Project Status."
+    private static final String USER_HAS_NOT_ACCESS = "User is not associated with this project"
+    private static final String PROJECT_STATUS_MAP = "projectStatusMap"
+    private static final String PROJECT_OBJ = "project"
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    /**
+     * Check pre conditions -and get project object
+     * 1. Get Project
+     * 2. Checking the mapping between user and project by isAccessible method of projectCacheUtility
+     * 3. Checking the existence of project
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing voucher object & isError msg(True/False)
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+
+            if (!params.projectId) {
+                result.put(Tools.MESSAGE, PROJECT_NOT_FOUND)
+                return result
+            }
+
+            List<Long> loggedInUserProjectIds = (List<Long>) budgSessionUtil.appSessionUtil.getUserProjectIds()
+            if (loggedInUserProjectIds.size() <= 0) {
+                result.put(Tools.MESSAGE, USER_HAS_NOT_ACCESS)
+                return result
+            }
+
+            long projectId = Long.parseLong(params.projectId.toString())
+            Project project = (Project) projectCacheUtility.read(projectId)
+            if (!project) {
+                result.put(Tools.MESSAGE, PROJECT_NOT_FOUND)
+                return result
+            }
+
+            boolean isAccessible = projectCacheUtility.isAccessible(project.id)
+            if (!isAccessible) {
+                result.put(Tools.MESSAGE, USER_HAS_NOT_ACCESS)
+                return result
+            }
+
+            result.put(PROJECT_OBJ, project)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Give project status map
+     * 1. Get project object from executePreCondition method
+     * 2. Get project status map by buildProjectMap method
+     * @param parameters - N/A
+     * @param obj - get map from executePreCondition method
+     * @return contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj
+            Project project = (Project) preResult.get(PROJECT_OBJ)
+            LinkedHashMap projectStatusMap = buildProjectMap(project)
+            result.put(PROJECT_STATUS_MAP, projectStatusMap)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+
+    /**
+     * Get Project status map
+     * @param obj - get map from execute method
+     * @return - contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap executeResult = (LinkedHashMap) obj
+            result.put(PROJECT_STATUS_MAP, executeResult.get(PROJECT_STATUS_MAP))
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            LinkedHashMap executeResult = (LinkedHashMap) obj
+
+            result.put(Tools.IS_ERROR, executeResult.get(Tools.IS_ERROR))
+            if (executeResult.message) {
+                result.put(Tools.MESSAGE, executeResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, FAILURE_MSG)
+            }
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+
+    /**
+     * Build project map for pdf report
+     * 1. Get gross receivable QS from getGrossReceivableQs method of qsMeasurementImplService using project id
+     * 2. Get total billable budget amount by getBillableBudgetAmountByProject method using project id
+     * @param project - object of project from getProjectStatusReport method
+     * @return - a new map of project
+     */
+    private LinkedHashMap buildProjectMap(Project project) {
+        Map grossReceivableQs = qsMeasurementImplService.getGrossReceivableQs(project.id)
+
+        double totalBillableBudgetAmount = getBillableBudgetAmountByProject(project.id)
+        double totalGrossReceivable = grossReceivableQs.grossReceivableInternal
+        double totalProjectCompletedInPercentage = 0d
+        if (totalBillableBudgetAmount > 0) {
+            totalProjectCompletedInPercentage = (totalGrossReceivable / totalBillableBudgetAmount) * 100
+        }
+
+        LinkedHashMap projectMap = [
+                projectId: project.id,
+                projectName: project.name,
+                projectCode: project.code,
+                projectDescription: project.description,
+                printDate: DateUtility.getDateFormatAsString(new Date()),
+                projectCompleted: Tools.formatAmountWithoutCurrency(totalProjectCompletedInPercentage) + Tools.PERCENTAGE,
+                invTotalMaterial: inventoryImplService.getMaterialStockBalanceByProjectId(project.id),
+                invTotalFixedAsset: inventoryImplService.getFixedAssetStockBalanceByProjectId(project.id),
+                invTotalApprovedConsumption: inventoryImplService.getTotalApprovedConsumptionByProjectId(project.id),
+                qsTotalReceivableInternal: grossReceivableQs.grossReceivableInternalStr,
+                qsTotalReceivableApprovedByGov: grossReceivableQs.grossReceivableGovStr
+        ]
+        return projectMap
+    }
+
+    private static final String QUERY_BUDGET_AMOUNT_CAL = """
+        SELECT COALESCE(SUM(budget_quantity * contract_rate),0) AS budget_amount
+        FROM budg_budget WHERE project_id=:projectId AND billable = true
+    """
+
+    /**
+     * Get billable budget amount by project
+     * @param projectId - get project id from buildProjectMap method
+     * @return - budget amount
+     */
+    private double getBillableBudgetAmountByProject(long projectId) {
+        Map queryParams = [projectId: projectId]
+        List result = executeSelectSql(QUERY_BUDGET_AMOUNT_CAL, queryParams)
+        double amount = result[0].budget_amount
+        return amount
+    }
+}

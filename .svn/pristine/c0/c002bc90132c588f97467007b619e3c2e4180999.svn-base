@@ -1,0 +1,46 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Lading Page of "Transaction Day" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsTransactionDay/show | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 22nd July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Transaction Day" with grid view on top to show "Transaction Day" list and bottom grid view with "Unresolved Task" list.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Transaction Day" link.
+* Show Lading Page of "Transaction Day".
+
+h4. Pre-condition:
+* User must have "Show transaction day" privilege.
+
+h4. Process:
+*  [Get List of "Transaction day" on top grid view|guide:ListRmsTransactionDayActionService].
+*  [Get List of "Unresolved Task(s)" from server in bottom grid view|guide:ListUnResolvedTaskListActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show list of "Transaction day" on top grid view.
+** Show list of "Unresolved Task" in bottom grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Open "Transaction Day"|guide:OpenRmsTransactionDayActionService].
+* [Close "Transaction Day"|guide:CloseRmsTransactionDayActionService].
+* [Re-Open "Transaction Day"|guide:ReOpenRmsTransactionDayActionService].

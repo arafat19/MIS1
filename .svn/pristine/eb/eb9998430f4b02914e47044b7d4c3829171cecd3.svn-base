@@ -1,0 +1,58 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of "Transport Cost" in Landing Page | |
+ *ActionService:* | ListTransportCostActionService| *Auditable:* | No
+ *Url*: | /procTransportCost/list | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 6th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Select *Purchase Order* link.
+* Select a Line-Item from grid view.
+* Click *Transport Cost* button.
+* Show List of "Transport Cost" in [Landing Page|guide:ShowTransportCostActionService].
+
+h4. Pre-condition:
+* User must have "List Transport Cost" privilege.
+
+h4. Process:
+* Get list of *Transport Cost* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Amount
+** Quantity
+** Rate
+
+h4. Post-condition:
+
+* *Success:*
+** *Transport Cost* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+
+!procurement/PO_Transport_Cost_List.png!

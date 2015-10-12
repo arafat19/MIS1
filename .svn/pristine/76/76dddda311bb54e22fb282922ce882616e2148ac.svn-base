@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Company User* | |
+*ActionService:* | ShowAppCompanyUserActionService | *Auditable:* | No
+*Url:* | /appUser/showForCompanyUser | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 19th December 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+This is the landing page of *Company User* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click *Company User* link.
+* Show Landing Page of *Company User*.
+
+h4. Pre-condition:
+* User must have "Show Company User" privilege.
+
+h4. Process:
+* [Get List of all "Company User" from server|guide:ListAppCompanyUserActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Company User"|guide:CreateAppCompanyUserActionService].
+** Show list of all *Company User* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Company User" in Edit Mode|guide:SelectAppCompanyUserActionService].
+* [Search "Company User" From Grid View|guide:SearchAppCompanyUserActionService].
+
+!application/CompanyUser_Show.png!

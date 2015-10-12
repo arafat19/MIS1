@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Bank Cheque" From "Pay Cheque" *Voucher* Report in PDF Format | |
+*ActionService:* | DownloadForVoucherBankChequeActionService | *Auditable:* | No
+*Url:* | /accReport/downloadVoucherBankCheque | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes* | *Version*
+Nahida Sultana | 5th May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Voucher* link.
+* [Show Landing Page of Voucher Report|guide:ShowForVoucherActionService].
+* Enter valid input.
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Bank Cheque" From "Pay Cheque" *Voucher* Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download Voucher Bank Cheque Report" privilege.
+* Rules of Searching:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules*
+  Trace No | Text box | Alpha Numeric | Required
+  Cancelled | Check Box | Boolean | Default Value False
+ {table}
+
+
+h4. Process:
+* To get Bank Cheque From Pay Cheque Voucher Report in PDF Format "Click Here":cheque__Download.pdf
+* Download the Cheque as PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,102 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.integration.exchangehouse.ExchangeHousePluginConnector
+import com.athena.mis.sarb.model.SarbTaskModel
+import com.athena.mis.sarb.service.SarbTaskModelService
+import com.athena.mis.sarb.utility.SarbSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+class ListNewTaskForSendToSarbActionService extends BaseService implements ActionIntf {
+    @Autowired
+    SarbSessionUtil sarbSessionUtil
+	@Autowired
+	ExchangeHousePluginConnector exchangeHouseImplService
+	SarbTaskModelService sarbTaskModelService
+
+	private static final String LOAD_FAILED = "Failed to load task lists."
+	private static final String LST_TASK = "lstTask"
+	private final Logger log = Logger.getLogger(getClass())
+
+	public Object executePreCondition(Object parameters, Object obj) {
+		return null
+	}
+
+	public Object executePostCondition(Object parameters, Object obj) {
+		return null
+	}
+
+	public Object execute(Object parameters, Object obj) {
+		Map result = new LinkedHashMap()
+		try {
+			GrailsParameterMap params = (GrailsParameterMap) parameters
+			initPager(params)
+			long companyId = sarbSessionUtil.appSessionUtil.getCompanyId()
+			List<Long> lstStatusForSendTask = exchangeHouseImplService.listTaskStatusForSarb()
+			List<SarbTaskModel> lstSarbTaskModel = sarbTaskModelService.listAllTaskForSendToSarb(lstStatusForSendTask, companyId, this)
+			int count = sarbTaskModelService.countTaskForSendToSarb(lstStatusForSendTask, companyId)
+
+			result.put(Tools.IS_ERROR, Boolean.FALSE)
+			result.put(LST_TASK, lstSarbTaskModel)
+			result.put(Tools.COUNT, count)
+			return result
+		}
+		catch (Exception ex) {
+			log.error(ex.getMessage())
+			result.put(Tools.IS_ERROR, Boolean.TRUE)
+			result.put(Tools.MESSAGE, LOAD_FAILED)
+			return result
+		}
+	}
+
+	public Object buildSuccessResultForUI(Object obj) {
+		Map result
+		try{
+			Map executeResult = (Map) obj
+			List<SarbTaskModel> lstSarbTask = (List<SarbTaskModel>) executeResult.get(LST_TASK)
+			int count = (int) executeResult.get(Tools.COUNT)
+			List wrappedSarbTaskModel = wrapListSarbTaskModel(lstSarbTask, start)
+			Map output = [page: pageNumber, total: count, rows: wrappedSarbTaskModel]
+			return output
+		}
+		catch(Exception ex) {
+			log.error(ex.getMessage())
+			result.put(Tools.IS_ERROR, Boolean.TRUE)
+			result.put(Tools.MESSAGE, LOAD_FAILED)
+			return result
+		}
+	}
+
+	public Object buildFailureResultForUI(Object obj) {
+		return null
+	}
+
+	private List wrapListSarbTaskModel(List<SarbTaskModel> lstSarbTaskModel, int start) {
+		List SarbTaskModelList = []
+		int counter = start + 1
+		for (int i = 0; i < lstSarbTaskModel.size(); i++) {
+			SarbTaskModel sarbTaskModel = lstSarbTaskModel[i]
+			GridEntity obj = new GridEntity()
+			obj.id = sarbTaskModel.id
+			obj.cell = [
+					counter,
+					sarbTaskModel.id,
+					sarbTaskModel.refNo,
+					sarbTaskModel.amountInForeignCurrency,
+					sarbTaskModel.amountInLocalCurrency,
+					sarbTaskModel.customerName,
+					sarbTaskModel.beneficiaryName,
+					DateUtility.getLongDateForUI(sarbTaskModel.createdOn)
+			]
+			SarbTaskModelList << obj
+			counter++
+		}
+		return SarbTaskModelList
+	}
+}

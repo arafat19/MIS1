@@ -1,0 +1,45 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Instrument Type" List in drop-down | |
+*ActionService:* | ShowRmsProcessInstrumentMappingActionService | *Auditable:* | No
+*Url:* | /rmsExchangeHouse/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Process Instrument Mapping* link.
+* [Show Landing Page of "Process Instrument Mapping"|guide:ShowRmsProcessInstrumentMappingActionService].
+* Populate "Instrument Type" List in drop-down.
+
+h4. Pre-condition:
+* Key must be Active to populate in drop-down.
+
+h4. Process:
+* Get Active list of "Instrument Type" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate active "Instrument Type" in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Create "Process Instrument Mapping"|guide:CreateRmsProcessInstrumentMappingActionService].

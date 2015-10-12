@@ -1,0 +1,235 @@
+<script type="text/javascript">
+    var validatorFixedAssetTrace, dropDownCategoryId, dropDownFixedAssetDetailsId;
+    var dropDownInventoryTypeId, dropDownInventoryId;
+    var fixedAssetTraceListModel =${output ? output : ''};
+    $(document).ready(function () {
+        onLoadFixedAssetTrace();
+    });
+
+    function onLoadFixedAssetTrace() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#fixedAssetTraceForm"), onSubmitFixedAssetTrace);
+
+        var isError = fixedAssetTraceListModel.isError;
+        if (isError == 'true') {
+            var message = fixedAssetTraceListModel.message;
+            showError(message);
+            return;
+        }
+
+
+        dropDownFixedAssetDetailsId = initKendoDropdown($('#fixedAssetDetailsId'), "item", null, null);
+        dropDownFixedAssetDetailsId.setDataSource(getKendoEmptyDataSource(dropDownFixedAssetDetailsId, null));
+        dropDownInventoryId = initKendoDropdown($('#inventoryId'), null, null, null);
+
+        initFixedAssetTraceGrid();
+
+        // update page title
+        $(document).attr('title', "MIS - Fixed Asset Move");
+        loadNumberedMenu(MENU_ID_FIXED_ASSET, "#fxdFixedAssetTrace/show");
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#fixedAssetTraceForm"))) {
+            return false;
+        }
+        if (!checkCustomDate($('#transactionDate'), 'Transaction')) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitFixedAssetTrace() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        var data = jQuery("#fixedAssetTraceForm").serialize();
+
+        showLoadingSpinner(true);
+        var actionUrl = null;
+
+        actionUrl = "${createLink(controller: 'fxdFixedAssetTrace', action: 'create')}";
+
+        jQuery.ajax({
+            type: 'post',
+            data: data,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                if (data.isError) {
+                    showError(data.message);
+                } else {
+                    resetForm();
+                    showSuccess(data.message);
+                    fixedAssetTraceListModel = data;
+                    $("#flex1").flexAddData(fixedAssetTraceListModel);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function resetForm() {
+        clearForm($("#fixedAssetTraceForm"), dropDownCategoryId);
+        dropDownInventoryTypeId.value('');
+        dropDownCategoryId.value('');
+        dropDownInventoryId.setDataSource(getKendoEmptyDataSource(dropDownInventoryId, null));
+        dropDownInventoryId.value('');
+        dropDownFixedAssetDetailsId.setDataSource(getKendoEmptyDataSource(dropDownFixedAssetDetailsId, null));
+        dropDownFixedAssetDetailsId.value('');
+
+        $('#lblCurrentInventory').text('');
+    }
+
+    function initFixedAssetTraceGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "Fixed Asset Move", name: "fixedAssetTraceId", width: 100, sortable: false, align: "left", hide: true},
+                        {display: "Category", name: "category", width: 250, sortable: false, align: "left"},
+                        {display: "Model/Serial No", name: "Model", width: 200, sortable: false, align: "left"},
+                        {display: "Inventory", name: "inventoryName", width: 200, sortable: false, align: "left"},
+                        {display: "Current Inventory", name: "isCurrent", width: 100, sortable: false, align: "left"},
+                        {display: "Transaction Date", name: "transactionDate", width: 100, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid}
+                    ],
+                    searchitems: [
+                        {display: "Category", name: "item.name", width: 180, sortable: true, align: "left"},
+                        {display: "Model", name: "fad.name", width: 180, sortable: true, align: "left"},
+                        {display: "Inventory", name: "inventory.name", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Fixed Asset Movement',
+                    useRp: true,
+                    rp: 15,
+                    rpOptions: [15, 20, 25],
+                    showTableToggleBtn: false,
+                    height: getGridHeight()-15,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);// Spinner hide after AJAX Call
+                    },
+
+                    customPopulate: onLoadFixedAssetTraceListJSON
+                }
+        );
+    }
+
+    function onLoadFixedAssetTraceListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            fixedAssetTraceListModel = getEmptyGridModel();
+        } else {
+            fixedAssetTraceListModel = data;
+        }
+        $("#flex1").flexAddData(fixedAssetTraceListModel);
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flex1').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    // To populate Inventory List
+    function updateInventoryList(defaultInventoryTypeId) {
+        dropDownInventoryId.value('');
+        var inventoryTypeId = dropDownInventoryTypeId.value();
+        if (inventoryTypeId == '') {
+            dropDownInventoryId.setDataSource(getKendoEmptyDataSource(dropDownInventoryId));
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'invInventoryTransaction', action: 'listInventoryByType')}?inventoryTypeId=" + inventoryTypeId,
+            success: function (data) {
+                updateInventoryListDropDown(data, defaultInventoryTypeId);
+            }, complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
+
+    function updateInventoryListDropDown(data, defaultInventoryTypeId) {
+        if (data.isError) {
+            showError(data.message);
+            return false;
+        }
+        if (!defaultInventoryTypeId) defaultInventoryTypeId = -1;
+        dropDownInventoryId.setDataSource(data.inventoryList);
+        dropDownInventoryId.value(defaultInventoryTypeId);
+    }
+
+    // To populate Fixed Asset List
+    function updateModelList(categoryId) {
+        $('#lblCurrentInventory').text('');
+        dropDownFixedAssetDetailsId.value('');
+        //var fixedAssetItemId = $('#categoryId').val();
+        var fixedAssetItemId = dropDownCategoryId.value();
+        if (fixedAssetItemId == '') {
+            dropDownFixedAssetDetailsId.setDataSource(getKendoEmptyDataSource());
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'fxdFixedAssetTrace', action: 'getItemList')}?fixedAssetItemId=" + fixedAssetItemId,
+            success: function (data) {
+                updateModelListDropDown(data);
+            }, complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return true;
+    }
+
+    function updateModelListDropDown(data) {
+        if (data.isError) {
+            showError(data.message);
+            return false;
+        }
+        dropDownFixedAssetDetailsId.setDataSource(data.fixedAssetItemList);
+    }
+
+    function updateCurrentInventoryLbl() {
+        var fixedAssetDetailsId = dropDownFixedAssetDetailsId.value();
+        if (fixedAssetDetailsId == '') {
+            $('#lblCurrentInventory').text('');
+        } else {
+            $('#lblCurrentInventory').text(dropDownFixedAssetDetailsId.dataItem().inventory);
+            $('#currentInventoryId').val(dropDownFixedAssetDetailsId.dataItem().current_inventory_id);
+        }
+    }
+
+    function loadFixedAssetTraceData() {
+        <sec:access url="/fxdFixedAssetTrace/list">
+        var strUrl = "${createLink(controller: 'fxdFixedAssetTrace', action: 'list')}";
+        $("#flex1").flexOptions({url: strUrl});
+        if (fixedAssetTraceListModel) {
+            $("#flex1").flexAddData(fixedAssetTraceListModel);
+        }
+        </sec:access>
+    }
+
+    window.onload = loadFixedAssetTraceData();
+
+</script>

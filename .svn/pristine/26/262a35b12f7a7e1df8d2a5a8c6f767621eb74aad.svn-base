@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search *Lease Account* From Grid View | |
+ *ActionService:* | SearchAccLeaseAccountActionService | *Auditable:* | No
+ *Url:* | /accLeaseAccount/list | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 12th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Lease Account* link.
+* [Show Landing Page of Lease Account|guide:ShowAccLeaseAccountActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Lease Account* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Lease Account" privilege.
+* Rules of searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*
+ Find | Text Box | Text | Institution
+ Find | Text Box | Text | Item 
+{table}
+
+
+h4. Process:
+* Get list of *Lease Account* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Lease Account*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Lease Account* list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Lease Account" in Landing Page|guide:ListAccLeaseAccountActionService].

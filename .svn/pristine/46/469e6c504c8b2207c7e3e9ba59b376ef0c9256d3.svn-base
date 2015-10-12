@@ -1,0 +1,44 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Search By" List in drop-down | |
+*Action:* | showForTaskSearch | *Auditable:* | No
+*Url:* | /exhTask/searchTaskWithRefOrPin  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 2nd June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier, Agent, Customer, Other Bank User.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Task Status" link.
+* [Show Landing Page of "Task Status" Report|guide:showForTaskSearch].
+* Populate "Search By" list in drop-down.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get list of "Search By" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Search By" in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show Landing Page of "Task Status" report For "Agent"|guide:showForTaskSearchForAgent].

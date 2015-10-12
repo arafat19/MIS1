@@ -1,0 +1,60 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Customer* | |
+*ActionService:* | CreateCustomerActionService | *Auditable:* | No
+*Url:* | /customer/create | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 25th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of Customer|guide:ShowCustomerActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Customer*.
+
+h4. Pre-condition:
+* User must have "Create Customer" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Full name | Text Box | Alpha Numeric | Required
+Nick Name | Text Box | Alpha Numeric | Required
+Phone no | Text Box | Numeric | Optional
+Email | Text Box | Alpha Numeric | Optional
+Date Of Birth | Text Box | Numeric | Required
+Address | Text Box | Alpha Numeric | Optional
+{table}
+
+* *Customer* "Date of Birth" Date can not be future date.
+
+h4. Process:
+* Create a new *Customer*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Customer* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!application/Customer_Create.png!

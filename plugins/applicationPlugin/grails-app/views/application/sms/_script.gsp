@@ -1,0 +1,303 @@
+<script type="text/javascript">
+    var validatorSms;
+    var output = false
+    var smsListModel = false;
+
+    $(document).ready(function () {
+        onLoadSmsPage();
+    });
+
+    function onLoadSmsPage() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#smsForm"), onSubmitSms);
+
+        output = ${output ? output : ''};
+        if (output.isError) {
+            showError(output.message);
+        } else {
+            smsListModel = output.smsList;
+        }
+        var pluginId = output.pluginId;
+
+        initFlexGrid();
+        populateFlexGrid(pluginId);
+
+        // update page title
+        $(document).attr('title', "Update SMS");
+        loadMenu(pluginId);
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#smsForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitSms() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            showError('Sms can be updated only. Please select from grid to update');
+            return false;
+        } else {
+            actionUrl = "${createLink(controller: 'sms', action: 'updateSms')}";
+        }
+
+        setButtonDisabled($('#create'), true);
+        showLoadingSpinner(true);
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#smsForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                var newEntry = result;
+                if ($('#id').val().isEmpty() && newEntry.entity != null) { // newly created
+                    var previousTotal = parseInt(smsListModel.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (smsListModel.rows.length > 0) {
+                        firstSerial = smsListModel.rows[0].cell[0];
+                        regenerateSerial($(smsListModel.rows), 0);
+                    }
+                    newEntry.entity.cell[0] = firstSerial;
+                    smsListModel.rows.splice(0, 0, newEntry.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        smsListModel.rows.pop();
+                    }
+
+                    smsListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(smsListModel);
+
+                } else if (newEntry.entity != null) { // updated existing
+                    updateListModel(smsListModel, newEntry.entity, 0);
+                    $("#flex1").flexAddData(smsListModel);
+                }
+
+                resetSmsForm();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetSmsForm() {
+        clearForm($("#smsForm"), $('#recipients'));
+        $('#transactionCode').text('');
+        $('#description').text('');
+    }
+
+    function initFlexGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 35, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Transaction Code", name: "transactionCode", width: 200, sortable: false, align: "left"},
+                        {display: "Body", name: "body", width: 300, sortable: false, align: "left"},
+                        {display: "Description", name: "description", width: 300, sortable: false, align: "left"},
+                        {display: "Active", name: "isActive", width: 60, sortable: false, align: "center", hide: true},
+                        {display: "Manual Send", name: "isManualSend", width: 100, sortable: false, align: "center", hide: true},
+                        {display: "Controller", name: "controllerName", width: 100, sortable: false, align: "left", hide: true},
+                        {display: "Action", name: "actionName", width: 100, sortable: false, align: "left", hide: true}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/sms/selectSms,/sms/updateSms">
+                        {name: 'Edit', bclass: 'edit', onpress: editSms},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/sms/sendSms">
+                        {name: 'Send SMS', bclass: 'note', onpress: sendSms},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    sortname: "id",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All SMS List',
+                    useRp: true,
+                    rp: 15,
+                    rpOptions: [15, 20, 25],
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    customPopulate: customPopulateSmsGrid
+                }
+        );
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    function customPopulateSmsGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            smsListModel = getEmptyGridModel();
+        } else {
+            smsListModel = data;
+        }
+        $('#flex1').flexAddData(smsListModel);
+        return false;
+    }
+
+    function editSms(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'sms') == false) {
+            return;
+        }
+
+        resetSmsForm();
+        showLoadingSpinner(true);
+        var smsId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'sms', action: 'selectSms')}?id=" + smsId,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showSms(data);
+        }
+    }
+
+    function showSms(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#transactionCode').text(entity.transactionCode);
+        $('#url').val(entity.url);
+        $('#body').val(entity.body);
+        $('#recipients').val(entity.recipients);
+        $('#description').text(entity.description);
+        $('#isActive').attr('checked', entity.isActive);
+    }
+
+    function populateFlexGrid(pluginId) {
+        var strUrl = "${createLink(controller: 'sms', action: 'listSms')}?plugin=" + pluginId;
+        $("#flex1").flexOptions({url: strUrl});
+        if (smsListModel) {
+            $("#flex1").flexAddData(smsListModel);
+        }
+    }
+
+    function sendSms(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'sms') == false) {
+            return;
+        }
+
+        var ids = $('.trSelected', $('#flex1'));
+        var isManualSend = $.trim($(ids[0]).find('td').eq(6).find('div').text());
+        if (isManualSend == 'NO') {
+            showError('The selected sms can not be send manually');
+            return false;
+        }
+
+        var transactionCode = $.trim($(ids[0]).find('td').eq(2).find('div').text());
+        var controllerStr = $.trim($(ids[0]).find('td').eq(7).find('div').text());
+        var actionStr = $.trim($(ids[0]).find('td').eq(8).find('div').text());
+        if(!controllerStr || !actionStr) {
+            showError('Selected sms has no controller or action');
+            return false;
+        }
+        if (!confirm('Are you sure you want to send this sms now?')) {
+            return false;
+        }
+
+        var strUrl = '/' + controllerStr + '/' + actionStr;
+        showLoadingSpinner(true);
+        $.ajax({
+            url: strUrl,
+            data: {transactionCode: transactionCode},
+            success: executePostConditionForSendSms,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForSendSms(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showSuccess(data.message);
+        }
+    }
+
+    <%-- Load Menu and set left-menu selected  --%>
+
+    function loadMenu(pluginId) {
+        var menuId;
+
+        switch (pluginId) {
+            case 1:
+                menuId = MENU_ID_APPLICATION
+                break
+            case 2:
+                menuId = MENU_ID_ACCOUNTING
+                break
+            case 3:
+                menuId = MENU_ID_BUDGET
+                break
+            case 4:
+                menuId = MENU_ID_INVENTORY
+                break
+            case 5:
+                menuId = MENU_ID_PROCUREMENT
+                break
+            case 6:
+                menuId = MENU_ID_QS
+                break
+            case 7:
+                menuId = MENU_ID_FIXED_ASSET
+                break
+            case 9:
+                menuId = MENU_ID_EXCHANGE_HOUSE
+                break
+            case 10:
+                menuId = MENU_ID_PROJECT_TRACK
+                break
+            case 11:
+                menuId = MENU_ID_ARMS
+                break
+            default:
+                menuId = MENU_ID_APPLICATION
+        }
+        loadNumberedMenu(menuId, "#sms/showSms?plugin=" + pluginId);
+    }
+
+</script>

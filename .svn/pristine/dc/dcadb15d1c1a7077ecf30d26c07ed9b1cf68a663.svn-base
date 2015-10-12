@@ -1,0 +1,104 @@
+<app:ifAnyUrl
+        urls="/sarbTaskModel/showForSendTaskToSarb,/sarbTaskModel/showTaskStatus, /sarbTaskModel/showTaskForCancel,/sarbTaskModel/showForReplaceTask,/sarbTaskModel/showForRefundTask">
+    <a href="#"><span><i class="tap-pre disbursement-tab"></i></span><span class="tabText">Integration</span></a>
+
+    <div id="0">
+        <ul class="menuDiv">
+            <app:ifAnyUrl
+                    urls="/sarbTaskModel/showForSendTaskToSarb, /sarbTaskModel/showTaskForCancel,/sarbTaskModel/showForReplaceTask,/sarbTaskModel/showForRefundtask">
+                <li>
+                    <span><i class="pre-icon accountin_voucher"></i></span>
+                    <span class="menuText" style="padding-left:36px">Send To Sarb</span>
+
+                    <ul class="menuDivSub">
+                        <sec:access url="/sarbTaskModel/showForSendTaskToSarb">
+                            <li><a class='autoload' href="#sarbTaskModel/showForSendTaskToSarb"><span><i
+                                    class="pre-icon-sub process-task"></i></span> <span
+                                    class="menuTextSub">New Task</span></a></li>
+                        </sec:access>
+                        <sec:access url="/sarbTaskModel/showTaskForCancel">
+                            <li><a class='autoload' href="#sarbTaskModel/showTaskForCancel"><span><i
+                                    class="pre-icon-sub project-status"></i></span> <span
+                                    class="menuTextSub">Cancel Task</span></a></li>
+                        </sec:access>
+                        <sec:access url="/sarbTaskModel/showForReplaceTask">
+                            <li><a class='autoload' href="#sarbTaskModel/showForReplaceTask"><span><i
+                                    class="pre-icon-sub process-task"></i></span> <span
+                                    class="menuTextSub">Replace Task</span></a></li>
+                        </sec:access>
+                        <sec:access url="/sarbTaskModel/showForRefundTask">
+                            <li><a class='autoload' href="#sarbTaskModel/showForRefundTask"><span><i
+                                    class="pre-icon-sub project-status"></i></span> <span
+                                    class="menuTextSub">Refund Task</span></a></li>
+                        </sec:access>
+                    </ul>
+                </li>
+                <li>&nbsp;</li>
+            </app:ifAnyUrl>
+
+            <sec:access url="/sarbTaskModel/showTaskStatus">
+                <li>
+                    <a class='autoload' href="#sarbTaskModel/showTaskForRetrieveResponse"><span><i
+                            class="pre-icon upload-sanction"></i></span> <span
+                            class="menuText">Retrieve Response</span></a>
+                </li>
+            </sec:access>
+            <sec:access url="/sarbTaskModel/showTaskStatus">
+                <li>
+                    <a class='autoload' href="#sarbTaskModel/showTaskStatus"><span><i
+                            class="pre-icon currency-conversion"></i></span> <span
+                            class="menuText">Task Status Details</span></a>
+                </li>
+            </sec:access>
+        </ul>
+    </div>
+</app:ifAnyUrl>
+
+<app:ifAnyUrl urls="/sarbReport/showSarbTransactionSummary">
+    <a href="#"><span><i class="tap-pre report-tab"></i></span><span class="tabText">Report</span></a>
+
+    <div id="1">
+        <ul class="menuDiv">
+            <sec:access url="/sarbReport/showSarbTransactionSummary">
+                <li><a class='autoload' href="#sarbReport/showSarbTransactionSummary"><span><i
+                        class="pre-icon daily-remittance-summery"></i></span> <span
+                        class="menuText">SARB Transaction Summary</span></a>
+                </li>
+            </sec:access>
+        </ul>
+    </div>
+</app:ifAnyUrl>
+
+<app:ifAnyUrl urls="/systemConfiguration/show">
+    <a href="#">
+        <span><i class="tap-pre development-tab"></i></span>
+        <span class="tabText">Development</span>
+    </a>
+
+    <div id="2">
+        <ul class="menuDiv">
+            <sec:access url="/systemConfiguration/show">
+                <li><a class='autoload' href="#systemConfiguration/show?plugin=12"><span><i
+                        class="pre-icon sys-configuration"></i></span> <span
+                        class="menuText">System Configuration</span></a></li>
+            </sec:access>
+        </ul>
+    </div>
+</app:ifAnyUrl>
+
+<app:ifAnyUrl urls="/sarbProvince/show">
+    <a href="#"><span><i class="tap-pre settings-tab"></i></span><span class="tabText">Settings</span></a>
+
+    <div id="3">
+        <ul class="menuDiv">
+            <sec:access url="/sarbProvince/show">
+                <li><a class='autoload' href="#sarbProvince/show"><span><i
+                        class="pre-icon district"></i></span> <span class="menuText">Province</span></a>
+                </li>
+            </sec:access>
+        </ul>
+    </div>
+</app:ifAnyUrl>
+
+<div id="menuBottomDiv" style=" height:60px; display: none;">
+</div>

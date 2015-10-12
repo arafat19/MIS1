@@ -1,0 +1,142 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.integration.exchangehouse.ExchangeHousePluginConnector
+import com.athena.mis.sarb.model.SarbTaskModel
+import com.athena.mis.sarb.service.SarbTaskModelService
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * Create refund task for send to SARB
+ * for details go through use-case named "CreateTaskForRefundTaskActionService"
+ */
+class CreateTaskForRefundTaskActionService extends BaseService implements ActionIntf {
+
+    @Autowired
+    ExchangeHousePluginConnector exchangeHouseImplService
+    SarbTaskModelService sarbTaskModelService
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    private static final String SUCCESS_MSG = "Successfully created refund task"
+    private static final String FAILURE_MSG = "Failed to create refund task"
+    private static final String NOT_FOUND = "Task not found"
+    private static final String CAN_NOT_REFUND = "Not accepted task can not be refunded"
+    private static final String CAN_NOT_REFUND_CANCEL = "Cancel task can not be refunded"
+
+    /**
+     *  1. Check oldTaskId exists in params
+     *  2. Check if exh task exists
+     * @param parameters - serialized params from ui
+     * @param obj
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (!params.oldTaskId) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long taskId = Tools.parseLongInput(params.oldTaskId)
+            SarbTaskModel taskModel = sarbTaskModelService.read(taskId)
+            if (!taskModel) {
+                result.put(Tools.MESSAGE, NOT_FOUND)
+                return result
+            }
+            if (!taskModel.isAcceptedBySarb) {
+                result.put(Tools.MESSAGE, CAN_NOT_REFUND)
+                return result
+            }
+            if (taskModel.isCancelled) {
+                result.put(Tools.MESSAGE, CAN_NOT_REFUND_CANCEL)
+                return result
+            }
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Create exhTask with new refund amount through interface
+     * @param parameters - serialized params from ui
+     * @param obj
+     * @return
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            long taskId = Tools.parseLongInput(params.oldTaskId)
+            double refundAmount = Double.parseDouble(params.refundAmount)
+            Map executeResult = exchangeHouseImplService.createExhTaskForRefundTask(taskId, refundAmount)
+            Boolean isError = executeResult.isError
+            if (isError.booleanValue()) {
+                result.put(Tools.IS_ERROR, Boolean.TRUE)
+                result.put(Tools.MESSAGE, executeResult.message)
+                return result
+            }
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(Tools.MESSAGE, SUCCESS_MSG)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            throw new RuntimeException(FAILURE_MSG)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+
+    /**
+     * build success message for ui
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (Map) obj
+        result.put(Tools.IS_ERROR, Boolean.FALSE)
+        result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+        return result
+    }
+
+    /**
+     * build failure message for ui
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (preResult.get(Tools.MESSAGE)) {
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, FAILURE_MSG)
+            }
+            return result
+        }
+        catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MSG)
+            return result
+        }
+    }
+}

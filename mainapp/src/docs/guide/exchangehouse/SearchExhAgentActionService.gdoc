@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Agent* From Grid View | |
+*ActionService:* | SearchExhAgentActionService | *Auditable:* | No
+*Url:* | /exhAgent/list | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of "Agent"|guide:ShowExhAgentActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Agent* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Agent Company" privilege.
+* Rules of Searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*	
+  Find | Text Box | Alpha Numeric | Name
+{table}
+
+
+h4. Process:
+* Get list of *Agent* (default: 15 at Max) matching with search criteria.
+
+h4. Post-condition:
+
+* *Success:*
+** *Agent* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Agent" in Landing Page|guide:ListExhAgentActionService].

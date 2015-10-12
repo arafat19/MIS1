@@ -1,0 +1,51 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Generate "Project Wise Budget" Report in HTML Format | |
+ *ActionService:* | SearchForProjectBudgetActionService | *Auditable:* | No
+ *Url:* | /budgReport/listProjectBudget | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 6th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks  [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Budget" link.
+* [Show Landing Page of "Project Wise Budget" Report|guide:showProjectBudget].
+* Enter valid input.
+* Click "Search" button.
+* Generate "Project Wise Budget" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List project budget" privilege.
+
+* Rules of Searching:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules*
+ [Populate Project List|application]| Drop-Down List | Alpha Numeric | Required
+ {table}
+
+
+h4. Process:
+* Get "Project Wise Budget" Report from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Project Wise Budget" Report in landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of "User-Agent Mapping" in Landing Page | |
+*ActionService:* | ListUserAgentActionService | *Auditable:* | No
+*Url:* | /exhUserAgent/list | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of *Agent*|guide:ShowExhAgentActionService].
+* Select a Line-Item from grid view.
+* Click "User" button from tool bar.
+* Show List of "User-Agent Mapping" in [Landing Page|guide:ShowUserAgentActionService].
+
+h4. Pre-condition:
+* User must have "List User Agent" privilege.
+
+h4. Process:
+* Get list of "User-Agent Mapping" from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** User ID (Default: Invisible)
+** User Name
+** Agent ID (Default: Invisible)
+** Agent Name
+
+h4. Post-condition:
+
+* *Success:*
+** "User-Agent Mapping" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "User-Agent Mapping" From Grid View|guide:SearchUserAgentActionService].
+
+!Exh/User Agent Mapping_List.png!

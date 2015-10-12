@@ -1,0 +1,34 @@
+
+{table}
+ Use Case ID: | MIS-Budget-41 | Priority: | High
+ *Name* | Show Budget Line Item Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budgReport/showBudgetRpt/ | *Action Class:* | ShowForBudgetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 20th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+This is landing page of budget line item report with input form on top and grid view at the bottom.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+# Show blank input form of budget line item so that actor can create new budget line item report.
+
+h4. Post-condition:
+
+# *Success:*
+## Show the budget line item report landing page.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

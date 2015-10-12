@@ -1,0 +1,37 @@
+
+{table}
+ Use Case ID: | MIS-QS_Measurement-11 | Priority: | High
+ *Name* | Show Budget Details to Select Budget Line Item From Grid View | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | N/A | *Action Class:* | N/A. 
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 7th October 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select budget line item from grid view.
+# Budget details Show in "Budget Information" row.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Show Budget details.
+
+h4. Post-condition:
+
+# *Success:*
+## Budget details show for selected budget line item.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

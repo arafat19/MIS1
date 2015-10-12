@@ -1,0 +1,4 @@
+<g:render template="/accounting/report/voucher/create"/>
+<g:render template="/accounting/report/voucher/script"/>
+
+<table id="flex1" style="display:none"></table>

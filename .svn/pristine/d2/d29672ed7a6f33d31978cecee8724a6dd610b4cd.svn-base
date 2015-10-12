@@ -1,0 +1,119 @@
+<g:render template="/procurement/report/indent/script"/>
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+
+        <div class="panel-title">
+            Search Indent
+        </div>
+
+    </div>
+    <form id="searchForm" name="searchForm" class="form-horizontal form-widgets" role="form">
+        <div class="panel-body">
+            <g:hiddenField name="hideIndentId"/>
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="col-md-2 control-label label-required" for="id">Indent Trace No:</label>
+
+                    <div class="col-md-3">
+                        <input type="text"
+                               class="k-textbox"
+                               required="Required"
+                               tabindex="1"
+                               validationMessage="Invalid Trace No"
+                               pattern="^(0|[1-9][0-9]*)$"
+                               id="id"
+                               name="id"/>
+                    </div>
+
+                    <div class="col-md-3 pull-left">
+                        <span class="k-invalid-msg" data-for="id"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button id="showReport" name="showReport" type="submit" data-role="button"
+                    class="k-button k-button-icontext" role="button" tabindex="2"
+                    aria-disabled="false"><span class="k-icon k-i-search"></span>Search
+            </button>
+
+            <app:ifAllUrl urls="/procReport/downloadIndentRpt">
+                <span class="download_icon_set">
+                    <ul>
+                        <li>Save as :</li>
+                        <li><a href="javascript:void(0)" id="printIndentReport" class="pdf_icon"></a></li>
+                    </ul>
+                </span>
+            </app:ifAllUrl>
+
+        </div>
+    </form>
+</div>
+
+
+<div id="divIndent" class="table-responsive" style="display: none;">
+    <table class="table table-striped table-bordered table-condensed col-sm-1">
+        <tbody>
+        <tr>
+            <td class="success" style="text-align:center;"><b>Indent Information</b></td>
+        </tr>
+
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Trace No:</td>
+                        <td><span id='lblId'></span></td>
+                        <td class="active">Created On</td>
+                        <td><span id='lblIndentCreatedDate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Created By:</td>
+                        <td><span id='lblCreatedBy'></span></td>
+                        <td class="active">From Date:</td>
+                        <td><span id='fromDate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">To Date:</td>
+                        <td><span id='toDate'></span></td>
+                        <td class="active">Project Name:</td>
+                        <td><span id='lblProjectName'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Approved By:</td>
+                        <td><span id='lblApprovedBy'></span></td>
+                        <td class="active">Total Amount:</td>
+                        <td><span id='lblTotalAmount'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr id="hide1">
+            <td class="success" style="text-align:center;"><b>Item Details</b></td>
+        </tr>
+        <tr id="hide2">
+            <td>
+                <table class="table table-bordered col-sm-1" id="indentDetailsItemList">
+                    <thead>
+                    <tr class="active">
+                        <th>Serial</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tblItems">
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+

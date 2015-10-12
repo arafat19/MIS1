@@ -1,0 +1,61 @@
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+
+        <div class="panel-title">
+            Add Sprint's Bug
+        </div>
+
+    </div>
+
+    <form id="sprintBugForm" name="sprintBugForm" class="form-horizontal form-widgets" role="form">
+        <div class="panel-body">
+            <input type="hidden" id="id" name="id"/>
+            <input type="hidden" id="version" name="version"/>
+            <input type="hidden" id="sprintId" name="sprintId"/>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label label-optional" for="name">Sprint:</label>
+
+                <div class="col-md-3">
+                    <span id="name"></span>
+                </div>
+                <label class="col-md-1 control-label label-required" for="moduleId">Module:</label>
+
+                <div class="col-md-2">
+                    <select tabindex="1"
+                            id="moduleId"
+                            name="moduleId"
+                            onchange="updateBug();">
+                    </select>
+                </div>
+                <label class="col-md-1 control-label label-required" for="bugId">Bug:</label>
+
+                <div class="col-md-4">
+                    <select tabindex="2"
+                            id="bugId"
+                            name="bugId">
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+
+            <button id="create" name="create" type="submit" data-role="button" class="k-button k-button-icontext"
+                    role="button" tabindex="3"
+                    aria-disabled="false"><span class="k-icon k-i-plus"></span>Add
+            </button>
+
+            <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
+                    class="k-button k-button-icontext" role="button" tabindex="4"
+                    aria-disabled="false" onclick='resetBugForm();'><span class="k-icon k-i-close"></span>Cancel
+            </button>
+            <span class="download_icon_set">
+                <ul>
+                    <li>Save as :</li>
+                    <li><a href="javascript:void(0)" id="printPdfBtn" class="pdf_icon"></a></li>
+                </ul>
+            </span>
+        </div>
+    </form>
+</div>

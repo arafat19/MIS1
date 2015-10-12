@@ -1,0 +1,278 @@
+application:
+
+         title: Application Plugin
+
+         _ShowLoginPage: Show User Login Page
+         LoginSuccessActionService: User Authentication Process
+
+
+         _ShowApplicationPlugin: Show Application Plugin
+
+
+         ShowForResetPasswordActionService: Show "Reset Password" Page
+         SendMailForPasswordResetActionService: Send e-mail for reset password
+         ResetPasswordActionService: Reset Password
+
+
+         ShowVehicleActionService: Show Landing Page of "Vehicle"
+         CreateVehicleActionService: Create "Vehicle"
+         SelectVehicleActionService: Open "Vehicle" in Edit Mode
+         UpdateVehicleActionService: Update "Vehicle"
+         ListVehicleActionService: List "Vehicle"
+         SearchVehicleActionService: Search "Vehicle" From Grid View
+         DeleteVehicleActionService: Delete "Vehicle"
+
+
+
+         ShowProjectActionService: Show Landing Page of "Project"
+         CreateProjectActionService: Create "Project"
+         SelectProjectActionService: Open "Project" in Edit Mode
+         UpdateProjectActionService: Update "Project"
+         ListProjectActionService: List "Project"
+         SearchProjectActionService: Search "Project" From Grid View
+         DeleteProjectActionService: Delete "Project"
+
+
+
+         ShowSupplierActionService: Show Landing Page of "Supplier"
+         _populateSupplierTypeList: Populate "Supplier Type" List to Create "Supplier"
+         CreateSupplierActionService: Create "Supplier"
+         SelectSupplierActionService: Open "Supplier" in Edit Mode
+         UpdateSupplierActionService: Update "Supplier"
+         ListSupplierActionService: List "Supplier"
+         SearchSupplierActionService: Search "Supplier" From Grid View
+         DeleteSupplierActionService: Delete "Supplier"
+
+
+
+         ShowSupplierItemActionService: Show Landing Page of "Supplier Item"
+         CreateSupplierItemActionService: Create "Supplier Item"
+         SelectSupplierItemActionService: Open "Supplier Item" in Edit Mode
+         UpdateSupplierItemActionService: Update "Supplier Item"
+         ListSupplierItemActionService: List "Supplier Item"
+         SearchSupplierItemActionService: Search "Supplier Item" From Grid View
+         DeleteSupplierItemActionService: Delete "Supplier Item"
+
+
+
+         ShowCustomerActionService: Show Landing Page of "Customer"
+         CreateCustomerActionService: Create "Customer"
+         SelectCustomerActionService: Open "Customer" in Edit Mode
+         UpdateCustomerActionService: Update "Customer"
+         ListCustomerActionService: List "Customer"
+         SearchCustomerActionService: Search "Customer" From Grid View
+         DeleteCustomerActionService: Delete "Customer"
+
+
+
+         ShowEmployeeActionService: Show Landing Page of "Employee"
+         GetDropDownDesignationTagLibActionService: Populate "Designation" List to Create "Employee"
+         CreateEmployeeActionService: Create "Employee"
+         SelectEmployeeActionService: Open "Employee" in Edit Mode
+         UpdateEmployeeActionService: Update "Employee"
+         ListEmployeeActionService: List "Employee"
+         SearchEmployeeActionService: Search "Employee" From Grid View
+         DeleteEmployeeActionService: Delete "Employee"
+
+
+
+
+         ShowItemCategoryInventoryActionService: Show Landing Page of "Inventory Item"
+         _populateValuationTypeList: Populate Valuation Type List to Create "Inventory Item"
+         CreateItemCategoryInventoryActionService: Create "Inventory Item"
+         SelectItemActionService: Open "Inventory Item" in Edit Mode
+         UpdateItemCategoryInventoryActionService: Update "Inventory Item"
+         ListItemCategoryInventoryActionService: List "Inventory Item"
+         SearchItemCategoryInventoryActionService: Search "Inventory Item" From Grid View
+         DeleteItemCategoryInventoryActionService: Delete "Inventory Item"
+
+
+
+         ShowItemCategoryNonInvActionService: Show Landing Page of "Non-Inventory Item"
+         CreateItemCategoryNonInvActionService: Create "Non-Inventory Item"
+         SelectItemNonInvActionService: Open "Non-Inventory Item" in Edit Mode
+         UpdateItemCategoryNonInvActionService: Update "Non-Inventory Item"
+         ListItemCategoryNonInvActionService: List "Non-Inventory Item"
+         SearchItemCategoryNonInvActionService: Search "Non-Inventory Item" From Grid View
+         DeleteItemCategoryNonInvActionService: Delete "Non-Inventory Item"
+
+
+
+
+         ShowInvInventoryActionService: Show Landing Page of "Inventory"
+         CreateInvInventoryActionService: Create "Inventory"
+         SelectInvInventoryActionService: Open "Inventory" in Edit Mode
+         UpdateInvInventoryActionService: Update "Inventory"
+         ListInvInventoryActionService: List "Inventory"
+         SearchInvInventoryActionService: Search "Inventory" From Grid View
+         DeleteInvInventoryActionService: Delete "Inventory"
+
+
+         ShowCountryActionService: Show Landing Page of "Country"
+         GetDropDownCurrencyTagLibActionService: Populate "Currency" List to Create "Country"
+         CreateCountryActionService: Create "Country"
+         SelectCountryActionService: Open "Country" in Edit Mode
+         UpdateCountryActionService: Update "Country"
+         ListCountryActionService: List "Country"
+         SearchCountryActionService: Search "Country" From Grid View
+         DeleteCountryActionService: Delete "Country"
+
+
+         ShowDesignationActionService: Show Landing Page of "Designation"
+         CreateDesignationActionService: Create "Designation"
+         SelectDesignationActionService: Open "Designation" in Edit Mode
+         UpdateDesignationActionService: Update "Designation"
+         ListDesignationActionService: List "Designation"
+         SearchDesignationActionService: Search "Designation" From Grid View
+         DeleteDesignationActionService: Delete "Designation"
+
+
+         ShowCurrencyActionService: Show Landing Page of "Currency"
+         CreateCurrencyActionService: Create "Currency"
+         SelectCurrencyActionService: Open "Currency" in Edit Mode
+         UpdateCurrencyActionService: Update "Currency"
+         ListCurrencyActionService: List "Currency"
+         SearchCurrencyActionService: Search "Currency" From Grid View
+         DeleteCurrencyActionService: Delete "Currency"
+
+
+
+
+
+         ShowAppUserActionService: Show Landing Page of "User"
+         CreateAppUserActionService: Create "User"
+         SelectAppUserActionService: Open "User" in Edit Mode
+         UpdateAppUserActionService: Update "User"
+         ListAppUserActionService: List "User"
+         SearchAppUserActionService: Search "User" From Grid View
+         DeleteAppUserActionService: Delete "User"
+
+
+         ShowRoleActionService: Show Landing Page of "Role"
+         CreateRoleActionService: Create "Role"
+         SelectRoleActionService: Open "Role" in Edit Mode
+         UpdateRoleActionService: Update "Role"
+         ListRoleActionService: List "Role"
+         SearchRoleActionService: Search "Role" From Grid View
+         DeleteRoleActionService: Delete "Role"
+
+
+         ShowUserRoleActionService: Show Landing Page of "User Role Mapping"
+         CreateUserRoleActionService: Create "User Role Mapping"
+         SelectUserRoleActionService: Open "User Role Mapping" in Edit Mode
+         UpdateUserRoleActionService: Update "User Role Mapping"
+         ListUserRoleActionService: List "User Role Mapping"
+         SearchUserRoleActionService: Search "User Role Mapping" From Grid View
+         DeleteUserRoleActionService: Delete "User Role Mapping"
+
+
+         ShowRequestMapActionService: Show Landing Page of "Role Right Mapping"
+         PopulateRoleList: Populate "Role" List in Drop Down
+         _populateModuleList: Populate "Module List" in Drop Down to Search "Role Right Mapping"
+         SearchRequestMapActionService: Search "Role Right Mapping"
+         UpdateRequestMapActionService: Assign Rights To "Role"
+         SelectRequestMapActionService: Discard Changes of "Role Right Mapping"
+         ResetRequestMapByPluginIdActionService: Reset "All Role" For Selected "Module"
+
+
+         ShowUserProjectActionService: Show Landing Page of "User Project Mapping"
+         CreateUserProjectActionService: Create "User Project Mapping"
+         _SelectUserProjectActionService: Open "User Project Mapping" in Edit Mode
+         UpdateUserProjectActionService: Update "User Project Mapping"
+         ListUserProjectActionService: List "User Project Mapping"
+         SearchUserProjectActionService: Search "User Project Mapping" From Grid View
+         DeleteUserProjectActionService: Delete "User Project Mapping"
+
+
+         ShowAppGroupActionService: Show Landing Page of "Group"
+         CreateAppGroupActionService: Create "Group"
+         SelectAppGroupActionService: Open "Group" in Edit Mode
+         UpdateAppGroupActionService: Update "Group"
+         ListAppGroupActionService: List "Group"
+         SearchAppGroupActionService: Search "Group" From Grid View
+         DeleteAppGroupActionService: Delete "Group"
+
+
+         ShowUserGroupActionService: Show Landing Page of "User Group Mapping"
+         GetDropDownAppGroupTagLibActionService: Populate "Group" List to Create "User Group Mapping"
+         CreateUserGroupActionService: Create "User Group Mapping"
+         SelectUserGroupActionService: Open "User Group Mapping" in Edit Mode
+         UpdateUserGroupActionService: Update "User Group Mapping"
+         ListUserGroupActionService: List "User Group Mapping"
+         SearchUserGroupActionService: Search "User Group Mapping" From Grid View
+         DeleteUserGroupActionService: Delete "User Group Mapping"
+
+
+
+
+         _ShowOnlineUserActionService: Show Landing Page of "Online Users"
+         ForceLogoutOnlineUserActionService: Force Logout "Online User"
+         ListOnlineUserActionService: List "Online User"
+
+
+         ShowSysConfigurationActionService: Show Landing Page of "System Configuration"
+         SelectSysConfigurationActionService: Open "System Configuration" in Edit Mode
+         UpdateSysConfigurationActionService: Update "System Configuration"
+         ListSysConfigurationActionService: List "System Configuration"
+         SearchSysConfigurationActionService: Search "System Configuration" From Grid View
+
+
+
+         ShowSystemEntityTypeActionService: Show Landing Page of "System Entity Type"
+         SelectSystemEntityTypeActionService: Open "System Entity Type" in Edit Mode
+         UpdateSystemEntityTypeActionService: Update "System Entity Type"
+         ListSystemEntityTypeActionService: List "System Entity Type"
+         SearchSystemEntityTypeActionService: Search "System Entity Type" From Grid View
+
+
+         ShowSystemEntityActionService: Show Landing Page of "System Entity"
+         CreateSystemEntityActionService: Create "System Entity"
+         SelectSystemEntityActionService: Open "System Entity" in Edit Mode
+         UpdateSystemEntityActionService: Update "System Entity"
+         ListSystemEntityActionService: List "System Entity"
+         SearchSystemEntityActionService: Search "System Entity" From Grid View
+         DeleteSystemEntityActionService: Delete "System Entity"
+
+
+         ShowCompanyActionService: Show Landing Page of "Company"
+         GetDropDownCountryTagLibActionService: Populate "Country" List
+         SelectCompanyActionService: Open "Company" in Edit Mode
+         UpdateCompanyActionService: Update "Company"
+         ListCompanyActionService: List "Company"
+
+
+         ShowAppCompanyUserActionService: Show Landing Page of "Company User"
+         CreateAppCompanyUserActionService: Create "Company User"
+         SelectAppCompanyUserActionService: Open "Company User" in Edit Mode
+         UpdateAppCompanyUserActionService: Update "Company User"
+         ListAppCompanyUserActionService: List "Company User"
+         SearchAppCompanyUserActionService: Search "Company User" From Grid View
+
+
+         ShowThemeActionService: Show Landing Page of "Theme"
+         SelectThemeActionService: Open "Theme" in Edit Mode
+         UpdateThemeActionService: Update "Theme"
+         ListThemeActionService: List "Theme"
+         SearchThemeActionService: Search "Theme" From Grid View
+
+
+         ShowAppMailActionService: Show Landing Page of "Mail"
+         SelectAppMailActionService: Open "Mail" in Edit Mode
+         UpdateAppMailActionService: Update "Mail"
+         ListAppMailActionService: List "Mail"
+
+
+         ShowSmsActionService: Show Landing Page of "SMS"
+         SelectSmsActionService: Open "SMS" in Edit Mode
+         UpdateSmsActionService: Update "SMS"
+         ListSmsActionService: List "SMS"
+
+
+         ShowContentCategoryActionService: Show Landing Page of "Content Category"
+         CreateContentCategoryActionService: Create "Content Category"
+         SelectContentCategoryActionService: Open "Content Category" in Edit Mode
+         UpdateContentCategoryActionService: Update "Content Category"
+         ListContentCategoryActionService: List "Content Category"
+         SearchContentCategoryActionService: Search "Content Category" From Grid View
+         DeleteContentCategoryActionService: Delete "Content Category"
+

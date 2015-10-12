@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Item Type* From Grid View | |
+*ActionService:* | SearchItemTypeActionService | *Auditable:* | No
+*Url:* | /itemType/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 11th June 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Item Type* link.
+* [Show Landing Page of "Item Type"|guide:ShowItemTypeActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Item Type* From Grid View.
+
+h4. Pre-condition:
+* User must have "List item type" privilege.
+* Rules of Searching:
+{table}
+*Field*   | *Input Type* | *Data Type* | *Searching Option*
+Find | Text Box | Alpha Numeric | Name
+{table}
+
+
+h4. Process:
+* Get list of *Item Type* (default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Item Type*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Item Type* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Item Type" in Landing Page|guide:ListItemTypeActionService].

@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="poItemReceived" language="groovy" pageWidth="710" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="660" leftMargin="25" rightMargin="25" topMargin="25" bottomMargin="20" uuid="2e6931d1-fda3-4ace-a4ac-20b42ddeb5de">
+	<property name="ireport.zoom" value="2.1435888100000153"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="dbQuantityFormat" class="java.lang.String"/>
+	<parameter name="poId" class="java.lang.Long"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="supplierName" class="java.lang.String"/>
+	<parameter name="transactionEntityTypeId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT iitd.id, iitd.supplier_chalan, item.name, item.unit, iitd.transaction_date,
+
+	iitd.actual_quantity,
+	to_char(iitd.actual_quantity,$P{dbQuantityFormat}) || ' ' || item.unit AS str_actual_quantity,
+
+	iitd.rate,
+	to_char(iitd.rate,$P{dbCurrencyFormat}) AS str_rate,
+
+	(iitd.actual_quantity*iitd.rate) AS amount,
+	to_char((iitd.actual_quantity*iitd.rate),$P{dbCurrencyFormat}) AS str_amount,
+
+	iitd.approved_by, au.username AS acknowledged_by
+FROM inv_inventory_transaction_details iitd
+LEFT JOIN inv_inventory_transaction iit ON iit.id = iitd.inventory_transaction_id
+LEFT JOIN item  ON item.id = iitd.item_id
+LEFT JOIN app_user au ON au.id = iitd.invoice_acknowledged_by
+WHERE iit.transaction_entity_type_id = $P{transactionEntityTypeId} AND
+      iit.transaction_id = $P{poId} AND
+      iitd.is_current = TRUE
+ORDER BY item.name;]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="supplier_chalan" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="unit" class="java.lang.String"/>
+	<field name="transaction_date" class="java.sql.Date"/>
+	<field name="actual_quantity" class="java.math.BigDecimal"/>
+	<field name="str_actual_quantity" class="java.lang.String"/>
+	<field name="rate" class="java.math.BigDecimal"/>
+	<field name="str_rate" class="java.lang.String"/>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="str_amount" class="java.lang.String"/>
+	<field name="approved_by" class="java.lang.Long"/>
+	<field name="acknowledged_by" class="java.lang.String"/>
+	<variable name="isApproved" class="java.lang.String"/>
+	<variable name="isReceived" class="java.lang.String"/>
+	<variable name="serialGroup" class="java.lang.Integer" incrementType="Group" incrementGroup="grp_item_name" calculation="Count">
+		<variableExpression><![CDATA[$V{serialGroup}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
+	</variable>
+	<variable name="subTotalAmount" class="java.math.BigDecimal" resetType="Group" resetGroup="grp_item_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="subTotalQuantity" class="java.math.BigDecimal" resetType="Group" resetGroup="grp_item_name" calculation="Sum">
+		<variableExpression><![CDATA[$F{actual_quantity}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="grandTotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<group name="grp_item_name" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{name}]]></groupExpression>
+		<groupHeader>
+			<band height="39">
+				<textField>
+					<reportElement uuid="e7bc4403-2f2d-46b5-b184-61529a437e55" x="15" y="0" width="472" height="20"/>
+					<textElement>
+						<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="207" y="20" width="104" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Quantity]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f415b04e-0597-4fe4-9478-cfcb656619d1" x="11" y="20" width="38" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Chalan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f415b04e-0597-4fe4-9478-cfcb656619d1" x="49" y="20" width="92" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Supplier Chalan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="141" y="20" width="66" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Tr. Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="311" y="20" width="85" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Rate]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="396" y="20" width="110" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Amount]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="506" y="20" width="62" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Approved]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="4b8cf8c9-21e1-482a-bc0d-56042779a0f7" x="568" y="20" width="92" height="18"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+						<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Acknowledged By]]></text>
+				</staticText>
+				<line>
+					<reportElement uuid="d4492ab1-f1b8-43ea-b878-cfd93c6c8ca0" x="11" y="38" width="648" height="1"/>
+				</line>
+				<line>
+					<reportElement uuid="d4492ab1-f1b8-43ea-b878-cfd93c6c8ca0" x="11" y="20" width="648" height="1"/>
+				</line>
+				<textField evaluationTime="Group" evaluationGroup="grp_item_name">
+					<reportElement uuid="fe24b6ed-95df-431e-8d33-a04dda9974e0" x="0" y="0" width="15" height="20"/>
+					<textElement verticalAlignment="Top">
+						<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{serialGroup} + "."]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="18">
+				<staticText>
+					<reportElement uuid="03698581-83f3-4ebc-a25f-7b1339855e08" x="11" y="0" width="68" height="18"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Sub Total :]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="0ea8ac5f-c85a-42f9-a761-725f5e38abb5" x="207" y="0" width="104" height="18"/>
+					<box rightPadding="2"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subTotalQuantity}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00">
+					<reportElement uuid="be2e521d-827d-4709-abab-6f0c9bc2957b" x="396" y="0" width="110" height="18"/>
+					<box rightPadding="2"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{subTotalAmount}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="81" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="46232ab8-3a3e-4444-90f8-8cb0a681667a" x="0" y="6" width="145" height="30"/>
+				<box>
+					<bottomPen lineWidth="1.0" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="16" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PO Item Received]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="03698581-83f3-4ebc-a25f-7b1339855e08" x="0" y="39" width="49" height="18"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PO No :]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="713d5895-0f34-4bf1-8141-7c3e19ebaf9b" x="49" y="39" width="190" height="18"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{poId}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="d2026318-6381-4f18-9ebf-5c40d0d38568" x="422" y="0" width="237" height="35"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<line>
+				<reportElement uuid="d4492ab1-f1b8-43ea-b878-cfd93c6c8ca0" x="0" y="80" width="659" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="03698581-83f3-4ebc-a25f-7b1339855e08" x="0" y="57" width="55" height="18"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Supplier :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="9a773d1f-58fa-446a-ada1-dd55f0523392" x="55" y="57" width="586" height="18"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{supplierName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="18">
+			<textField pattern="#,##0.00">
+				<reportElement uuid="54353d58-6025-454a-b3dc-909129ce94d9" stretchType="RelativeToTallestObject" x="207" y="0" width="104" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_actual_quantity}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="25571f85-491b-4c5e-a72d-38f2ff04c3a7" stretchType="RelativeToTallestObject" x="11" y="0" width="38" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="424d36a6-26e2-47bc-b112-7e6843e71b53" stretchType="RelativeToTallestObject" x="49" y="0" width="92" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{supplier_chalan}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="b6c61ca6-f4fa-4f5e-b415-9503f813efe5" stretchType="RelativeToTallestObject" x="141" y="0" width="66" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{transaction_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="76afb5c0-88d4-46fc-8e45-164eb5a4c8bf" stretchType="RelativeToTallestObject" x="311" y="0" width="85" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_rate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="389b51c4-f3ae-451a-8233-6f3639256393" stretchType="RelativeToTallestObject" x="396" y="0" width="110" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ba4f08cd-27c3-429e-b409-1998db8909fc" stretchType="RelativeToTallestObject" x="506" y="0" width="62" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{approved_by}>0? "Yes" : "No"]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f9dc370c-49dc-4643-92f5-8acc0ab3b603" stretchType="RelativeToTallestObject" x="568" y="0" width="92" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{acknowledged_by}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="14" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="cc52cb8f-8678-4368-8b33-aa884df0235f" x="105" y="0" width="555" height="14"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" +"inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="7d9e5485-ae06-4178-9069-8509872598ab" x="0" y="0" width="100" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="bcf84a52-1ea9-48a3-b456-a83996242e14" x="261" y="0" width="94" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="21">
+			<staticText>
+				<reportElement uuid="face57fa-a174-4a83-9a67-f07fa6a29161" x="0" y="1" width="306" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<textField pattern="#,##0.00">
+				<reportElement uuid="d54e646b-20c5-4fa9-bebb-b4151a9e8557" x="306" y="1" width="200" height="20"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotal}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="d4492ab1-f1b8-43ea-b878-cfd93c6c8ca0" x="0" y="0" width="659" height="1"/>
+			</line>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,45 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open *Agent* in Edit Mode | |
+*ActionService:* | SelectExhAgentActionService | *Auditable:* | No
+*Url:* | /exhAgent/select | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of "Agent"|guide:ShowExhAgentActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open *Agent* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Agent Company" privilege.
+
+h4. Process:
+* Get *Agent* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Agent* information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

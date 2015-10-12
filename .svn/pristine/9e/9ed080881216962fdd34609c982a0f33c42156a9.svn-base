@@ -1,0 +1,183 @@
+package com.athena.mis.arms.actions.rmstask
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.BankBranch
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.application.utility.BankBranchCacheUtility
+import com.athena.mis.arms.entity.RmsTask
+import com.athena.mis.arms.service.RmsTaskListService
+import com.athena.mis.arms.service.RmsTaskService
+import com.athena.mis.arms.service.RmsTaskTraceService
+import com.athena.mis.arms.utility.RmsInstrumentTypeCacheUtility
+import com.athena.mis.arms.utility.RmsProcessTypeCacheUtility
+import com.athena.mis.arms.utility.RmsSessionUtil
+import com.athena.mis.arms.utility.RmsTaskStatusCacheUtility
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * disburse cash collection rms task
+ * for details go through use-case named "DisburseCashCollectionRmsTaskActionService"
+ */
+class DisburseCashCollectionRmsTaskActionService extends BaseService implements ActionIntf{
+
+    RmsTaskService rmsTaskService
+    RmsTaskListService rmsTaskListService
+    RmsTaskTraceService rmsTaskTraceService
+    @Autowired
+    BankBranchCacheUtility bankBranchCacheUtility
+    @Autowired
+    RmsSessionUtil rmsSessionUtil
+    @Autowired
+    RmsTaskStatusCacheUtility rmsTaskStatusCacheUtility
+    @Autowired
+    RmsProcessTypeCacheUtility rmsProcessTypeCacheUtility
+    @Autowired
+    RmsInstrumentTypeCacheUtility rmsInstrumentTypeCacheUtility
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String NOT_FOUND = "Task Not Found"
+    private static final String DISBURSED_SUCCESS = "Task successfully disbursed"
+    private static final String SAVE_FAILED = "Failed to disburse task"
+    private static final String NOT_AUTHORIZED = "Your branch is not authorized to disburse this task"
+    private static final String DISBURSED_FAILED = "Only approved task can be disbursed"
+    private static final String PROCESS_INS_ERROR = "Only forward cash collection task can be disbursed"
+
+    /*
+     * check pre condition for disburse task (if status approved, forward-cash-collection)
+     * @param parameters
+     * @param obj
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            if(!params.taskId) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long taskId = Tools.parseLongInput(params.taskId)
+            RmsTask rmsTask = rmsTaskService.read(taskId)
+            if(!rmsTask) {
+                result.put(Tools.MESSAGE, NOT_FOUND)
+                return result
+            }
+            long userBranchId = rmsSessionUtil.appSessionUtil.getUserBankBranchId()
+            BankBranch bankBranch=(BankBranch)bankBranchCacheUtility.read(rmsTask.mappingBranchId)
+            if(bankBranch.bankId != rmsTask.mappingBankId) { //mapping bank should be user bank
+                result.put(Tools.MESSAGE, NOT_AUTHORIZED)
+                return result
+            }
+            if(rmsTask.mappingBranchId != userBranchId && !bankBranch.isGlobal.booleanValue()) { //mapping bankBranch should be user bankBranch or Any branch
+                result.put(Tools.MESSAGE, NOT_AUTHORIZED)
+                return result
+            }
+            long companyId = rmsSessionUtil.appSessionUtil.getCompanyId()
+            SystemEntity forwardObj = (SystemEntity) rmsProcessTypeCacheUtility.readByReservedAndCompany(RmsProcessTypeCacheUtility.FORWARD, companyId)
+            SystemEntity cashCollectionObj = (SystemEntity) rmsInstrumentTypeCacheUtility.readByReservedAndCompany(RmsInstrumentTypeCacheUtility.CASH_COLLECTION, companyId)
+            SystemEntity statusApproved = (SystemEntity) rmsTaskStatusCacheUtility.readByReservedAndCompany(RmsTaskStatusCacheUtility.DECISION_APPROVED, companyId)
+            SystemEntity disbursedObj = (SystemEntity) rmsTaskStatusCacheUtility.readByReservedAndCompany(RmsTaskStatusCacheUtility.DISBURSED, companyId)
+
+            if(rmsTask.currentStatus != statusApproved.id) {
+                result.put(Tools.MESSAGE, DISBURSED_FAILED)
+                return result
+            }
+            if ((rmsTask.processTypeId != forwardObj.id) || rmsTask.instrumentTypeId != cashCollectionObj.id) {
+                result.put(Tools.MESSAGE, PROCESS_INS_ERROR)
+                return result
+            }
+            rmsTask = buildRmsTaskForDisburse(rmsTask, params, disbursedObj.id, userBranchId)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(Tools.ENTITY, rmsTask)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SAVE_FAILED)
+            return result
+        }
+    }
+
+    /**
+     * do nothing
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * update task status id DB and save task trace
+     * @param parameters
+     * @param obj
+     * @return
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            RmsTask rmsTask = (RmsTask) preResult.get(Tools.ENTITY)
+            rmsTaskService.updateRmsTaskForDisburse(rmsTask)
+            rmsTaskTraceService.create(rmsTask)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(Tools.MESSAGE, DISBURSED_SUCCESS)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            throw new RuntimeException(SAVE_FAILED)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SAVE_FAILED)
+            return result
+        }
+    }
+
+    /**
+     * do nothing
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * build failure result
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            String msg = preResult.get(Tools.MESSAGE)
+            if (msg) {
+                result.put(Tools.MESSAGE, msg)
+            } else {
+                result.put(Tools.MESSAGE, SAVE_FAILED)
+            }
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SAVE_FAILED)
+            return result
+        }
+    }
+
+    private RmsTask buildRmsTaskForDisburse(RmsTask oldRmsTask, GrailsParameterMap params, long disbursedStatus,long userBranchId) {
+        BankBranch userBranch = bankBranchCacheUtility.read(userBranchId)
+        oldRmsTask.previousStatus = oldRmsTask.currentStatus
+        oldRmsTask.currentStatus = disbursedStatus
+        oldRmsTask.identityType = params.idType
+        oldRmsTask.identityNo = params.idNo
+        // set mapping branch to own(in case Any Branch)
+        oldRmsTask.mappingBranchId = userBranch.id
+        oldRmsTask.mappingDistrictId= userBranch.districtId
+        return oldRmsTask
+    }
+}

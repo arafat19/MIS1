@@ -1,0 +1,2109 @@
+
+arms:
+
+         title: ARMS Plugin
+
+
+
+         _ShowARMSPlugin: Show ARMS Plugin
+
+
+         ShowRmsTaskActionService: Show Landing Page of "Task"
+         ListRmsTaskActionService: Show List of "Task" in Landing Page
+         _PopulateExchangeHouseList: Populate "ARMS Exchange House" List in drop-down
+         _PopulateLocalCurrencyList: Populate "Currency" List in drop-down
+         PopulatePaymentMethod: Populate "Payment Method" List in drop-down
+         CreateRmsTaskActionService: Create "Task"
+         SelectRmsTaskActionService: Open "Task" in Edit Mode
+         UpdateRmsTaskActionService: Update "Task"
+         SearchRmsTaskActionService: Search "Task" From Grid View
+         DeleteRmsTaskActionService: Delete "Task"
+
+
+         _ShowForApproveTask: Show Landing Page for "Approve Task"
+         ListTaskForApproveTaskActionService: Show List of "Approve Task"  in Landing Page
+         _PopulateFilterExchangeHouseList: Populate Filter "Exchange House" List in drop-down
+         _PopulateTaskListDropDownList: Populate "Task List" in drop-down
+         SearchTaskForApproveTaskActionService: Search for "Approve Task" list From Grid View 
+         ApproveRmsTaskActionService: Approve "Task"
+         ReviseTaskActionService: Revise "Task"
+
+
+         _ShowManageTask: Show Manage "Task"
+         _ShowTasksDetails: Show "Task" Details
+         CancelRmsTaskActionService: Cancel "Task"
+
+         _ShowManageTaskList: Show landing page for Manage "Task" list
+         ListForManageTaskListActionService: Show list for Manage "Task" in Landing Page
+         PopulateTaskStatus: Populate "Task" Status List in drop-down
+         RemoveTaskFromListActionService: Remove "Task" from Task List
+         MoveTaskToAnotherListActionService: Move "Task" to Another List
+         RenameTaskListActionService: Rename "Task" List Name
+
+         _ShowTransactionDay: Show landing page of "Transaction Day"
+         ListRmsTransactionDayActionService: Show List of "Transaction Day" in Landing Page
+         OpenRmsTransactionDayActionService: Open "Transaction Day"
+         CloseRmsTransactionDayActionService: Close "Transaction Day"
+         ReOpenRmsTransactionDayActionService: Re-Open "Transaction Day"
+         ListUnResolvedTaskListActionService: Show list of "UnResolved Task List" in Landing Page
+
+
+         _ShowBeneficiaryDetailsActionService: Show Landing Page of "Search Beneficiary"
+         SearchBeneficiaryDetailsActionService: Search Beneficiary
+         renderTaskDetails: Show Task Details of Beneficiary
+
+
+         showTaskDetailsWithNote: Show Landing Page of "Task Details"
+         SearchTaskDetailsWithNoteActionService: Search "Task Details"
+         CreateRmsTaskNoteActionService: Create "Task Notes"
+
+
+         showRmsTaskHistory: Show Landing Page of "Task History"
+         searchRmsTaskHistory: Search "Task History"
+
+
+         showForViewNotes: Show Landing Page of "View Notes"
+         listForViewNotes: Show List of "Notes" in Landing Page
+
+
+         showForIssueEft: Show Landing Page of
+         DownloadTaskReportForIssueEftActionService: Download Task Report for Eft Issue
+
+         showForIssueOnline: Show Landing Page of
+         DownloadTaskReportForIssueOnlineActionService: Downoad Task report for Online Issue
+
+         showForInstrumentPurchase: Show Landing Page of
+         DownloadTaskReportForPurchaseInstrumentActionService: Download Task Report for Purchase Instrument
+
+         ShowForMapTaskActionService: Show Landing page of "Task Instrument Mapping"
+         reloadInstrumentDropDown: Populate Instrument Drop-Down List
+         SearchTaskForMapTaskActionService: Search Task List to Map
+         ListTaskForMapTaskActionService: List of Task List
+
+
+         showForIssuePo: Show Landing Page of "Pay Order Transaction"
+         SearchTaskForProcessInstrumentActionService: Search Task
+         ListTaskForProcessInstrumentActionService: Show list of task in landing page
+         DownloadTaskReportForIssuePoActionService: Download Task Report for PO Issue
+         DisburseRmsTaskActionService: Disburse Task
+
+         show: Show Landing Page of "Task list"
+         reloadExchangeHouseFilteredDropDown: Reload Exchange House Drop-Down List
+         ListTaskForCreateTaskListActionService: Search Task to Create List
+         CreateRmsTaskListActionService: Create Task List
+
+         showForUploadTask: Show Landing Page of "Task Upload"
+         UploadBankDepositTaskActionService: Upload "Bank Deposit" Task
+         UploadCashCollectionTaskActionService: Upload "Cash Collection" Task
+
+         showDisburseCashCollection: Show Landing Page of "Pay Now Cash Collection" Task List
+         SearchDisburseCashCollectionTaskActionService: Generate "Pay Now Task" Details
+         DisburseCashCollectionRmsTaskActionService: Disburse Cash Collection task
+
+         showTaskDetailsForForward: Show Landing Page of "Forward Cash Collection Task"
+         SearchTaskDetailsForForwardActionService: Generate "Forward Task" Details
+
+         showForForwardCashCollection: Show Landing Page of "Paid Cash Collection Task"
+
+         showForForwardOnline: Show Landing Page of "Online Transaction Task"
+
+         DownloadTaskReportForForwardOnlineActionService: Download "Online Transaction Task List" Report in CSV Format
+         DownloadTaskReportForForwardCashCollectionActionService: Download "Paid Cash Collection Task List" Report in CSV Format
+
+
+
+         showForListWiseStatusReport: Show Landing Page of "List Wise Status" Report
+         ListForListWiseStatusReportActionService: Generate "List Wise Status" Report in HTML Format
+         DownloadListWiseStatusReportActionService: Download "List Wise Status" Report in PDF Format
+
+
+         showSearchTaskList: Show Landing Page of "Search Task List" Report
+         listSearchTaskList: Generate "Search Task List" in HTML Format
+
+
+         showTaskListPlan: Show Landing Page of "Task List Plan" Report
+         SearchTaskListPlanActionService: Generate "Task List Plan" in HTML Format
+
+
+         showForForwardUnpaidTask: Show Landing Page of "Forwarded Unpaid Tasks" Report
+         ListTaskForForwardUnpaidTaskActionService: Generate "Forwarded Unpaid Tasks" in HTML Format
+         listTaskDetailsForForwardedUnpaidTasks: Show "Forwarded Unpaid Tasks Details"
+
+
+         showDecisionSummary: Show Landing Page of "Decision Taken Summary" Report
+         listDecisionSummary: Generate "Decision Taken Summary" in HTML Format
+         downloadDecisionSummaryReport: Download "Decision Taken Summary" Report in PDF Format
+
+
+         showForViewCancelTask: Show Landing Page of "Canceled Task Details" Report
+         listForViewCancelTask: Generate "Canceled Task Details" in HTML Format
+
+
+
+         ShowRmsExchangeHouseActionService: Show Landing Page of "Exchange House"
+         ListRmsExchangeHouseActionService: Show List of "Exchange House" in Landing Page
+         PopulateARMSCountryList: Populate "Country" List in drop-down
+         CreateRmsExchangeHouseActionService: Create "Exchange House"
+         SelectRmsExchangeHouseActionService: Open "Exchange House" in Edit Mode
+         UpdateRmsExchangeHouseActionService: Update "Exchange House"
+         SearchRmsExchangeHouseActionService: Search "Exchange House" From Grid View
+         DeleteRmsExchangeHouseActionService: Delete "Exchange House"
+
+
+
+         ShowAppUserEntityActionService: Show Landing Page of "User Exchange House Mapping"
+         ListAppUserEntityActionService: Show List of "User Exchange House Mapping" in Landing Page
+         CreateAppUserEntityActionService: Create "User Exchange House Mapping"
+         SelectAppUserEntityActionService: Open "User Exchange House Mapping" in Edit Mode
+         UpdateAppUserEntityActionService: Update "User Exchange House Mapping"
+         SearchAppUserEntityActionService: Search "User Exchange House Mapping" From Grid View
+         DeleteAppUserEntityActionService: Delete "User Exchange House Mapping"
+
+
+
+         ShowRmsExchangeHouseCurrencyPostingActionService: Show Landing Page of "Exchange House Currency Posting"
+         ListRmsExchangeHouseCurrencyPostingActionService: Show List of "Exchange House Currency Posting" in Landing Page
+         CreateRmsExchangeHouseCurrencyPostingActionService: Create "Exchange House Currency Posting"
+         SelectRmsExchangeHouseCurrencyPostingActionService: Open "Exchange House Currency Posting" in Edit Mode
+         UpdateRmsExchangeHouseCurrencyPostingActionService: Update "Exchange House Currency Posting"
+         SearchRmsExchangeHouseCurrencyPostingActionService: Search "Exchange House Currency Posting" From Grid View
+         DeleteRmsExchangeHouseCurrencyPostingActionService: Delete "Exchange House Currency Posting"
+
+
+
+         ShowRmsProcessInstrumentMappingActionService: Show Landing Page of "Process Instrument Mapping"
+         ListRmsProcessInstrumentMappingActionService: Show List of "Process Instrument Mapping" in Landing Page
+         _PopulateProcessTypeList: Populate "Process Type" List in drop-down
+         _PopulateInstrumentTypeList: Populate "Instrument Type" List in drop-down
+         CreateRmsProcessInstrumentMappingActionService: Create "Process Instrument Mapping"
+         SelectRmsProcessInstrumentMappingActionService: Open "Process Instrument Mapping" in Edit Mode
+         UpdateRmsProcessInstrumentMappingActionService: Update "Process Instrument Mapping"
+         SearchRmsProcessInstrumentMappingActionService: Search "Process Instrument Mapping" From Grid View
+         DeleteRmsProcessInstrumentMappingActionService: Delete "Process Instrument Mapping"
+
+
+
+         ShowRmsPurchaseInstrumentMappingActionService: Show Landing Page of "Purchase Instrument Mapping"
+         ListRmsPurchaseInstrumentMappingActionService: Show List of "Purchase Instrument Mapping" in Landing Page
+         CreateRmsPurchaseInstrumentMappingActionService: Create "Purchase Instrument Mapping"
+         SelectRmsPurchaseInstrumentMappingActionService: Open "Purchase Instrument Mapping" in Edit Mode
+         UpdateRmsPurchaseInstrumentMappingActionService: Update "Purchase Instrument Mapping"
+         DeleteRmsPurchaseInstrumentMappingActionService: Delete "Purchase Instrument Mapping"
+         EvaluateLogicForRmsPurchaseInstrumentMappingActionService: Evaluate Logic for "Purchase Instrument Mapping"
+
+
+
+
+
+
+
+
+
+projectTrack:
+
+         title: Project Track Plugin
+
+
+         _ShowProjectTrackPlugin: Show Project Track Plugin
+
+
+         PtShowSprintActionService: Show Landing Page of "Sprint"
+         PtListSprintActionService: Show List of "Sprint" in Landing Page
+         SystemGeneratedSprintName: System Generated "Sprint Name"
+         GetDropDownPtProjectTagLibActionService: Populate "Project" List in drop-down
+         PopulateSprintStatusTypeList: Populate "Sprint Status Type" List in drop-down
+         PtCreateSprintActionService: Create "Sprint"
+         PtSelectSprintActionService: Open "Sprint" in Edit Mode
+         PtUpdateSprintActionService: Update "Sprint"
+         PtSearchSprintActionService: Search "Sprint" From Grid View
+         PtDeleteSprintActionService: Delete "Sprint"
+
+
+         ShowBackLogForSprintActionService: Show Landing Page of "Sprint's Backlog"
+         ListBackLogForSprintActionService: Show List of "Sprint's Backlog" in Landing Page
+         _PopulateProjectWiseModuleList: Populate "Project" Wise "Module" List in drop-down
+         GetBackLogForModuleActionService: Populate "Module" Wise "Task" List in drop-down
+         CreateBackLogForSprintActionService: Add "Sprint's Backlog"
+         SearchBackLogForSprintActionService: Search "Sprint's Backlog" From Grid View
+         DeleteBackLogForSprintActionService: Delete "Sprint's Backlog"
+
+         RemoveMyPtBacklogActionService: Remove "Backlog"
+
+
+
+         ShowPtBugForSprintActionService: Show Landing Page of "Sprint's Bug"
+         ListPtBugForSprintActionService: Show List of "Sprint's Bug" in Landing Page
+         GetBugForModuleActionService: Populate "Module" Wise "Bug" List in drop-down
+         CreatePtBugForSprintActionService: Add "Sprint's Bug"
+         SearchPtBugForSprintActionService: Search "Sprint's Bug" From Grid View
+         DeletePtBugForSprintActionService: Delete "Sprint's Bug"
+         DownloadPtBugDetailsActionService: Download "Bug Details" In PDF Format
+
+
+         ShowPtBacklogActionService: Show Landing Page of "Backlog"
+         ListPtBacklogActionService: Show List of "Backlog" in Landing Page
+         GetDropDownPtModuleTagLibActionService: Populate "Module" List in drop-down
+         PopulateBacklogPriorityList: Populate "Backlog Priority" List in drop-down
+         CreatePtBacklogActionService: Create "Backlog"
+         SelectPtBacklogActionService: Open "Backlog" in Edit Mode
+         UpdatePtBacklogActionService: Update "Backlog"
+         SearchPtBacklogActionService: Search "Backlog" From Grid View
+         DeletePtBacklogActionService: Delete "Backlog"
+
+
+         ShowPtAcceptanceCriteriaActionService: Show Landing Page of "Acceptance Criteria"
+         ListPtAcceptanceCriteriaActionService: Show List of "Acceptance Criteria" in Landing Page
+         PopulateAcceptanceCriteriaTypeList: Populate "Acceptance Criteria Type" List in drop-down
+         CreatePtAcceptanceCriteriaActionService: Create "Acceptance Criteria"
+         SelectPtAcceptanceCriteriaActionService: Open "Acceptance Criteria" in Edit Mode
+         UpdatePtAcceptanceCriteriaActionService: Update "Acceptance Criteria"
+         DeletePtAcceptanceCriteriaActionService: Delete "Acceptance Criteria"
+
+         ShowPtBacklogDetailsActionService: Show "Backlog" Report from grid view
+
+
+
+
+         _showForActive: Show Landing Page of "Active Backlog"
+         PopulateBacklogStatusTypeList: Populate "Backlog Status Type" List in drop-down
+         ListActiveBacklogActionService: Generate List of "Active Backlog"
+
+         AddMyPtBacklogActionService: Add Backlog to "My Task List"
+         AcceptPtBacklogActionService: Accept "Backlog"
+
+         ShowPtBugActionService: Show Landing Page of "Bug"
+         ListPtBugActionService: Show List of "Bug" in Landing Page
+         PopulateBugStatusTypeList: Populate "Bug Status Type" List in drop-down
+         PopulateBugSeverityTypeList: Populate "Bug Severity Type" List in drop-down
+         PopulateBugTypeList: Populate "Bug Type" List in drop-down
+         CreatePtBugActionService: Create "Bug"
+         SelectPtBugActionService: Open "Bug" in Edit Mode
+         UpdatePtBugActionService: Update "Bug"
+         SearchPtBugActionService: Search "Bug" From Grid View
+         DeletePtBugActionService: Delete "Bug"
+
+         ReOpenPtBugActionService: ReOpen "Bug"
+         ClosePtBugActionService: Close "Bug"
+
+
+
+
+         _showForInActive: Show Landing Page of "InActive Backlog"
+         PtGetInActiveSprintListByProjectIdActionService: Populate "InActive Sprint" List in drop-down
+         ListInActiveBacklogActionService: Show List of "InActive Backlog"
+
+
+
+
+         ShowMyPtBacklogActionService: Show Landing Page of "My Task"
+         ListMyPtBacklogActionService: Show List of "My Task" in Landing Page
+         SelectMyPtBacklogActionService: Open "My Task" in Edit Mode
+         GetDropDownPtOwnerTagLibActionService: Populate "Owner" List in drop-down
+         UpdateMyPtBacklogActionService: Update "My Task"
+         SearchMyPtBacklogActionService: Search "My Task" From Grid View
+
+
+         ShowPtAcceptanceCriteriaForMyBacklogActionService: Show Landing page of "Acceptance Criteria" of "My Task"
+         ListPtAcceptanceCriteriaForMyBacklogActionService: Show List of "Acceptance Criteria" of "My Task" in Landing Page
+         UpdatePtAcceptanceCriteriaForMyBacklogActionService: Update "Acceptance Criteria" of "My Task"
+
+
+         ShowPtBugForMyTaskActionService: Show Landing Page of "Bug" for "My Task"
+         SelectPtBugForMyTaskActionService: Open "Bug" for "My Task" in Edit Mode
+         UpdatePtBugForMyTaskActionService: Update "Bug" for "My Task"
+         DownloadEntityContentForBugActionService: Download "Entity Content" for "Bug"
+
+         _PopulateSearchId: Populate Search Id
+         SearchPtBacklogDetailsActionService: Generate "Backlog Details" in html format
+         DownloadPtBacklogDetailsReportActionService: Download Backlog Details
+
+
+
+         PtShowSprintDetailsReportActionService: Show Landing Page of "Sprint Detials" Report
+         PtGetSprintListByProjectIdActionService: Populate "Sprint" List in drop-down
+         PtListSprintDetailsReportActionService: Generate "Sprint Detials" Report in HTML Format
+         PtDownloadSprintDetailsActionService: Download "Sprint Detials" Report in PDF Format
+
+
+         ShowOpenBacklogReportActionService: Show Landing Page of "Open Backlog" Report
+         ListOpenBacklogReportActionService: Generate "Open Backlog" Report in HTML Format
+         DownloadOpenBacklogReportActionService: Download "Open Backlog" Report in PDF Format
+
+
+         ShowPtBugDetailsReportActionService: Show Landing Page of "Bug Details" Report
+         ListPtBugDetailsReportActionService: Generate "Bug Details" Report in HTML Format
+         DownloadPtBugDetailsReportActionService: Download "Bug Details" Report in PDF Format
+         ShowPtBugDetailsActionService: Show "Bug Details" From "Bug Details Report"
+
+
+
+         ShowPtProjectActionService: Show Landing Page of "Software Project"
+         ListPtProjectActionService: Show List of "Software Project" in Landing Page
+         CreatePtProjectActionService: Create "Software Project"
+         SelectPtProjectActionService: Open "Software Project" in Edit Mode
+         UpdatePtProjectActionService: Update "Software Project"
+         SearchPtProjectActionService: Search "Software Project" From Grid View
+         DeletePtProjectActionService: Delete "Software Project"
+
+
+         ShowPtProjectModuleActionService: Show Landing Page of "Project Module"
+         ListPtProjectModuleActionService: Show List of "Project Module" in Landing Page
+         CreatePtProjectModuleActionService: Create "Project Module"
+         SelectPtProjectModuleActionService: Open "Project Module" in Edit Mode
+         UpdatePtProjectModuleActionService: Update "Project Module"
+         SearchPtProjectModuleActionService: Search "Project Module" From Grid View
+         DeletePtProjectModuleActionService: Delete "Project Module"
+
+
+         ShowPtModuleActionService: Show Landing Page of "Module"
+         ListPtModuleActionService: Show List of "Module" in Landing Page
+         CreatePtModuleActionService: Create "Module"
+         SelectPtModuleActionService: Open "Module" in Edit Mode
+         UpdatePtModuleActionService: Update "Module"
+         SearchPtModuleActionService: Search "Module" From Grid View
+         DeletePtModuleActionService: Delete "Module"
+
+
+
+exchangehouseSARB:
+
+         title: SARB Plugin
+
+
+         _ShowSARBPlugin: SARB Plugin
+
+
+
+         _ShowSarbTaskForSendToSarbActionService: Show Landing Page of "Send Task" To Sarb
+         ListSarbTaskForSendToSarbActionService: Show List of "Task" in Landing Page
+         SendSarbTaskToSarbActionService: Send "Task" to Sarb
+
+
+         _ShowSarbTaskForRetrieveResponseActionService: Show Landing Page of "Sending Task" List For "Getting Response"
+         ListSarbTaskForRetrieveResponseActionService: Show List of "Sending Task" For "Getting Response" in Landing Page
+         RetrieveSarbTaskResponseActionService: Getting Response For "Sending Task"
+
+
+         _ShowSarbTaskForShowStatusActionService: Show Landing Page of "Task Status Details"
+         ListSarbTaskForShowStatusActionService: Show List of "Task Status Details" in Landing Page
+         _SearchSarbTaskForShowStatusActionService: Search "Task Status Details"
+         DetailsSarbTaskForShowStatusActionService: Show "Task Status Details" in Read Only Mode
+         RetrieveAgainSarbTaskResponseActionService: Again Get Response For "Sending Task to SARB"
+
+
+
+         showSarbTransactionSummary: Show Landing Page of "SARB Transaction Summary" Report
+         ListSarbTransactionSummaryActionService: Generate "SARB Transaction Summary" Report in HTML Format
+         DownloadSarbTransactionSummaryActionService: Download "SARB Transaction Summary" Report in PDF Format
+
+
+
+
+         ShowSarbProvinceActionService: Show Landing Page of "Province"
+         ListSarbProvinceActionService: Show List of "Province" in Landing Page
+         CreateSarbProvinceActionService: Create "Province"
+         SelectSarbProvinceActionService: Open "Province" in Edit Mode
+         UpdateSarbProvinceActionService: Update "Province"
+         SearchSarbProvinceActionService: Search "Province" From Grid View
+         DeleteSarbProvinceActionService: Delete "Province"
+
+
+         _ExhShowCustomerForSarbActionService: Show Landing Page of "Customer"
+         _ExhListCustomerForSarbActionService: Show Empty List of "Customer" in Landing Page
+         _PopulateProvinceList: Populate "Province" List in drop-down
+         ValidateSarbCustomerPhotoIdNoActionService: Validate "Photo Id No" to Create "Customer"
+         _ExhCreateCustomerForSarbActionService: Create "Customer"
+         _ExhSelectCustomerForSarbActionService: Open "Customer" in Edit Mode
+         _ExhUpdateCustomerForSarbActionService: Update "Customer"
+         _ExhSearchCustomerForSarbActionService: Search "Customer" From Empty Listed Grid View
+
+
+exchangehouse:
+         title: Exchange House Plugin
+
+         ExhShowRegistrationCustomerActionService: Show "User Registration" Page
+         _PopulateNationalityList: Populate "Nationality" List in drop-down
+         ExhPhotoIdTypeDropDownTagLib: Populate "Photo Id Type" List in drop-down
+         ExhSignupForCustomerUserActionService: Create "User Registration"
+         _SendMailForActiveUserActionService: Send E-mail to Active "User" with Activation Link
+         ExhActivateCustomerUserActionService: Active "User" By Clicking Activation Link
+
+
+         _ShowExchangeHousePlugin: Show "Exchange House" Plugin
+         _WidgetofExchangeHouseOption: Widget of "Exchange House" Option
+
+         ListExhDistributionPointActionService: Show List of "Distribution Point" in Widget Tab of "Exchange House" Option
+         ExhSearchDistributionPointActionService: Search "Distribution Point" List from Widget Tab
+
+
+         ShowExhTaskForAdminActionService: Show Landing Page of "Manage Task" Created By "Cashier"
+         GetDropDownSystemEntityTagLibActionService: Populate "Task Status" List in drop-down
+         ReloadBankList: Reload Bank List
+         ExhListBanksForShowTaskAdminActionService: Populate "Bank" drop-down to Search "Task" Created By "Cashier"
+         ListExhTaskForAdminActionService: Search "Manage Task" Created By "Cashier"
+         SearchExhTaskForAdminActionService: Search "Manage Task" From Grid View Created By "Cashier"
+         _SelectAllTask: Select "All Task" From Grid View
+         _DeselectAllTask: Deselect "All Task" From Grid View
+         ExhSendTaskToBankActionService: Send "New Task" to "Bank"
+         ExhCancelTaskActionService: Cancel "New Task"
+         ExhShowInvoiceDetailsReportActionService: Show "Invoice" Report From Grid View
+
+         ShowExhTaskNoteActionService: Show Landing Page of "Task Note"
+         ListExhTaskNoteActionService: Show List of "Task Note" in Landing Page
+         CreateExhTaskNoteActionService: Create "Task Note"
+         EditExhTaskNoteActionService: Open "Task Note" in Edit Mode
+         UpdateExhTaskNoteActionService: Update "Task Note"
+         DeleteExhTaskNoteActionService: Delete "Task Note"
+
+
+         ShowAgentTaskForAdminActionService: Show Landing Page of "Manage Task" Created By "Agent"
+         ExhListBanksForShowAgentTaskAdminActionService: Populate "Bank" drop-down to Search "Task" Created By "Agent"
+         ListAgentTaskForAdminActionService: Search "Manage Task" Created By "Agent"
+         SearchAgentTaskForAdminActionService: Search "Manage Task" From Grid View Created By "Agent"
+
+         ShowCustomerTaskForAdminActionService: Show Landing Page of "Manage Task" Created By "Customer"
+         ExhListBanksForShowCustomerTaskAdminActionService: Populate "Bank" drop-down to Search "Task" Created By "Customer"
+         ListCustomerTaskForAdminActionService: Search "Manage Task" Created By "Customer"
+         SearchCustomerTaskForAdminActionService: Search "Manage Task" From Grid View Created By "Customer"
+
+         ExhShowCustomerForAdminActionService: Show Landing Page of "Customer"
+         ExhSearchCustomerActionService: Search "Customer" From Empty Listed Grid View
+         ExhListCustomerActionService: Show Empty List of "Customer" in Landing Page
+         ExhSearchForCustomerUserActionService: Show "Customer Details" in Read Only Mode
+
+
+         ShowExhCustomerNoteActionService: Show Landing Page of "Customer Note"
+         ListExhCustomerNoteActionService: Show List of "Customer Note" in Landing Page
+         CreateExhCustomerNoteActionService: Create "Customer Note"
+         EditExhCustomerNoteActionService: Open "Customer Note" in Edit Mode
+         UpdateExhCustomerNoteActionService: Update "Customer Note"
+         DeleteExhCustomerNoteActionService: Delete "Customer Note"
+
+         ShowExhCustomerContentActionService: Show Landing Page of "Customer Attachment"
+         ListExhCustomerContentActionService: Show List of "Customer Attachment" in Landing Page
+         CreateExhCustomerContentActionService: Create "Customer Attachment"
+         SelectExhCustomerContentActionService: Open "Customer Attachment" in Edit Mode
+         UpdateExhCustomerContentActionService: Update "Customer Attachment"
+         SearchExhCustomerContentActionService: Search "Customer Attachment" From Grid View
+         DeleteExhCustomerContentActionService: Delete "Customer Attachment"
+         DownloadExhCustomerContentActionService: Download "Customer Attachment"
+
+
+
+         ShowExhAgentActionService: Show Landing Page of "Agent"
+         ListExhAgentActionService: Show List of "Agent" in Landing Page
+         CreateExhAgentActionService: Create "Agent"
+         SelectExhAgentActionService: Open "Agent" in Edit Mode
+         UpdateExhAgentActionService: Update "Agent"
+         SearchExhAgentActionService: Search "Agent" From Grid View
+         DeleteExhAgentActionService: Delete "Agent"
+
+         ShowUserAgentActionService: Show Landing Page of "User-Agent Mapping"
+         ListUserAgentActionService: Show List of "User-Agent Mapping" in Landing Page
+         CreateUserAgentActionService: Create "User-Agent Mapping"
+         SelectUserAgentActionService: Open "User-Agent Mapping" in Edit Mode
+         UpdateUserAgentActionService: Update "User-Agent Mapping"
+         SearchUserAgentActionService: Search "User-Agent Mapping" From Grid View
+         DeleteUserAgentActionService: Delete "User-Agent Mapping"
+
+         ShowExhAgentCurrencyPostingActionService: Show Landing Page of "Agent Currency Posting"
+         ListExhAgentCurrencyPostingActionService: Show List of "Agent Currency Posting" in Landing Page
+         ExhAgentDropDownTagLib: Populate "Agent" List in drop-down
+         CreateExhAgentCurrencyPostingActionService: Create "Agent Currency Posting"
+         SelectExhAgentCurrencyPostingActionService: Open "Agent Currency Posting" in Edit Mode
+         UpdateExhAgentCurrencyPostingActionService: Update "Agent Currency Posting"
+         SearchExhAgentCurrencyPostingActionService: Search "Agent Currency Posting" From Grid View
+         DeleteExhAgentCurrencyPostingActionService: Delete "Agent Currency Posting"
+
+
+
+         ExhShowCurrencyConversionActionService: Show Landing Page of "Currency Conversion"
+         ExhListCurrencyConversionActionService: Show List of "Currency Conversion" in Landing Page
+         ExhCurrencyConversionDropDownTagLib: Populate "Currency" List in drop-down
+         ExhCreateCurrencyConversionActionService: Create "Currency Conversion"
+         ExhSelectCurrencyConversionActionService: Open "Currency Conversion" in Edit Mode
+         ExhUpdateCurrencyConversionActionService: Update "Currency Conversion"
+         ExhSearchCurrencyConversionActionService: Search "Currency Conversion" From Grid View
+
+         ExhShowRemittancePurposeActionService: Show Landing Page of "Remittance Purpose"
+         ExhListRemittancePurposeActionService: Show List of "Remittance Purpose" in Landing Page
+         ExhCreateRemittancePurposeActionService: Create "Remittance Purpose"
+         ExhSelectRemittancePurposeActionService: Open "Remittance Purpose" in Edit Mode
+         ExhUpdateRemittancePurposeActionService: Update "Remittance Purpose"
+         ExhSearchRemittancePurposeActionService: Search "Remittance Purpose" From Grid View
+         ExhDeleteRemittancePurposeActionService: Delete "Remittance Purpose"
+
+         ExhShowPhotoIdTypeActionService: Show Landing Page of "Photo Id Type"
+         ExhListPhotoIdTypeActionService: Show List of "Photo Id Type" in Landing Page
+         ExhCreatePhotoIdTypeActionService: Create "Photo Id Type"
+         ExhSelectPhotoIdTypeActionService: Open "Photo Id Type" in Edit Mode
+         ExhUpdatePhotoIdTypeActionService: Update "Photo Id Type"
+         ExhSearchPhotoIdTypeActionService: Search "Photo Id Type" From Grid View
+         ExhDeletePhotoIdTypeActionService: Delete "Photo Id Type"
+
+         ExhShowSanctionActionService: Show Landing Page of "Sanction Information"
+         ExhListSanctionActionService: Show List of "Sanction Information" in Landing Page
+         _ShowViewDetailsofSanctionInformation: Show "Sanction Information" in Read Only mode
+         ExhSearchSanctionActionService: Search "Sanction Information" From Grid View
+
+         _ShowSanctionFileUploadPage: Show Landing Page of "Upload Sanction File"
+         ExhImportSanctionFileActionService: Upload "Sanction File"
+
+         ExhShowPostalCodeActionService: Show Landing Page of "Postal Code"
+         ExhListPostalCodeActionService: Show List of "Postal Code" in Landing Page
+         ExhCreatePostalCodeActionService: Create "Postal Code"
+         ExhSelectPostalCodeActionService: Open "Postal Code" in Edit Mode
+         ExhUpdatePostalCodeActionService: Update "Postal Code"
+         ExhSearchPostalCodeActionService: Search "Postal Code" From Grid View
+         ExhDeletePostalCodeActionService: Delete "Postal Code"
+
+
+         ShowExhRegularFeeActionService: Show Landing Page of "Regular Fee"
+         CalculateExhRegularFeeActionService: Evaluate "Regular Fee"
+         UpdateExhRegularFeeActionService: Update "Regular Fee" Logic
+
+
+         showInvoice: Show Landing Page of "Invoice" Report
+         ExhGetInvoiceDetailsReportActionService: Generate "Invoice" Report in HTML Format
+         ExhDownloadTaskInvoiceReportActionService: Download "Invoice" Report in PDF Format
+
+         ExhShowForCustomerRemittanceActionService: Show Landing Page of "Customer History" Report
+         ExhGetRemittanceDetailsByCustomerActionService: Generate "Customer History" Report in HTML Format
+         DownloadCustomerHistoryActionService: Download "Customer History" Report in PDF Format
+
+         ExhShowTransactionSummaryActionService: Show Landing Page of "Transaction Summary" Report
+         ExhListTransactionSummaryActionService: Generate "Transaction Summary" Report in HTML Format
+         ExhDownloadTransactionSummaryActionService: Download "Transaction Summary" Report in PDF Format
+
+         _ExhShowRemittanceSummaryReportActionService: Show Landing Page of "Daily Remittance Summary" Report
+         ExhRemittanceSummaryReportActionService: Generate "Daily Remittance Summary" Report in HTML Format
+
+         ExhShowCashierWiseReportAdminActionService: Show Landing Page of "Cashier Wise Task" Report
+         ExhCashierDropDownTagLib: Populate "Cashier" List in drop-down
+         ExhListCashierWiseReportAdminActionService: Generate "Cashier Wise Task" Report in HTML Format
+         ExhDownloadForCashierWiseTaskReportActionService: Download "Cashier Wise Task" Report in PDF Format
+
+         ExhShowRemittanceSummaryReportAdminActionService: Show Landing Page of "Remittance Summary" Report
+         ExhListCashierWiseReportSummaryAdminActionService: Generate "Remittance Summary" Report in HTML Format
+         ExhDownloadForCashierWiseRemittanceSummaryReportActionService: Download "Remittance Summary" Report in PDF Format
+
+         ShowAgentWiseCommissionForAdminActionService: Show Landing Page of "Agent Wise Commission" Report
+         ListAgentWiseCommissionForAdminActionService: Generate "Agent Wise Commission" Report in HTML Format
+         DownloadAgentWiseCommissionForAdminActionService: Download "Agent Wise Commission" Report in PDF Format
+
+         ExhShowRemittanceTransactionActionService: Show Landing Page of "Remittance Transaction" Report
+         ExhListRemittanceTransactionActionService: Generate "Remittance Transaction" Report in HTML Format
+         ExhDownloadRemittanceTransactionActionService: Download "Remittance Transaction" Report in PDF Format
+         ExhDownloadRemittanceTransactionCsvActionService: Download "Remittance Transaction" Report in CSV Format
+
+
+
+         showForTaskSearch: Show Landing Page of "Task Status" Report
+         _PopulateSearchByList: Populate "Search By" List in drop-down
+         ExhGetDetailsByRefOrPinActionService: Generate "Task Status" Report in HTML Format
+
+
+         ExhShowCustomerActionService: Show Landing Page of "Customer"
+         PopulateGenderList: Populate Gender List in Drop Down
+         ExhGetSanctionCountForCustomerActionService: Customer Name Verification
+         ExhShowSanctionFromCustomerActionService: Navigate "Sanction List" from Customer Page
+         ExhCreateCustomerActionService: Create "Customer"
+         ExhSelectCustomerActionService: Open "Customer" in Edit Mode
+         ExhUpdateCustomerActionService: Update "Customer"
+
+         ExhShowBeneficiaryActionService: Show Landing Page of "Beneficiary"
+         ExhListBeneficiaryActionService: Show List of "Beneficiary" in Landing Page
+         ExhGetSanctionCountActionService: Beneficiary Name Verification
+         ExhShowSanctionFromBeneficiaryActionService: Navigate "Sanction List" from Beneficiary Page
+         ExhCreateCustomerBeneficiaryMappingActionService: Create Link existing Beneficiary with Customer
+         ExhListLinkedBeneficiaryActionService: List of Linked Beneficiary
+         ExhCreateBeneficiaryActionService: Create "Beneficiary"
+         ExhSelectBeneficiaryActionService: Open "Beneficiary" in Edit Mode
+         ExhUpdateBeneficiaryActionService: Update "Beneficiary"
+         ExhSearchBeneficiaryActionService: Search "Beneficiary" From Grid View
+
+         ExhApproveBeneficiaryForCashierActionService: Approve "Beneficiary"
+
+         ShowExhTaskForCashierActionService: Show Landing Page of Cashier's "Task"
+         ListExhTaskForCashierActionService: Show List of Cashier's "Task" in Landing Page
+
+
+         ExhRemittancePurposeDropDownTagLib: Populate "Remittance Purpose" in drop-down
+         GeneratePinNumber: Generate Pin Number
+         GenerateRefNo: Generate Reference Number
+         GenerateCustomerNo: Generate Customer Account Number
+         CustomerSummaryForTaskTagLibActionService: Show "Customer Transaction Summary Panel"
+         PopulatePaymentMethodList: Populate "Payment Method" List in drop-down
+         ExhListBankByDistrictActionService: Populate "District" Wise "Bank" List in drop-down
+         ExhListByBankAndDistrictActionService: Populate "Bank" and "District" Wise "Branch" List in drop-down
+         _PopulateSupportedCurrency: Populate "Supported Currency" in drop-down
+         PopulatePaidByList: Populate "Paid By" List in drop-down
+         ExhGetFeeAndCommissionForTaskActionService: Calculate "Task" Amount
+
+         _ExhCreateTaskForCashierActionService: Create Cashier's "Task"
+         _ExhSelectTaskForCashierActionService: Open Cashier's "Task" in Edit Mode
+         _ExhUpdateTaskForCashierActionService: Update Cashier's "Task"
+         _SendMailForCreateTaskActionService: Send E-mail for "Create Task"
+         SearchExhTaskForCashierActionService: Search Cashier's "Task" From Grid View
+         ExhShowForMakePaymentActionService: Task Initiate Through Payment Gateway
+
+         ShowAgentTaskForCashierActionService: Show Landing Page of "Task" Created By "Agent"
+         ListAgentTaskForCashierActionService: Show List of "Task" Created By "Agent" in Landing Page
+         _ExhShowAgentTaskForCashierActionService: Open "Task" in Read Only Mode Created By "Agent"
+         SearchAgentTaskForCashierActionSerive: Search "Task" From Grid View Created By "Agent"
+
+         ShowCustomerTaskForCashierActionService: Show Landing Page of "Task" Created By "Customer"
+         ListCustomerTaskForCashierActionService: Show List of "Task" Created By "Customer" in Landing Page
+         _ExhSelectCustomerTaskForCashierActionService: Open "Task" in Edit Mode Created By "Customer"
+         _ExhUpdateCustomerTaskForCashierActionService: Update "Task" Created By "Customer"
+         SearchCustomerTaskForCashierActionService: Search "Task" From Grid View Created By "Customer"
+
+         ExhApproveTaskForCashierActionService: Approve "Task"
+
+         ExhShowForCustomerByNameCodeActionService: Show Landing Page of "Search Customer"
+         _PopulateSearchTypeList: Populate "Search Type" List in drop-down
+         ExhSearchForCustomerByNameCodeActionService: Search "Customer List"
+
+
+         ExhShowCashierWiseReportCashierActionService: Show Landing Page of "Task" Report For A "Specific Cashier"
+         ExhListCashierWiseReportCashierActionService: Generate "Task" Report in HTML Format For A "Specific Cashier"
+
+         ExhShowForCustomerUserActionService: Show Landing Page of "Customer User Account"
+         ExhCreateForCustomerUserActionService: Create "Customer User Account"
+         _SendMailForCreateUserAccountActionService: Send E-mail for "Create User Account"
+
+         ExhShowCustomerForAgentActionService: Show Landing Page of Agent's "Customer"
+         ExhSearchCustomerForAgentActionService: Search Agent's "Customer" From Empty Listed Grid View
+         ExhListCustomerForAgentActionService: Show List of Agent's "Customer" in Landing Page
+
+
+         ExhShowTaskForAgentActionService: Show Landing Page of Agent's "Task"
+         ExhListTaskForAgentActionService: Show List of Agent's "Task" in Landing Page
+         ExhCreateTaskActionService: Create Agent's "Task"
+         ExhSelectTaskActionService: Open Agent's "Task" in Edit Mode
+         ExhUpdateTaskActionService: Update Agent's "Task"
+         ExhSearchTaskForAgentActionService: Search Agent's "Task" From Grid View
+
+         ExhSendTaskToExchangeHouseActionService: Send Agent's Task to "Exchange House"
+
+
+         ShowAgentWiseCommissionForAgentActionService: Show Landing Page of "Agent Wise Commission" Report For A "Specific Agent"
+         ListAgentWiseCommissionForAgentActionService: Generate "Agent Wise Commission" Report in HTML Format For A "Specific Agent"
+         DownloadAgentWiseCommissionForAgentActionService: Download "Agent Wise Commission" Report in PDF Format For A "Specific Agent"
+
+
+         showForTaskSearchForAgent: Show Landing Page of "Task Status" report For "Agent"
+         ExhGetDetailsByRefOrPinForAgentActionService: Generate "Task Status" Report For "Agent"
+
+         ExhShowNewBeneficiariesForCustomerActionService: Show Landing Page of "Unapproved Beneficiary"
+         ExhListsForCustomerActionService: Show List of "Unapproved Beneficiary" in Landing Page
+         ExhCreateBeneficiaryForCustomerActionService: Create "Unapproved Beneficiary"
+         ExhSelectBeneficiaryForCustomerActionService: Open "Unapproved Beneficiary" in Edit Mode
+         ExhUpdateBeneficiaryForCustomerActionService: Update "Unapproved Beneficiary"
+         ExhSearchForCustomerActionService: Search "Unapproved Beneficiary" From Grid View
+
+
+         ExhShowApprovedBeneficiariesForCustomerActionService: Show Landing Page of "Approved Beneficiary"
+
+         ExhShowTaskForCustomerActionService: Show Landing Page of Customer's "Task"
+         ExhListTaskForCustomerActionService: Show List of Customer's "Task" in Landing Page
+         _ExhCreateTaskForCustomerActionService: Create Customer's "Task"
+         _ExhSelectTaskForCustomerActionService: Open Customer's "Task" in Edit Mode
+         _ExhUpdateTaskForCustomerActionService: Update Customer's "Task"
+         ExhSearchTaskForCustomerActionService: Search Customer's "Task" From Grid View
+
+         ExhSendTaskToExhForCustomerActionService: Send Customer's Task to "Exchange House"
+
+         ExhShowUnApprovedTaskForCustomerActionService: Show Landing Page of Customer's "Un-Approved Task"
+         ExhListUnApprovedTaskForCustomerActionService: Show List of Customer's "Un-Approved Task" in Landing Page
+
+         ExhShowApprovedTaskForCustomerActionService: Show Landing Page of Customer's "Approved Task"
+         ExhListApprovedTaskForCustomerActionService: Show List of Customer's "Approved Task" in Landing Page
+         ExhShowInvoiceDetailsForCustomerActionService: Show Landing Page of "Invoice" Report For "Customer" From Grid View
+
+
+         ExhShowDisbursedTaskForCustomerActionService: Show Landing Page of Customer's "Disbursed Task"
+         ExhListDisbursedTaskForCustomerActionService: Show List of Customer's "Disbursed Task" in Landing Page
+         ExhGetDetailsByRefOrPinForCustomerActionService: Show Customer's "Task Status" Report From Grid View
+
+         ShowInvoiceForCustomer: Show Landing Page of "Invoice" Report For "Customer"
+         ExhInvoiceDetailsForCustomerActionService: Generate "Invoice" Report in HTML Format For "Customer"
+         ExhDownloadTaskInvoiceForCustomerActionService: Download "Invoice" Report For "Customer" in PDF Format
+
+
+         ExhShowTasksForOtherBankUserActionService: Show Landing Page of "Task" For "Other Bank User"
+         ExhListBanksForShowTaskOtherBankUserActionService: Populate "Bank" drop-down to Search "Task"
+         ExhSearchTaskForOtherBankUserActionService: Generate "Task" List For "Other Bank User"
+         ExhListTaskForOtherBankUserActionService: Show List of "Task" For "Other Bank User" in Landing Page
+         ExhResolveTaskOtherBankActionService: Resolve "Task" For "Other Bank User"
+         ExhDownloadCsvOtherBankActionService: Download "Other Bank Task" Report in CSV Format
+
+
+
+application:
+         title: Application Plugin
+
+         _ShowLoginPage: Show User Login Page
+         LoginSuccessActionService: User Authentication Process
+
+
+         _ShowApplicationPlugin: Show Application Plugin
+
+
+         ShowForResetPasswordActionService: Show "Reset Password" Page
+         SendMailForPasswordResetActionService: Send e-mail for reset password
+         ResetPasswordActionService: Reset Password
+
+         ShowVehicleActionService: Show Landing Page of "Vehicle"
+         ListVehicleActionService: Show List of "Vehicle" in Landing Page
+         CreateVehicleActionService: Create "Vehicle"
+         SelectVehicleActionService: Open "Vehicle" in Edit Mode
+         UpdateVehicleActionService: Update "Vehicle"
+         SearchVehicleActionService: Search "Vehicle" From Grid View
+         DeleteVehicleActionService: Delete "Vehicle"
+
+         ShowProjectActionService: Show Landing Page of "Project"
+         ListProjectActionService: Show List of "Project" in Landing Page
+         CreateProjectActionService: Create "Project"
+         SelectProjectActionService: Open "Project" in Edit Mode
+         UpdateProjectActionService: Update "Project"
+         SearchProjectActionService: Search "Project" From Grid View
+         DeleteProjectActionService: Delete "Project"
+
+         ShowUserProjectActionService: Show Landing Page of "User Project Mapping"
+         ListUserProjectActionService: Show List of "User Project Mapping" in Landing Page
+         CreateUserProjectActionService: Create "User Project Mapping"
+         _SelectUserProjectActionService: Open "User Project Mapping" in Edit Mode
+         UpdateUserProjectActionService: Update "User Project Mapping"
+         SearchUserProjectActionService: Search "User Project Mapping" From Grid View
+         DeleteUserProjectActionService: Delete "User Project Mapping"
+
+         ShowSupplierActionService: Show Landing Page of "Supplier"
+         ListSupplierActionService: Show List of "Supplier" in Landing Page
+         PopulateSupplierTypeList: Populate "Supplier Type" List in drop-down
+         CreateSupplierActionService: Create "Supplier"
+         SelectSupplierActionService: Open "Supplier" in Edit Mode
+         UpdateSupplierActionService: Update "Supplier"
+         SearchSupplierActionService: Search "Supplier" From Grid View
+         DeleteSupplierActionService: Delete "Supplier"
+
+
+         ShowSupplierItemActionService: Show Landing Page of "Supplier Item"
+         ListSupplierItemActionService: Show List of "Supplier Item" in Landing Page
+         CreateSupplierItemActionService: Create "Supplier Item"
+         SelectSupplierItemActionService: Open "Supplier Item" in Edit Mode
+         UpdateSupplierItemActionService: Update "Supplier Item"
+         SearchSupplierItemActionService: Search "Supplier Item" From Grid View
+         DeleteSupplierItemActionService: Delete "Supplier Item"
+
+
+
+         ShowCustomerActionService: Show Landing Page of "Customer"
+         ListCustomerActionService: Show List of "Customer" in Landing Page
+         CreateCustomerActionService: Create "Customer"
+         SelectCustomerActionService: Open "Customer" in Edit Mode
+         UpdateCustomerActionService: Update "Customer"
+         SearchCustomerActionService: Search "Customer" From Grid View
+         DeleteCustomerActionService: Delete "Customer"
+
+
+
+         ShowEmployeeActionService: Show Landing Page of "Employee"
+         ListEmployeeActionService: Show List of "Employee" in Landing Page
+         GetDropDownDesignationTagLibActionService: Populate "Designation" List in drop-down
+         CreateEmployeeActionService: Create "Employee"
+         SelectEmployeeActionService: Open "Employee" in Edit Mode
+         UpdateEmployeeActionService: Update "Employee"
+         SearchEmployeeActionService: Search "Employee" From Grid View
+         DeleteEmployeeActionService: Delete "Employee"
+
+         ShowItemTypeActionService: Show Landing Page of "Item Type"
+         ListItemTypeActionService: Show List of "Item Type" in Landing Page
+         PopulateItemCategory: Populate "Item Category" List in drop-down
+         CreateItemTypeActionService: Create "Item Type"
+         SelectItemTypeActionService: Select "Item Type"
+         UpdateItemTypeActionService: Update "Item Type"
+         SearchItemTypeActionService: Search "Item Type"
+         DeleteItemTypeActionService: Delete "Item Type"
+
+
+         ShowItemCategoryInventoryActionService: Show Landing Page of "Inventory Item"
+         ListItemCategoryInventoryActionService: Show List of "Inventory Item" in Landing Page
+         PopulateValuationTypeList: Populate "Valuation Type" List in drop-down
+         CreateItemCategoryInventoryActionService: Create "Inventory Item"
+         SelectItemActionService: Open "Inventory Item" in Edit Mode
+         UpdateItemCategoryInventoryActionService: Update "Inventory Item"
+         SearchItemCategoryInventoryActionService: Search "Inventory Item" From Grid View
+         DeleteItemCategoryInventoryActionService: Delete "Inventory Item"
+
+
+
+         ShowItemCategoryNonInvActionService: Show Landing Page of "Non-Inventory Item"
+         ListItemCategoryNonInvActionService: Show List of "Non-Inventory Item" in Landing Page
+         CreateItemCategoryNonInvActionService: Create "Non-Inventory Item"
+         SelectItemNonInvActionService: Open "Non-Inventory Item" in Edit Mode
+         UpdateItemCategoryNonInvActionService: Update "Non-Inventory Item"
+         SearchItemCategoryNonInvActionService: Search "Non-Inventory Item" From Grid View
+         DeleteItemCategoryNonInvActionService: Delete "Non-Inventory Item"
+
+
+
+
+
+         ShowCountryActionService: Show Landing Page of "Country"
+         ListCountryActionService: Show List of "Country" in Landing Page
+         GetDropDownCurrencyTagLibActionService: Populate "Currency" List in drop-down
+         CreateCountryActionService: Create "Country"
+         SelectCountryActionService: Open "Country" in Edit Mode
+         UpdateCountryActionService: Update "Country"
+         SearchCountryActionService: Search "Country" From Grid View
+         DeleteCountryActionService: Delete "Country"
+
+
+         ShowDesignationActionService: Show Landing Page of "Designation"
+         ListDesignationActionService: Show List of "Designation" in Landing Page
+         CreateDesignationActionService: Create "Designation"
+         SelectDesignationActionService: Open "Designation" in Edit Mode
+         UpdateDesignationActionService: Update "Designation"
+         SearchDesignationActionService: Search "Designation" From Grid View
+         DeleteDesignationActionService: Delete "Designation"
+
+
+         ShowCurrencyActionService: Show Landing Page of "Currency"
+         ListCurrencyActionService: Show List of "Currency" in Landing Page
+         CreateCurrencyActionService: Create "Currency"
+         SelectCurrencyActionService: Open "Currency" in Edit Mode
+         UpdateCurrencyActionService: Update "Currency"
+         SearchCurrencyActionService: Search "Currency" From Grid View
+         DeleteCurrencyActionService: Delete "Currency"
+
+
+         ShowBankActionService: Show Landing Page of "Bank"
+         ListBankActionService: Show List of "Bank" in Landing Page
+         CreateBankActionService: Create "Bank"
+         SelectBankActionService: Open "Bank" in Edit Mode
+         UpdateBankActionService: Update "Bank"
+         SearchBankActionService: Search "Bank" From Grid View
+         DeleteBankActionService: Delete "Bank"
+
+         ShowBankBranchActionService: Show Landing Page of "Bank Branch"
+         ListBankBranchActionService: Show List of "Bank Branch" in Landing Page
+         GetDropDownBankTagLibActionService: Populate "Bank" List in drop-down
+         GetDropDownDistrictTagLibActionService: Populate "District" List in drop-down
+         CreateBankBranchActionService: Create "Bank Branch"
+         SelectBankBranchActionService: Open "Bank Branch" in Edit Mode
+         UpdateBankBranchActionService: Update "Bank Branch"
+         SearchBankBranchActionService: Search "Bank Branch" From Grid View
+         DeleteBankBranchActionService: Delete "Bank Branch"
+
+
+         ShowDistrictActionService: Show Landing Page of "District"
+         ListDistrictActionService: Show List of "District" in Landing Page
+         CreateDistrictActionService: Create "District"
+         SelectDistrictActionService: Open "District" in Edit Mode
+         UpdateDistrictActionService: Update "District"
+         SearchDistrictActionService: Search "District" From Grid View
+         DeleteDistrictActionService: Delete "District"
+
+
+         ShowAppShellScriptActionService: Show Landing Page of "Shell Script"
+         ListAppShellScriptActionService: Show List of "Shell Script" in Landing Page
+         CreateAppShellScriptActionService: Create "Shell Script"
+         SelectAppShellScriptActionService: Open "Shell Script" in Edit Mode
+         UpdateAppShellScriptActionService: Update "Shell Script"
+         DeleteAppShellScriptActionService: Delete "Shell Script"
+         EvaluateAppShellScriptActionService: Evaluate "Shell Script"
+
+
+
+
+         ShowAppUserActionService: Show Landing Page of "User"
+         ListAppUserActionService: Show List of "User" in Landing Page
+         CreateAppUserActionService: Create "User"
+         SelectAppUserActionService: Open "User" in Edit Mode
+         UpdateAppUserActionService: Update "User"
+         SearchAppUserActionService: Search "User" From Grid View
+         DeleteAppUserActionService: Delete "User"
+
+
+         ShowRoleActionService: Show Landing Page of "Role"
+         ListRoleActionService: Show List of "Role" in Landing Page
+         CreateRoleActionService: Create "Role"
+         SelectRoleActionService: Open "Role" in Edit Mode
+         UpdateRoleActionService: Update "Role"
+         SearchRoleActionService: Search "Role" From Grid View
+         DeleteRoleActionService: Delete "Role"
+
+
+         ShowUserRoleActionService: Show Landing Page of "User Role Mapping"
+         ListUserRoleActionService: Show List of "User Role Mapping" in Landing Page
+         CreateUserRoleActionService: Create "User Role Mapping"
+         SelectUserRoleActionService: Open "User Role Mapping" in Edit Mode
+         UpdateUserRoleActionService: Update "User Role Mapping"
+         SearchUserRoleActionService: Search "User Role Mapping" From Grid View
+         DeleteUserRoleActionService: Delete "User Role Mapping"
+
+
+         ShowRequestMapActionService: Show Landing Page of "Role Right Mapping"
+         PopulateRoleList: Populate "Role" List in drop-down
+         GetDropDownModulesTagLibActionService: Populate "Module" List in drop-down
+         SearchRequestMapActionService: Search "Role Right Mapping"
+         UpdateRequestMapActionService: Assign Rights To "Role"
+         SelectRequestMapActionService: Discard Changes of "Role Right Mapping"
+         ResetRequestMapByPluginIdActionService: Reset "All Role" For Selected "Module"
+
+
+         ShowAppGroupActionService: Show Landing Page of "Group"
+         ListAppGroupActionService: Show List of "Group" in Landing Page
+         CreateAppGroupActionService: Create "Group"
+         SelectAppGroupActionService: Open "Group" in Edit Mode
+         UpdateAppGroupActionService: Update "Group"
+         SearchAppGroupActionService: Search "Group" From Grid View
+         DeleteAppGroupActionService: Delete "Group"
+
+
+         ShowUserGroupActionService: Show Landing Page of "User Group Mapping"
+         ListUserGroupActionService: Show List of "User Group Mapping" in Landing Page
+         GetDropDownAppGroupTagLibActionService: Populate "Group" List in drop-down
+         CreateUserGroupActionService: Create "User Group Mapping"
+         SelectUserGroupActionService: Open "User Group Mapping" in Edit Mode
+         UpdateUserGroupActionService: Update "User Group Mapping"
+         SearchUserGroupActionService: Search "User Group Mapping" From Grid View
+         DeleteUserGroupActionService: Delete "User Group Mapping"
+
+
+         _ShowOnlineUserActionService: Show Landing Page of "Online Users"
+         ListOnlineUserActionService: Show List of "Online User" in Landing Page
+         ForceLogoutOnlineUserActionService: Force Logout "Online User"
+
+
+         ShowSysConfigurationActionService: Show Landing Page of "System Configuration"
+         ListSysConfigurationActionService: Show List of "System Configuration" in Landing Page
+         SelectSysConfigurationActionService: Open "System Configuration" in Edit Mode
+         UpdateSysConfigurationActionService: Update "System Configuration"
+         SearchSysConfigurationActionService: Search "System Configuration" From Grid View
+
+
+         ShowSystemEntityTypeActionService: Show Landing Page of "System Entity Type"
+         ListSystemEntityTypeActionService: Show List of "System Entity Type" in Landing Page
+         SelectSystemEntityTypeActionService: Open "System Entity Type" in Read Only Mode
+         SearchSystemEntityTypeActionService: Search "System Entity Type" From Grid View
+
+
+         ShowSystemEntityActionService: Show Landing Page of "System Entity"
+         ListSystemEntityActionService: Show List of "System Entity" in Landing Page
+         CreateSystemEntityActionService: Create "System Entity"
+         SelectSystemEntityActionService: Open "System Entity" in Edit Mode
+         UpdateSystemEntityActionService: Update "System Entity"
+         SearchSystemEntityActionService: Search "System Entity" From Grid View
+         DeleteSystemEntityActionService: Delete "System Entity"
+
+         ShowCompanyActionService: Show Landing Page of "Company"
+         ListCompanyActionService: Show List of "Company" in Landing Page
+         GetDropDownCountryTagLibActionService: Populate "Country" List in drop-down
+         SelectCompanyActionService: Open "Company" in Edit Mode
+         UpdateCompanyActionService: Update "Company"
+
+
+         ShowAppCompanyUserActionService: Show Landing Page of "Company User"
+         ListAppCompanyUserActionService: Show List of "Company User" in Landing Page
+         CreateAppCompanyUserActionService: Create "Company User"
+         SelectAppCompanyUserActionService: Open "Company User" in Edit Mode
+         UpdateAppCompanyUserActionService: Update "Company User"
+         SearchAppCompanyUserActionService: Search "Company User" From Grid View
+
+
+         ShowThemeActionService: Show Landing Page of "Theme"
+         ListThemeActionService: Show List of "Theme" in Landing Page
+         SelectThemeActionService: Open "Theme" in Edit Mode
+         UpdateThemeActionService: Update "Theme"
+         SearchThemeActionService: Search "Theme" From Grid View
+
+
+         ShowAppMailActionService: Show Landing Page of "Mail"
+         ListAppMailActionService: Show List of "Mail" in Landing Page
+         SelectAppMailActionService: Open "Mail" in Edit Mode
+         UpdateAppMailActionService: Update "Mail"
+
+
+         ShowSmsActionService: Show Landing Page of "SMS"
+         ListSmsActionService: Show List of "SMS" in Landing Page
+         SelectSmsActionService: Open "SMS" in Edit Mode
+         UpdateSmsActionService: Update "SMS"
+
+
+         ShowContentCategoryActionService: Show Landing Page of "Content Category"
+         ListContentCategoryActionService: Show List of "Content Category" in Landing Page
+         CreateContentCategoryActionService: Create "Content Category"
+         SelectContentCategoryActionService: Open "Content Category" in Edit Mode
+         UpdateContentCategoryActionService: Update "Content Category"
+         SearchContentCategoryActionService: Search "Content Category" From Grid View
+         DeleteContentCategoryActionService: Delete "Content Category"
+
+
+
+
+accounting:
+         title: Accounting Plugin
+
+         _showAccountingPlugin: Show Accounting Plugin
+         _widgetofAccountingOption: Widget of "Accounting" Option
+
+
+         ListUnApprovedPayCashActionService: Show List of Un-Posted "Cash Payment" Voucher in Widget Tab of Accounting Option
+         ListUnApprovedPayBankActionService: Show List of Un-Posted "Cheque Payment" Voucher in Widget Tab of Accounting Option
+         ListUnApprovedReceiveCashActionService: Show List of Un-Posted "Cash Receive" Voucher in Widget Tab of Accounting Option
+         ListUnApprovedReceiveBankActionService: Show List of Un-Posted "Cheque Receive" Voucher in Widget Tab of Accounting Option
+         ListUnApprovedJournalActionService: Show List of Un-Posted "Journal" Voucher in Widget Tab of Accounting Option
+
+
+         _selectChartofAccountCodeRightPanel: Add "Chart of Account Code" From Right Panel
+         ListChartOfAccountForVoucherActionService: Show List of "Chart of Account Code" Right Panel in Landing Page
+         SearchChartOfAccountForVoucherActionService: Search "Chart of Account Code" for Voucher
+
+         ShowAccVoucherPayCashActionService: Show Landing Page of "Pay Cash" Voucher
+         _validateIOUTracewhileCreateVoucher: Validate "IOU Trace Number" While Create "Voucher"
+         _validatePOTraceNumberWhileCreateVoucher: Validate "PO Trace Number" While Create "Voucher"
+         GetAccDivisionByProjectActionService: Populate "Division" List in drop-down
+         SystemGeneratedVoucherTraceNumber: System Generated "Voucher Trace Number"
+
+         _CreateAccPCVoucherActionService: Create "Pay Cash" Voucher
+         ListAccVoucherPayCashActionService: Show List of "Pay Cash" Voucher in Landing Page
+         _SelectAccPCVoucherActionService: Open "Pay Cash" Voucher in Edit Mode
+         _UpdateAccPCVoucherActionService: Update "Pay Cash" Voucher
+         SearchAccVoucherPayCashActionService: Search "Pay Cash" Voucher From Grid View
+         _CancelAccVoucherPayCashActionService: Cancel "Pay Cash" Voucher
+
+         PostAccVoucherActionService: Post "Voucher"
+         UnPostAccVoucherActionService: Un-Post "Voucher"
+
+
+         ShowAccVoucherPayBankActionService: Show Landing Page of "Pay Cheque" Voucher
+         ListAccVoucherPayBankActionService: Show List of "Pay Cheque" Voucher in Landing Page
+         _CreateAccPBVoucherActionService: Create "Pay Cheque" Voucher
+         _SelectAccPBVoucherActionService: Open  "Pay Cheque" Voucher in Edit Mode
+         _UpdateAccPBVoucherActionService: Update "Pay Cheque" Voucher
+         SearchAccVoucherPayBankActionService: Search "Pay Cheque" Voucher From Grid View
+         _CancelAccVoucherPayBankActionService: Cancel "Pay Cheque" Voucher
+
+
+         ShowAccVoucherReceiveCashActionService: Show Landing Page of "Receive Cash" Voucher
+         ListAccVoucherReceiveCashActionService: Show List of "Receive Cash" Voucher in Landing Page
+         _CreateAccRCVoucherActionService: Create "Receive Cash" Voucher
+         _SelectAccRCVoucherActionService: Open "Receive Cash" Voucher in Edit Mode
+         _UpdateAccRCVoucherActionService: Update "Receive Cash" Voucher
+         SearchAccVoucherReceiveCashActionService: Search "Receive Cash" Voucher From Grid View
+         _CancelAccVoucherReceiveCashActionService: Cancel "Receive Cash" Voucher
+
+
+         ShowAccVoucherReceiveBankActionService: Show Landing Page of "Receive Cheque" Voucher
+         ListAccVoucherReceiveBankActionService: Show List of "Receive Cheque" Voucher in Landing Page
+         _CreateAccRBVoucherActionService: Create "Receive Cheque" Voucher
+         _SelectAccRBVoucherActionService: Open"Receive Cheque" Voucher in Edit Mode
+         _UpdateAccRBVoucherActionService: Update "Receive Cheque" Voucher
+         SearchAccVoucherReceiveBankActionService: Search "Receive Cheque" Voucher From Grid View
+         _CancelAccVoucherReceiveBankActionService: Cancel "Receive Cheque" Voucher
+
+
+         ShowAccVoucherActionService: Show Landing Page of "Journal Voucher"
+         ListAccVoucherActionService: Show List of "Journal Voucher" in Landing Page
+         _CreateAccJRVoucherActionService: Create "Journal Voucher"
+         _SelectAccJRVoucherActionService: Open "Journal Voucher" in Edit Mode
+         _UpdateAccJRVoucherActionService: Update "Journal Voucher"
+         SearchAccVoucherActionService: Search "Journal Voucher" From Grid View
+         _CancelAccJournalVoucherActionService: Cancel "Journal Voucher"
+
+
+         ShowAccIouSlipActionService: Show Landing Page of "IOU Slip"
+         ListAccIouSlipActionService: Show List of "IOU Slip" in Landing Page
+         GetIndentListByProjectIdActionService: Populate "Indent" List in drop-down
+         CreateAccIouSlipActionService: Create "IOU Slip"
+         SelectAccIouSlipActionService: Open "IOU Slip" in Edit Mode
+         UpdateAccIouSlipActionService: Update "IOU Slip"
+         SearchAccIouSlipActionService: Search "IOU Slip" From Grid View
+         DeleteAccIouSlipActionService: Delete "IOU Slip"
+
+
+         ShowAccIouPurposeActionService: Show Landing Page of "IOU Slip Purpose"
+         _populatePurposeList: Populate "Purpose" List in drop-down
+
+         CreateAccIouPurposeActionService: Create the "Purpose of IOU Slip"
+         ListAccIouPurposeActionService: Show List of "IOU Slip Purpose" in Landing Page
+         SelectAccIouPurposeActionService: Open "IOU Slip Purpose" in Edit Mode
+         UpdateAccIouPurposeActionService: Update the "Purpose of IOU Slip"
+         DeleteAccIouPurposeActionService: Delete the "Purpose of IOU Slip"
+
+         SentNotificationAccIouSlipActionService: Send "IOU Slip" For Approval
+         ApproveAccIouSlipActionService: Approve "IOU Slip"
+
+
+
+         ShowAccTypeActionService: Show Landing Page of "Account Type"
+         ListAccTypeActionService: Show List of "Account Type" in Landing Page
+         SelectAccTypeActionService: Open "Account Type" in Edit Mode
+         UpdateAccTypeActionService: Update "Account Type"
+         DeleteAccTypeActionService: Delete "Account Type"
+
+
+         ShowAccChartOfAccountActionService: Show Landing Page of "Chart of Account"
+         ListAccChartOfAccountActionService: Show List of "Chart of Account" in Landing Page
+         GetDropDownAccTypeTagLibActionService: Populate "Account Type" List in drop-down
+         GetTier1ListByAccTypeIdActionService: Populate "Tier-1" List in drop-down
+         GetTier2ListByAccTier1IdActionService: Populate "Tier-2" List in drop-down
+         GetTier3ListByAccTier2IdActionService: Populate "Tier-3" List in drop-down
+         GetDropDownAccGroupTagLibActionService: Populate "Group" List in drop-down
+         PopulateSourceTypeList: Populate "Source Type" List in drop-down
+         GetSourceCategoryByAccSourceIdActionService: Populate "Source Category" List in drop-down
+         GetDropDownAccCustomGroupTagLibActionService: Populate "Custom Group" List in drop-down
+         SystemGeneratedCOACode: System Generated "Chart Of Account Code"
+
+
+         CreateAccChartOfAccountActionService: Create "Chart of Account"
+         SelectAccChartOfAccountActionService: Open "Chart of Account" in Edit Mode
+         UpdateAccChartOfAccountActionService: Update "Chart of Account"
+         SearchAccChartOfAccountActionService: Search "Chart of Account" From Grid View
+         DeleteAccChartOfAccountActionService: Delete "Chart of Account"
+         DownloadChartOfAccountActionService: Download "Chart of Account" List in PDF Format
+
+
+         ShowAccVoucherTypeCoaActionService: Show Landing Page of "Voucher Type Mapping"
+         ListAccVoucherTypeCoaActionService: Show List of "Voucher Type Mapping" in Landing Page
+         PopulateVoucherTypeList: Populate "Voucher Type" List in drop-down
+         CreateAccVoucherTypeCoaActionService: Create "Voucher Type Mapping"
+         SelectAccVoucherTypeCoaActionService: Open "Voucher Type Mapping" in Edit Mode
+         UpdateAccVoucherTypeCoaActionService: Update "Voucher Type Mapping"
+         SearchAccVoucherTypeCoaActionService: Search "Voucher Type Mapping" From Grid View
+         DeleteAccVoucherTypeCoaActionService: Delete "Voucher Type Mapping"
+
+
+         ShowAccSubAccountActionService: Show Landing Page of "Sub Account"
+         ListAccSubAccountActionService: Show List of "Sub Account" in Landing Page
+         CreateAccSubAccountActionService: Create "Sub Account"
+         SelectAccSubAccountActionService: Open "Sub Account" in Edit Mode
+         UpdateAccSubAccountActionService: Update "Sub Account"
+         SearchAccSubAccountActionService: Search "Sub Account" From Grid View
+         DeleteAccSubAccountActionService: Delete "Sub Account"
+
+
+         ShowAccGroupActionService: Show Landing Page of "Group"
+         ListAccGroupActionService: Show List of "Group" in Landing Page
+         CreateAccGroupActionService: Create "Group"
+         SelectAccGroupActionService: Open "Group" in Edit Mode
+         UpdateAccGroupActionService: Update "Group"
+         SearchAccGroupActionService: Search "Group" From Grid View
+         DeleteAccGroupActionService: Delete "Group"
+
+
+         ShowAccCustomGroupActionService: Show Landing Page of "Custom Group"
+         ListAccCustomGroupActionService: Show List of "Custom Group" in Landing Page
+         CreateAccCustomGroupActionService: Create "Custom Group"
+         SelectAccCustomGroupActionService: Open "Custom Group" in Edit Mode
+         UpdateAccCustomGroupActionService: Update "Custom Group"
+         SearchAccCustomGroupActionService: Search "Custom Group" From Grid View
+         DeleteAccCustomGroupActionService: Delete "Custom Group"
+
+
+         ShowAccDivisionActionService: Show Landing Page of "Division"
+         ListAccDivisionActionService: Show List of "Division" in Landing Page
+         CreateAccDivisionActionService: Create "Division"
+         SelectAccDivisionActionService: Open "Division" in Edit Mode
+         UpdateAccDivisionActionService: Update "Division"
+         SearchAccDivisionActionService: Search "Division" From Grid View
+         DeleteAccDivisionActionService: Delete "Division"
+
+
+         ShowAccFinancialYearActionService: Show Landing Page of "Financial Year"
+         ListAccFinancialYearActionService: Show List of "Financial Year" in Landing Page
+         CreateAccFinancialYearActionService: Create "Financial Year"
+         SelectAccFinancialYearActionService: Open "Financial Year" in Edit Mode
+         UpdateAccFinancialYearActionService: Update "Financial Year"
+         DeleteAccFinancialYearActionService: Delete "Financial Year"
+         SetForCurrentFinancialYearActionService: Set Current "Financial Year"
+
+
+         ShowAccIpcActionService: Show Landing Page of "I.P.C"
+         ListAccIpcActionService: Show List of "I.P.C" in Landing Page
+         CreateAccIpcActionService: Create "I.P.C"
+         SelectAccIpcActionService: Open "I.P.C" in Edit Mode
+         UpdateAccIpcActionService: Update "I.P.C"
+         SearchAccIpcActionService: Search "I.P.C" From Grid View
+         DeleteAccIpcActionService: Delete "I.P.C"
+
+
+         ShowAccLcActionService: Show Landing Page of "LC"
+         ListAccLcActionService: Show List of "LC" in Landing Page
+         CreateAccLcActionService: Create "LC"
+         SelectAccLcActionService: Open "LC" in Edit Mode
+         UpdateAccLcActionService: Update "LC"
+         SearchAccLcActionService: Search "LC" From Grid View
+         DeleteAccLcActionService: Delete "LC"
+
+
+         ShowAccLeaseAccountActionService: Show Landing Page of "Lease Account"
+         ListAccLeaseAccountActionService: Show List of "Lease Account" in Landing Page
+         CreateAccLeaseAccountActionService: Create "Lease Account"
+         SelectAccLeaseAccountActionService: Open "Lease Account" in Edit Mode
+         UpdateAccLeaseAccountActionService: Update "Lease Account"
+         SearchAccLeaseAccountActionService: Search "Lease Account" From Grid View
+         DeleteAccLeaseAccountActionService: Delete "Lease Account"
+
+
+         ShowAccTier1ActionService: Show Landing Page of "Tier-1"
+         ListAccTier1ActionService: Show List of "Tier-1" in Landing Page
+         CreateAccTier1ActionService: Create "Tier-1"
+         SelectAccTier1ActionService: Open "Tier-1" in Edit Mode
+         UpdateAccTier1ActionService: Update "Tier-1"
+         SearchAccTier1ActionService: Search "Tier-1" From Grid View
+         DeleteAccTier1ActionService: Delete "Tier-1"
+
+
+         ShowAccTier2ActionService: Show Landing Page of "Tier-2"
+         ListAccTier2ActionService: Show List of "Tier-2" in Landing Page
+         CreateAccTier2ActionService: Create "Tier-2"
+         SelectAccTier2ActionService: Open "Tier-2" in Edit Mode
+         UpdateAccTier2ActionService: Update "Tier-2"
+         SearchAccTier2ActionService: Search "Tier-2" From Grid View
+         DeleteAccTier2ActionService: Delete "Tier-2"
+
+
+         ShowAccTier3ActionService: Show Landing Page of "Tier-3"
+         ListAccTier3ActionService: Show List of "Tier-3" in Landing Page
+         CreateAccTier3ActionService: Create "Tier-3"
+         SelectAccTier3ActionService: Open "Tier-3" in Edit Mode
+         UpdateAccTier3ActionService: Update "Tier-3"
+         SearchAccTier3ActionService: Search "Tier-3" From Grid View
+         DeleteAccTier3ActionService: Delete "Tier-3"
+
+
+
+         ShowAccBankStatementActionService: Show Landing Page of "Upload Bank Statement File"
+         _populateBankList: Populate "Bank" List in drop-down
+         ImportAccBankStatementActionService: Upload "Bank Statement File"
+
+
+
+         ShowForVoucherActionService: Show Landing Page of "Voucher" Report
+         SearchForVoucherActionService: Generate "Voucher" Report in HTML Format
+         DownloadForVoucherActionService: Download "Voucher" Report in PDF Format
+         DownloadForVoucherBankChequeActionService: Download "Cheque" From "Payment Voucher Cheque" Report in PDF Format
+         DownloadForVoucherBankChequePreviewActionService: Download "Preview of Cheque" From "Payment Voucher Cheque" Report in PDF Format
+         SendMailForUnpostedVoucherActionService: Send Mail with attachment of "All Un-posted Voucher" PDF Report
+
+         ShowForLedgerActionService: Show Landing Page of "Ledger" Report
+         ListForLedgerActionService: Generate "Ledger" Report in HTML Format
+         DownloadForLedgerActionService: Download "Ledger" Report in PDF Format
+         DownloadForLedgerCsvActionService: Download "Ledger" Report in CSV Format
+         _showVoucherDetails: Show Landing Page of "Voucher Details" From "Ledger" Report Grid View
+
+
+         ShowForVoucherListActionService: Show Landing Page of "Voucher List" Report
+         SearchForVoucherListActionService: Generate "Voucher List" Report in HTML Format
+         GetVoucherDetailsListActionService: Show "Voucher Details List"
+         DownloadForVoucherListActionService: Download "Voucher List" Report in PDF Format
+
+
+         ShowForGroupLedgerActionService: Show Landing Page of "Group Ledger" Report
+         ListForGroupLedgerActionService: Generate "Group Ledger" Report in HTML Format
+         DownloadForGroupLedgerActionService: Download "Group Ledger" Report in PDF Format
+         DownloadForGroupLedgerCsvActionService: Download "Group ledger" Report in CSV Format
+
+
+         ShowForSourceLedgerActionService: Show Landing Page of "Source Ledger" Report
+         GetSourceListBySourceCategoryAndAccSourceIdActionService: Populate "Source" List in drop-down
+         ListForSourceLedgerActionService: Generate "Source Ledger" Report in HTML Format
+         DownloadForSourceLedgerActionService: Download "Source Ledger" Report in PDF Format
+         DownloadForSourceLedgerCsvActionService: Download "Source Ledger" Report in CSV Format
+         DownloadForSourceLedgerGroupBySourceActionService: Download "Source Ledger" Report in PDF Format Group By Source
+
+
+         ShowForSourceWiseBalanceActionService: Show Landing Page of "Source Wise Balance" Report
+         ListForSourceWiseBalanceActionService: Generate "Source Wise Balance" Report in HTML Format
+         DownloadForSourceWiseBalanceActionService: Download "Source Wise Balance" Report in PDF Format
+         DownloadForSourceWiseBalanceCsvActionService: Download "Source Wise Balance" Report in CSV Format
+         DownloadForVoucherListBySourceIdActionService: Download "Source Wise Balance Details" Report in PDF Format
+
+
+
+         AccShowForSupplierWisePayableActionService: Show Landing Page of "Supplier Wise Payable" Report
+         AccListForSupplierWisePayableActionService: Generate "Supplier Wise Payable" Report in HTML Format
+         AccDownloadForSupplierWisePayableActionService: Download "Supplier Wise Payable" Report in PDF Format
+         AccDownloadForSupplierWisePayableCsvActionService: Download "Supplier Wise Payable" in CSV Format
+         AccShowForSupplierWisePaymentActionService: Show "Paid Details" From "Supplier Wise Payable" Report Grid View
+         _ShowForSupplierWisePOActionService: Show "PO Details" From "Supplier Wise Payable" Report Grid View
+         SendMailForSupplierWisePayableActionService: Send Mail with attachment of "Supplier Wise Payable" PDF Report
+
+
+         ShowForSupplierWisePaymentActionService: Show Landing Page of "Supplier Wise Paid" Report
+         ListForSupplierWisePaymentActionService: Generate "Supplier Wise Paid" Report in HTML Format
+         DownloadForSupplierWisePaymentActionService: Download "Supplier Wise Paid" Report in PDF Format
+         DownloadForSupplierWisePaymentCsvActionService: Download "Supplier Wise Paid" Report in CSV Format
+
+
+
+         _ShowForProjectFundFlowActionService: Show Landing Page of "Project Fund Flow" Report
+         ListForProjectFundFlowActionService: Generate "Project Fund Flow" Report in HTML Format
+         DownloadForProjectFundFlowActionService: Download "Project Fund Flow" Report in PDF Format
+
+
+
+         ShowForProjectWiseExpenseActionService: Show Landing Page of "Project Wise Expense" Report
+         ListForProjectWiseExpenseActionService: Generate "Project Wise Expense" Report in HTML Format
+         ListForProjectWiseExpenseDetailsActionService: Show "Expense Details List"
+         DownloadForProjectWiseExpenseActionService: Download "Project Wise Expense" Report in PDF Format
+         DownloadForProjectWiseExpenseCsvActionService: Download "Project Wise Expense" Report in CSV Format
+         SendMailForProjectWiseExpenseActionService: Send Mail with attachment of "Project Wise Expense" PDF Report
+
+
+         ShowForAccIouSlipActionService: Show Landing Page of "IOU Slip" Report
+         ListForAccIouSlipActionService: Generate "IOU Slip" Report in HTML Format
+         DownloadForAccIouSlipActionService: Download "IOU Slip" Report in PDF Format
+
+
+
+
+         AccShowForCustomGroupBalanceActionService: Show Landing Page of "Custom Group Balance" Report
+         AccListForCustomGroupBalanceActionService: Generate "Custom Group Balance" Report in HTML Format
+         AccDownloadForCustomGroupBalanceActionService: Download "Custom Group Balance" Report in PDF Format
+         AccDownloadForCustomGroupBalanceCsvActionService: Download "Custom Group Balance" Report in CSV Format
+
+
+         AccShowForBankReconciliationChequeActionService: Show Landing Page of "Bank Reconciliation Cheque" Report
+         AccListForBankReconciliationChequeActionService: Generate "Bank Reconciliation Cheque" Report in HTML Format
+         AccDownloadForBankReconciliationChequeActionService: Download "Bank Reconciliation Cheque" Report in PDF Format
+         AccDownloadForBankReconciliationChequeCsvActionService: Download "Bank Reconciliation Cheque" Report in CSV Format
+
+
+
+
+
+         ShowForTrialBalanceActionService: Show Landing Page of "Trial Balance (Hierarchy 2)" Report
+         ListForTrialBalanceOfLevel2ActionService: Generate "Trial Balance (Hierarchy 2)" Report in HTML Format
+         DownloadForTrialBalanceOfLevel2ActionService: Download "Trial Balance (Hierarchy 2)" Report in PDF Format
+         DownloadForTrialBalanceCsvOfLevel2ActionService: Download "Trial Balance (Hierarchy 2)" Report in CSV Format
+
+
+
+         _ShowForTrialBalanceL3ActionService: Show Landing Page of "Trial Balance (Hierarchy 3)" Report
+         ListForTrialBalanceOfLevel3ActionService: Generate "Trial Balance (Hierarchy 3)" Report in HTML Format
+         DownloadForTrialBalanceOfLevel3ActionService: Download "Trial Balance (Hierarchy 3)" Report in PDF Format
+         DownloadForTrialBalanceCsvOfLevel3ActionService: Download "Trial Balance (Hierarchy 3)" Report in CSV Format
+
+
+
+         _ShowForTrialBalanceL4ActionService: Show Landing Page of "Trial Balance (Hierarchy 4)" Report
+         ListForTrialBalanceOfLevel4ActionService: Generate "Trial Balance (Hierarchy 4)" Report in HTML Format
+         DownloadForTrialBalanceOfLevel4ActionService: Download "Trial Balance (Hierarchy 4)" Report in PDF Format
+         DownloadForTrialBalanceCsvOfLevel4ActionService: Download "Trial Balance (Hierarchy 4)" Report in CSV Format
+
+
+
+         _ShowForTrialBalanceL5ActionService: Show Landing Page of "Trial Balance (Hierarchy 5)" Report
+         ListForTrialBalanceOfLevel5ActionService: Generate "Trial Balance (Hierarchy 5)" Report in HTML Format
+         DownloadForTrialBalanceOfLevel5ActionService: Download "Trial Balance (Hierarchy 5)" Report in PDF Format
+         DownloadForTrialBalanceCsvOfLevel5ActionService: Download "Trial Balance (Hierarchy 5)" Report in CSV Format
+
+
+
+
+
+         ShowForAccIncomeStatementActionService: Show Landing Page of "Income Statement (Hierarchy 4)" Report
+         ListForIncomeStatementOfLevel4ActionService: Generate "Income Statement (Hierarchy 4)" Report in HTML Format
+         DownloadForIncomeStatementOfLevel4ActionService: Download "Income Statement (Hierarchy 4)" Report in PDF Format
+         DownloadForIncomeStatementCsvOfLevel4ActionService: Download "Income Statement (Hierarchy 4)" Report in CSV Format
+
+
+
+         _ShowForAccIncomeStatementL5ActionService: Show Landing Page of "Income Statement (Hierarchy 5)" Report
+         ListForIncomeStatementOfLevel5ActionService: Generate "Income Statement (Hierarchy 5)" Report in HTML Format
+         DownloadForIncomeStatementOfLevel5ActionService: Download "Income Statement (Hierarchy 5)" Report in PDF Format
+         DownloadForIncomeStatementCsvOfLevel5ActionService: Download "Income Statement (Hierarchy 5)" Report in CSV Format
+
+
+
+
+
+         ShowForFinancialStatementActionService: Show Landing Page of "Financial Statement (Hierarchy 2)" Report
+         ListForFinancialStatementOfLevel2ActionService: Generate "Financial Statement (Hierarchy 2)" Report in HTML Format
+         DownloadForFinancialStatementOfLevel2ActionService: Download "Financial Statement (Hierarchy 2)" Report in PDF Format
+         DownloadForFinancialStatementCsvOfLevel2ActionService: Download "Financial Statement (Hierarchy 2)" Report in CSV Format
+
+
+
+         _ShowForFinancialStatementL3ActionService: Show Landing Page of "Financial Statement (Hierarchy 3)" Report
+         ListForFinancialStatementOfLevel3ActionService: Generate "Financial Statement (Hierarchy 3)" Report in HTML Format
+         DownloadForFinancialStatementOfLevel3ActionService: Download "Financial Statement (Hierarchy 3)" Report in PDF Format
+         DownloadForFinancialStatementCsvOfLevel3ActionService: Download "Financial Statement (Hierarchy 3)" Report in CSV Format
+
+
+
+         _ShowForFinancialStatementL4ActionService: Show Landing Page of "Financial Statement (Hierarchy 4)" Report
+         ListForFinancialStatementOfLevel4ActionService: Generate "Financial Statement (Hierarchy 4)" Report in HTML Format
+         DownloadForFinancialStatementOfLevel4ActionService: Download "Financial Statement (Hierarchy 4)" Report in PDF Format
+         DownloadForFinancialStatementCsvOfLevel4ActionService: Download "Financial Statement (Hierarchy 4)" Report in CSV Format
+
+
+
+         _ShowForFinancialStatementL5ActionService: Show Landing Page of "Financial Statement (Hierarchy 5)" Report
+         ListForFinancialStatementOfLevel5ActionService: Generate "Financial Statement (Hierarchy 5)" Report in HTML Format
+         DownloadForFinancialStatementOfLevel5ActionService: Download "Financial Statement (Hierarchy 5)" Report in PDF Format
+         DownloadForFinancialStatementCsvOfLevel5ActionService: Download "Financial Statement (Hierarchy 5)" Report in CSV Format
+
+
+
+
+
+inventory:
+         title: Inventory Plugin
+
+         _showInventoryPlugin: Show Inventory Plugin
+
+         _widgetofInventoryoption: Widget of Inventory Option
+
+         ListUnApprovedConsumptionActionService: Show List of Un-approve "Inventory Consumption" Widget tab of Inventory Option
+         ListUnApprovedInFromSupplierActionService: Show List of Un-approve "Inventory In" From Supplier Widget tab of Inventory Option
+         ListUnApprovedInventoryOutActionService: Show List of Un-approve "Inventory Out" Widget tab of Inventory Option
+         ListUnApprovedInFromInventoryActionService: Show List of Un-approve "Inventory In" From another Inventory Widget tab of Inventory Option
+         SendMailForInventoryTransactionActionService: Send Mail with attachment of "All Un-approved Inventory Transaction" PDF Report
+
+
+         ShowForInventoryInFromSupplierActionService: Show Group of "Inventory In" From Supplier Landing Page
+         ListForInventoryInFromSupplierActionService: Show Group List of "Inventory In" From Supplier in Landing Page
+         GetPurchaseOrderActionService: Populate "Purchase Order" List in drop-down
+         CreateForInventoryInFromSupplierActionService: Create Group of "Inventory In" From Supplier
+         SelectForInventoryInFromSupplierActionService: Open Group of "Inventory In" From Supplier in Edit Mode
+         UpdateForInventoryInFromSupplierActionService: Update Group of "Inventory In" From Supplier
+         SearchForInventoryInFromSupplierActionService: Search Group of "Inventory In" From Supplier From Grid View
+         DeleteForInventoryInFromSupplierActionService: Delete Group of "Inventory In" From Supplier
+
+
+
+         ShowForUnapprovedInvInFromSupplierActionService: Show Landing Page of Un-approve "Inventory in" From Supplier
+         ListForUnapprovedInvInFromSupplierActionService: Show List of Un-approved "Inventory in" From Supplier in Landing Page
+         GetDropDownInventoryItemTagLibActionService: Populate "Item" List in drop-down for "Inventory in" From Supplier
+         CreateForInventoryInDetailsFromSupplierActionService: Create Un-approved "Inventory in" From Supplier
+         SelectForInventoryInDetailsFromSupplierActionService: Open Un-approved "Inventory in" From Supplier in Edit Mode
+         UpdateForInventoryInDetailsFromSupplierActionService: Update Un-approved "Inventory in" From Supplier
+         SearchForUnapprovedInvInFromSupplierActionService: Search Un-approved "Inventory in" From Supplier From Grid View
+         DeleteForInventoryInDetailsFromSupplierActionService: Delete Un-approved "Inventory in" From Supplier
+         ApproveForInventoryInDetailsFromSupplierActionService: Approve Un-approved "Inventory in" From Supplier
+
+         ShowForApprovedInvInFromSupplierActionService: Show Landing Page of Approved "Inventory in" From Supplier
+         ListForApprovedInvInFromSupplierActionService: Show List of Approved "Inventory in" From Supplier in Landing Page
+         _detailsApprovedItemofSupplier: Open Approved "Inventory in" From Supplier in Read Only Mode
+         _adjustmentInventoryinFromSupplierItem: Open Approved "Inventory in" From Supplier in Edit Mode
+         AdjustForInvInFromSupplierActionService: Update Approved "Inventory in" From Supplier
+         _reverseInventoryinFromSupplierApproveItems: Open Approved "Inventory in" From Supplier to Delete
+         ReverseAdjustForInvInFromSupplierActionService: Delete Approved "Inventory in" From Supplier
+         SearchForApprovedInvInFromSupplierActionService: Search Approved "Inventory in" From Supplier From Grid View
+
+
+         ShowForInventoryOutActionService: Show Group of "Inventory Out" Landing Page
+         ListForInventoryOutActionService: Show Group List of "Inventory Out" in Landing Page
+         GetAllInventoryListByInventoryTypeActionService: Populate All "Inventory Name" List in drop-down
+         CreateForInventoryOutActionService: Create Group of "Inventory Out"
+         SelectForInventoryOutActionService: Open Group of "Inventory Out" in Edit Mode
+         UpdateForInventoryOutActionService: Update Group of "Inventory Out"
+         SearchForInventoryOutActionService: Search Group of "Inventory Out"
+         DeleteForInventoryOutActionService: Delete Group of "Inventory Out"
+
+
+
+         ShowForUnApprovedInventoryOutDetailsActionService: Show Landing Page of Un-Approved "Inventory Out"
+         ListForUnApprovedInventoryOutDetailsActionService: Show List of Un-Approved "Inventory Out" in Landing Page
+         GetDropDownInventoryOutItemTagLibActionService: Populate Item List in drop-down for Un-approve "Inventory Out"
+         CreateForInventoryOutDetailsActionService: Create Un-Approved "Inventory Out"
+         SelectForInventoryOutDetailsActionService: Open Un-Approved "Inventory Out" in Edit Mode
+         UpdateForInventoryOutDetailsActionService: Update Un-Approved "Inventory Out"
+         SearchForUnApprovedInventoryOutDetailsActionService: Search Un-Approved "Inventory Out" From Grid View
+         DeleteForInventoryOutDetailsActionService: Delete Un-Approved "Inventory Out"
+         ApproveForInventoryOutDetailsActionService: Approve Un-Approved "Inventory Out"
+
+         ShowForApprovedInventoryOutDetailsActionService: Show Landing Page of Approved "Inventory Out"
+         ListForApprovedInventoryOutDetailsActionService: Show List of Approved "Inventory Out" in Landing Page
+         _detailsApprovedItemofInventoryOut: Open Approved "Inventory Out" in Read Only Mode
+         _adjustmentItemFromInventoryOut: Open Approved "Inventory Out" in Edit Mode
+         AdjustmentForInvOutActionService: Update Approved "Inventory Out"
+         _reverseInventoryItemsFromInventoryOut: Open Approved "Inventory Out" to Delete
+         ReverseAdjustForInvOutActionService: Delete Approved "Inventory Out"
+         SearchForApprovedInventoryOutDetailsActionService: Search Approved "Inventory Out" From Grid View
+
+
+         ShowForInventoryInFromInventoryActionService: Show Group of "Inventory In" From Another Inventory
+         ListForInventoryInFromInventoryActionService: Show Group List of "Inventory In" From Another Inventory in Landing Page
+         GetForInvListOfTransactionOutActionService: Populate "From Inventory" List in drop-down
+         GetForInvTransactionListActionService: Populate "Transferred Date" List in drop-down
+         CreateForInventoryInFromInventoryActionService: Create Group of "Inventory In" From Another Inventory
+         SelectForInventoryInFromInventoryActionService: Open Group of "Inventory In" From Another Inventory in Edit Mode
+         UpdateForInventoryInFromInventoryActionService: Update Group of "Inventory In" From Another Inventory
+         SearchForInventoryInFromInventoryActionService: Search Group of "Inventory In" From Another Inventory From Grid View
+         DeleteForInventoryInFromInventoryActionService: Delete Group of "Inventory In" From Another Inventory
+
+
+         ShowForUnapprovedInvInFromInventoryActionService: Show Landing Page of Un-approved "Inventory In" From Another Inventory
+         ListForUnapprovedInvInFromInventoryActionService: Show List of Un-approved "Inventory In" From Another Inventory in Landing Page
+         GetDropDownInventoryItemInFromInventoryTagLibActionService: Populate "Item" List in drop-down for Un-approve "Inventory In" From Another Inventory
+         CreateForInventoryInDetailsFromInventoryActionService: Create Un-approved "Inventory In" From Another Inventory
+         SelectForInventoryInDetailsFromInventoryActionService: Open Un-approved "Inventory In" From Another Inventory in Edit Mode
+         UpdateForInventoryInDetailsFromInventoryActionService: Update Un-approved "Inventory In" From Another Inventory
+         SearchForUnapprovedInvInFromInventoryActionService: Search Un-approved "Inventory In" From Another Inventory From Grid View
+         DeleteForInventoryInDetailsFromInventoryActionService: Delete Un-approved "Inventory In" From Another Inventory
+         ApproveForInvInDetailsFromInventoryActionService: Approve Un-approved "Inventory In" From Another Inventory
+
+         ShowForApprovedInvInFromInventoryActionService: Show Landing Page of Approved "Inventory In" From Another Inventory
+         ListForApprovedInvInFromInventoryActionService: Show List of Approved "Inventory In" From another Inventory in Landing Page
+         _detailsApprovedItemofInvinFromInvOut: Open Approved "Inventory In" From Another Inventory Out in Read Only Mode
+         _reverseInventoryinFromInventoryOutApproveItems: Open Approved "Inventory In" From Another Inventory to Delete
+         ReverseAdjustForInvInFromInventoryActionService: Delete Approved "Inventory In" From another Inventory
+         SearchForApprovedInvInFromInventoryActionService: Search Approved "Inventory In" From another Inventory From Grid View
+
+
+         ShowForInventoryConsumptionActionService: Show Group of "Inventory Consumption" Landing Page
+         ListForInventoryConsumptionActionService: Show Group List of "Inventory Consumption" in Landing Page
+         _selectBudgetLineItemFromRightPanel: Select "Budget Line Item" From Right Panel
+         SearchBudgetGridByInventoryActionService: Search "Budget Line Item" Right Panel
+         CreateForInventoryConsumptionActionService: Create Group of "Inventory Consumption"
+         SelectForInventoryConsumptionActionService: Open Group of "Inventory Consumption" in Edit Mode
+         UpdateForInventoryConsumptionActionService: Update Group of "Inventory Consumption"
+         SearchForInventoryConsumptionActionService: Search Group of "Inventory Consumption" From Grid View
+         DeleteForInventoryConsumptionActionService: Delete Group of "Inventory Consumption"
+
+
+         ShowForUnApprovedInventoryConsumptionDetailsActionService: Show Landing Page of Un-Approved "Inventory Consumption"
+         ListForUnApprovedInventoryConsumptionDetailsActionService: Show List of Un-Approved "Inventory Consumption" in Landing Page
+         GetDropDownInventoryConsumptionItemTagLibActionService: Populate "Item" List in drop-down for Un-approved "Inventory Consumption"
+         GetFixedAssetListByInventoryIdActionService: Populate "Fixed Asset" List in drop-down
+         GetFixedAssetListByInventoryIdAndItemIdActionService: Populate "Fixed Asset Details" List in drop-down
+         CreateForInventoryConsumptionDetailsActionService: Create Un-Approved "Inventory Consumption"
+         _sendmailforinventoryconsumption: Send Mail to Approve Inventory Consumption
+         SelectForInventoryConsumptionDetailsActionService: Open Un-Approved "Inventory Consumption" in Edit Mode
+         UpdateForInventoryConsumptionDetailsActionService: Update Un-Approved "Inventory Consumption"
+         SearchForUnApprovedInventoryConsumptionDetailsActionService: Search Un-Approved "Inventory Consumption" From Grid View
+         DeleteForInventoryConsumptionDetailsActionService: Delete Un-Approved "Inventory Consumption"
+         ApproveForInventoryConsumptionDetailsActionService: Approve Un-Approved "Inventory Consumption"
+
+
+         ShowForApprovedInventoryConsumptionDetailsActionService: Show Landing Page of Approved "Inventory Consumption"
+         ListForApprovedInventoryConsumptionDetailsActionService: Show List of Approved "Inventory Consumption" in Landing Page
+         _detailsApprovedItemofInventoryConsumption: Open Approved "Inventory Consumption" in Read Only Mode
+         _adjustmentInventoryConsumptionItem: Open Approved "Inventory Consumption" in Edit Mode
+         AdjustmentForInvConsumptionActionService: Update Approved "Inventory Consumption"
+         _reverseInventoryConsumptionApproveItems: Open Approved "Inventory Consumption" to Delete
+         ReverseAdjustmentForInvConsumptionActionService: Delete Approved "Inventory Consumption"
+         SearchForApprovedInventoryConsumptionDetailsActionService: Search Approved "Inventory Consumption" From Grid View
+
+
+         ShowForInvProductionWithConsumptionActionService: Show Landing Page of Un-Approved "Inventory Production"
+         ListForInvProductionWithConsumptionActionService: Show List of Un-Approved "Inventory Production" in Landing Page
+         GetInventoryListIsFactoryByInvTypeActionService: Populate "Inventory" List for "Inventory Production"
+         GetBothMaterialsForLineItemActionService: Populate "Material(Raw,Finish)" List in drop-down
+         GetDropDownInventoryProductionLineItemTagLibActionService: Populate All "Production Line Item" List in drop-down
+         CreateForInvProductionWithConsumptionActionService: Create Un-Approved "Inventory Production"
+         SelectForInvProductionWithConsumptionActionService: Open Un-Approved "Inventory Production" in Edit Mode
+         UpdateForInvProductionWithConsumptionActionService: Update Un-Approved "Inventory Production"
+         SearchForInvProductionWithConsumptionActionService: Search Un-Approved "Inventory Production" From Grid View
+         DeleteForInvProductionWithConsumptionActionService: Delete Un-Approved "Inventory Production"
+         ApproveForInvProductionWithConsumptionActionService: Approve Un-Approved "Inventory Production"
+
+         ShowForApprovedProductionWithConsumptionActionService: Show Landing Page of Approved "Inventory Production"
+         ListForApprovedProductionWithConsumptionActionService: Show List of Approved "Inventory Production" in Landing Page
+         _detailsApprovedItemofProduction: Open Approved "Inventory Production" in Read Only Mode
+         _adjustmentApprovedProduction: Open Approved "Inventory Production" in Edit Mode
+         AdjustForInvProductionWithConsumptionActionService: Update Approved "Inventory Production"
+         _reverseApprovedProduction: Open Approved "Inventory Production" to Delete
+         ReverseAdjustmentForInvProdWithConsumpActionService: Delete Approved "Inventory Production"
+         SearchForApprovedProductionWithConsumptionActionService: Search Approved "Inventory Production" From Grid View
+
+
+         ShowForInvoiceActionService: Show Landing Page of "Chalan" Report
+         SearchForInvoiceActionService: Generate "Chalan" Report
+         DownloadForInvoiceActionService: Download "Chalan" Report in PDF Format
+
+
+         InvShowForSupplierChalanActionService: Show Landing Page of "Supplier Chalan" Report
+         InvListForSupplierChalanActionService: Generate "Supplier Chalan" Report in HTML Format
+         DownloadForInventorySupplierchalanActionService: Download "Supplier Chalan" Report in PDF Format
+         DownloadForInventorySupplierchalanCsvActionService: Download "Supplier Chalan" Report in CSV Format
+         AcknowledgeInvoiceFromSupplierActionService: Acknowledge "Supplier Chalan" Report
+
+
+         ShowForInventoryStockActionService: Show Landing Page of "Inventory Stock" Report
+         ListForInventoryStockActionService: Generate "Inventory Stock" Report in HTML Format
+         DownloadForInventoryStockActionService: Download "Inventory Stock" Report in PDF Format
+         DownloadForInventoryStockCsvActionService: Download "Inventory Stock" Report in CSV Format
+
+
+         ShowForInventoryStatusWithValueActionService: Show Landing Page of "Inventory Status With Value" Report
+         ListForInventoryStatusWithValueActionService: Generate "Inventory Status With Value" Report in HTML Format
+         DownloadForInventoryStatusWithValueActionService: Download "Inventory Status With Value" Report in PDF Format
+         DownloadForInventoryStatusWithValueCsvActionService: Download "Inventory Status With Value" Report in CSV Format
+
+
+         ShowForInventoryStatusWithQuantityActionService: Show Landing Page of "Inventory Status With Quantity" Report
+         ListForInventoryStatusWithQuantityActionService: Generate "Inventory Status With Quantity" Report in HTML Format
+         DownloadForInventoryStatusWithQuantityActionService: Download "Inventory Status With Quantity" Report in PDF Format
+         DownloadForInventoryStatusWithQuantityCsvActionService: Download "Inventory Status With Quantity" Report in CSV Format
+
+
+         ShowForInventoryStatusWithQuantityAndValueActionService: Show Landing Page of "Inventory Status With Value and Quantity" Report
+         ListForInventoryStatusWithQuantityAndValueActionService: Generate "Inventory Status With Value and Quantity" Report in HTML Format
+         DownloadForInventoryStatusWithQuantityAndValueActionService: Download "Inventory Status With Value and Quantity" Report in PDF Format
+         DownloadForInventoryStatusWithQuantityAndValueCsvActionService: Download "Inventory Status With Value and Quantity" Report in CSV Format
+
+
+         ShowForItemReconciliationActionService: Show Landing Page of "Item Reconciliation" Report
+         ListForItemReconciliationActionService: Generate "Item Reconciliation" Report in HTML Format
+         DownloadForItemReconciliationActionService: Download "Item Reconciliation" Report in PDF Format
+         DownloadForItemReconciliationCsvActionService: Download "Item Reconciliation" Report in CSV Format
+
+
+         ShowForInventorySummaryActionService: Show Landing Page of "Inventory Summary" Report
+         GetInventoryListByInvTypeAndProjectActionService: Populate Inventory List by Inventory Type and Project
+         GetInventoryListByInventoryTypeActionService: Populate Inventory Name List
+         GetForInventorySummaryActionService: Generate "Inventory Summary" Report in HTML Format
+         DownloadForInventorySummaryActionService: Download "Inventory Summary" Report in PDF Format
+         DownloadForInventorySummaryCsvActionService: Download "Inventory Summary" Report in CSV Format
+
+
+         ShowForInventoryTransactionListActionService: Show Landing Page of "Inventory Transaction" Report
+         populateTransactionTypeList: Populate "Transaction Type" List in drop-down
+         SearchForInventoryTransactionListActionService: Generate "Inventory Transaction" Report in HTML Format
+         DownloadForInventoryTransactionListActionService: Download "Inventory Transaction" Report in PDF Format
+         DownloadForInventoryTransactionListCsvActionService: Download "Inventory Transaction" Report in CSV Format
+
+
+         ShowForInventoryValuationActionService: Show Landing Page of "Inventory Valuation" Report
+         SearchForInventoryValuationActionService: Generate "Inventory Valuation" Report in HTML Format
+         DownloadForInventoryValuationActionService: Download "Inventory Valuation" Report in PDF Format
+         DownloadForInventoryValuationCsvActionService: Download "Inventory Valuation" Report in CSV Format
+
+
+         ShowForConsumedItemListActionService: Show Landing Page of "Consumption" Report
+         ListForBudgetOfConsumptionActionService: Generate "Consumption" Report in HTML Format
+         DownloadForConsumedItemListActionService: Download "Consumption" Report in PDF Format
+
+
+         ShowForItemStockListActionService: Show Landing Page of "Item Stock" Report
+         SearchForItemStockListActionService: Generate "Item Stock" List in HTML Format
+         GetForStockDetailsListByItemIdActionService: Show "Stock Details" by Select Item
+
+
+         ShowForItemReceivedStockActionService: Show Landing Page of "Item Received" Report
+         SearchForItemReceivedStockActionService: Generate "Item received" Report in HTML Format
+         DownloadForItemReceivedStockActionService: Download "Item Received" Report in PDF Format
+         DownloadForItemReceivedStockCsvActionService: Download "Item Received" Report in CSV Format
+         DownloadForGroupByItemReceivedStockActionService: Download "Item Received" Report Group By Supplier in PDF Format
+
+         ShowForItemWiseBudgetSummaryActionService: Show Landing Page of "Item Wise Budget Summary" Report
+         ListForItemWiseBudgetSummaryActionService: Generate "Item Wise Budget Summary" Report in HTML Format
+         DownloadForItemWiseBudgetSummaryActionService: Download "Item Wise Budget Summary" Report in PDF Format
+         DownloadForItemWiseBudgetSummaryCsvActionService: Download "Item Wise Budget Summary" Report in CSV Format
+
+
+         ShowForInventoryProductionActionService: Show Landing Page of "Inventory Production" Report
+         SearchForInventoryProductionActionService: Generate "Inventory Production" Report in HTML Format
+         DownloadForInventoryProductionActionService: Download "Inventory Production" Report in PDF Format
+
+
+         InvShowForPoItemReceivedActionService: Show Landing Page of "PO Item Received" Report
+         InvListForPoItemReceivedActionService: Generate "PO Item Received" Report in HTML Format
+         InvDownloadForPoItemReceivedActionService: Download "PO Item Received" Report in PDF Format
+         InvDownloadForPoItemReceivedCsvActionService: Download "PO Item Received" Report in CSV Format
+
+         _showReCalculateValuation: Show "ReCalculateValuation"
+         RecalculateAllInvInventoryValuationActionService: Re-Calculate All Inventory Item Valuation
+
+         ShowInvInventoryActionService: Show Landing Page of "Inventory"
+         ListInvInventoryActionService: Show List of "Inventory" in Landing Page
+         CreateInvInventoryActionService: Create "Inventory"
+         SelectInvInventoryActionService: Open "Inventory" in Edit Mode
+         UpdateInvInventoryActionService: Update "Inventory"
+         SearchInvInventoryActionService: Search "Inventory" From Grid View
+         DeleteInvInventoryActionService: Delete "Inventory"
+
+         ShowInvUserInventoryActionService: Show Landing Page of "User Inventory Mapping"
+         ListInvUserInventoryActionService: Show List of "User Inventory Mapping" in Landing Page
+         CreateInvUserInventoryActionService: Create "User Inventory Mapping"
+         SelectInvUserInventoryActionService: Open "User Inventory Mapping" in Edit Mode
+         UpdateInvUserInventoryActionService: Update "User Inventory Mapping"
+         SearchInvUserInventoryActionService: Search "User Inventory Mapping" From Grid View
+         DeleteInvUserInventoryActionService: Delete "User Inventory Mapping"
+
+
+         ShowInvProductionLineItemActionService: Show Landing Page of "Production Line Item"
+         ListInvProductionLineItemActionService: Show List of "Production Line Item" in Landing Page
+         CreateInvProductionLineItemActionService: Create "Production Line Item"
+         SelectInvProductionLineItemActionService: Open "Production Line Item" in Edit Mode
+         UpdateInvProductionLineItemActionService: Update "Production Line Item"
+         SearchInvProductionLineItemActionService: Search "Production Line Item" From Grid View
+         DeleteInvProductionLineItemActionService: Delete "Production Line Item"
+
+
+         ShowInvProductionDetailsActionService: Show Item of "Production Line Item" in Landing Page
+         ListInvProductionDetailsActionService: Show Item List of "Production Line Item" in Landing Page
+         populateProductionItemTypeList: Populate "Production Item Type" in Drop Down List
+         _populateMaterialList: Populate "Material" list
+         CreateInvProductionDetailsActionService: Add Item in "Production Line Item"
+         SelectInvProductionDetailsActionService: Open Item of "Production Line Item" in Edit Mode
+         UpdateInvProductionDetailsActionService: Update Item of "Production Line Item"
+         SearchInvProductionDetailsActionService: Search Item of "Production Line Item" From Grid View
+         DeleteInvProductionDetailsActionService: Delete Item of "Production Line Item"
+
+
+         ShowInvModifyOverheadCostActionService: Show Landing Page of "Modify Production Overhead Cost"
+         GetInvProdFinishedMaterialByLineItemIdActionService: Populate Finish Product List to Modify Overhead Cost
+         SearchInvModifyOverheadCostActionService: Search "Modify Production Overhead Cost"
+         UpdateInvModifyOverheadCostActionService: Change "Modify Production Overhead Cost"
+
+
+procurement:
+         title: Procurement Plugin
+
+         _showProcurementPlugin: Show Procurement Plugin
+         _widgetofprocurement: Widget of "Procurement" Plugin
+
+
+         ListUnApprovedPurchaseOrderActionService: Show List of Un-Approved "PO" Widget tab of Procurement Option
+         ApprovePOForDashBoardActionService: Approve Un-Approved "PO" from Widget Grid View
+
+
+         ListUnApprovedPurchaseRequestActionService: Show List of Un-Approved "PR" Widget tab of Procurement Option
+         ApprovePRForDashBoardActionService: Approve Un-Approved "PR" from Widget Grid View
+
+
+         ListUnApprovedIndentActionService: Show List of Un-Approved "Indent" Widget tab of Procurement Option
+         ApproveIndentForDashBoardActionService: Approve Un-Approved "Indent" from Widget Grid View
+
+
+         GetPOStatusForDashBoardActionService: PO Status Widget tab of Procurement Option
+
+
+
+         ShowPurchaseRequestActionService: Show Landing Page of "Purchase Request"
+         ListPurchaseRequestActionService: Show List of "Purchase Request" in Landing Page
+         GetBudgetInfoForPRActionService: Add "Budget Line Item" to Create "Purchase Request"
+         GetBudgetGridListByProjectActionService: List of "Budget Line Item" to Create "Purchase Request"
+         CreatePurchaseRequestActionService: Create "Purchase Request"
+         SelectPurchaseRequestActionService: Open "Purchase Request" in Edit Mode
+         UpdatePurchaseRequestActionService: Update "Purchase Request"
+         SearchPurchaseRequestActionService: Search "Purchase Request" From Grid View
+         DeletePurchaseRequestActionService: Delete "Purchase Request"
+
+
+         ShowPurchaseRequestDetailsActionService: Show Item of "Purchase Request" Landing Page
+         ListPurchaseRequestDetailsActionService: Show Item List of "Purchase Request" in Landing Page
+         getItemListForPRDetailsActionService: Populate Item list to add in "Purchase Request"
+         CreatePurchaseRequestDetailsActionService: Create Item in "Purchase Request"
+         SelectPurchaseRequestDetailsActionService: Open Item of "Purchase Request" in Edit Mode
+         UpdatePurchaseRequestDetailsActionService: Update Item of "Purchase Request"
+         SearchPurchaseRequestDetailsActionService: Search Item of "Purchase Request" From Grid View
+         DeletePurchaseRequestDetailsActionService: Delete Item of "Purchase Request"
+
+         SentMailPurchaseRequestActionService: Send "Purchase Request" For Approval
+         ApprovepurchaseRequestActionService: Approve "Purchase Request"
+         UnApprovePurchaseRequestActionService: Make "Purchase Request" in Editable Mode
+
+
+         ShowPurchaseOrderActionService: Show Landing Page of "Purchase Order"
+         ListPurchaseOrderActionService: Show List of "Purchase Order" in Landing Page
+         populatepaymentmethodlist: Populate "Payment Method" List to Create "Purchase Order"
+         CreatePurchaseOrderActionService: Create "Purchase Order"
+         SelectPurchaseOrderActionService: Open "Purchase Order" in Edit Mode
+         UpdatePurchaseOrderActionService: Update "Purchase Order"
+         SearchPurchaseOrderActionService: Search "Purchase Order" From Grid View
+
+
+         ShowPurchaseOrderDetailsActionService: Show "Item of Purchase Order" Landing Page
+         ListPurchaseOrderDetailsActionService: Show Item List of "Purchase Order" in Landing Page
+         GetForItemListForPurchaseOrderDetailsActionService: Get Item List for "Purchase Order"
+         CreatePurchaseOrderDetailsActionService: Create Item in "Purchase Order"
+         SelectPurchaseOrderDetailsActionService: Open Item of "Purchase Order" in Edit Mode
+         UpdatePurchaseOrderDetailsActionService: Update Item of "Purchase Order"
+         SearchPurchaseOrderDetailsActionService: Search Item of "Purchase Order" From Grid View
+         DeletePurchaseOrderDetailsActionService: Delete Item of "Purchase Order"
+
+
+         ShowTransportCostActionService: Show Landing Page of "Transport Cost"
+         ListTransportCostActionService: Show List of "Transport Cost" in Landing Page
+         CreateTransportCostActionService: Create "Transport Cost"
+         SelectTransportCostActionService: Open "Transport Cost" in Edit Mode
+         UpdateTransportCostActionService: Update "Transport Cost"
+         DeleteTransportCostActionService: Delete "Transport Cost"
+
+
+         ShowProcTermsAndConditionActionService: Show Landing Page of "Terms and Condition"
+         ListProcTermsAndConditionActionService: Show List of "Terms and Condition" in Landing Page
+         CreateProcTermsAndConditionActionService: Create "Terms and Condition"
+         SelectProcTermsAndConditionActionService: Open "Terms and Condition" in Edit Mode
+         UpdateProcTermsAndConditionActionService: Update "Terms and Condition"
+         DeleteProcTermsAndConditionActionService: Delete "Terms and Condition"
+
+
+         SendForApprovalPurchaseOrderActionService: Send "Purchase Order" For Approval
+         ApprovePurchaseOrderActionService: Approve "Purchase Order"
+         UnApprovePurchaseOrderActionService: Make "Purchase Order" in Editable Mode
+         CancelPurchaseOrderActionService: Cancel "Purchase Order"
+
+
+         ShowIndentActionService: Show Landing Page of "Indent"
+         ListIndentActionService: Show List of "Indent" in Landing Page
+         CreateIndentActionService: Create "Indent"
+         SelectIndentActionService: Open "Indent" in Edit Mode
+         UpdateIndentActionService: Update "Indent"
+         SearchIndentActionService: Search "Indent" From Grid View
+         DeleteIndentActionService: Delete "Indent"
+
+         _SendEmailforIndent: Send E-Mail to approve "Indent"
+
+
+         ShowIndentDetailsActionService: Show Item of "Indent" Landing Page
+         ListIndentDetailsActionService: Show Item List of "Indent" in Landing Page
+         CreateIndentDetailsActionService: Create Item of "Indent"
+         SelectIndentDetailsActionService: Open Item of "Indent" in Edit Mode
+         UpdateIndentDetailsActionService: Update Item of "Indent"
+         SearchIndentDetailsActionService: Search Item of "Indent" From Grid View
+         DeleteIndentDetailsActionService: Delete Item of "Indent"
+
+         ApproveIndentActionService: Approve "Indent"
+
+
+         ShowForPurchaseRequestActionService: Show Landing Page of "Purchase Request" Report
+         SearchForPurchaseRequestActionService: Generate "Purchase Request" Report in HTML Format
+         DownloadForPurchaseRequestActionService: Download "Purchase Request" PDF Report
+
+
+         ShowForPurchaseOrderActionService: Show Landing Page of "Purchase Order" Report
+         SearchForPurchaseOrderActionService: Generate "Purchase Order" Report in HTML Format
+         DownloadForPurchaseOrderActionService: Download "Purchase Order" Report
+
+
+         ShowForIndentActionService: Show Landing Page of "Indent" Report
+         SearchForIndentActionService: Generate "Indent" Report in HTML Format
+         DownloadIndentReportActionService: Download "Indent" Report
+
+
+
+
+         ShowForSupplierWisePOActionService: Show Landing Page of "Supplier Wise PO" Report
+         GetSupplierListActionService: Get all "Supplier" List in Right Panel
+         ListForSupplierWisePOActionService: Generate "Supplier Wise PO" Report in HTML Format
+         DownloadForSupplierWisePOActionService: Download "Supplier Wise PO" PDF Report
+         DownloadForSupplierWisePOCsvActionService: Download "Supplier Wise PO" CSV Report
+
+
+budget:
+         title: Budget Plugin
+
+
+         ShowBudgetActionService: Show Landing Page of Budget Line Item
+         CreateBudgetActionService: Create Budget Line Item
+         SelectBudgetActionService: Open Budget Line Item In Edit Mode
+         UpdateBudgetActionService: Update Budget Line Item
+         ListBudgetActionService: List Budget Line Item
+         SearchBudgetActionService: Search Budget Line Item From Grid View
+         DeleteBudgetActionService: Delete Budget Line Item
+
+         showPurchaseRequestFromBudgetLineItemGridView: Show Purchase Request From Budget Line Item Grid View
+         showBudgetReportFromBudgetGridView: Show Budget report from Budget Grid View
+         GetForItemListForBudgetDetailsActionService: Populate Item List to Create Budget details
+
+         ShowBudgetDetailsActionService: Show Landing Page of Budget Line Item Details
+         addItemsInBudgetLineItem: Add Items in Budget Line Item
+         openBudgetLineItemDetailsInEditMode: Open Budget Line Item Details in Edit Mode
+         updateBudgetLineItemDetails: Update Budget Line Item Details
+         listBudgetLineItemDetails: List Budget Line Item Details
+         searchBudgetLineItemDetails: Search Budget Line Item Details From Grid View
+         deleteBudgetLineItemDetails: Delete Budget Line Item Details
+
+         showBudgetType: Show Landing Page of Budget Type
+         createBudgetType: Create Budget Type
+         openBudgetTypeInEditMode: Open Budget Type in Edit Mode
+         updateBudgetType: Update Budget Type
+         listBudgetType: List Budget Type
+         searchBudgetType: Search Budget Type From Grid View
+         deleteBudgetType: Delete Budget Type
+
+         showProjectBudgetType: Show Landing Page of Project Budget Type
+         searchProjectBudgetType: Search Project Budget Type
+         saveProjectBudgetType: Save Project Budget Type
+         discardChangesProjectBudgetType: Discard Changes Project Budget Type
+         addBudgetTypeToAssignBudgetType: Add Budget Type to Assign Budget Type
+         removeBudgetTypeToAvailableBudgetType: Remove Budget Type to Available Budget Type
+         addAllBudgetTypeFromAvailableBudgetTypeToAssignBudgetType: Add All Budget Type From Available Budget Type to Assign Budget Type
+         removeAllBudgetTypeFromAssignBudgetTypeToAvailableBudgetType: Remove All Budget Type From Assign Budget Type to Available Budget Type
+
+         showBudgetLineItemReport: Show Landing Page of Budget Line Item Report
+         searchBudgetLineItemReport: Search Budget Line Item Report
+         downloadBudgetLineItemReport: Download Budget Line Item Report
+
+         showBudgetWisePOSummaryReport: Show Landing Page of Budget Wise PO Summary Report
+         searchBudgetWisePOSummaryReport: Search Budget Wise PO Summary Report
+         listBudgetWisePOSummaryReport: List Budget Wise PO Summary Report
+         downloadBudgetWisePOSummaryReport: Download Budget Wise PO Summary Report
+         downloadBudgetWisePOSummaryCSVReport: Download Budget Wise PO Summary CSV Report
+
+
+         showProjectStatusReport: Show Landing Page of Project Status Report
+         searchProjectStatusReport: Search Project Status Report
+         downloadProjectStatusReport: Download Project Status Report
+
+         showConsumptionDeviationReport: Show Landing Page of Consumption Deviation Report
+         searchConsumptionDeviationReport: Search Consumption Deviation Report
+         listConsumptionDeviationReport: List Consumption Deviation Report
+         downloadConsumptionDeviationReport: Download Consumption Deviation Report
+         downloadConsumptionDeviationCSVReport: Download Consumption Deviation CSV Report
+
+         showBudgetDashboard: Show Budget Status Dashboard
+         listBudgetDashboard: List Budget Status Dashboard
+
+
+fixedAsset:
+         title: Fixed Asset Plugin
+
+         _ShowFixedAssetPlugin: Show Fixed Asset Plugin
+
+
+         FxdShowFxdMaintenanceTypeActionService: Show Landing Page of "Maintenance Type"
+         FxdCreateFxdMaintenanceTypeActionService: Create "Maintenance Type"
+         FxdSelectFxdMaintenanceTypeActionService: Open "Maintenance Type" in Edit Mode
+         FxdUpdateFxdMaintenanceTypeActionService: Update "Maintenance Type"
+         FxdListFxdMaintenanceTypeActionService: List "Maintenance Type"
+         FxdSearchFxdMaintenanceTypeActionService: Search "Maintenance Type" From Grid View
+         FxdDeleteFxdMaintenanceTypeActionService: Delete "Maintenance Type"
+
+         FxdShowCategoryMaintenanceTypeActionService: Show Landing Page of "Category-Maintenance Type Mapping"
+         _PopulateMaintenanceTypeList: Populate "Maintenance Type" List to Create "Category-Maintenance Type Mapping"
+         _PopulateCategoryList: Populate "Category" List to Create "Category-Maintenance Type Mapping"
+         FxdCreateCategoryMaintenanceTypeActionService: Create "Category-Maintenance Type Mapping"
+         FxdSelectCategoryMaintenanceTypeActionService: Open "Category-Maintenance Type Mapping" in Edit Mode
+         FxdUpdateCategoryMaintenanceTypeActionService: Update "Category-Maintenance Type Mapping"
+         FxdListCategoryMaintenanceTypeActionService: List "Category-Maintenance Type Mapping"
+         FxdSearchCategoryMaintenanceTypeActionService: Search "Category-Maintenance Type Mapping" From Grid View
+         FxdDeleteCategoryMaintenanceTypeActionService: Delete "Category-Maintenance Type Mapping"
+
+         ShowItemCategoryFixedAssetActionService: Show Landing Page of "Fixed Asset Item"
+         CreateItemCategoryFixedAssetActionService: Create "Fixed Asset Item"
+         _SelectItemCategoryFixedAssetActionService: Open "Fixed Asset Item" in Edit Mode
+         UpdateItemCategoryFixedAssetActionService: Update "Fixed Asset Item"
+         ListItemCategoryFixedAssetActionService: List "Fixed Asset Item"
+         SearchItemCategoryFixedAssetActionService: Search "Fixed Asset Item" From Grid View
+         DeleteItemCategoryFixedAssetActionService: Delete "Fixed Asset Item"
+
+
+
+
+         populatePOListtoCreateFixedAssetDetails: Populate PO list to create Fixed asset details
+         populateCategoryListBySelectPurchaseOrder: Populate Category list by select Purchase Order
+         populateInventoryListBySelectInventoryType: Populate Inventory list by select Inventory Type
+
+         showFixedAssetDetails: Show Landing Page of Fixed Asset Details
+         createFixedAssetDetails: Create Fixed Asset Details
+         openFixedAssetDetailsinEditMode: Open Fixed Asset Details in Edit Mode
+         updateFixedAssetDetails: Update Fixed Asset Details
+         listFixedAssetDetails: List Fixed Asset Details
+         searchFixedAssetDetails: Search Fixed Asset Details From Grid View
+         deleteFixedAssetDetails: Delete Fixed Asset Details
+
+         showMaintenancePageFromFixedAssetDetailsGridView: Show Maintenance Page From Fixed Asset Details Grid View
+
+         showFixedAssetMaintenance: Show Landing Page of Fixed Asset Maintenance
+         createFixedAssetMaintenance: Create Fixed Asset Maintenance
+         openFixedAssetMaintenanceinEditMode: Open Fixed Asset Maintenance in Edit Mode
+         updateFixedAssetMaintenance: Update Fixed Asset Maintenance
+         listFixedAssetMaintenance: List Fixed Asset Maintenance
+         searchFixedAssetMaintenance: Search Fixed Asset Maintenance From Grid View
+         deleteFixedAssetMaintenance: Delete Fixed Asset Maintenance
+
+         showMoveFixedAsset: Show Landing Page of Move Fixed Asset
+         moveFixedAsset: Move Fixed Asset
+         listMoveFixedAsset: List Move Fixed Asset
+         searchOnMoveFixedAsset: Search On Move Fixed Asset From Grid View
+
+
+         _showConsumptionAgainstAsset: Show Landing Page of Consumption Against Asset Summary Report
+         ListForConsumptionAgainstAssetActionService: Search Consumption Against Asset Summary Report
+         GetForConsumptionAgainstAssetDetailsActionService: List of Consumption Summary Details
+         DownloadForConsumptionAgainstAssetActionService: Download Consumption Against Asset Summary Report
+
+
+         ShowForConsumptionAgainstAssetDetailsActionService: Show Landing Page of Consumption Against Asset Details Report
+         ListForConsumptionAgainstAssetDetailsActionService: Search Consumption Against Asset Details Report
+         DownloadForConsumptionAgainstAssetDetailsActionService: Download Consumption Against Asset Details PDF Report
+         DownloadCSVForConsumptionAgainstAssetDetailsActionService: Download Consumption Against Asset Details CSV Report
+
+
+         _ShowPendingFixedAsset: Show Landing Page of "Pending Fixed Asset" Report
+         ListForPendingFixedAssetActionService: Generate "Pending Fixed Asset" Report in HTML Format
+         DownloadForPendingFixedAssetActionService: Download "Pending Fixed Asset" Report in PDF Format
+
+
+         ShowForCurrentFixedAssetActionService: Show Landing Page of Current Fixed Asset Report
+         ListForCurrentFixedAssetActionService: Search Current Fixed Asset Report
+         SearchForCurrentFixedAssetActionService: List Current Fixed Asset Report
+         DownloadForCurrentFixedAssetActionService: Download Current Fixed Asset PDF Report
+         DownloadForCurrentFixedAssetCsvActionService: Download Current Fixed Asset CSV Report
+
+
+
+
+quantitySurvey:
+         title: Quantity Survey Plugin
+
+
+         addBudget(RightPanel)toCreateQuantitySurvey: Add Budget (Right Panel) to Create Quantity Survey
+         searchBudgetonQSRightPanel: Search Budget on QS Right Panel
+         listofBudgetRightPanelinQS: List of Budget Right Panel in QS
+         showBudgetDetailstoSelectBudgetLineItemFromGridView: Show Budget Details to Select Budget Line Item From Grid View
+
+         showInternalQSMeasurement: Show Landing Page of Internal QS Measurement
+         createInternalQSMeasurement: Create Internal QS Measurement
+         openInternalQSMeasurementinEditMode: Open Internal QS Measurement in Edit Mode
+         updateInternalQSMeasurement: Update Internal QS Measurement
+         listInternalQSMeasurement: List Internal QS Measurement
+         searchInternalQSMeasurement: Search Internal QS Measurement From Grid View
+         deleteInternalQSMeasurement: Delete Internal QS Measurement
+
+         showGovernmentQSMeasurement: Show Landing Page of Government QS Measurement
+         createGovernmentQSMeasurement: Create Government QS Measurement
+         openGovernmentQSMeasurementinEditMode: Open Government QS Measurement in Edit Mode
+         updateGovernmentQSMeasurement: Update Government QS Measurement
+         listGovernmentQSMeasurement: List Government QS Measurement
+         searchGovernmentQSMeasurement: Search Government QS Measurement From Grid View
+         deleteGovernmentQSMeasurement: Delete Government QS Measurement
+
+         showQSMeasurementReport: Show Landing Page of QS Measurement Report
+         searchQSMeasurementReport: Search QS Measurement Report
+         listQSMeasurementReport: List QS Measurement Report
+
+         downloadQSMeasurementReport: Download QS Measurement PDF Report
+         downloadQSMeasurementCSVReport: Download QS Measurement CSV Report
+
+         showBudgetContractDetailsReport: Show Landing Page of Budget Contract Details Report
+         searchBudgetContractDetailsReport: Search Budget Contract Details Report
+         listBudgetContractDetailsReport: List Budget Contract Details Report
+
+         downloadBudgetContractDetailsReport: Download Budget Contract Details PDF Report
+         downloadBudgetContractDetailsCSVReport: Download Budget Contract Details CSV Report
+
+         showBudgetFinancialSummaryReport: Show Landing Page of Budget Financial Summary Report
+         searchBudgetFinancialSummaryReport: Search Budget Financial Summary Report
+         listBudgetFinancialSummaryReport: List Budget Financial Summary Report
+
+         downloadBudgetFinancialSummaryReport: Download Budget Financial Summary PDF Report
+         downloadBudgetFinancialSummaryCSVReport: Download Budget Financial Summary CSV Report
+
+         showBudgetWiseQSReport: Show Landing Page of Budget Wise QS Report
+         searchBudgetWiseQSReport: Search Budget Wise QS Report
+         listBudgetWiseQSReport: List Budget Wise QS Report
+
+         downloadBudgetWiseQSReport: Download Budget Wise QS PDF Report
+         downloadBudgetWiseQSCSVReport: Download Budget Wise QS CSV Report
+
+         showCombinedQSMeasurementReport: Show Landing Page of Combined QS Measurement Report
+         searchCombinedQSMeasurementReport: Search Combined QS Measurement Report
+         listCombinedQSMeasurementReport: List Combined QS Measurement Report
+
+         downloadCombinedQSMeasurementReport: Download Combined QS Measurement PDF Report
+         downloadCombinedQSMeasurementCSVReport: Download Combined QS Measurement CSV Report
+
+         showQSStatusDashboard: Show QS Status Dashboard
+         listQSStatusDashboard: List QS Status Dashboard

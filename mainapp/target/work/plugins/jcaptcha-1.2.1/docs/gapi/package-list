@@ -1,0 +1,5 @@
+DefaultPackage
+grails-app.conf
+grails-app.controllers.grails.plugin.jcaptcha
+grails-app.services.grails.plugin.jcaptcha
+grails-app.taglib.grails.plugin.jcaptcha

@@ -1,0 +1,58 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Update *Production Line Item* | |
+ *ActionService:* | UpdateInvProductionLineItemActionService | *Auditable:* | No
+ *Url:* | /invProductionLineItem/update | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks "[Inventory|guide:_widgetofInventoryoption]" option from top menu bar.
+* Clicks "Settings" sub menu from left menu.
+* Click *Production Line Item* link.
+* [Show Landing Page of "Production Line Item"|guide:ShowInvProductionLineItemActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button.
+* [Open "Production Line Item" in Edit Mode|guide:SelectInvProductionLineItemActionService].
+* User must insert valid input.
+* Click "Update" button.
+* Update *Production Line Item*.
+
+h4. Pre-condition:
+* User must have "Update Production Line Item" privilege.
+* Follow the rules of validation:{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Name | Text Box | Alpha Numeric | Required
+{table}
+
+* Match expected version before updating a *Production Line Item*.
+* Updated *Production Line Item* name must be unique.
+
+h4. Process:
+Update selected *Production Line Item*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Production Line Item* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Landing Page of *Production Line Item*|guide:ShowInvProductionLineItemActionService].

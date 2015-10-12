@@ -1,0 +1,60 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Agent Currency Posting* in Landing Page | |
+*ActionService:* | ListExhAgentCurrencyPostingActionService | *Auditable:* | No
+*Url:* | /exhAgentCurrencyPosting/list | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent Currency Posting* link.
+* Show List of *Agent Currency Posting* in [Landing Page|guide:ShowExhAgentCurrencyPostingActionService].
+
+h4. Pre-condition:
+* User must have "List Agent Currency Posting" privilege.
+
+h4. Process:
+* Get list of *Agent Currency Posting* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Agent Name
+** Amount
+** Created By
+** Created On
+** Updated On
+
+h4. Post-condition:
+
+* *Success:*
+** *Agent Currency Posting* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "Agent Currency Posting" From Grid View|guide:SearchExhAgentCurrencyPostingActionService].
+
+!Exh/Agent Currency Posting_List.png!

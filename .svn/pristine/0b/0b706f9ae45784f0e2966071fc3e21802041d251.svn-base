@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "SMS" | |
+*ActionService:* | ShowSmsActionService | *Auditable:* | No
+*Url:* | /sms/showSms | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+This is the landing page of "SMS" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "SMS" link.
+* Show Landing Page of "SMS".
+
+h4. Pre-condition:
+* User must have "Show sms" privilege.
+
+h4. Process:
+* [Get List of all "SMS" from server|guide:ListSmsActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Update "SMS"|guide:UpdateSmsActionService].
+** Show list of all *SMS* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "SMS" in Edit Mode|guide:SelectSmsActionService].
+
+!application/SMS_Show.png!

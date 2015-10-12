@@ -1,0 +1,570 @@
+select {
+     border: 1px solid #BDC7D8;
+     border-left: 4px solid #BDC7D8;
+     width: 150px;
+ }
+
+input[readOnly="readonly"], input[readonly="true"] {
+    background-color: #eee !important;
+    color: #000 !important;
+    cursor: default !important;
+}
+
+input[type=text].error, select.error, textarea.error, input[type=password].error {
+    border-color: #f9dd34;
+    background-color: #fff9d7;
+    color: #000000;
+}
+
+input[type=text], input[type=password] {
+    border: 1px solid #BDC7D8;
+    border-left: 4px solid #BDC7D8;
+    width: 145px;
+}
+
+textarea {
+    border: 1px solid #BDC7D8;
+    border-left: 4px solid #BDC7D8;
+}
+
+/*Various classes for buttons */
+.save, .clear-form, .search {
+    padding: 0.3em 0.5em;
+    height: 2.0833em;
+    border: 1px solid #ccc;
+    background: #f6f6f6;
+    background-image: -moz-linear-gradient(top, #ffffff, #efefef);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#efefef));
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ffffff, endColorStr=#efefef);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(startColorStr=#FFFFFF, endColorStr=#EFEFEF)";
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    overflow: visible;
+}
+
+.save:hover, .clear-form:hover, .search:hover {
+    border-color: #999;
+    background: #f3f3f3;
+    outline: 0;
+    -moz-box-shadow: 0 0 3px #999;
+    -webkit-box-shadow: 0 0 3px #999;
+    box-shadow: 0 0 3px #999
+}
+
+.save:disabled {
+    border-color: #999;
+    background: #f3f3f3;
+    outline: 0;
+    -moz-box-shadow: 0 0 3px #999;
+    -webkit-box-shadow: 0 0 3px #999;
+    box-shadow: 0 0 3px #999
+}
+
+/*for small button in voucher Dr/Cr create*/
+.small_btn {
+    padding: 0.1em 0.5em;
+    border: 1px solid #ccc;
+    background: #f6f6f6;
+    background-image: -moz-linear-gradient(top, #ffffff, #efefef);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#efefef));
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ffffff, endColorStr=#efefef);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(startColorStr=#FFFFFF, endColorStr=#EFEFEF)";
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    overflow: visible;
+}
+
+/*for arrow button in role-right mapping*/
+.arrow_btn {
+    padding: 0.1em 0.5em;
+    border: 1px solid #ccc;
+    background: #f6f6f6;
+    background-image: -moz-linear-gradient(top, #ffffff, #efefef);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#efefef));
+    filter: progid:DXImageTransform.Microsoft.Gradient(startColorStr=#ffffff, endColorStr=#efefef);
+    -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(startColorStr=#FFFFFF, endColorStr=#EFEFEF)";
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    overflow: visible;
+    width: 40px;
+    height: 22px;
+    text-align: center;
+}
+
+.small_btn:hover {
+    border-color: #999;
+    background: #f3f3f3;
+    outline: 0;
+    -moz-box-shadow: 0 0 3px #999;
+    -webkit-box-shadow: 0 0 3px #999;
+    box-shadow: 0 0 3px #999
+}
+
+.small_btn_top:hover {
+    border-color: #999;
+    background: #f3f3f3;
+    outline: 0;
+    -moz-box-shadow: 0 0 3px #999;
+    -webkit-box-shadow: 0 0 3px #999;
+    box-shadow: 0 0 3px #999
+}
+
+/*for button container*/
+.buttons {
+    border-bottom: 1px solid #BDC7D8;
+    border-top: 1px solid #BDC7D8;
+    clear: right;
+    color: #666666;
+    padding: 5px 8px;
+}
+
+/* class for rolling spinner */
+.spinner {
+    padding: 5px;
+    right: 0;
+    clear: both;
+    float: left;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+/*for top right welcome panel*/
+div.welcomeText {
+    float: right;
+    border-bottom: 1px solid #BDC7D8;
+    border-left: 1px solid #BDC7D8;
+    padding: 3px;
+    background-color: #f0f0f2;
+    font-size: 12px;
+}
+
+div.welcomeText .textHolder {
+    border-bottom-color: #BDC7D8;
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    font-weight: bold;
+    padding-bottom: 3px;
+    padding-left: 6px;
+}
+
+div.welcomeText .buttonHolder {
+    padding-top: 3px;
+}
+
+/*for heading text of each page
+currently not used (@todo:clean if not used in future)
+*/
+div.heading {
+    float: left;
+    cursor: pointer;
+}
+
+/* External table style of each form*/
+.create-form-table {
+    border: 1px solid #BDC7D8;
+    width: 100%;
+    height: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+/* internal table style of each form*/
+.create-internal-table {
+    width: 100%;
+    height: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+/*style for optional label*/
+.label-holder {
+    background: none repeat scroll 0 0 #f5f8fb;
+    border-bottom: 1px solid #FFFFFF;
+    border-right: 1px solid #BDC7D8;
+    color: #000000;
+    font-size: 12px;
+    margin-right: 7px;
+    padding: 3px 3px;
+    text-align: right;
+    vertical-align: top;
+    width: 110px;
+    white-space: nowrap;
+    height: 17px;
+}
+
+/*style for optional label of bottom-most cell*/
+.label-holder-last {
+    background: none repeat scroll 0 0 #f5f8fb;
+    border-bottom: 1px solid #BDC7D8;
+    border-right: 1px solid #BDC7D8;
+    color: #000000;
+    font-size: 12px;
+    margin-right: 7px;
+    padding: 3px 3px;
+    text-align: right;
+    vertical-align: top;
+    width: 110px;
+    white-space: nowrap;
+    height: 17px;
+}
+
+/*style for report labels with variable width*/
+.label-holder-variable {
+    background: none repeat scroll 0 0 #f5f8fb;
+    border-bottom: 1px solid #FFFFFF;
+    border-right: 1px solid #BDC7D8;
+    color: #000000;
+    font-size: 12px;
+    margin-right: 7px;
+    padding: 3px 3px;
+    text-align: right;
+    vertical-align: top;
+    white-space: nowrap;
+    height: 17px;
+}
+
+/*for report column header with left alignment(used in budget report)*/
+.columnHeaderLeft {
+    background: none repeat scroll 0 0 #f5f8fb;
+    border-right: 1px solid #BDC7D8;
+    color: #333333;
+    font-size: 13px;
+    margin-right: 7px;
+    padding: 3px 3px;
+    text-align: left;
+    vertical-align: top;
+    white-space: nowrap;
+    height: 17px;
+}
+
+/*for report column header with right alignment(used in budget report)*/
+.columnHeaderRight {
+    background: none repeat scroll 0 0 #f5f8fb;
+    border-right: 1px solid #BDC7D8;
+    color: #333333;
+    font-size: 13px;
+    margin-right: 7px;
+    padding: 3px 3px;
+    text-align: right;
+    vertical-align: top;
+    white-space: nowrap;
+    height: 17px;
+}
+
+/*style for mandatory label*/
+.label-holder-req {
+    background: none repeat scroll 0 0 #ffdfdf;
+    border-bottom: 1px solid #FFFFFF;
+    border-right: 1px solid #BDC7D8;
+    color: #000000;
+    font-size: 12px;
+    margin-right: 7px;
+    padding: 3px 3px;
+    text-align: right;
+    vertical-align: top;
+    width: 110px;
+    white-space: nowrap;
+    height: 17px;
+}
+
+/*style for mandatory label of bottom-most cell*/
+.label-holder-req-last {
+    background: none repeat scroll 0 0 #ffdfdf;
+    border-bottom: 1px solid #BDC7D8;
+    border-right: 1px solid #BDC7D8;
+    color: #000000;
+    font-size: 12px;
+    margin-right: 7px;
+    padding: 3px 3px;
+    text-align: right;
+    vertical-align: top;
+    width: 110px;
+    white-space: nowrap;
+    height: 17px;
+}
+
+/*style for flexgrid buttons*/
+.flexigrid div.nBtn,
+.flexigrid div.nBtn div {
+    height: 28px !important;
+}
+
+/*for jquery validator style*/
+li.error {
+    color: #ff0000;
+    font: Arial, Helvetica, sans-serif;
+}
+
+.error {
+    color: #ff0000;
+    font: Arial, Helvetica, sans-serif;
+}
+
+#errorList li {
+    color: #ff0000;
+}
+
+/* style for left menu link */
+.menuText {
+    padding-left: 32px;
+    color: #333333;
+}
+
+/* style for left sub-menu link */
+.menuTextSub {
+    padding-left: 50px;
+    color:#333333;
+}
+
+/*style for refresh icon; used to refresh drop-downs */
+a.refresh:link, a.refresh:visited, a.refresh:hover {
+    background: transparent url(../images/load.png) no-repeat center left;
+    display: block;
+    height: 14px;
+    width: 14px;
+    cursor: pointer;
+    float: left;
+}
+
+/*style for date text fields*/
+input[type=text].dateMask {
+    width: 75px;
+}
+
+/*for table cell*/
+.create-form-field {
+    padding: 3px;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+/*for top-right logout,change password links*/
+.linkText a:link, .linkText a:visited {
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    padding: 2px 6px
+}
+
+.linkText a:hover {
+    background: #5b74a8;
+    color: #FFF;
+}
+
+/*for top left company logo*/
+div.app-logo {
+    float: left;
+    width: 425px;
+    height: 53px;
+    background: #f2f5fa 0 2px no-repeat;
+}
+/*for top left dash board link*/
+a#home-link {
+    display: block;
+    height: 53px;
+    left: 0;
+    outline: medium none;
+    position: absolute;
+    top: 0;
+    width: 425px;
+}
+
+/*for top right header place holder*/
+div.powered-by-athena {
+    float: right;
+    width: 526px;
+    height: 53px;
+    background: no-repeat right;
+}
+
+.flexDiv div {
+    margin: 0 0 0 0;
+}
+
+/*custom css for jquery layout; used in voucher,PR & other pages*/
+.outer-east, .outer-center, .middle-north, .middle-center {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    border-color: #FFFFFF;
+}
+
+/*for dash board container*/
+div.dashboardContainer {
+    width: 100%;
+    height: 100%;
+    margin: 0 0 0 20px
+}
+
+/* custom css for jquery UI
+remove padding and scrolling from elements that contain an Accordion OR a content-div */
+
+.ui-layout-center, /* has content-div */
+.ui-layout-west, /* has Accordion */
+.ui-layout-east, /* has content-div ... */
+.ui-layout-east .ui-layout-content {
+    /* content-div has Accordion */
+    padding: 0;
+    overflow: hidden;
+}
+
+.ui-layout-center P.ui-layout-content {
+    line-height: 1.4em;
+    margin: 0; /* remove top/bottom margins from <P> used as content-div */
+}
+
+/*for left menu*/
+.menuDiv {
+    margin: 0;
+    padding: 0;
+    line-height: 14px;
+    /*font-size: 12px;*/
+    color: #385495;
+    text-decoration: none;
+    white-space: nowrap;
+
+}
+
+ul.menuDiv {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.menuDivSub {
+    list-style: none;
+    margin: 0;
+    padding: 1px 0 0;
+}
+
+/* unvisited link */
+ul.menuDiv li a:link {
+    /*font-size: 80%;*/
+    display: block;
+    padding: 3px 0 5px 4px;
+    text-decoration: none;
+    color: #666666;
+    width: 98%;
+}
+
+ul.menuDiv li a:visited {
+    /*font-size: 80%;*/
+    display: block;
+    padding: 3px 0 5px 4px;
+    text-decoration: none;
+    color: #666666;
+    width: 98%;
+}
+
+ul.menuDiv li a.selected {
+    color: #000000;
+    background-color: #eeeeff;
+}
+
+ul.menuDiv li a:hover {
+    color: #000000;
+    background-color: #eeeeff;
+}
+
+ul.menuDivSub li a:link {
+    /*font-size: 80%;*/
+    display: block;
+    padding: 3px 0 3px 4px;
+    text-decoration: none;
+    color: #666666;
+    width: 98%;
+}
+
+ul.menuDivSub li a:visited {
+    /*font-size: 80%;*/
+    display: block;
+    padding: 3px 0 3px 4px;
+    text-decoration: none;
+    color: #666666;
+    width: 98%;
+}
+
+ul.menuDivSub li a:hover {
+    color: #000000;
+    background-color: #c7f2f3;
+}
+
+div.pGroup > select {
+    width: auto;
+}
+span.pcontrol > input[type="text"] {
+    width: auto;
+}
+
+/*Temporary fix For Tab
+@todo: eliminate when bootstrap-tab implemented
+*/
+.ui-helper-clearfix{
+    font-size: 12px;
+}
+.ui-helper-reset{
+    line-height: 1;
+}
+.ui-tabs .ui-tabs-nav li a {
+    padding: 0.5em 1.5em;
+}
+/*Override label of bootstrap
+@todo: eliminate when bootstrap implemented
+*/
+label{
+    font-weight: normal;
+    margin-bottom: 0;
+}
+/*Fix the jquery accordion
+@todo: eliminate when bootstrap implemented
+*/
+#accordion1 > .ui-helper-reset{
+    line-height: 1.6;
+}
+/*For dashboard fix
+@todo: temp fix for bootstrap implemented
+*/
+ul#tabs li a {
+    height: 58px;
+}
+div#content{
+    width: 875px;
+    margin: 50px auto auto 65px;
+}
+/*flex grid adjustments
+@todo: temp adjustment due to bootstrap
+*/
+div.flexigrid {
+    width: 100%;
+}
+.flexigrid {
+    font-size: 12px;
+    font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+.flexigrid table {
+    border-collapse: inherit;
+}
+.flexigrid div.hDiv th div, .flexigrid div.bDiv td div, div.colCopy div {
+    padding: 0.40em;
+}
+.flexigrid div.fbutton span {
+    /*padding: 0;*/
+}
+/*For html report fields; temp fix for bootstrap*/
+.info_box{
+    font-size: 12px;
+}

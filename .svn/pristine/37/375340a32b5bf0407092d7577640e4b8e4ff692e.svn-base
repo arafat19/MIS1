@@ -1,0 +1,108 @@
+package com.athena.mis.document.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.service.AppUserService
+import com.athena.mis.document.entity.DocSubCategoryUserMapping
+import com.athena.mis.utility.DateUtility
+
+class DocSubCategoryUserMappingService extends BaseService {
+
+    AppUserService appUserService
+
+    public DocSubCategoryUserMapping read(long id) {
+        DocSubCategoryUserMapping docSubCategoryUserMapping = DocSubCategoryUserMapping.read(id)
+        return docSubCategoryUserMapping
+    }
+
+
+    public DocSubCategoryUserMapping findByCompanyIdAndUserIdAndCategoryIdAndSubCategoryId(long companyId, long userId, long categoryId, long subCategoryId) {
+        DocSubCategoryUserMapping docSubCategoryUserMapping = DocSubCategoryUserMapping.findByCompanyIdAndUserIdAndCategoryIdAndSubCategoryId(companyId, userId, categoryId, subCategoryId)
+        return docSubCategoryUserMapping
+    }
+
+    private static final String INSERT_QUERY = """
+        INSERT INTO doc_sub_category_user_mapping
+            (id,version,user_id,category_id,sub_category_id, is_sub_category_manager,company_id,created_on,created_by,updated_by)
+        VALUES(NEXTVAL('doc_sub_category_user_mapping_id_seq'),:version,:userId,:categoryId,:isSubCategoryManager,:companyId,:createdOn,:createdBy,:updatedBy)
+    """
+
+
+    public DocSubCategoryUserMapping create(DocSubCategoryUserMapping subCategoryUserMapping) {
+        Map queryParams = [
+                version             : subCategoryUserMapping.version,
+                userId              : subCategoryUserMapping.userId,
+                categoryId          : subCategoryUserMapping.categoryId,
+                subCategoryId       : subCategoryUserMapping.subCategoryId,
+                isSubCategoryManager: subCategoryUserMapping.isSubCategoryManager,
+                isFavourite         : subCategoryUserMapping.isFavourite,
+                companyId           : subCategoryUserMapping.companyId,
+                createdOn           : DateUtility.getSqlDateWithSeconds(subCategoryUserMapping.createdOn),
+                createdBy           : subCategoryUserMapping.createdBy,
+                updatedBy           : subCategoryUserMapping.updatedBy
+        ]
+        List lstUserCategoryMapping = executeInsertSql(INSERT_QUERY, queryParams)
+        if (lstUserCategoryMapping.size() <= 0) {
+            throw new RuntimeException("Error occurred while insert member information")
+        }
+        subCategoryUserMapping.id = (long) lstUserCategoryMapping[0][0]
+        return subCategoryUserMapping
+    }
+
+    private static final String UPDATE_QUERY = """
+                    UPDATE doc_sub_category_user_mapping
+                    SET
+                          user_id=:userId,
+                          is_sub_category_manager=:isSubCategoryManager,
+                          updated_by=:updatedBy,
+                          updated_on=:updatedOn
+                    WHERE
+                          id=:id
+                    """
+
+    public int update(DocSubCategoryUserMapping docSubCategoryUserMapping) {
+
+        Map queryParams = [
+                id                  : docSubCategoryUserMapping.id,
+                userId              : docSubCategoryUserMapping.userId,
+                isSubCategoryManager: docSubCategoryUserMapping.isSubCategoryManager,
+                updatedBy           : docSubCategoryUserMapping.updatedBy,
+                updatedOn           : DateUtility.getSqlDateWithSeconds(docSubCategoryUserMapping.updatedOn)
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams)
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update member information')
+        }
+        return updateCount
+    }
+
+    private static final String DELETE_QUERY = """ DELETE FROM doc_sub_category_user_mapping WHERE id=:id """
+
+    public int delete(long id) {
+        Map queryParams = [id: id]
+        int deleteCount = executeUpdateSql(DELETE_QUERY, queryParams)
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Error occurred while delete member information')
+        }
+        return deleteCount
+    }
+
+    public void createDefaultDataForSubCategoryUserMapping() {
+        Date currDate = new Date()
+        AppUser appUser = appUserService.findByLoginId('admin@athena.com')
+
+        DocSubCategoryUserMapping docSubCategoryUserMapping = new DocSubCategoryUserMapping(version: 0, categoryId: 1, subCategoryId: 4, companyId: appUser.companyId, createdBy: appUser.id, createdOn: currDate, isSubCategoryManager: false, isFavourite: false, updatedBy: 0, updatedOn: null, userId: 1)
+        docSubCategoryUserMapping.save()
+
+        DocSubCategoryUserMapping docSubCategoryUserMapping1 = new DocSubCategoryUserMapping(version: 0, categoryId: 2, subCategoryId: 7, companyId: appUser.companyId, createdBy: appUser.id, createdOn: currDate, isSubCategoryManager: true, isFavourite: false, updatedBy: 0, updatedOn: null, userId: 1)
+        docSubCategoryUserMapping1.save()
+
+        DocSubCategoryUserMapping docSubCategoryUserMapping2 = new DocSubCategoryUserMapping(version: 0, categoryId: 2, subCategoryId: 8, companyId: appUser.companyId, createdBy: appUser.id, createdOn: currDate, isSubCategoryManager: true, isFavourite: false, updatedBy: 0, updatedOn: null, userId: 2)
+        docSubCategoryUserMapping2.save()
+
+        DocSubCategoryUserMapping docSubCategoryUserMapping3 = new DocSubCategoryUserMapping(version: 0, categoryId: 3, subCategoryId: 8, companyId: appUser.companyId, createdBy: appUser.id, createdOn: currDate, isSubCategoryManager: true, isFavourite: false, updatedBy: 0, updatedOn: null, userId: 1)
+        docSubCategoryUserMapping3.save()
+    }
+
+}

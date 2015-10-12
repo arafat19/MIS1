@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subTier2" language="groovy" pageWidth="500" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="500" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a78c69f7-617e-49c8-b563-83f57afd8631">
+	<property name="ireport.zoom" value="1.2100000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="tier2_id" class="java.lang.Integer"/>
+	<parameter name="tier2_name" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="projectIdList" class="java.util.Collection"/>
+	<parameter name="accTypeAssetId" class="java.lang.Long"/>
+	<parameter name="accTypeLiabilitiesId" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\MIS\\plugins\\accounting\\web-app\\reports\\accounting\\accFinancialStatementForLevel5\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="accTypeExpensesId" class="java.lang.Long"/>
+	<parameter name="accTypeIncomeId" class="java.lang.Long"/>
+	<parameter name="divisionIdList" class="java.lang.Object"/>
+	<queryString>
+		<![CDATA[SELECT coa.description ||' ('||coa.code||')' AS coa_description,
+CASE
+            WHEN (coa.acc_type_id=$P{accTypeAssetId} OR coa.acc_type_id=$P{accTypeExpensesId}) THEN COALESCE(SUM(vw_voucher_details.dr_balance),0)
+            ELSE 0
+            END dr_balance,
+            CASE
+            WHEN (coa.acc_type_id=$P{accTypeLiabilitiesId} OR coa.acc_type_id=$P{accTypeIncomeId}) THEN COALESCE(SUM(vw_voucher_details.cr_balance),0)
+            ELSE 0
+            END cr_balance
+FROM vw_acc_voucher_with_details vw_voucher_details
+LEFT JOIN acc_chart_of_account coa ON coa.id = vw_voucher_details.coa_id
+WHERE coa.tier2 = $P{tier2_id}
+AND coa.tier3 = 0
+AND vw_voucher_details.voucher_date >= $P{fromDate}
+AND vw_voucher_details.voucher_date <= $P{toDate}
+AND ($X{IN,vw_voucher_details.project_id,projectIdList})
+AND ($X{IN,vw_voucher_details.division_id,divisionIdList})
+AND vw_voucher_details.posted_by > $P{postedByParam}
+AND vw_voucher_details.company_id = $P{companyId}
+GROUP BY coa.description,coa.code,coa.acc_type_id
+ORDER BY coa_description;]]>
+	</queryString>
+	<field name="coa_description" class="java.lang.String"/>
+	<field name="dr_balance" class="java.math.BigDecimal"/>
+	<field name="cr_balance" class="java.math.BigDecimal"/>
+	<title>
+		<band height="17">
+			<printWhenExpression><![CDATA[($P{tier2_id}!=null && $P{tier2_id}>0)?  Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c775aee1-c34c-4096-abed-30d644366d44" x="0" y="0" width="500" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tier2_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="17" splitType="Stretch">
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="4b020d59-1ec0-4db0-a7e2-30f0ce6caa37" x="400" y="0" width="100" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cr_balance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="3b645e1e-900a-43f9-8ff0-cd1d5319cf32" x="300" y="0" width="100" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dr_balance}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8d40093c-7eaf-4cfc-bbcb-aa50ab2f7d3d" x="20" y="0" width="280" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{coa_description}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

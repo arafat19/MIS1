@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show Landing Page of *Financial Year* | |
+ *ActionService:* | ShowAccFinancialYearActionService | *Auditable:* | No
+ *Url:* | /accFinancialYear/show | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of *Financial Year* with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Financial Year* link.
+* Show Landing Page of *Financial Year*.
+
+h4. Pre-condition:
+* User must have "Show Financial Year" privilege.
+
+h4. Process:
+* [Get List of all "Financial Year" from server|guide:ListAccFinancialYearActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Financial Year"|guide:CreateAccFinancialYearActionService].
+** Show list of all *Financial Year* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Financial Year" in Edit Mode|guide:SelectAccFinancialYearActionService].
+* [Delete "Financial Year"|guide:DeleteAccFinancialYearActionService].
+* [Set Current "Financial Year"|guide:SetForCurrentFinancialYearActionService].
+
+* [Show Entity Content|application].
+* [List Entity Content|application].
+* [Create Entity Content|application].
+* [Select Entity Content|application].
+* [Update Entity Content|application].
+* [Search Entity Content|application].
+* [Delete Entity Content|application].
+* [Download Entity Content|application].
+
+
+!Acc/FinancialYear_Show.png!

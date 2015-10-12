@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Designation* | |
+*ActionService:* | ShowDesignationActionService | *Auditable:* | No
+*Url:* | /designation/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 17th August 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Designation* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Designation* link.
+* Show Landing Page of *Designation*.
+
+h4. Pre-condition:
+* User must have "Show designation" privilege.
+
+h4. Process:
+* [Get List of all "Designation" from server|guide:ListDesignationActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Designation"|guide:CreateDesignationActionService].
+** Show list of all *Designation* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Designation" in Edit Mode|guide:SelectDesignationActionService].
+* [Delete "Designation"|guide:DeleteDesignationActionService].
+* [Search "Designation" From Grid View|guide:SearchDesignationActionService].
+
+!application/Designation_Show.png!

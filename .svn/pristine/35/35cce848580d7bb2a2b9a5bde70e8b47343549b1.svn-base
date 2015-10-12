@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Re-Open "Transaction Day" | |
+*ActionService:* | ReOpen "Transaction Day" | *Auditable:* | No
+*Url:* | /rmsTransactionDay/reOpenTransactionDay | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date* | *Reason for Changes* | *Version*
+Md. Shaheb Ali | 23th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Transaction Day* link.
+* [Show Landing Page of "Transaction Day"|guide:_ShowTransactionDay].
+* Click on *Re-Open* button from tool bar.
+* Re-Open "Transaction Day".
+
+h4. Pre-condition:
+* User must have "Reopen transaction day" privilege.
+* if "Transaction Day" already open will not Re-Open.
+* Previous Close "Transaction Day" can not Re-open.
+* if current "Transaction Day" is closed then can re-open.
+
+
+h4. Process:
+* Close by and Close on will be empty.
+* "Transaction Day" will Re-Open.
+
+h4. Post-condition:
+
+* *Success:*
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

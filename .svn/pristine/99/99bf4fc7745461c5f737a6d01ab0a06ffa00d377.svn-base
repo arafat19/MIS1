@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update "User-Agent Mapping" | |
+*ActionService:* | UpdateUserAgentActionService | *Auditable:* | No
+*Url:* | /exhUserAgent/update | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of *Agent*|guide:ShowExhAgentActionService].
+* Select a Line-Item from grid view.
+* Click "User" button from tool bar.
+* [Show Landing Page of "User-Agent Mapping"|guide:ShowUserAgentActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "User-Agent Mapping" in Edit Mode|guide:SelectUserAgentActionService].
+* User must enter valid input to update.
+* Click "Update" button.
+* Update "User-Agent Mapping".
+
+h4. Pre-condition:
+* User must have "Update User Agent" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+*Agent* | Read Only | Alpha Numeric |
+[Populate User List|application] | Drop Down List | Numeric | Required
+{table}
+
+* Match expected version before updating a "User-Agent Mapping".
+* "User-Agent Mapping" must be unique.
+
+h4. Process:
+* Update selected "User-Agent Mapping".
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected "User-Agent Mapping" into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

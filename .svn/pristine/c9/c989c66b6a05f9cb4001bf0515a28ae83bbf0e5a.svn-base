@@ -1,0 +1,70 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update "Un-approved Beneficiary" | |
+*ActionService:* | ExhUpdateBeneficiaryForCustomerActionService | *Auditable:* | No
+*Url:* | /exhBeneficiary/updateForCustomer | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 27th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Create New" link.
+* [Show Landing Page of "Un-approved Beneficiary"|guide:ExhShowNewBeneficiariesForCustomerActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Un-approved Beneficiary" in Edit Mode|guide:ExhSelectBeneficiaryForCustomerActionService].
+* User must enter valid input to update.
+* Click "Update" button.
+* Update "Un-approved Beneficiary".
+
+h4. Pre-condition:
+* User must have "Update beneficiary for Customer" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ First Name | Text Box | Alpha Numeric | Required
+ Middle Name | Text Box | Alpha Numeric | Optional
+ Last Name | Text Box | Alpha Numeric | Required (If "mis.exchangehouse.beneficiaryLastNameRequired" key value is 1)
+ Email | Text Box | Alpha Numeric | Optional
+ Relation | Text Box | Alpha Numeric | Required
+ Address | Text Area | Alpha Numeric | Optional
+ A/C No | Text Box | Alpha Numeric | Optional
+ Bank | Text Box | Alpha Numeric | Optional
+ Branch | Text Box | Alpha Numeric | Optional
+ District | Text Box | Alpha Numeric | Optional
+ Photo ID Type | Text Box | Alpha Numeric | Optional
+ Photo ID No | Text Box | Alpha Numeric | Optional
+ Thana | Text Box | Alpha Numeric | Optional
+ Phone | Text Box | Alpha Numeric | Optional
+{table}
+
+* Match expected version before updating a "Un-approved Beneficiary".
+
+h4. Process:
+* Update selected "Un-approved Beneficiary".
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected "Un-approved Beneficiary" into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

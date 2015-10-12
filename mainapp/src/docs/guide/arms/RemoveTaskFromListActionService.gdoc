@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* |  Remove "Task" from Task List | |
+*Action:* | RemoveTaskFromListActionService | *Auditable:* | No
+*Url:* |/rmsTaskList/removeFromList | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Manage* link under task list.
+* [Show Landing Page of "Task" For Manage|guide:_ShowManageTaskList].
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Task" For Manage|guide:ListForManageTaskListActionService].
+* Select line item from grid view.
+* Click on "Remove List" from tool bar.
+* Give note for remove from "Task list" in text area.
+* Click on "Remove From List" Button.
+* Remove "Task" from Task List.
+
+h4. Pre-condition:
+* User must have "Remove from task list" privilege.
+* *Task* remove note must be given.
+* Disburse *Task* can not remove from list.
+
+h4. Process:
+* *Task* amount will be refund if decision approved.
+* Status Change to "Included In List".
+* Remove "Task" from list.
+
+
+h4. Post-condition:
+* *Success:*
+** Remove "Task" from grid view.
+** Show Success message.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

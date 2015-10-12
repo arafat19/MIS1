@@ -1,0 +1,67 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Update *Chart Of Account* | |
+ *ActionService:* | UpdateAccChartOfAccountActionService | *Auditable:* | No
+ *Url:* | /accChartOfAccount/update | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Chart Of Account* link.
+* [Show Landing Page of Chart of Account|guide:ShowAccChartOfAccountActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Chart Of Account in Edit Mode|guide:SelectAccChartOfAccountActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Chart Of Account*.
+
+h4. Pre-condition:
+* User must have "Update Chart of Account" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Account Type|guide:GetDropDownAccTypeTagLibActionService] | Drop Down List | Numeric | Required
+ [Populate Tier1 List|guide:GetTier1ListByAccTypeIdActionService] | Drop Down List | Numeric | Required
+ [Populate Tier2 List|guide:GetTier2ListByAccTier1IdActionService] | Drop Down List | Numeric | Optional
+ [Populate Tier3 List|guide:GetTier3ListByAccTier2IdActionService] | Drop Down List | Numeric | Optional
+ [Group|guide:GetDropDownAccGroupTagLibActionService] | Drop Down List | Numeric | Optional
+ Is Active | Check Box | Boolean | Default Value False
+ [Populate Source Type List|guide:PopulateSourceTypeList] | Drop Down List | Numeric | Required
+ [Populate Source Category List|guide:GetSourceCategoryByAccSourceIdActionService] | Drop Down List | Numeric | Optional
+ [Custom Group|guide:GetDropDownAccCustomGroupTagLibActionService] | Drop Down List | Numeric | Optional
+ Head Name | Text Area | Alpha Numeric | Required
+ [Code|guide:SystemGeneratedCOACode] |  | Auto Generated | Alpha Numeric
+{table}
+
+* *Chart of Account* "Head Name" must be unique.
+* Match expected version before updating a *Chart of Account*.
+* If *Chart of Account* code used in any *Voucher* then that *Chart of Account's* *"Source"* is not update-able.
+
+h4. Process:
+* Update selected *Chart of Account*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Chart of Account* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

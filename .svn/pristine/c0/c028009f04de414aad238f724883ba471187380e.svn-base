@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Evaluate Logic for "Purchase Instrument Mapping" | |
+*ActionService:* | EvaluateLogicForRmsPurchaseInstrumentMappingActionService | *Auditable:* | No
+*Url*: | /rmsPurchaseInstrumentMapping/evaluateLogic | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+User can Evaluate Logic for "Purchase Instrument Mapping" as per their requirement.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Purchase Instrument Mapping* link.
+* [Show Landing Page of "Purchase Instrument Mapping"|guide:ShowRmsPurchaseInstrumentMappingActionService].
+* Insert valid amount.
+* Click "Evaluate" button.
+* Evaluate Logic for "Purchase Instrument Mapping".
+
+h4. Pre-condition:
+* User must have "List Purchase Instrument Mapping" privilege.
+* Validation Rules:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Amount | Text Box | Numeric | Required
+Commission | Auto Generated | Numeric | Read Only
+PNT | Auto Generated | Numeric | Read Only
+Postage | Auto Generated | Numeric | Read Only
+Service Charge | Auto Generated | Numeric | Read Only
+Vat | Auto Generated | Numeric | Read Only
+Vat on PNT | Auto Generated | Numeric | Read Only
+Total | Auto Generated | Numeric | Read Only
+{table}
+
+* Must have valid amount to evaluate "Logic".
+
+h4. Process:
+* Evaluate "Logic".
+
+h4. Post-condition:
+* *Success:*
+** Generate given amounts "Logic".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+

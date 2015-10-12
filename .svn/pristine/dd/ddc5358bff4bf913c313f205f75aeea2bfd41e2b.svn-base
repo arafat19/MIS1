@@ -1,0 +1,147 @@
+<script type="text/javascript">
+    var modelJsonForBudget;
+    jQuery(function ($) {
+        modelJsonForBudget = ${modelJson};
+        $('#showIouSlip').click(function () {
+            getIouSlip();
+            return false;
+        });
+        $('#printIouSlip').click(function () {
+            printIouSlip();
+            return false;
+        });
+        onLoadIouSlip();
+    });
+
+    function printIouSlip() {
+        var accIouSlipId = $('#hideAccIouSlipId').val();
+        if (accIouSlipId.length <= 0) {
+            showError('First populate Iou Slip then click print');
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?accIouSlipId=" + accIouSlipId;
+        if (confirm('Do you want to download the IOU Slip now?')) {
+            var url = "${createLink(controller:'accReport', action: 'downloadAccIouSlipRpt')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function onLoadIouSlip() {
+        try {   // Model will be supplied to grid on load _list.gsp
+            initializeForm($("#searchForm"), getIouSlip);
+            $('.download_icon_set').hide();
+            if (modelJsonForBudget.accIouSlipMap) {
+                populateIouSlip(modelJsonForBudget.accIouSlipMap, modelJsonForBudget.indentDate);
+                populatePurpose(modelJsonForBudget.purposeList);
+                $("#iouSlipId").val(modelJsonForBudget.accIouSlipMap.iouSlipId);
+            }
+        } catch (e) {
+            showError(e.message);
+        }
+
+        // update page title
+        $(document).attr('title', "MIS - IOU Slip");
+        loadNumberedMenu(MENU_ID_ACCOUNTING, "#accReport/showAccIouSlipRpt");
+    }
+
+    function executePreConditionToGetIouSlip() {
+        if (!validateForm($("#searchForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function getIouSlip() {
+        if (executePreConditionToGetIouSlip() == false) {
+            $('#divIouSlip').hide();
+            $('.download_icon_set').hide();
+            return false;
+        }
+        var accIouSlipId = $('#accIouSlipId').val();
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller:'accReport', action: 'listAccIouSlipRpt')}?accIouSlipId=" + accIouSlipId,
+            success: executePostConditionForIouSlip,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForIouSlip(data) {
+        if (data.isError) {
+            showError(data.message);
+            $('#divIouSlip').hide();
+            $('.download_icon_set').hide();
+            return;
+        }
+        populateIouSlip(data.accIouSlipMap, data.indentDate);
+        populatePurpose(data.purposeList);
+        return false;
+    }
+
+    function clearIouSlip() {
+        $('#lblAccIouSlipId').text('');
+        $('#hideAccIouSlipId').val('');
+        $('#lblCreatedOn').text('');
+        $('#lblProjectName').text('');
+        $('#lblEmployeeName').text('');
+        $('#lblDesignation').text('');
+        $('#lblTotalAmount').text('');
+        $('#lblTotalAmount').text('');
+        $('#lblApprovedBy').text('');
+    }
+
+    function populateIouSlip(result, indentDate) {
+        clearIouSlip();
+        $('.download_icon_set').show();
+        $('#divIouSlip').show();
+        $('#lblAccIouSlipId').text(result.iouSlipId);
+        $('#accIouSlipId').val(result.iouSlipId);
+        $('#hideAccIouSlipId').val(result.iouSlipId);
+        $('#lblCreatedOn').text(result.createdOn);
+        $('#lblProjectName').text(result.projectName);
+        $('#lblEmployeeName').text(result.employeeName);
+        $('#lblDesignation').text(result.designation);
+        $('#lblApprovedBy').text(result.approvedBy);
+        $('#lblIndentTrace').text(result.indentId);
+        $('#lblIndentDate').text(indentDate);
+
+        if (result.approvedBy.isEmpty()) {
+            $('.download_icon_set').hide();
+        } else {
+            $('.download_icon_set').show();
+        }
+
+        $('#lblTotalAmount').text(result.totalAmount);
+        $('#budgetDetailsWithItem').hide();
+    }
+
+    function populatePurpose(lstPurpose) {
+        var lstPurposes = $(lstPurpose);
+        if (lstPurposes.length <= 0) {
+            $('#budgetDetailsWithItem').hide();
+            $('#tagPurposeList').hide();
+            return;
+        } else {
+            $('#budgetDetailsWithItem').show();
+            $('#tagPurposeList').show();
+            var tbodyItems = $('#tblItems');
+            tbodyItems.html('');
+            var htm = '';
+            for (var i = 0; i < lstPurposes.size(); i++) {
+                var eachObject = lstPurposes[i];
+                tbodyItems.append($('<tr></tr>')
+                        .append($('<td></td>').html(i + 1))
+                        .append($('<td></td>').html(eachObject.purposeDescription))
+                        .append($('<td class="align_right"></td>').html(eachObject.strPurposeAmount))
+                );
+            }
+        }
+    }
+
+</script>

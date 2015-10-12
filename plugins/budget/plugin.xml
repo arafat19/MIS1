@@ -1,0 +1,46 @@
+<plugin name='budgeting' version='0.1' grailsVersion='2.2.0 &gt; *'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>\
+Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/budgeting</documentation>
+  <type>BudgetingGrailsPlugin</type>
+  <resources>
+    <resource>BudgDefaultDataBootStrap</resource>
+    <resource>BudgSchemaUpdateBootStrap</resource>
+    <resource>BudgetBootStrap</resource>
+    <resource>BudgetPluginConfig</resource>
+    <resource>com.athena.mis.budget.controller.BudgReportController</resource>
+    <resource>com.athena.mis.budget.controller.BudgetController</resource>
+    <resource>com.athena.mis.budget.controller.BudgetDetailsController</resource>
+    <resource>com.athena.mis.budget.controller.BudgetScopeController</resource>
+    <resource>com.athena.mis.budget.controller.ProjectBudgetScopeController</resource>
+    <resource>com.athena.mis.budget.entity.Budget</resource>
+    <resource>com.athena.mis.budget.entity.BudgetDetails</resource>
+    <resource>com.athena.mis.budget.entity.BudgetScope</resource>
+    <resource>com.athena.mis.budget.entity.ProjectBudgetScope</resource>
+    <resource>com.athena.mis.budget.integration.BudgPluginConnectorService</resource>
+    <resource>com.athena.mis.budget.service.BudgReportService</resource>
+    <resource>com.athena.mis.budget.service.BudgetDetailsService</resource>
+    <resource>com.athena.mis.budget.service.BudgetIndexGeneratorService</resource>
+    <resource>com.athena.mis.budget.service.BudgetService</resource>
+    <resource>com.athena.mis.budget.service.BudgetScopeService</resource>
+    <resource>com.athena.mis.budget.service.ProjectBudgetScopeService</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://download.java.net/maven/2/' url='http://download.java.net/maven/2/' />
+    <repository name='https://repository.jboss.org/nexus/' url='https://repository.jboss.org/nexus/' />
+  </repositories>
+  <dependencies />
+  <plugins>
+    <build>
+      <plugin group='org.grails.plugins' name='tomcat' version='2.2.0' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.0' />
+    </build>
+  </plugins>
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

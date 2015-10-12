@@ -1,0 +1,310 @@
+<script language="javascript">
+    var transportCostListModel =${output ? output : ''};
+    var transportCostGrid = null;
+    var rate, amount, quantity;
+    $(document).ready(function () {
+        onLoadTransportCost();
+    });
+
+    function onLoadTransportCost() {
+        initializeForm($("#transportCostForm"), onSubmitTransportCost);
+
+        $('#rate').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.9999,
+            format: "#.####"
+
+        });
+        rate = $("#rate").data("kendoNumericTextBox");
+
+        $('#amount').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.9999,
+            format: "#.####"
+
+        });
+        amount = $("#amount").data("kendoNumericTextBox");
+
+        $('#quantity').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.99,
+            format: "#.##"
+
+        });
+        quantity = $("#quantity").data("kendoNumericTextBox");
+
+        var isError = transportCostListModel.isError;
+        if (isError == 'true') {
+            var message = transportCostListModel.message;
+            showError(message);
+            return;
+        }
+        initGrid();
+        transportCostGrid = transportCostListModel.transportCostList;
+        populatePurchaseOrder(transportCostListModel.purchaseOrderMap);
+
+        // update page title
+        $(document).attr('title', "MIS - Transport Cost For Purchase Order");
+        loadNumberedMenu(MENU_ID_PROCUREMENT, "#procPurchaseOrder/show");
+    }
+
+    function populatePurchaseOrder(purchaseOrderMap) {
+        if (!purchaseOrderMap) {
+            return false;
+        }
+
+        $('#purchaseOrderId').val(purchaseOrderMap.purchaseOrderId);
+        $('#lblPurchaseOrderId').html(purchaseOrderMap.purchaseOrderId);
+        $('#lblProjectName').html(purchaseOrderMap.projectName);
+
+        return true;
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#transportCostForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitTransportCost() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('.save'), true);
+        // Spinner Show on AJAX Call
+
+        var data = jQuery("#transportCostForm").serialize();
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller: 'procTransportCost', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller: 'procTransportCost', action: 'update')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: data,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('.save'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            try {
+
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(transportCostGrid.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (transportCostGrid.rows.length > 0) {
+                        firstSerial = transportCostGrid.rows[0].cell[0];
+                        regenerateSerial($(transportCostGrid.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+                    transportCostGrid.rows.splice(0, 0, result.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        transportCostGrid.rows.pop();
+                    }
+
+                    transportCostGrid.total = ++previousTotal;
+                    $("#flex1").flexAddData(transportCostGrid);
+
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(transportCostGrid, result.entity, 0);
+                    $("#flex1").flexAddData(transportCostGrid);
+                }
+                resetCreateForm();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetCreateForm() {
+        clearForm($("#transportCostForm"), amount);
+
+        var purchaseOrderMap = transportCostListModel.purchaseOrderMap;
+        $('#purchaseOrderId').val(purchaseOrderMap.purchaseOrderId);
+
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+
+    //-------------
+    function initGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "Amount", name: "amount", width: 120, sortable: false, align: "right"},
+                        {display: "Quantity", name: "quantity", width: 120, sortable: false, align: "right"},
+                        {display: "Rate", name: "rate", width: 120, sortable: false, align: "right"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/procTransportCost/edit,/procTransportCost/update">
+                        {name: 'Edit', bclass: 'edit', onpress: edittransportCost},
+                        </app:ifAllUrl>
+                        <sec:access url="/procTransportCost/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deletetransportCost},
+                        </sec:access>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Transport Cost For Purchase Order',
+                    useRp: true,
+                    rp: 15,
+                    rpOptions: [15, 20, 25],
+                    showTableToggleBtn: false,
+                    height: getGridHeight(),
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);// Spinner hide after AJAX Call
+                        checkGrid();
+                    },
+
+                    customPopulate: onLoadTransportCostListJSON
+                }
+        );
+    }
+
+    function deletetransportCost(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var transportCostId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'procTransportCost', action: 'delete')}?id=" + transportCostId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'transport cost') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected transport cost?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            transportCostGrid.total = parseInt(transportCostGrid.total) - 1;
+            removeEntityFromGridRows(transportCostGrid, selectedRow);
+            resetCreateForm();
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flex1').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function checkGrid() {
+        var rows = $('table#flex1 > tbody > tr');
+        if (rows && rows.length < 1) {
+            showInfo('No transport cost found');
+        }
+    }
+
+    function edittransportCost(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'transport cost') == false) {
+            return;
+        }
+        var transportCostId = getSelectedIdFromGrid($('#flex1'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'procTransportCost', action: 'edit')}?id=" + transportCostId,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            populatetransportCost(data);
+        }
+    }
+
+    function populatetransportCost(data) {
+        resetCreateForm();
+        var entity = data.entity;
+
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        quantity.value(entity.quantity);
+        amount.value(entity.amount);
+        var trRate = parseFloat(entity.rate) > 0 ? entity.rate : '';
+        rate.value(trRate);
+        $('#comments').val(entity.comments);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    function onLoadTransportCostListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            transportCostGrid = getEmptyGridModel();
+        } else {
+            transportCostGrid = data;
+        }
+        $("#flex1").flexAddData(transportCostGrid);
+    }
+
+    <sec:access url="/procTransportCost/list">
+    var purchaseOrderId = $('#purchaseOrderId').val();
+    var strUrl = "${createLink(controller: 'procTransportCost', action: 'list')}?purchaseOrderId=" + purchaseOrderId;
+    $("#flex1").flexOptions({url: strUrl});
+
+    if (transportCostGrid) {
+        $("#flex1").flexAddData(transportCostGrid);
+    }
+    </sec:access>
+
+</script>

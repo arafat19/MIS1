@@ -1,0 +1,331 @@
+package com.athena.mis.application.utility
+
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.AppUserEntity
+import com.athena.mis.application.entity.Role
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.application.model.AppUserModel
+import com.athena.mis.application.service.AppUserEntityService
+import com.athena.mis.application.service.ApplicationSessionService
+import com.athena.mis.application.service.UserRoleService
+import com.athena.mis.integration.arms.ArmsPluginConnector
+import com.athena.mis.integration.exchangehouse.ExchangeHousePluginConnector
+import com.athena.mis.integration.inventory.InventoryPluginConnector
+import com.athena.mis.integration.projecttrack.ProjectTrackPluginConnector
+import com.athena.mis.utility.Tools
+import net.sf.uadetector.ReadableUserAgent
+import net.sf.uadetector.UserAgentStringParser
+import net.sf.uadetector.service.UADetectorServiceFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Scope
+import org.springframework.context.annotation.ScopedProxyMode
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpSession
+
+@Component("sessionUtility")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
+class SessionUtility implements Serializable {
+
+    @Autowired
+    AppUserEntityService appUserEntityService
+    @Autowired
+    AppUserEntityTypeCacheUtility appUserEntityTypeCacheUtility
+    @Autowired
+    ProjectCacheUtility projectCacheUtility
+    @Autowired
+    AppGroupCacheUtility appGroupCacheUtility
+    @Autowired
+    ApplicationSessionService applicationSessionService
+    @Autowired(required = false)
+    InventoryPluginConnector inventoryImplService
+    @Autowired(required = false)
+    ProjectTrackPluginConnector projectTrackImplService
+    @Autowired
+    UserRoleService userRoleService
+    @Autowired(required = false)
+    ExchangeHousePluginConnector exchangeHouseImplService
+	@Autowired
+	BankBranchCacheUtility bankBranchCacheUtility
+    @Autowired(required = false)
+    ArmsPluginConnector armsImplService
+
+
+    private AppUserModel appUserModel = null    // manipulate appUserModel through session
+
+    // Initialize the model
+    @Transactional(readOnly = true)
+    public void setModel(AppUser user, HttpServletRequest request, HttpSession session) {
+        appUserModel = new AppUserModel()
+        appUserModel.appUser = user
+
+        List<AppUserEntity> lstAppUserMapping = appUserEntityService.findAllByAppUserId(user.id)
+
+        // discard the R/W pull
+        lstAppUserMapping.each {
+            SystemEntity appUserEntityObject = (SystemEntity) appUserEntityTypeCacheUtility.read(it.entityTypeId)
+            switch (appUserEntityObject.reservedId) {
+                case appUserEntityTypeCacheUtility.INVENTORY:
+                    if (inventoryImplService) {
+                        appUserModel.lstInventories << inventoryImplService.readInventory(it.entityId)
+                    }
+                    break;
+                case appUserEntityTypeCacheUtility.PROJECT:
+                    appUserModel.lstProjects << projectCacheUtility.read(it.entityId)
+                    break;
+                case appUserEntityTypeCacheUtility.PT_PROJECT:
+                    if (projectTrackImplService) {
+                        appUserModel.lstPtProjects << projectTrackImplService.readPtProject(it.entityId)
+                    }
+                    break;
+                case appUserEntityTypeCacheUtility.GROUP:
+                    appUserModel.lstGroups << appGroupCacheUtility.read(it.entityId)
+                    break;
+                case appUserEntityTypeCacheUtility.CUSTOMER:
+                    if (exchangeHouseImplService) {
+                        appUserModel.lstCustomers << exchangeHouseImplService.readCustomer(it.entityId)
+                    }
+                    break;
+                case appUserEntityTypeCacheUtility.BANK_BRANCH:
+					appUserModel.lstBankBranches << bankBranchCacheUtility.read(it.entityId)
+                    break;
+                case appUserEntityTypeCacheUtility.EXCHANGE_HOUSE:
+                    appUserModel.lstExchangeHouses << armsImplService.readByExchangeHouseId(it.entityId)
+                    break;
+                case appUserEntityTypeCacheUtility.AGENT:
+                    if (exchangeHouseImplService) {
+                        appUserModel.agentId = it.entityId
+                    }
+                    break;
+            }
+        }
+
+        appUserModel.lstExchangeHouseIds = appUserModel.getIds(appUserModel.lstExchangeHouses)
+        appUserModel.lstBankBranchIds = appUserModel.getIds(appUserModel.lstBankBranches)
+        appUserModel.lstCustomerIds = appUserModel.getIds(appUserModel.lstCustomers)
+        appUserModel.lstInventoryIds = appUserModel.getIds(appUserModel.lstInventories)
+        appUserModel.lstProjectIds = appUserModel.getIds(appUserModel.lstProjects)
+        appUserModel.lstPtProjectIds = appUserModel.getIds(appUserModel.lstPtProjects)
+        appUserModel.lstGroupIds = appUserModel.getIds(appUserModel.lstGroups)
+
+        List<Object> lstRoles = userRoleService.getRolesByUser(user.id)
+        appUserModel.lstRoles = lstRoles
+        appUserModel.lstRoleIds = appUserModel.getIds(appUserModel.lstRoles)
+        populateRequestObjects(request)                                              // populate http request attributes
+        appUserModel.currentSession = session                                         // keep the session object
+        applicationSessionService.add(appUserModel)                                  // add appUserModel in application scoped service
+    }
+
+    private static final String USER_AGENT = "user-agent"
+
+    private populateRequestObjects(HttpServletRequest request) {
+        String strUserAgent = request.getHeader(USER_AGENT)
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(strUserAgent);
+        appUserModel.clientBrowser = agent.name + Tools.PARENTHESIS_START + agent.versionNumber.major + Tools.SINGLE_DOT + agent.versionNumber.minor + Tools.PARENTHESIS_END
+        appUserModel.ipAddress = request.getRemoteAddr()
+        appUserModel.clientOs = agent.operatingSystem.name
+    }
+
+    public AppUserModel getAppUserModel() {
+        return appUserModel
+    }
+
+    public List<Long> getUserRoleIds() {
+        List<Long> lstUserRoleIds = []
+        if (!appUserModel) {
+            return lstUserRoleIds
+        }
+
+        lstUserRoleIds = appUserModel.getIds(appUserModel.lstRoles)
+        return lstUserRoleIds
+    }
+
+    public List<Object> getUserInventoryListByType(long typeId) {
+        List<Object> lstTypedInventory = []
+        if (!appUserModel) {
+            return lstTypedInventory
+        }
+        List<Object> lstInventories = appUserModel.lstInventories
+        lstTypedInventory = lstInventories.findAll { it.typeId == typeId }
+        return lstTypedInventory
+    }
+
+    // Retrieve the customer ID which is associated with user
+    private Long userCustomerId = null     // class variable
+    public long getCustomerId() {
+        if (userCustomerId) return userCustomerId.longValue()
+        userCustomerId = new Long(0L)        // default value
+        if (appUserModel.lstCustomerIds.size() > 0) {
+            userCustomerId = appUserModel.lstCustomerIds[0]
+        }
+        return userCustomerId.longValue()
+    }
+
+    // Retrieve the bankBranch ID which is associated with user
+    private Long userBankBranchId = null     // class variable
+    public long getBankBranchId() {
+        if (userBankBranchId) return userBankBranchId.longValue()
+        userBankBranchId = new Long(0L)        // default value
+        if (appUserModel.lstBankBranches.size() > 0) {
+            userBankBranchId = appUserModel.lstBankBranchIds[0]
+        }
+        return userBankBranchId.longValue()
+    }
+
+    // Retrieve the bankBranch ID which is associated with user
+    private Long userExchangeHouseId = null     // class variable
+    public long getExchangeHouseId() {
+        if (userExchangeHouseId) return userExchangeHouseId.longValue()
+        userExchangeHouseId = new Long(0L)        // default value
+        if (appUserModel.lstExchangeHouses.size() > 0) {
+            userExchangeHouseId = appUserModel.lstExchangeHouseIds[0]
+        }
+        return userExchangeHouseId.longValue()
+    }
+
+    // get the instance of logged-In-User
+    public AppUser getAppUser() {
+        return appUserModel?.appUser
+    }
+
+    /**
+     * get the companyID of logged-in user
+     */
+    public long getCompanyId() {
+        return appUserModel.appUser.companyId
+    }
+
+    // check if session user has the given role
+    public boolean hasRole(long roleTypeId) {
+        try {
+            for (int i = 0; i < appUserModel.lstRoles.size(); i++) {
+                Role role = (Role) appUserModel.lstRoles[i]
+                if (role.roleTypeId == roleTypeId)
+                    return true
+            }
+            return false
+        } catch (Exception ex) {
+            return false
+        }
+    }
+
+    public List<Long> getEntityIdsByType(long typeId) {
+        List<Long> lstObjectIds = []
+        switch (typeId) {
+            case appUserEntityTypeCacheUtility.PROJECT:
+                lstObjectIds = appUserModel.lstProjectIds
+                break;
+            case appUserEntityTypeCacheUtility.PT_PROJECT:
+                lstObjectIds = appUserModel.lstPtProjectIds
+                break;
+            case appUserEntityTypeCacheUtility.INVENTORY:
+                lstObjectIds = appUserModel.lstInventoryIds
+                break;
+            case appUserEntityTypeCacheUtility.GROUP:
+                lstObjectIds = appUserModel.lstGroupIds
+                break;
+            case appUserEntityTypeCacheUtility.CUSTOMER:
+                lstObjectIds = appUserModel.lstCustomerIds
+                break;
+            case appUserEntityTypeCacheUtility.BANK_BRANCH:
+                lstObjectIds = appUserModel.lstBankBranchIds
+                break;
+        }
+        return lstObjectIds
+    }
+
+    public List<Object> getEntityObjectsByType(long typeId) {
+        List<Object> lstObjects = []
+
+        switch (typeId) {
+            case appUserEntityTypeCacheUtility.PROJECT:
+                lstObjects = appUserModel.lstProjects
+                break;
+            case appUserEntityTypeCacheUtility.PT_PROJECT:
+                lstObjects = appUserModel.lstPtProjects
+                break;
+            case appUserEntityTypeCacheUtility.INVENTORY:
+                lstObjects = appUserModel.lstInventories
+                break;
+            case appUserEntityTypeCacheUtility.GROUP:
+                lstObjects = appUserModel.lstGroups
+                break;
+            case appUserEntityTypeCacheUtility.CUSTOMER:
+                lstObjects = appUserModel.lstCustomers
+                break;
+            case appUserEntityTypeCacheUtility.BANK_BRANCH:
+                lstObjects = appUserModel.lstBankBranches
+                break;
+        }
+        return lstObjects
+    }
+
+    // Return ALL inventory id list (Store, Site...)
+    public List<Long> getUserInventoryIds() {
+        List<Object> lstObjects = appUserModel.lstInventories
+        List<Long> lstObjectsId = []
+        for (int i = 0; i < lstObjects.size(); i++) {
+            lstObjectsId << lstObjects[i].id
+        }
+        return lstObjectsId
+    }
+
+    // this method only used to pull inventory id list by type
+    public List<Long> getUserInventoryIdsByType(long inventoryType) {
+        List<Object> lstObjects = appUserModel.lstInventories
+        List<Long> lstObjectsOfType = []
+        for (int i = 0; i < lstObjects.size(); i++) {
+            if (lstObjects[i].typeId == inventoryType) {
+                lstObjectsOfType << lstObjects[i].id
+            }
+        }
+        return lstObjectsOfType
+    }
+
+    // this method only used to pull inventory id list by Project id
+    public List<Long> getUserInventoryIdsByProject(long projectId) {
+        List<Object> lstObjects = appUserModel.lstInventories
+        List<Long> lstObjectsOfType = []
+        for (int i = 0; i < lstObjects.size(); i++) {
+            if (lstObjects[i].projectId == projectId) {
+                lstObjectsOfType << lstObjects[i].id
+            }
+        }
+        return lstObjectsOfType
+    }
+
+    // this method only used to pull inventory id list by Project id
+    public List<Long> getUserInventoryIdsByTypeAndProject(long inventoryType, long projectId) {
+        List<Object> lstObjects = appUserModel.lstInventories
+        List<Long> lstObjectsOfType = []
+        for (int i = 0; i < lstObjects.size(); i++) {
+            if (lstObjects[i].projectId == projectId && lstObjects[i].typeId == inventoryType) {
+                lstObjectsOfType << lstObjects[i].id
+            }
+        }
+        return lstObjectsOfType
+    }
+
+    // this method only used to pull inventory list by Project id
+    public List<Object> getUserInventoryListByTypeAndProject(long inventoryTypeId, long projectId) {
+        List<Object> lstObjects = appUserModel.lstInventories
+        List<Object> lstObjectsOfType = []
+        for (int i = 0; i < lstObjects.size(); i++) {
+            if ((lstObjects[i].projectId == projectId) && (lstObjects[i].typeId == inventoryTypeId)) {
+                lstObjectsOfType << lstObjects[i]
+            }
+        }
+        return lstObjectsOfType
+    }
+
+    // Method returns agentId which is mapped with logged-in user (if any)
+    public long getExhAgent() {
+        if (!appUserModel) {
+            return 0L
+        }
+        return appUserModel.agentId
+    }
+}

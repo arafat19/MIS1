@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TaskInvoice" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="10" uuid="fe0fb5af-34ec-46ca-86e3-17e587071709">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="185"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/subreports/"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="taskId" class="java.lang.Long"/>
+	<parameter name="sessionUserName" class="java.lang.String"/>
+	<parameter name="remittancePurpose" class="java.lang.String"/>
+	<parameter name="paymentMethodName" class="java.lang.String"/>
+	<parameter name="paidBy" class="java.lang.String"/>
+	<parameter name="paymentMethodId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="collectionPoint" class="java.lang.String"/>
+	<parameter name="invoiceCopyLabelCustomer" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["Customer Copy"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="invoiceCopyLabelBank" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["Bank Copy"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="exchangeHouseName" class="java.lang.String"/>
+	<parameter name="payMethodBankDepositId" class="java.lang.Long"/>
+	<parameter name="payMethodCashCollectionId" class="java.lang.Long"/>
+	<parameter name="companyLogo" class="java.io.InputStream" isForPrompting="false"/>
+	<parameter name="localCurrencyName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[Select 1]]>
+	</queryString>
+	<field name="?column?" class="java.lang.Integer"/>
+	<title>
+		<band height="785" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="fde3139f-1407-414b-9a4a-e884c947ad9e" x="1" y="0" width="535" height="370"/>
+				<subreportParameter name="localCurrencyName">
+					<subreportParameterExpression><![CDATA[$P{localCurrencyName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="taskId">
+					<subreportParameterExpression><![CDATA[$P{taskId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="invoiceCopyLabelBank">
+					<subreportParameterExpression><![CDATA[$P{invoiceCopyLabelBank}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="collectionPoint">
+					<subreportParameterExpression><![CDATA[$P{collectionPoint}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paymentMethodName">
+					<subreportParameterExpression><![CDATA[$P{paymentMethodName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="invoiceCopyLabelCustomer">
+					<subreportParameterExpression><![CDATA[$P{invoiceCopyLabelCustomer}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sessionUserName">
+					<subreportParameterExpression><![CDATA[$P{sessionUserName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="invoiceCopyLabel">
+					<subreportParameterExpression><![CDATA[$P{invoiceCopyLabelCustomer}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="payMethodBankDepositId">
+					<subreportParameterExpression><![CDATA[$P{payMethodBankDepositId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyLogo">
+					<subreportParameterExpression><![CDATA[$P{companyLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paymentMethodId">
+					<subreportParameterExpression><![CDATA[$P{paymentMethodId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="exchangeHouseName">
+					<subreportParameterExpression><![CDATA[$P{exchangeHouseName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paidBy">
+					<subreportParameterExpression><![CDATA[$P{paidBy}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="remittancePurpose">
+					<subreportParameterExpression><![CDATA[$P{remittancePurpose}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="payMethodCashCollectionId">
+					<subreportParameterExpression><![CDATA[$P{payMethodCashCollectionId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "SubTaskInvoice.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="a9e75cbf-04aa-4077-9742-1f22f0752a8d" x="1" y="415" width="535" height="370"/>
+				<subreportParameter name="localCurrencyName">
+					<subreportParameterExpression><![CDATA[$P{localCurrencyName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="taskId">
+					<subreportParameterExpression><![CDATA[$P{taskId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="invoiceCopyLabelBank">
+					<subreportParameterExpression><![CDATA[$P{invoiceCopyLabelBank}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="collectionPoint">
+					<subreportParameterExpression><![CDATA[$P{collectionPoint}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paymentMethodName">
+					<subreportParameterExpression><![CDATA[$P{paymentMethodName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="invoiceCopyLabelCustomer">
+					<subreportParameterExpression><![CDATA[$P{invoiceCopyLabelCustomer}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sessionUserName">
+					<subreportParameterExpression><![CDATA[$P{sessionUserName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="invoiceCopyLabel">
+					<subreportParameterExpression><![CDATA[$P{invoiceCopyLabelBank}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="payMethodBankDepositId">
+					<subreportParameterExpression><![CDATA[$P{payMethodBankDepositId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyLogo">
+					<subreportParameterExpression><![CDATA[$P{companyLogo}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paymentMethodId">
+					<subreportParameterExpression><![CDATA[$P{paymentMethodId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="exchangeHouseName">
+					<subreportParameterExpression><![CDATA[$P{exchangeHouseName}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="paidBy">
+					<subreportParameterExpression><![CDATA[$P{paidBy}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="remittancePurpose">
+					<subreportParameterExpression><![CDATA[$P{remittancePurpose}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="payMethodCashCollectionId">
+					<subreportParameterExpression><![CDATA[$P{payMethodCashCollectionId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "SubTaskInvoice.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement uuid="db8392b3-0619-48a6-9750-d75d60c0f957" x="1" y="392" width="535" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Dashed"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+</jasperReport>

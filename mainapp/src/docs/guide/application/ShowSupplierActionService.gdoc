@@ -1,0 +1,52 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Supplier* | |
+*ActionService:* | ShowSupplierActionService | *Auditable:* | No
+*Url:* | /supplier/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 24th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Supplier* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Supplier* link.
+* Show Landing Page of *Supplier*.
+
+h4. Pre-condition:
+* User must have "Show supplier" privilege.
+
+h4. Process:
+* [Get List of all "Supplier" from server|guide:ListSupplierActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Supplier"|guide:CreateSupplierActionService].
+** Show list of all *Supplier* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Supplier" in Edit Mode|guide:SelectSupplierActionService].
+* [Delete "Supplier"|guide:DeleteSupplierActionService].
+* [Search "Supplier" From Grid View|guide:SearchSupplierActionService].
+* [Show Landing Page of "Supplier Item"|guide:ShowSupplierItemActionService].
+
+!application/Supplier_Show.png!

@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Vehicle* | |
+*ActionService:* | DeleteVehicleActionService | *Auditable:* | No
+*Url:* | /vehicle/delete | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 18th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Vehicle* link.
+* [Show Landing Page of Vehicle|guide:ShowVehicleActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Vehicle*.
+
+h4. Pre-condition:
+* User must have "Delete vehicle" privilege.
+* If *Vehicle* has dependency with following business entity then selected *Vehicle* will not be delete-able:
+** Inventory In from Supplier
+** Inventory Out
+
+h4. Process:
+* Delete a selected *Vehicle*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Vehicle* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

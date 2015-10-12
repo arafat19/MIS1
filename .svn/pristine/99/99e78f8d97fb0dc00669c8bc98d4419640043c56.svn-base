@@ -1,0 +1,35 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-45 | Priority: | High
+ *Name* | Show Consumption Against Asset Summary Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fixedAssetReport/showConsumptionAggainstAsset | *Action Class:* | ShowForConsumptionAgainstAssetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 12th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+# Show blank input form of Consumption Against Asset Summary Report, so that actor can Search Consumption Against Asset Summary Report.
+# [List of Consumption Summary Report|guide:ListForConsumptionAgainstAssetActionService].
+
+h4. Post-condition:
+
+# *Success:*
+## Show Consumption Against Asset Summary Report landing page at grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

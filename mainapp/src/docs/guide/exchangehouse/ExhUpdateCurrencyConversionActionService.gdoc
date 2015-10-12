@@ -1,0 +1,60 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Currency Conversion* | |
+*ActionService:* | ExhUpdateCurrencyConversionActionService | *Auditable:* | No
+*Url:* | /exhCurrencyConversion/update | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Currency Conversion* link.
+* [Show Landing Page of "Currency Conversion"|guide:ExhShowCurrencyConversionActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Currency Conversion" in Edit Mode|guide:ExhSelectCurrencyConversionActionService].
+* User must enter valid input to update.
+* Click "Update" button.
+* Update *Currency Conversion*.
+
+h4. Pre-condition:
+* User must have "Update currency conversion" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [From Currency|guide:ExhCurrencyConversionDropDownTagLib] | Drop Down List | Numeric | Required
+ [To Currency|guide:ExhCurrencyConversionDropDownTagLib] | Drop Down List | Numeric | Required
+ Buy Rate | Text Box | Alpha Numeric | Required
+ Sell Rate | Text Box | Alpha Numeric | Required
+ {table}
+
+* Match expected version before updating a *Currency Conversion*.
+* *Currency Conversion* must be unique.
+
+h4. Process:
+* Update selected *Currency Conversion*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Currency Conversion* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

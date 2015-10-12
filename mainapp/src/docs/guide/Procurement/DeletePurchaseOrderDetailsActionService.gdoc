@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Delete Item of *Purchase Order*  | |
+ *ActionService:* | DeletePurchaseOrderDetailsActionService | *Auditable:* | No
+ *Url*: | /procPurchaseOrderDetails/delete | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show landing page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click *Items* button.
+* [Show Item of PO Landing Page|guide:ShowPurchaseOrderDetailsActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete Item of *Purchase Order*.
+
+
+h4. Pre-condition:
+* User must have "Delete Purchase Order Details" privilege.
+* If Item of *Purchase Order* items have dependency with following business entity then that item will not be delete-able.
+** Inventory In From Supplier.
+
+h4. Process:
+Delete selected *Item* of "Purchase Order".
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Item* of *Purchase Order* from grid view  .
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

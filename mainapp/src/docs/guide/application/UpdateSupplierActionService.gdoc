@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Supplier* | |
+*ActionService:* | UpdateSupplierActionService | *Auditable:* | No
+*Url:* | /supplier/update | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 24th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Supplier* link.
+* [Show Landing Page of Supplier|guide:ShowSupplierActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Supplier in Edit Mode|guide:SelectSupplierActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Supplier*.
+
+h4. Pre-condition:
+* User must have "Update supplier" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Supplier Type|guide:PopulateSupplierTypeList] | Drop Down List | Numeric | Required
+Name | Text Box | Alpha Numeric | Required & Unique
+Bank Name | Text Box | Alpha Numeric | Optional
+Account Name | Text Box | Alpha Numeric | Required
+Account No | Text Box | Alpha Numeric | Optional
+Address | Text Area | Alpha Numeric | Optional
+{table}
+
+* Match expected version before updating a *Supplier*.
+
+h4. Process:
+* Update selected *Supplier*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Supplier* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

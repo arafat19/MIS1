@@ -1,0 +1,79 @@
+<plugin name='accounting' version='0.1' grailsVersion='2.2.0 &gt; *'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>\
+Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/accounting</documentation>
+  <type>AccountingGrailsPlugin</type>
+  <resources>
+    <resource>AccDefaultDataBootStrap</resource>
+    <resource>AccSchemaUpdateBootStrap</resource>
+    <resource>AccountingBootStrap</resource>
+    <resource>AccountingPluginConfig</resource>
+    <resource>com.athena.mis.accounting.controller.AccChartOfAccountController</resource>
+    <resource>com.athena.mis.accounting.controller.AccCustomGroupController</resource>
+    <resource>com.athena.mis.accounting.controller.AccDivisionController</resource>
+    <resource>com.athena.mis.accounting.controller.AccFinancialYearController</resource>
+    <resource>com.athena.mis.accounting.controller.AccGroupController</resource>
+    <resource>com.athena.mis.accounting.controller.AccIouPurposeController</resource>
+    <resource>com.athena.mis.accounting.controller.AccReportController</resource>
+    <resource>com.athena.mis.accounting.controller.AccSubAccountController</resource>
+    <resource>com.athena.mis.accounting.controller.AccTier1Controller</resource>
+    <resource>com.athena.mis.accounting.controller.AccTier2Controller</resource>
+    <resource>com.athena.mis.accounting.controller.AccTier3Controller</resource>
+    <resource>com.athena.mis.accounting.controller.AccVoucherController</resource>
+    <resource>com.athena.mis.accounting.controller.AccVoucherTypeCoaController</resource>
+    <resource>com.athena.mis.accounting.entity.AccChartOfAccount</resource>
+    <resource>com.athena.mis.accounting.entity.AccCustomGroup</resource>
+    <resource>com.athena.mis.accounting.entity.AccDivision</resource>
+    <resource>com.athena.mis.accounting.entity.AccFinancialYear</resource>
+    <resource>com.athena.mis.accounting.entity.AccGroup</resource>
+    <resource>com.athena.mis.accounting.entity.AccIouPurpose</resource>
+    <resource>com.athena.mis.accounting.entity.AccIouSlip</resource>
+    <resource>com.athena.mis.accounting.entity.AccPrefix</resource>
+    <resource>com.athena.mis.accounting.entity.AccSubAccount</resource>
+    <resource>com.athena.mis.accounting.entity.AccTier1</resource>
+    <resource>com.athena.mis.accounting.entity.AccTier2</resource>
+    <resource>com.athena.mis.accounting.entity.AccTier3</resource>
+    <resource>com.athena.mis.accounting.entity.AccType</resource>
+    <resource>com.athena.mis.accounting.entity.AccVoucher</resource>
+    <resource>com.athena.mis.accounting.entity.AccVoucherDetails</resource>
+    <resource>com.athena.mis.accounting.entity.AccVoucherTypeCoa</resource>
+    <resource>com.athena.mis.accounting.model.AccVoucherModel</resource>
+    <resource>com.athena.mis.accounting.integration.AccPluginConnectorService</resource>
+    <resource>com.athena.mis.accounting.service.AccChartOfAccountService</resource>
+    <resource>com.athena.mis.accounting.service.AccCustomGroupService</resource>
+    <resource>com.athena.mis.accounting.service.AccDivisionService</resource>
+    <resource>com.athena.mis.accounting.service.AccFinancialYearService</resource>
+    <resource>com.athena.mis.accounting.service.AccGroupService</resource>
+    <resource>com.athena.mis.accounting.service.AccIndexGeneratorService</resource>
+    <resource>com.athena.mis.accounting.service.AccIouPurposeService</resource>
+    <resource>com.athena.mis.accounting.service.AccIouSlipService</resource>
+    <resource>com.athena.mis.accounting.service.AccPrefixService</resource>
+    <resource>com.athena.mis.accounting.service.AccReportService</resource>
+    <resource>com.athena.mis.accounting.service.AccSubAccountService</resource>
+    <resource>com.athena.mis.accounting.service.AccTier1Service</resource>
+    <resource>com.athena.mis.accounting.service.AccTier2Service</resource>
+    <resource>com.athena.mis.accounting.service.AccTier3Service</resource>
+    <resource>com.athena.mis.accounting.service.AccTypeService</resource>
+    <resource>com.athena.mis.accounting.service.AccVoucherDetailsService</resource>
+    <resource>com.athena.mis.accounting.service.AccVoucherService</resource>
+    <resource>com.athena.mis.accounting.service.AccVoucherTypeCoaService</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://download.java.net/maven/2/' url='http://download.java.net/maven/2/' />
+    <repository name='https://repository.jboss.org/nexus/' url='https://repository.jboss.org/nexus/' />
+  </repositories>
+  <dependencies />
+  <plugins>
+    <build>
+      <plugin group='org.grails.plugins' name='tomcat' version='2.2.0' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.0' />
+    </build>
+  </plugins>
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete "User-Agent Mapping" | |
+*ActionService:* | DeleteUserAgentActionService | *Auditable:* | No
+*Url:* | /exhUserAgent/delete | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of "Agent"|guide:ShowExhAgentActionService].
+* Select a Line-Item from grid view.
+* Click "User" button from tool bar.
+* [Show Landing Page of "User-Agent Mapping"|guide:ShowUserAgentActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete "User-Agent Mapping".
+
+h4. Pre-condition:
+* User must have "Delete User Agent" privilege.
+
+h4. Process:
+* Delete selected "User-Agent Mapping".
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected "User-Agent Mapping" from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

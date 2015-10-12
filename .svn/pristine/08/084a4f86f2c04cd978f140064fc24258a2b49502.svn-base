@@ -1,0 +1,2 @@
+<g:render template='/sarb/taskModel/scriptForSendReplaceTask'></g:render>
+<table id="flex1" style="display: none"></table>

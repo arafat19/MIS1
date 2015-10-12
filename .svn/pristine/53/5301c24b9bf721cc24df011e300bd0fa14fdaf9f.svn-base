@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Active Backlog* | |
+*ActionService:* | showForActive | *Auditable:* | No
+*Url:* | /ptBacklog/showForActive | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+This is the landing page of "Active Backlog" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "Active" link.
+* Show Landing Page of *Active Backlog*.
+
+h4. Pre-condition:
+* User must have "Show Active Backlog" privilege.
+
+h4. Process:
+* Show blank input form to [Create "Backlog"|guide:CreatePtBacklogActionService].
+* [List of all "Backlog"|guide:ListPtBacklogActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Backlog* information in grid view.
+** Reset input form on top to create new *Backlog*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+
+!projecttrack/Show-Active.png!

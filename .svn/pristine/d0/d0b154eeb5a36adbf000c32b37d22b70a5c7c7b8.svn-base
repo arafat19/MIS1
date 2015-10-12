@@ -1,0 +1,360 @@
+<script language="javascript" type="text/javascript">
+
+    var output = false;
+    var appMailListModel = false;
+
+    $(document).ready(function () {
+        onLoadAppMailPage();
+    });
+
+    function onLoadAppMailPage() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#appMailForm"), onSubmitAppMailForm);
+
+        initGrid();
+        output =${output ? output : ''};
+        if (output.isError) {
+            showError(data.message);
+        } else {
+            appMailListModel = output.appMailList;
+        }
+
+        var pluginId = output.pluginId;
+
+        populateFlex1(pluginId);
+
+        // update page title
+        $(document).attr('title', "Update Mail");
+        loadMenu(pluginId);
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#appMailForm"))) {
+            return false;
+        }
+
+        if ($('#id').val().isEmpty()) {
+            showError('Please select mail from grid to update ');
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitAppMailForm() {
+
+        if (executePreCondition() == false) {
+            return false;
+        }
+        setButtonDisabled($('#update'), true);
+        showLoadingSpinner(true);
+
+        var actionUrl = "${createLink(controller: 'appMail', action: 'update')}";
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#appMailForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#update'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                var newEntry = result.entity;
+                if ($('#id').val().isEmpty() && newEntry != null) { // newly created
+
+                    var previousTotal = parseInt(appMailListModel.total);
+                    var firstSerial = 1;
+
+                    if (appMailListModel.rows.length > 0) {
+                        firstSerial = appMailListModel.rows[0].cell[0];
+                        regenerateSerial($(appMailListModel.rows), 0);
+                    }
+                    newEntry.cell[0] = firstSerial;
+                    appMailListModel.rows.splice(0, 0, newEntry);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        appMailListModel.rows.pop();
+                    }
+
+                    appMailListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(appMailListModel);
+
+                } else if (newEntry != null) { // updated existing
+                    updateListModel(appMailListModel, newEntry, 0);
+                    $("#flex1").flexAddData(appMailListModel);
+                }
+
+                resetForm();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#appMailForm"), $("#roleIds"));
+        $("#update").html("<span class='k-icon k-i-plus'></span>Update");
+        $("#transactionCode").html('');
+        resetRequiredFields();
+    }
+
+    function resetRequiredFields(){
+        $('#roleIds').removeAttr('disabled');
+        $('#labelRoleIds').removeClass('label-required');
+        $('#labelRoleIds').addClass('label-optional');
+        $('#roleIds').removeAttr('required');
+        $('#roleIds').removeAttr('validationMessage');
+
+        $('#recipients').removeAttr('disabled');
+        $('#labelRecipients').removeClass('label-required');
+        $('#labelRecipients').addClass('label-optional');
+        $('#recipients').removeAttr('required');
+        $('#recipients').removeAttr('validationMessage');
+        return false;
+    }
+
+    function initGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 50, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 40, sortable: false, align: "right", hide: true},
+                        {display: "Subject", name: "subject", width: 285, sortable: false, align: "left"},
+                        {display: "Transaction Code", name: "transactionCode", width: 290, sortable: false, align: "left"},
+                        {display: "Role ID", name: "roleIds", width: 120, sortable: false, align: "left"},
+                        {display: "Active", name: "isActive", width: 50, sortable: false, align: "center"},
+                        {display: "Manual Send", name: "isManualSend", width: 130, sortable: false, align: "center"},
+                        {display: "Controller", name: "controllerName", width: 80, sortable: false, align: "center", hide: true},
+                        {display: "Action", name: "actionName", width: 80, sortable: false, align: "center", hide: true}
+                    ],
+                    buttons: [
+                        {name: 'Edit', bclass: 'edit', onpress: editAppMail},
+                        {name: 'Send Mail', bclass: 'viewCost', onpress: sendAppMail},
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+
+                    sortname: "name",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'App Mail List',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 25,
+                    customPopulate: customPopulateAppMailGrid
+                }
+        );
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flex1').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function customPopulateAppMailGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            appMailListModel = getEmptyGridModel();
+        } else {
+            appMailListModel = data;
+        }
+        $("#flex1").flexAddData(appMailListModel);
+        return false;
+    }
+
+    function editAppMail(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'mail') == false) {
+            return;
+        }
+        resetForm();
+        showLoadingSpinner(true);
+
+        var appMailId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'appMail', action: 'select')}?id=" + appMailId,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showAppMail(data);
+        }
+    }
+
+    function showAppMail(data) {
+        var entity = data.entity;
+        $("#id").val(entity.id);
+        $('#version').val(data.version);
+        $("#subject").val(entity.subject);
+        $("#body").val(entity.body);
+        $("#transactionCode").text(entity.transactionCode);
+        $("#roleIds").val(entity.roleIds);
+        $("#recipients").val(entity.recipients);
+        if (entity.isActive) {
+            $('#isActive').attr('checked', 'checked');
+        }
+        toggleRequiredRoleIds(entity.isRequiredRoleIds);
+        toggleRequiredRecipients(entity.isRequiredRecipients);
+    }
+
+    function sendAppMail(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'mail') == false) {
+            return;
+        }
+        var ids = $('.trSelected', $('#flex1'));
+        var isManualSend = $.trim($(ids[0]).find('td').eq(6).find('div').text());
+        if (isManualSend == 'NO') {
+            showError('The selected mail can not be send manually');
+            return false;
+        }
+
+        var transactionCode = $.trim($(ids[0]).find('td').eq(3).find('div').text());
+        var controllerStr = $.trim($(ids[0]).find('td').eq(7).find('div').text());
+        var actionStr = $.trim($(ids[0]).find('td').eq(8).find('div').text());
+
+        if (!controllerStr || !actionStr) {
+            showError('Mail action not found');
+            return false;
+        }
+        if (!confirm('Are you sure you want to send this mail now?')) {
+            return false;
+        }
+        var strUrl = '/' + controllerStr + '/' + actionStr;
+        showLoadingSpinner(true);
+
+        $.ajax({
+            url: strUrl,
+            data: {transactionCode: transactionCode},
+            success: executePostConditionForSendMail,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForSendMail(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showSuccess(data.message);
+        }
+    }
+
+    function populateFlex1(pluginId) {
+        <sec:access url="/appMail/list">
+        var strUrl = "${createLink(controller:'appMail', action: 'list')}?plugin=" + pluginId;
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (appMailListModel) {
+            $("#flex1").flexAddData(appMailListModel);
+        }
+        </sec:access>
+    }
+
+    <%-- Load Menu and set left-menu selected  --%>
+
+    function loadMenu(pluginId) {
+        var menuId;
+
+        switch (pluginId) {
+            case 1:
+                menuId = MENU_ID_APPLICATION
+                break
+            case 2:
+                menuId = MENU_ID_ACCOUNTING
+                break
+            case 3:
+                menuId = MENU_ID_BUDGET
+                break
+            case 4:
+                menuId = MENU_ID_INVENTORY
+                break
+            case 5:
+                menuId = MENU_ID_PROCUREMENT
+                break
+            case 6:
+                menuId = MENU_ID_QS
+                break
+            case 7:
+                menuId = MENU_ID_FIXED_ASSET
+                break
+            case 9:
+                menuId = MENU_ID_EXCHANGE_HOUSE
+                break
+            case 10:
+                menuId = MENU_ID_PROJECT_TRACK
+                break
+            case 13:
+                menuId = MENU_ID_DOCUMENT
+                break
+            default:
+                menuId = MENU_ID_APPLICATION
+        }
+        loadNumberedMenu(menuId, "#appMail/show?plugin=" + pluginId);
+    }
+
+    function toggleRequiredRoleIds(entityData) {
+        if (entityData) {
+            $('#roleIds').removeAttr('disabled');
+            $('#labelRoleIds').removeClass('label-optional');
+            $('#labelRoleIds').addClass('label-required');
+            $('#roleIds').attr('required', 'required');
+            $('#roleIds').attr('validationMessage', 'Required');
+        } else {
+            $('#roleIds').attr('disabled', 'disable');
+            $('#labelRoleIds').removeClass('label-required');
+            $('#labelRoleIds').addClass('label-optional');
+            $('#roleIds').removeAttr('required');
+            $('#roleIds').removeAttr('validationMessage');
+        }
+    }
+
+    function toggleRequiredRecipients(entityData) {
+        if (entityData) {
+            $('#roleIds').removeAttr('disabled');
+            $('#recipients').removeAttr('disabled');
+            $('#labelRecipients').removeClass('label-optional');
+            $('#labelRecipients').addClass('label-required');
+            $('#recipients').attr('required', 'required');
+            $('#recipients').attr('validationMessage','Required');
+            $('#recipients').focus();
+        } else {
+            $('#recipients').attr('disabled', 'disable');
+            $('#labelRecipients').removeClass('label-required');
+            $('#labelRecipients').addClass('label-optional');
+            $('#recipients').removeAttr('required');
+            $('#recipients').removeAttr('validationMessage');
+        }
+    }
+
+</script>

@@ -1,0 +1,148 @@
+<script type="text/javascript">
+    var modelJsonForIndent;
+    jQuery(function ($) {
+        modelJsonForIndent = ${modelJson};
+        $('#printIndentReport').click(function () {
+            printIndent();
+            return false;
+        });
+
+        // update page title
+        $(document).attr('title', "MIS - Indent");
+        loadNumberedMenu(MENU_ID_PROCUREMENT, "#procReport/showIndentRpt");
+        onLoadIndent();
+    });
+
+    function printIndent() {
+        var indentId = $('#hideIndentId').val();
+        if (indentId.length <= 0) {
+            showError('First populate indent details then click print');
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?hideIndentId=" + indentId;
+        if (confirm('Do you want to download the indent now?')) {
+            var url = "${createLink(controller: 'procReport', action: 'downloadIndentRpt')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function onLoadIndent() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#searchForm"), getIndent);
+
+        try {   // Model will be supplied to grid on load _list.gsp
+            $('.download_icon_set').hide();
+            if (modelJsonForIndent.indentMap) {
+
+                populateIndent(modelJsonForIndent.indentMap);
+                populateItemDetails(modelJsonForIndent.itemList);
+                $("#id").val(modelJsonForIndent.indentMap.indentId);
+            }
+        } catch (e) {
+            showError(e.message);
+        }
+    }
+
+    function executePreConditionToGetIndent(ids) {
+        if (!validateForm($('#searchForm'))) {
+            return false;
+        }
+        if (ids.length == 0) {
+            showError("Please enter an indent Id");
+            return false;
+        }
+        return true;
+    }
+
+    function getIndent() {
+
+        var id = $('#id').val();
+        if (executePreConditionToGetIndent(id) == false) {
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'procReport', action: 'searchIndentRpt')}?id=" + id,
+            success: executePostConditionForIndent,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForIndent(data) {
+        if (data.isError) {
+            showError(data.message);
+            $('#divIndent').hide();
+            $('.download_icon_set').hide();
+            return;
+        }
+
+        populateIndent(data.indentMap);
+        populateItemDetails(data.itemList);
+        return false;
+    }
+
+    function clearIndent() {
+        $('#lblId').text('');
+        $('#indentId').val('');
+        $('#lblIndentCreatedDate').text('');
+        $('#lblCreatedBy').text('');
+        $('#lblProjectName').text('');
+        $('#lblProjectAddress').text('');
+        $('#fromDate').text('');
+        $('#toDate').text('');
+        $('#lblApprovedBy').text('');
+        $('#lblTotalAmount').text('');
+    }
+
+    function populateIndent(indentMap) {
+        $('.download_icon_set').show();
+        clearIndent();
+        $('#divIndent').show();
+        $('#hide1').show();
+        $('#hide2').show();
+        $('#lblId').text(indentMap.indentId);
+        $('#hideIndentId').val(indentMap.indentId);
+        $('#lblIndentCreatedDate').text(indentMap.createdOn);
+        $('#lblCreatedBy').text(indentMap.createdBy);
+        $('#lblProjectName').text(indentMap.projectName);
+        $('#lblProjectAddress').text(indentMap.projectDescription);
+        $('#fromDate').text(indentMap.fromDate);
+        $('#toDate').text(indentMap.toDate);
+        $('#indentDetailsItemList').hide();
+        $('#lblApprovedBy').text(indentMap.approvedBy);
+        $('#lblTotalAmount').text(indentMap.totalAmount);
+    }
+
+    function populateItemDetails(itemList) {
+        var lstItem = $(itemList);
+        if (lstItem.length <= 0) {
+            $('#hide1').hide();
+            $('#hide2').hide();
+            return;
+        }
+        var serialCount = 1;
+        $('#indentDetailsItemList').show();
+
+        var tbody = $('#tblItems');
+        tbody.html('');
+
+        lstItem.each(function (idx) {
+            var eachObject = lstItem[idx];
+            tbody.append($('<tr></tr>')
+                    .append($('<td></td>').html(serialCount++))
+                    .append($('<td></td>').html(eachObject.itemName))
+                    .append($('<td></td>').html(eachObject.quantity))
+                    .append($('<td></td>').html(eachObject.rate))
+                    .append($('<td></td>').html(eachObject.total))
+            );
+        });
+    }
+
+</script>

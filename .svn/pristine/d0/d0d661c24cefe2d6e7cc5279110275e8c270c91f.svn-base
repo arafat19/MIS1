@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Module* in landing page| |
+*ActionService:* | ListPtModuleActionService | *Auditable:* | No
+*Url:* | /ptModule/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Module* link.
+* Show List of *Module* in [landing page |guide:ShowPtModuleActionService].
+
+h4. Pre-condition:
+* User must have "List all Module" privilege.
+
+h4. Process:
+* Get list of *Module* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Name
+
+h4. Post-condition:
+
+* *Success:*
+** *Module* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "Module" From Grid View|guide:SearchPtModuleActionService].
+
+!projecttrack/List-Module.png!

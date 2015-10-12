@@ -1,0 +1,66 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Create Un-Approve "Inventory Production" | |
+ *ActionService:* | CreateForInvProductionWithConsumptionActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransaction/createinvProductionWithConsumption | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date* | *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Create Un-approve of "Inventory Production" means Create a Group of "Inventory Production" by name of Inventory,Production Line Item,Production Date,Raw Materials and Finish Materials.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "New"Production link.
+* [Show Landing Page of Un-Approved "Inventory Production"|guide:ShowForInvProductionWithConsumptionActionService].
+* User must insert valid input.
+* Click "Create" Button.
+* Create Un-Approve "Inventory Production".
+
+h4. Pre-condition:
+* User must have "Create Inventory production" privilege.
+* Follow the rules of validation:{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* |
+ [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required |
+ [*Inventory*|guide:GetInventoryListIsFactoryByInvTypeActionService] | Drop-Down List | Numeric | Required |
+ [Populate Production Line Item List|guide:GetDropDownInventoryProductionLineItemTagLibActionService] | Drop-Down List | Numeric | Required |
+ Production Date | Calender | Alpha-Numeric | Required |
+ Comments | Text Area | Alpha Numeric | Optional | 
+ [Material(Raw Materials)|guide:GetBothMaterialsForLineItemActionService] | Drop-Down List | Numeric | Required |
+ Quantity(Raw Materials) | Text Box | Numeric | Required | 
+ [Material(Finished Products)|guide:GetBothMaterialsForLineItemActionService] | Drop-Down List | Numeric | Required |
+ Quantity(Finished Products) | Text Box | Numeric | Required | 
+ Overhead Cost | Read Only | Alpha Numeric |  |
+{table}
+
+* Created Un-approve "Inventory Production" must be unique.
+
+
+h4. Process:
+Create a new Un-approve "Inventory Production".
+
+h4. Post-condition:
+* After create an "Production Item", it will approve automatically.
+
+* *Success:*
+** Add Newly Created Un-approve "Inventory Production" into grid view(should be 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Un-Approve "Inventory Production" Landing Page|guide:ShowForInvProductionWithConsumptionActionService].
+
+!Inv/Inventory_Production_Create.png!

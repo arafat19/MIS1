@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="storesummary" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="0cde4c09-d9d0-4eb2-8723-a06e4637cd08">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="startDate" class="java.sql.Timestamp"/>
+	<parameter name="endDate" class="java.sql.Timestamp"/>
+	<parameter name="inventoryId" class="java.lang.Long"/>
+	<parameter name="inventoryName" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+            totals_a.item_id m_in_id,
+            m1.name m_in_name,
+            totals_b.item_id m_out_id,
+            m2.name m_out_name,
+            totals_a.transaction_date d_in,
+            totals_b.transaction_date d_out,
+            totals_a.total_quantity || ' ' || m1.unit q_in_with_unit,
+            totals_b.total_quantity || ' ' || m2.unit q_out_with_unit,
+            totals_a.total_quantity q_in,
+            totals_b.total_quantity q_out,
+	  totals_a.count_in,totals_b.count_out
+        FROM
+        (
+            SELECT count(iitd.id) count_in, date(iitd.transaction_date) transaction_date,iitd.item_id,
+		SUM(iitd.actual_quantity) AS total_quantity
+            FROM inv_inventory_transaction_details iitd
+            WHERE iitd.transaction_date BETWEEN $P{startDate} AND $P{endDate}
+            AND iitd.inventory_id=$P{inventoryId}
+            AND iitd.is_increase=true
+	  AND iitd.approved_by>0
+            GROUP BY DATE(iitd.transaction_date),iitd.item_id
+        ) AS totals_a
+        FULL OUTER JOIN
+        (
+            SELECT count(iitd.id) count_out, date(iitd.transaction_date) transaction_date,iitd.item_id,
+		SUM(iitd.actual_quantity) AS total_quantity
+            FROM inv_inventory_transaction_details iitd
+            WHERE iitd.transaction_date BETWEEN $P{startDate} AND $P{endDate}
+            AND iitd.inventory_id=$P{inventoryId}
+            AND iitd.is_increase=false
+	  AND iitd.approved_by>0
+            GROUP BY DATE(iitd.transaction_date),iitd.item_id
+        ) AS totals_b
+        ON totals_a.item_id = totals_b.item_id
+        AND totals_a.transaction_date = totals_b.transaction_date
+        LEFT JOIN item  m1 ON (m1.id=totals_a.item_id)
+        LEFT JOIN item  m2 ON (m2.id=totals_b.item_id)
+        ORDER BY totals_a.transaction_date,totals_b.transaction_date]]>
+	</queryString>
+	<field name="m_in_id" class="java.lang.Long"/>
+	<field name="m_in_name" class="java.lang.String"/>
+	<field name="m_out_id" class="java.lang.Long"/>
+	<field name="m_out_name" class="java.lang.String"/>
+	<field name="d_in" class="java.sql.Date"/>
+	<field name="d_out" class="java.sql.Date"/>
+	<field name="q_in_with_unit" class="java.lang.String"/>
+	<field name="q_out_with_unit" class="java.lang.String"/>
+	<field name="q_in" class="java.math.BigDecimal"/>
+	<field name="q_out" class="java.math.BigDecimal"/>
+	<field name="count_in" class="java.lang.Long"/>
+	<field name="count_out" class="java.lang.Long"/>
+	<variable name="itemName" class="java.lang.String">
+		<variableExpression><![CDATA[$F{m_in_name}?$F{m_in_name}:$F{m_out_name}]]></variableExpression>
+	</variable>
+	<variable name="inventoryDate" class="java.util.Date">
+		<variableExpression><![CDATA[$F{d_in}?$F{d_in}:$F{d_out}]]></variableExpression>
+	</variable>
+	<variable name="totalIn" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{count_in}]]></variableExpression>
+	</variable>
+	<variable name="totalOut" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{count_out}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="86">
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="eec9680a-22cd-4106-bd53-ef4bf33b0dfb" x="133" y="42" width="144" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{startDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="6ae41ef2-d9f5-48c1-a06a-ef941d87eabd" x="133" y="56" width="144" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{endDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3e4ce36b-f8f9-449e-9cdc-ed2c159c6c22" x="133" y="28" width="144" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{inventoryName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7e7aa670-a446-4791-b94b-095db761e8e5" x="0" y="70" width="133" height="16"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<leftPen lineWidth="0.0" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineColor="#333333"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2c974a0b-a192-4feb-b3ac-0b2ea34750a8" x="133" y="70" width="144" height="16"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<leftPen lineWidth="0.0" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineColor="#333333"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5b7db599-60e1-465b-bb90-cc4ec15fceb1" x="410" y="70" width="76" height="16"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<leftPen lineWidth="0.0" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Quantity(Out)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5e738dbc-e931-4017-8dfc-37b9396f4a77" x="277" y="70" width="93" height="16"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<leftPen lineWidth="0.0" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total Quantity(IN)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5e738dbc-e931-4017-8dfc-37b9396f4a77" x="370" y="70" width="40" height="16"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<leftPen lineWidth="0.0" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Count(IN)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5e738dbc-e931-4017-8dfc-37b9396f4a77" x="486" y="70" width="49" height="16"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<leftPen lineWidth="0.0" lineColor="#333333"/>
+					<rightPen lineWidth="0.0" lineColor="#333333"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Count(OUT)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="12324a44-1089-4582-b2c4-4682f0f52469" x="0" y="28" width="133" height="14"/>
+				<textElement/>
+				<text><![CDATA[Inventory Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="12324a44-1089-4582-b2c4-4682f0f52469" x="0" y="42" width="133" height="14"/>
+				<textElement/>
+				<text><![CDATA[Start Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="12324a44-1089-4582-b2c4-4682f0f52469" x="0" y="0" width="133" height="14"/>
+				<textElement/>
+				<text><![CDATA[Inventory Summary in CSV]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="12324a44-1089-4582-b2c4-4682f0f52469" x="0" y="56" width="133" height="14"/>
+				<textElement/>
+				<text><![CDATA[End Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="12324a44-1089-4582-b2c4-4682f0f52469" x="0" y="14" width="133" height="14"/>
+				<textElement/>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="3e4ce36b-f8f9-449e-9cdc-ed2c159c6c22" x="133" y="14" width="144" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="17">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="8f48c5e1-2b36-45fd-8e32-bd6aace63273" x="277" y="0" width="93" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{q_in_with_unit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="1d233407-131c-4cea-8fc8-30c935b115a7" x="410" y="0" width="76" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{q_out_with_unit}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="fd96bd58-655d-450e-a6bf-3223ac40abdd" x="133" y="0" width="144" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{itemName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="90f16d45-660b-48e5-85e5-0d6caae47758" x="0" y="0" width="133" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{inventoryDate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="8f48c5e1-2b36-45fd-8e32-bd6aace63273" x="370" y="0" width="40" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{count_in}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="8f48c5e1-2b36-45fd-8e32-bd6aace63273" x="486" y="0" width="49" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{count_out}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

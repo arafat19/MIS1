@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Remittance Summary" Report | |
+*ActionServices:* | ExhShowRemittanceSummaryReportAdminActionService | *Auditable:* | No
+*Url:* | /exhReport/showSummaryReportForAdmin | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Remittance Summary" Report with input form on top.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Remittance Summary" link.
+* Show Landing Page of "Remittance Summary" Report.
+
+h4. Pre-condition:
+* User must have "Show summary report for admin" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Remittance Summary" report.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Remittance Summary" Report in HTML Format|guide:ExhListCashierWiseReportSummaryAdminActionService].
+
+!Exh/Remittance Summary Report_Show.png!

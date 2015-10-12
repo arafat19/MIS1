@@ -1,0 +1,71 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Update Approved "Inventory In" From Supplier | |
+ *ActionService:* | AdjustForInvInFromSupplierActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/adjustInvInFromSupplier | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director,Production Operator.
+
+h4. Description:
+Adjustment is one kind of "Update". Its applicable only when "Inventory In" From Supplier is approved for that reason its not like typical "Update" feature. Server will keep Previous record to show report in future. User can update only Actual Quantity.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Supplier" link.
+* [Show Group of "Inventory In" From Supplier Landing Page|guide:ShowForInventoryInFromSupplierActionService].
+* Select a Line-Item from grid view.
+* Click "Approve" button.
+* [Show Landing Page of Approved "Inventory in" From Supplier|guide:ShowForApprovedInvInFromSupplierActionService].
+* Select a approved "Inventory In" From Supplier from grid view.
+* Click "Adjustment" button.
+* [Open Approved "Inventory in" From Supplier in Edit Mode|guide:_adjustmentInventoryinFromSupplierItem].
+* User must insert valid input.
+* Click "Apply Adjustment" button.
+* Update Approved "Inventory In" From Supplier.
+
+
+h4. Pre-condition:
+* User must have "Adjust for Inv In From Supplier" privilege.
+* Follow the rules of validation: {table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ Transaction Date | Read Only | Numeric |
+ Chalan No | Read Only | Numeric |
+ *Purchase Order* | Read Only | Numeric |
+ "Inventory Name" | Read Only | Alpha Numeric |
+ "Supplier Name" | Read Only | Alpha Numeric |
+ Supplier Chalan No | Read Only | Alpha Numeric |
+ *Vehicle* | Read Only | Alpha Numeric |
+ "Vehicle Number" | Read Only | Alpha Numeric |
+ Measurement | Read Only | Alpha Numeric |
+ *Item* | Read Only | Alpha Numeric |
+ Supply Quantity | Read Only | Numeric |
+ Actual Quantity | Text Box | Numeric | Required 
+ Adjustment Comments | Text Box | Alpha Numeric | Required 
+{table}
+
+* Item Stock must have Balance Quantity to do adjustment.
+
+h4. Process:
+Update Approved "Inventory In" From Supplier.
+
+h4. Post-condition:
+* Updated Approved "Inventory In" must be auto approved.
+* As per updated quantity of item the stock will auto increase or decrease.
+
+* *Success:*
+** Update selected Approved "Inventory In" From Supplier into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

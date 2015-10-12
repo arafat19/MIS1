@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Sanction Information* | |
+*ActionService:* | ExhShowSanctionActionService | *Auditable:* | No
+*Url:* | /exhSanction/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Cashier,Agent.
+
+h4. Description:
+This is the landing page of *Sanction Information* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Sanction Info* link.
+* Show Landing Page of *Sanction Information*.
+
+h4. Pre-condition:
+* User must have "Show Sanction" privilege.
+
+h4. Process:
+* Show blank input form on top to see ["View Details" of "Sanction Information"|guide:_ShowViewDetailsofSanctionInformation].
+* [List "Sanction Information"|guide:ExhListSanctionActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Sanction Information* information in grid view.
+** Reset input form on top to see *Sanction Information* details.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Search "Sanction Information" From Grid View|guide:ExhSearchSanctionActionService].
+
+!Exh/Sanction Information_Show.png!

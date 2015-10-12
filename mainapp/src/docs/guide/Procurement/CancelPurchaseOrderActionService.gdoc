@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Cancel *Purchase Order* | |
+ *ActionService:* | CancelPurchaseOrderActionService | *Auditable:* | No
+ *Url*: | /procPurchaseOrder/cancelPO | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 1st March 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show Landing Page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click "Cancel" button.
+* System will show confirmation message with cancellation reason box.
+* Actor must write the proper reason of cancellation.
+* Actor clicks "Cancel PO" button.
+* Cancel *Purchase Order*.
+
+h4. Pre-condition:
+* User must have "Cancel PO" privilege.
+* If *Purchase Order* has dependency with following business entity then selected *Purchase Order* will not be cancel-able.
+** "Inventory In" from supplier
+
+h4. Process:
+* Cancel selected *Purchase Order*.
+
+h4. Post-condition:
+
+* *Success:*
+** Cancel selected *Purchase Order* from grid view.
+** Show Success message.
+** Remove cancelled *Purchase Order* from grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

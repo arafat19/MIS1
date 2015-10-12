@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="supplierWisePayableSubreport" language="groovy" pageWidth="770" pageHeight="595" orientation="Landscape" columnWidth="770" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="703f9980-2d94-4d6a-998e-bb64af52c838">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="87"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="projectIds" class="java.util.Collection">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.sql.Timestamp"/>
+	<parameter name="toDate" class="java.sql.Timestamp"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="transactionTypeIn" class="java.lang.Long"/>
+	<parameter name="entityTypeSupplier" class="java.lang.Long"/>
+	<parameter name="sourceTypeId" class="java.lang.Long"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="supplierId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT
+	project.id AS project_id,
+          project.name AS project_name,
+	TO_CHAR(COALESCE(total_po_price,0),$P{dbCurrencyFormat}) AS str_po_amount,
+	COALESCE(total_po_price,0) AS po_amount,
+          TO_CHAR(COALESCE(total_received_in_inventory,0),$P{dbCurrencyFormat}) AS str_received_in_inventory,
+	COALESCE(total_received_in_inventory,0) AS received_in_inventory,
+          TO_CHAR(COALESCE(total_fad_cost,0),$P{dbCurrencyFormat}) AS str_received_in_fixed_asset,
+	COALESCE(total_fad_cost,0) AS received_in_fixed_asset,
+          TO_CHAR(COALESCE(total_received_in_inventory,0)+COALESCE(total_fad_cost,0),$P{dbCurrencyFormat}) AS str_payable,
+	COALESCE(total_received_in_inventory,0)+COALESCE(total_fad_cost,0) AS payable,
+          TO_CHAR(COALESCE(total_paid,0),$P{dbCurrencyFormat}) AS str_paid,
+	COALESCE(total_paid,0) AS paid,
+          TO_CHAR(COALESCE(total_received_in_inventory,0)+COALESCE(total_fad_cost,0) - COALESCE(total_paid,0),$P{dbCurrencyFormat}) AS str_balance,
+          COALESCE(total_received_in_inventory,0)+COALESCE(total_fad_cost,0) - COALESCE(total_paid,0) AS balance,
+		TO_CHAR(COALESCE(total_ledger_balance,0),$P{dbCurrencyFormat}) AS str_ledger_balance,
+		COALESCE(total_ledger_balance,0) AS ledger_balance
+                FROM  project
+
+                FULL OUTER JOIN
+                    (
+				SELECT project_id, SUM(total_price) total_po_price
+				FROM proc_purchase_order
+				WHERE supplier_id = $P{supplierId}
+				AND ($X{IN,project_id,projectIds})
+				AND (created_on BETWEEN $P{fromDate} AND $P{toDate})
+				AND approved_by_director_id >0 AND approved_by_project_director_id >0
+				GROUP BY project_id
+                    ) po
+                ON po.project_id=project.id
+
+                FULL OUTER JOIN
+                    (
+				SELECT project_id, SUM(actual_quantity*rate) AS total_received_in_inventory
+				FROM vw_inv_inventory_transaction_with_details
+				WHERE transaction_entity_id = $P{supplierId}
+				AND ($X{IN,project_id,projectIds})
+				AND (transaction_date BETWEEN $P{fromDate} AND $P{toDate})
+				AND transaction_type_id = $P{transactionTypeIn}
+				AND transaction_entity_type_id = $P{entityTypeSupplier}
+				AND is_current = true
+				AND approved_by > 0
+				GROUP BY project_id
+                    ) iitd
+                ON iitd.project_id=project.id
+
+                FULL OUTER JOIN
+                    (
+				SELECT project_id, SUM(cost) AS total_fad_cost
+				FROM fxd_fixed_asset_details
+				WHERE supplier_id = $P{supplierId}
+				AND ($X{IN,project_id,projectIds})
+				AND (purchase_date BETWEEN $P{fromDate} AND $P{toDate})
+				GROUP BY project_id
+                    ) fad
+                ON fad.project_id=project.id
+
+                FULL OUTER JOIN
+                    (
+				SELECT project_id, SUM(amount_dr) AS total_paid
+				FROM vw_acc_voucher_with_details
+				WHERE source_id = $P{supplierId}
+				AND ($X{IN,project_id,projectIds})
+				AND (voucher_date BETWEEN $P{fromDate} AND $P{toDate})
+				AND source_type_id = $P{sourceTypeId}
+				GROUP BY project_id
+                    ) avd
+                ON avd.project_id=project.id
+
+                FULL OUTER JOIN
+                    (
+				SELECT project_id,SUM(amount_dr-amount_cr) AS total_ledger_balance
+				FROM vw_acc_voucher_with_details
+				WHERE source_id = $P{supplierId}
+				AND ($X{IN,project_id,projectIds})
+				AND (voucher_date <= $P{toDate})
+				AND source_type_id = $P{sourceTypeId}
+				GROUP BY project_id
+                    ) avdledger
+                ON avdledger.project_id=project.id
+
+                                WHERE project.company_id  = $P{companyId}
+                                GROUP BY project.id, project.name, total_po_price, total_received_in_inventory, total_fad_cost, total_paid, total_ledger_balance
+                                HAVING (total_po_price >0) OR (total_received_in_inventory >0) OR (total_fad_cost>0) OR (total_paid>0)  OR (total_ledger_balance >=0) OR (total_ledger_balance <0)
+                                ORDER BY project.name]]>
+	</queryString>
+	<field name="project_id" class="java.lang.Long"/>
+	<field name="project_name" class="java.lang.String"/>
+	<field name="str_po_amount" class="java.lang.String"/>
+	<field name="po_amount" class="java.math.BigDecimal"/>
+	<field name="str_received_in_inventory" class="java.lang.String"/>
+	<field name="received_in_inventory" class="java.math.BigDecimal"/>
+	<field name="str_received_in_fixed_asset" class="java.lang.String"/>
+	<field name="received_in_fixed_asset" class="java.lang.Double"/>
+	<field name="str_payable" class="java.lang.String"/>
+	<field name="payable" class="java.lang.Double"/>
+	<field name="str_paid" class="java.lang.String"/>
+	<field name="paid" class="java.math.BigDecimal"/>
+	<field name="str_balance" class="java.lang.String"/>
+	<field name="balance" class="java.lang.Double"/>
+	<field name="str_ledger_balance" class="java.lang.String"/>
+	<field name="ledger_balance" class="java.math.BigDecimal"/>
+	<variable name="totalPOAmount" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{po_amount}]]></variableExpression>
+	</variable>
+	<variable name="totalRecInventory" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{received_in_inventory}]]></variableExpression>
+	</variable>
+	<variable name="totalRecFixedAsset" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{received_in_fixed_asset}]]></variableExpression>
+	</variable>
+	<variable name="totalPayable" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{payable}]]></variableExpression>
+	</variable>
+	<variable name="totalPaid" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{paid}]]></variableExpression>
+	</variable>
+	<variable name="totalBalance" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{balance}]]></variableExpression>
+	</variable>
+	<variable name="totalLedgerBalance" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{ledger_balance}]]></variableExpression>
+	</variable>
+	<variable name="styleRed" class="java.lang.String">
+		<variableExpression><![CDATA["<style forecolor='#FF0000'>"]]></variableExpression>
+		<initialValueExpression><![CDATA["<style forecolor='#FF0000'>"]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="18" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="52ce18a3-7cd9-46f1-b54a-42a1973eb6d2" mode="Opaque" x="448" y="0" width="80" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Paid]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" mode="Opaque" x="128" y="0" width="80" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PO Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" mode="Opaque" x="208" y="0" width="80" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Received(Inventory)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" mode="Opaque" x="288" y="0" width="80" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Received(F.A.)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" mode="Opaque" x="368" y="0" width="80" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Payable]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2c50c868-12e4-4c89-956e-24be9055548c" mode="Opaque" x="528" y="0" width="80" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cd5f56bf-c58e-450d-b414-5d7a84bd21b5" mode="Opaque" x="608" y="0" width="84" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Ledger Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bce8583f-3e87-456f-8cf7-e7724f978f46" mode="Opaque" x="0" y="0" width="128" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project Name]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ac11a540-f7a4-495a-bafd-40ccc235bf41" stretchType="RelativeToTallestObject" x="128" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_po_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3bd877de-4ddb-40b5-9aba-03cb8364f52e" stretchType="RelativeToTallestObject" x="208" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_received_in_inventory}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6686827e-ef4e-4217-afdf-f799c17690d8" stretchType="RelativeToTallestObject" x="288" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{received_in_fixed_asset}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a6d89ef8-0096-4784-8bca-91c3f2abc1fc" stretchType="RelativeToTallestObject" x="368" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_payable}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="240d366e-28ff-4618-bc7a-b08362595452" stretchType="RelativeToTallestObject" x="448" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_paid}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="0a51e4a6-9685-4cce-bf5c-747c524bf899" stretchType="RelativeToTallestObject" x="528" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" markup="none">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{str_balance}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5d2bddf7-f8c5-4168-9355-51dac2857fe3" stretchType="RelativeToTallestObject" x="608" y="0" width="84" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" markup="styled">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{ledger_balance}>=0)?$F{str_ledger_balance}:$V{styleRed}+$F{str_ledger_balance}+"</style>"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cdfc7ab7-c652-46a5-a562-5a463de18e4f" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="128" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{project_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" stretchType="RelativeToTallestObject" x="0" y="0" width="128" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total :]]></text>
+			</staticText>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="1dc28ce7-fdef-4f2d-943a-6ef47dd8e693" stretchType="RelativeToTallestObject" x="448" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalPaid}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="f202486c-1fce-4a2c-82e4-980055f14825" stretchType="RelativeToTallestObject" x="368" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalPayable}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="20e042d9-30e5-4d63-88d4-a8f7ecaf2fc1" stretchType="RelativeToTallestObject" x="288" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalRecFixedAsset}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="427d4caa-4f19-4e1c-8aa9-70fdfc705790" stretchType="RelativeToTallestObject" x="208" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalRecInventory}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="38ffa922-46b8-452b-86ee-6758a35fe83f" stretchType="RelativeToTallestObject" x="128" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalPOAmount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="14bd7374-24d6-480c-a339-4a2c5be4eccc" stretchType="RelativeToTallestObject" x="528" y="0" width="80" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" markup="styled">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalBalance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="fc4eb1f0-4ef0-4e00-8ed4-2957018be989" stretchType="RelativeToTallestObject" x="608" y="0" width="84" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" markup="styled">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($V{totalLedgerBalance}>=0)?$V{totalLedgerBalance}:$V{styleRed}+new java.text.DecimalFormat("#,##0.00").format($V{totalLedgerBalance})+"</style>"]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

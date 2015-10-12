@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Process Instrument Mapping* in Landing Page | |
+*ActionService:* | ListRmsProcessInstrumentMappingActionService | *Auditable:* | No
+*Url:* | /rmsProcessInstrumentMapping/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Process Instrument Mapping* link.
+* Show List of *Process Instrument Mapping* in [Landing Page|guide:ShowRmsProcessInstrumentMappingActionService].
+
+h4. Pre-condition:
+* User must have "List Process Instrument Mapping" privilege.
+
+h4. Process:
+* Get list of *Process Instrument Mapping* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Process Type
+** Instrument Type
+
+h4. Post-condition:
+
+* *Success:*
+** *Process Instrument Mapping* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "Process Instrument Mapping" From Grid View|guide:SearchRmsProcessInstrumentMappingActionService].
+
+!projecttrack/List-Module.png!

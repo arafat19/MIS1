@@ -1,0 +1,207 @@
+import com.octo.captcha.component.image.backgroundgenerator.GradientBackgroundGenerator
+import com.octo.captcha.component.image.color.SingleColorGenerator
+import com.octo.captcha.component.image.fontgenerator.RandomFontGenerator
+import com.octo.captcha.component.image.textpaster.NonLinearTextPaster
+import com.octo.captcha.component.image.wordtoimage.ComposedWordToImage
+import com.octo.captcha.component.word.wordgenerator.RandomWordGenerator
+import com.octo.captcha.engine.GenericCaptchaEngine
+import com.octo.captcha.image.gimpy.GimpyFactory
+import com.octo.captcha.service.multitype.GenericManageableCaptchaService
+
+import java.awt.*
+
+grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
+grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
+
+// The ACCEPT header will not be used for content negotiation for user agents containing the following strings (defaults to the 4 major rendering engines)
+grails.mime.disable.accept.header.userAgents = ['Gecko', 'WebKit', 'Presto', 'Trident']
+
+grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
+        xml: ['text/xml', 'application/xml'],
+        text: 'text/plain',
+        js: 'text/javascript',
+        rss: 'application/rss+xml',
+        atom: 'application/atom+xml',
+        css: 'text/css',
+        csv: 'text/csv',
+        all: '*/*',
+        json: ['application/json', 'text/json'],
+        form: 'application/x-www-form-urlencoded',
+        multipartForm: 'multipart/form-data'
+]
+
+// URL Mapping Cache Max Size, defaults to 5000
+//grails.urlmapping.cache.maxsize = 1000
+
+// What URL patterns should be processed by the resources plugin
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*']
+grails.resources.adhoc.excludes = ['**/WEB-INF/**', '**/META-INF/**']
+
+// The default codec used to encode data with ${}
+grails.views.default.codec = "none" // none, html, base64
+grails.views.gsp.encoding = "UTF-8"
+grails.converters.encoding = "UTF-8"
+
+// enable Sitemesh preprocessing of GSP pages
+grails.views.gsp.sitemesh.preprocess = true
+// scaffolding templates configuration
+grails.scaffolding.templates.domainSuffix = 'Instance'
+
+// Set to false to use the new Grails 1.2 JSONBuilder in the render method
+grails.json.legacy.builder = false
+// enabled native2ascii conversion of i18n properties files
+grails.enable.native2ascii = true
+// whether to install the java.util.logging bridge for sl4j. Disable for AppEngine!
+grails.logging.jul.usebridge = false
+
+// packages to include in Spring bean scanning
+grails.spring.bean.packages = ['com.athena.mis.*']
+
+// request parameters to mask when logging exceptions
+grails.exceptionresolver.params.exclude = ['password']
+
+// configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
+grails.hibernate.cache.queries = false
+
+grails.views.enable.jsessionid = false
+grails.app.context = "/"
+
+environments {
+    production {
+        grails.config.locations = ["classpath:app-config.properties"]
+    }
+}
+//grails.views.javascript.library = "jquery"
+grails.plugins.springsecurity.rejectIfNoRule = true
+
+// Added by the Spring Security Core plugin:
+// For Spring Security Core plugin:
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'com.athena.mis.application.entity.AppUser'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'com.athena.mis.application.entity.UserRole'
+grails.plugins.springsecurity.authority.className = 'com.athena.mis.application.entity.Role'
+grails.plugins.springsecurity.requestMap.className = 'com.athena.mis.application.entity.RequestMap'
+grails.plugins.springsecurity.securityConfigType = grails.plugins.springsecurity.SecurityConfigType.Requestmap
+grails.plugins.springsecurity.successHandler.alwaysUseDefault = true
+grails.plugins.springsecurity.userLookup.usernamePropertyName = 'loginId'
+grails.plugins.springsecurity.successHandler.defaultTargetUrl = '/login/loginSuccess'
+grails.plugins.springsecurity.errors.login.fail = "Invalid ID or Password."
+grails.plugins.springsecurity.errors.login.expired = "Your account has expired. Contact with administrator"
+grails.plugins.springsecurity.errors.login.passwordExpired = "Your password has expired."
+grails.plugins.springsecurity.errors.login.disabled = "Your account is disabled. Contact with administrator"
+grails.plugins.springsecurity.errors.login.locked = "Your account is locked. Contact with administrator"
+
+grails.gorm.validate = false
+grails.gorm.deepValidate = false
+grails.gorm.failOnError = true
+grails.gorm.autoFlush = false
+
+// log4j configuration for Unix system.
+String path = "/tmp/logs/"
+
+log4j = {
+    appenders {
+        appender new org.apache.log4j.DailyRollingFileAppender(
+                name: "warnLog",
+                datePattern: "'.'yyyy-MM-dd",
+                file: "${path}warn.log".toString(),
+                append: true,
+                threshold: org.apache.log4j.Level.WARN,
+                layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
+
+        appender new org.apache.log4j.DailyRollingFileAppender(
+                name: "errorLog",
+                datePattern: "'.'yyyy-MM-dd",
+                file: "${path}error.log".toString(),
+                append: true,
+                threshold: org.apache.log4j.Level.ERROR,
+                layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
+    }
+
+    root {
+        // only error will be logged in error.log file.
+        error 'errorLog'
+//        warn 'warnLog'
+        additivity = "false"
+    }
+
+    additivity.StackTrace = "false"
+    additivity.org.hibernate.SQL = "false"
+    logger.'org.springframework' = "off"
+
+}
+
+
+jcaptchas {
+    image = new GenericManageableCaptchaService(
+            new GenericCaptchaEngine(
+                    new GimpyFactory(
+                            new RandomWordGenerator(
+                                    "abcdefgikmnpqrstwxyz2345689"
+                            ),
+                            new ComposedWordToImage(
+                                    new RandomFontGenerator(
+                                            25, // min font size
+                                            30, // max font size
+                                            [new Font("Tohoma", 0, 14)] as Font[]
+                                    ),
+                                    new GradientBackgroundGenerator(
+                                            214, // width
+                                            35, // height
+                                            new SingleColorGenerator(new Color(255, 255, 255)),
+                                            new SingleColorGenerator(new Color(255, 255, 255))
+                                    ),
+                                    new NonLinearTextPaster(
+                                            5, // minimal length of text
+                                            5, // maximal length of text
+                                            new Color(0, 0, 0)
+                                    )
+                            )
+                    )
+            ),
+            180, // minGuarantedStorageDelayInSeconds
+            180000 // maxCaptchaStoreSize
+    )
+}
+
+// config for mail
+grails {
+    mail {
+        host = "smtp.gmail.com"
+        port = 465
+        username = "noreply.athenamis@gmail.com"
+        password = "athena@123"
+        props = ["mail.smtp.auth": "true",
+                "mail.smtp.socketFactory.port": "465",
+                "mail.smtp.socketFactory.class": "javax.net.ssl.SSLSocketFactory",
+                "mail.smtp.socketFactory.fallback": "false"]
+
+    }
+}
+
+theme.application = "/plugins/applicationplugin-0.1/theme/application"
+
+application.plugins.applicationplugin.directory = "/plugins/applicationplugin-0.1"
+application.plugins.exchangehouse.directory = "/plugins/exchange-house-0.1"
+application.plugins.sarb.directory = "/plugins/sarb-0.1"
+application.plugins.arms.directory = "/plugins/arms-0.1"
+application.plugins.document.directory = "/plugins/document-0.1"
+application.plugins.projecttrack.directory = "/plugins/project-track-0.1"
+application.plugins.accounting.directory = "/plugins/accounting-0.1"
+application.plugins.budget.directory = "/plugins/budgeting-0.1"
+application.plugins.fixedasset.directory = "/plugins/fixed-asset-0.1"
+application.plugins.inventory.directory = "/plugins/inventory-0.1"
+application.plugins.procurement.directory = "/plugins/procurement-0.1"
+application.plugins.qs.directory = "/plugins/qs-0.1"
+
+// gdoc config
+grails.doc.title = "Management Information System"
+grails.doc.subtitle = "Usecase Documentation"
+grails.doc.authors = "Nahida Sultana, Meherun Nessa"
+grails.doc.copyright = "Copyright © 2014 by Athena Software Associates Ltd.<br/>"
+grails.doc.images = new File("src/docs/image")
+
+grails.doc.footer = "<br/>All Rights Reserved.  <br/>No part of this document may be reproduced or transmitted in any form " +
+        "or by any means, electronic, mechanical, photocopying, recording, or otherwise, " +
+        "without prior written permission of Athena Software Associates Ltd. <br/>" +
+        "By using this application and it's documentation, you agreed terns and condition of our " +
+        "<a href='#'> License Agreement </a> "

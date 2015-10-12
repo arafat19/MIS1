@@ -1,0 +1,43 @@
+
+{table}
+ Use Case ID: | MIS-Budget-10 | Priority: | High
+ *Name* | Update Budget Line Item | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budget/update | *Action Class:* | UpdateBudgetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 20th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select a budget line item from grid.
+# Click "Edit" button.
+# Click "Update" button.
+
+h4. Pre-condition:
+# Updated budget line item is unique.
+# Updated contract rate cannot be zero.
+# Match expected version before updating a budget line item.
+
+h4. Process:
+Update selected budget line item.
+
+h4. Post-condition:
+
+# *Success:*
+## Update budget line item info into grid-view.
+## Show success message.
+## Reset the field for next inputs.
+
+# *Failure:* 
+## Show error message for details visit [Error Handler|common Usecases].

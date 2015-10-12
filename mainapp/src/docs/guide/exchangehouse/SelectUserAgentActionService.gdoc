@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open "User-Agent Mapping" in Edit Mode | |
+*ActionService:* | SelectUserAgentActionService | *Auditable:* | No
+*Url:* | /exhUserAgent/select | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of "Agent"|guide:ShowExhAgentActionService].
+* Select a Line-Item from grid view.
+* Click "User" button from tool bar.
+* [Show Landing Page of "User-Agent Mapping"|guide:ShowUserAgentActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open "User-Agent Mapping" in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select User Agent" privilege.
+
+h4. Process:
+* Get "User-Agent Mapping" details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected "User-Agent Mapping" information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

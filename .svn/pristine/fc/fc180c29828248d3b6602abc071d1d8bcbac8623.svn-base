@@ -1,0 +1,80 @@
+<script language="javascript">
+    var isError, bugId,owner, leftMenu, actor, purpose, benefit;
+    $(document).ready(function () {
+        onLoadBugDetailsPage();
+    });
+
+    // method called on page load
+    function onLoadBugDetailsPage() {
+        isError = "${result.isError}";
+        bugId = "${result.bugMap?.id}";
+        owner = "${result.bugMap?.owner}";
+        actor = "${result.bugMap?.actor}";
+        var message = "${result.message}";
+        leftMenu = "${leftMenu}";
+
+        if (isError == 'true') {
+            showError(message);
+        } else {
+            if(owner == ''){
+                $('#addBug').show();
+            }else{
+                $('#addBug').hide();
+            }
+            $('#printPdfBtn').click(function () {
+                downloadBugDetails();
+            });
+        }
+
+        // update page title
+        $(document).attr('title', "MIS - Bug Details");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#${leftMenu}");
+    }
+
+    function downloadBugDetails() {
+        showLoadingSpinner(true);
+        if (confirm('Do you want to download the PDF now?')) {
+            var url = "${createLink(controller: 'ptReport', action: 'downloadPtBugDetails')}?bugId=" + bugId;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+        return false;
+    }
+
+    function addToMyBug() {
+        showLoadingSpinner(true);
+        if (!confirm('Do you want to add this bug?')) {
+            showLoadingSpinner(false);
+            return false;
+        }
+        if(actor != ''){
+            showError('Only orphan bug could be added');
+            showLoadingSpinner(false);
+            return false;
+        }
+        $.ajax({
+            url: "${createLink(controller: 'ptBug', action: 'addToMyBug')}?ids=" + bugId,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);  // show error message in case of error
+            showLoadingSpinner(false);  // stop loading spinner
+        } else {
+            $('#addBug').hide();
+            showSuccess(result.message);    // show success message
+            showLoadingSpinner(false);  // stop loading spinner
+            $('#loggedUser').show();
+        }
+    }
+
+</script>

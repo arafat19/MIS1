@@ -1,0 +1,835 @@
+package com.athena.mis.exchangehouse.actions.task
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.*
+import com.athena.mis.application.service.EntityNoteService
+import com.athena.mis.application.utility.*
+import com.athena.mis.exchangehouse.entity.ExhBeneficiary
+import com.athena.mis.exchangehouse.entity.ExhCustomer
+import com.athena.mis.exchangehouse.entity.ExhTask
+import com.athena.mis.exchangehouse.service.ExhBeneficiaryService
+import com.athena.mis.exchangehouse.service.ExhCustomerService
+import com.athena.mis.exchangehouse.service.ExhTaskService
+import com.athena.mis.exchangehouse.service.ExhTaskTraceService
+import com.athena.mis.exchangehouse.utility.ExhPaymentMethodCacheUtility
+import com.athena.mis.exchangehouse.utility.ExhSessionUtil
+import com.athena.mis.exchangehouse.utility.ExhTaskStatusCacheUtility
+import com.athena.mis.exchangehouse.wp.Order
+import com.athena.mis.exchangehouse.wp.OrderResult
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import groovy.sql.GroovyRowResult
+import groovy.sql.Sql
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+import javax.sql.DataSource
+
+/**
+ * Send task to Bank for Admin
+ * For details go through Use-Case doc named 'ExhSendTaskToBankActionService'
+ */
+class ExhSendTaskToBankActionService extends BaseService implements ActionIntf {
+    // declare datasource for ARMS
+    DataSource dataSource_arms
+    ExhTaskService exhTaskService
+    ExhBeneficiaryService exhBeneficiaryService
+    ExhCustomerService exhCustomerService
+    ExhTaskTraceService exhTaskTraceService
+    EntityNoteService entityNoteService
+    @Autowired
+    BankCacheUtility bankCacheUtility
+    @Autowired
+    BankBranchCacheUtility bankBranchCacheUtility
+    @Autowired
+    CurrencyCacheUtility currencyCacheUtility
+    @Autowired
+    CompanyCacheUtility companyCacheUtility
+    @Autowired
+    CountryCacheUtility countryCacheUtility
+    @Autowired
+    ExhPaymentMethodCacheUtility exhPaymentMethodCacheUtility
+    @Autowired
+    ExhTaskStatusCacheUtility exhTaskStatusCacheUtility
+    @Autowired
+    ExhSessionUtil exhSessionUtil
+    @Autowired
+    NoteEntityTypeCacheUtility noteEntityTypeCacheUtility
+    @Autowired
+    SmsCacheUtility smsCacheUtility
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    private static final String SENT_TO_BANK_FAILURE = "Task(s) sent to bank failed"
+    private static final String SEBL_NAME = "South East Bank Ltd."
+    private static final String ANY_DISTRICT = "ANY DISTRICT"
+    private static final String ANY_BRANCH = "ANY BRANCH"
+    private static final String STATUS_MISMATCH = "Task status mismatched, refresh the grid and try again"
+    private static final String TASK_UNPAID = " Task(s) is unpaid"
+    private static final String IS_ERROR = "isError"
+    private static final String MESSAGE = "message"
+    private static final String TASK_LIST = "taskList"
+    private static final String ORDER_RESULT = "orderResult"
+    private static final String LST_SMS_BODY = "lstSmsBody"
+
+    /**
+     * Get parameters from UI and check pre condition
+     * 1. pull list of task by ids
+     * 2. check pulled size of task and size sending task
+     * 3. check status New of first task, if mismatch show message
+     * @param params -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    public Object executePreCondition(Object parameterMap, Object obj) {
+        List<ExhTask> lstTasks = []
+        Map result = new LinkedHashMap()
+        try {
+            result.put(IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params= (GrailsParameterMap) parameterMap
+            List ids = params.ids.split(Tools.UNDERSCORE)
+            List<Long> lstTaskIds = []
+
+            // Get List of long IDs
+            for (int i = 0; i < ids.size(); i++) {
+                lstTaskIds << Long.parseLong(ids[i].toString())
+            }
+
+            lstTasks = readForSentToBank(lstTaskIds)         // get task(s) by task id
+
+            if (lstTasks.size() != lstTaskIds.size()) {
+                result.put(MESSAGE, SENT_TO_BANK_FAILURE)
+                return result
+            }
+
+            int unpaidCount = checkUnpaid(lstTasks)
+            if (unpaidCount > 0) {
+                result.put(Tools.MESSAGE, unpaidCount + TASK_UNPAID)
+                return result
+            }
+
+            ExhTask task = lstTasks.first()
+            SystemEntity exhNewTaskSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_NEW_TASK, exhSessionUtil.appSessionUtil.getCompanyId())
+            if (task.currentStatus != exhNewTaskSysEntityObject.id) {             // check task status
+                result.put(MESSAGE, STATUS_MISMATCH)
+                return result
+            }
+
+            result.put(IS_ERROR, Boolean.FALSE)
+            result.put(TASK_LIST, lstTasks)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(IS_ERROR, Boolean.TRUE)
+            result.put(MESSAGE, SENT_TO_BANK_FAILURE)
+            return result
+        }
+    }
+
+    /**
+     * execute following activities
+     * 1. check outletBankId equal systemBank, then process task to send own bank
+     * 2. if not then process task to sent other bank
+     * This method is in transactional boundary and will roll back in case of any exception
+     * @param params -N/A
+     * @param obj -map returned from executePreCondition method
+     * @return -a map containing all objects necessary for buildSuccessResultForUI
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object params, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            OrderResult orderResult = new OrderResult()
+/*            //@todo:demo start>> prevent from task sending
+            orderResult.success = false
+            orderResult.message = "Send to Bank is not supported for this version"
+            return orderResult
+            //@todo:demo end>> prevent from task sending*/
+
+
+            List<ExhTask> lstTasks = (List<ExhTask>) obj
+            List<String> lstSmsBody = []
+            // assuming that all task are of same Banks
+            if (lstTasks[0].outletBankId == bankCacheUtility.getSystemBank().id) {
+                orderResult = processOwnBankTask(lstTasks, lstSmsBody)
+            } else {
+                orderResult = processOtherBankTask(lstTasks, lstSmsBody)
+            }
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(ORDER_RESULT, orderResult)
+            result.put(LST_SMS_BODY, lstSmsBody)
+            return result
+        }
+        catch (Exception e) {
+            log.error(e.getMessage())
+            //@todo:rollback
+            throw new RuntimeException('Failed to send Task To Bank')
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SENT_TO_BANK_FAILURE)
+            return result
+        }
+    }
+
+    /** Execute sms url one-by-one
+     * @param parameters - N/A
+     * @param obj - List of sms url string
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        try {
+            // send sms to customer & beneficiary on post condition
+            Map execResult = (Map) obj
+            List<String> lstSmsBody = (List<String>) execResult.get(LST_SMS_BODY)
+            for (int i = 0; i < lstSmsBody.size(); i++) {
+                String smsBody = lstSmsBody[i]
+                String returnMsg = smsBody.toURL().text
+            }
+            return null
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            return null
+        }
+    }
+
+    /**
+     * Show success message
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for UI
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map execResult = (Map) obj
+            OrderResult orderResult = (OrderResult) execResult.get(ORDER_RESULT)
+            result.put(Tools.IS_ERROR, new Boolean(!(orderResult.success)))
+            result.put(Tools.MESSAGE, orderResult.message)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SENT_TO_BANK_FAILURE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj && obj.message) {
+                result.put(Tools.MESSAGE, obj.message)
+                return result
+            }
+            result.put(Tools.MESSAGE, SENT_TO_BANK_FAILURE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, SENT_TO_BANK_FAILURE)
+            return result
+        }
+    }
+
+    /**
+     * Build an object type of Order
+     * @param task -an object of ExhTask
+     * @param customer -an object of ExhCustomer
+     * @param beneficiary -an object of ExhBeneficiary
+     * @param company -an object of Company.
+     * @return order -an update object of Order
+     */
+    private Order buildOrderInstance(ExhTask task, ExhCustomer customer, ExhBeneficiary beneficiary, Company company) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        SystemEntity exhPaymentMethodCashObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_CASH_COLLECTION, companyId)
+
+        Order order = new Order()
+        order.transactionRefNo = task.refNo
+        order.amount = Math.floor(task.amountInForeignCurrency.doubleValue())   // bdt amount floor to ARMS
+        order.valueDate = task.createdOn
+        order.beneficiaryName = task.beneficiaryName
+        order.beneficiaryPhone = beneficiary.phone
+        order.accountNumber = beneficiary.accountNo
+        if (task.paymentMethod == exhPaymentMethodCashObj.id) {
+            order.outletName = SEBL_NAME
+            order.outletBranchName = ANY_BRANCH
+            order.outletDistrictName = ANY_DISTRICT
+            order.outletThanaName = null
+        } else {
+            order.outletName = beneficiary.bank
+            order.outletBranchName = beneficiary.bankBranch
+            order.outletDistrictName = beneficiary.district
+            order.outletThanaName = beneficiary.thana
+        }
+        order.pinNo = task.pinNo
+        order.identityType = beneficiary.photoIdType
+        order.identityNo = beneficiary.photoIdNo
+
+        order.senderName = task.customerName
+        order.senderMobile = customer.phone
+        order.amountInLocalCurrency = task.amountInLocalCurrency  // aud amount
+        order.localCurrencyId = currencyCacheUtility.getLocalCurrency().id
+        // @todo- for now there is no exchange house & currency incorporation
+        String armsPaymentMethod = exhPaymentMethodCacheUtility.read(task.paymentMethod).value
+        order.paymentMethod = Integer.valueOf(armsPaymentMethod)
+        // value of SystemEntity holds corresponding payMethod.id of ARMS
+        order.companyId = company.id
+        order.currencyId = currencyCacheUtility.getForeignCurrency().id
+        // @todo- for now there is no exchange house & currency incorporation
+        order.countryId = company.countryId
+        order.note = buildTaskNote(task.id)
+        return order
+    }
+
+    /**
+     *  pull collection of note , concat and prepare note for SEBL task_info table
+     */
+    private String buildTaskNote(long taskId) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        // pull note entity type(Task) object
+        SystemEntity noteEntityTypeTask = (SystemEntity) noteEntityTypeCacheUtility.readByReservedAndCompany(noteEntityTypeCacheUtility.COMMENT_ENTITY_TYPE_TASK, companyId)
+
+        String note = Tools.EMPTY_SPACE
+        long entityNoteTypeId = noteEntityTypeTask.id
+        List<EntityNote> lstEntityNote = entityNoteService.findAllByCompanyIdAndEntityTypeIdAndEntityId(companyId, entityNoteTypeId, taskId)
+        if (lstEntityNote.size() == 0) return null
+        List lstNotes = lstEntityNote.collect { it.note }
+        note = lstNotes.join(Tools.COMA)
+        note = Tools.makeDetailsShort(note, 250)
+        return note
+    }
+
+    /**
+     *
+     */
+    private OrderResult processOwnBankTask(List<ExhTask> lstTasks, List<String> lstSmsBody) {
+        List<Order> lstOrder = []
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        SystemEntity exhPaymentMethodObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_BANK_DEPOSIT, companyId)
+        SystemEntity exhPaymentMethodCashObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_CASH_COLLECTION, companyId)
+        SystemEntity exhSentToBankSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_SENT_TO_BANK, companyId)
+
+        Company company = (Company) companyCacheUtility.read(companyId)
+        for (int i = 0; i < lstTasks.size(); i++) {
+            ExhTask task = lstTasks[i]
+            ExhCustomer customer = exhCustomerService.read(task.customerId)
+            ExhBeneficiary beneficiary = exhBeneficiaryService.read(task.beneficiaryId)
+            Order order = buildOrderInstance(task, customer, beneficiary, company)
+            lstOrder << order
+            // now build the sms string for beneficiary
+            String actionName = Tools.EMPTY_SPACE
+            if (task.paymentMethod == exhPaymentMethodObj.id) {
+                actionName = ACTION_NAME_BANK
+            } else if (task.paymentMethod == exhPaymentMethodCashObj.id) {
+                actionName = ACTION_NAME_CASH
+            }
+            List<Sms> lstSms = smsCacheUtility.listByTransactionCodeAndCompanyIdAndIsActive(actionName, companyId, true)
+            buildSmsString(task, beneficiary, lstSms, lstSmsBody)
+        }
+
+        OrderResult orderResult = new OrderResult()
+        orderResult = sendBulkOrdersToBank(lstOrder)
+        if (orderResult.success) {
+            for (int i = 0; i < lstTasks.size(); i++) {
+                ExhTask task = lstTasks[i]
+                task.currentStatus = exhSentToBankSysEntityObject.id
+                exhTaskService.updateForSentToBank(task)
+                boolean saveTrace = exhTaskTraceService.create(task, new Date(), Tools.ACTION_UPDATE)
+            }
+        }
+        return orderResult
+    }
+
+    private OrderResult processOtherBankTask(List<ExhTask> lstTasks, List<String> lstSmsBody) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        SystemEntity exhPaymentMethodObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_BANK_DEPOSIT, companyId)
+        SystemEntity exhPaymentMethodCashObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_CASH_COLLECTION, companyId)
+        SystemEntity exhSentToOtherBankSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_SENT_TO_OTHER_BANK, companyId)
+
+        OrderResult orderResult = new OrderResult()
+        for (int i = 0; i < lstTasks.size(); i++) {
+            ExhTask task = lstTasks[i]
+            task.currentStatus = exhSentToOtherBankSysEntityObject.id
+            exhTaskService.updateForSentToBank(task)
+            boolean saveTrace = exhTaskTraceService.create(task, new Date(), Tools.ACTION_UPDATE)
+
+            // now build the sms string for beneficiary
+            String actionName = Tools.EMPTY_SPACE
+            if (task.paymentMethod == exhPaymentMethodObj.id) {
+                actionName = ACTION_NAME_BANK
+            } else if (task.paymentMethod == exhPaymentMethodCashObj.id) {
+                actionName = ACTION_NAME_CASH
+            }
+            ExhBeneficiary beneficiary = exhBeneficiaryService.read(task.beneficiaryId)
+            List<Sms> lstSms = smsCacheUtility.listByTransactionCodeAndCompanyIdAndIsActive(actionName, companyId, true)
+            buildSmsString(task, beneficiary, lstSms, lstSmsBody)
+        }
+        orderResult.success = true
+        orderResult.message = lstTasks.size() + ' Task(s) sent to other banks successfully'
+        return orderResult
+    }
+
+    /**
+     * get list of Task with status new
+     */
+    private List<ExhTask> readForSentToBank(List<Long> taskIds) {
+        List<ExhTask> lstTasks = []
+        SystemEntity exhNewTaskSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_NEW_TASK, exhSessionUtil.appSessionUtil.getCompanyId())
+        lstTasks = ExhTask.findAllByIdInListAndCurrentStatus(taskIds, exhNewTaskSysEntityObject.id, [readOnly: true])
+        return lstTasks
+    }
+
+    /**
+     * send task to bank
+     */
+    private OrderResult sendBulkOrdersToBank(List<Order> lstOrder) {
+        OrderResult orderResult = new OrderResult()
+        orderResult.success = false
+        try {
+
+            // check if empty list
+            if (lstOrder.size() == 0) {
+                orderResult.message = 'Empty order list can not be processed'
+                return orderResult
+            }
+
+            //Check duplicate ref no
+            String strRefNos = buildCommaSeparatedStringOfRefNo(lstOrder)
+            List<String> lstDuplicateRefNo = checkDuplicateRefNo(strRefNos)      // check duplicate refNo
+            if (lstDuplicateRefNo.size() > 0) {
+                orderResult.message = 'Duplicate Ref No: ' + lstDuplicateRefNo
+                return orderResult
+            }
+
+            Date executionDate = new Date()
+            for (int i = 0; i < lstOrder.size(); i++) {
+                createTaskInfoFromOrder(lstOrder[i], executionDate)
+            }
+            orderResult.success = true
+            orderResult.message = lstOrder.size() + ' Task(s) sent to bank successfully'
+            return orderResult
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            orderResult.message = 'Task send to ARMS failed. Reason: ' + e.getMessage()
+            return orderResult
+        }
+    }
+
+    /**
+     * Build comma separated string of RefNo for sql IN search
+     */
+    private String buildCommaSeparatedStringOfRefNo(List<Order> lstOrder) {
+        String strRefNos = Tools.EMPTY_SPACE
+        for (int i = 0; i < lstOrder.size(); i++) {
+            strRefNos = strRefNos + Tools.SINGLE_QUOTE + lstOrder[i].transactionRefNo + Tools.SINGLE_QUOTE
+            if ((i + 1) < lstOrder.size()) strRefNos = strRefNos + ','
+        }
+        return strRefNos
+    }
+
+    /**
+     * Check if ARMS already received the tasks by RefNo
+     */
+    private List<String> checkDuplicateRefNo(String strRefNos) {
+        List<String> lstDuplicateRefNo = []
+        String queryStr = """
+        SELECT id,transaction_ref_no FROM task_info
+        WHERE transaction_ref_no IN (${strRefNos})
+        """
+        Sql sql = new Sql(dataSource_arms)
+        List<GroovyRowResult> lstTaskRefNo = sql.rows(queryStr)
+        if (lstTaskRefNo.size() > 0) {
+            lstTaskRefNo.each {
+                lstDuplicateRefNo << it.transaction_ref_no
+            }
+            return lstDuplicateRefNo
+        }
+        return lstDuplicateRefNo
+    }
+
+    /**
+     * Create taskInfo in ARMS DB from Order
+     */
+    private boolean createTaskInfoFromOrder(Order order, Date createDate) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        SystemEntity exhPaymentMethodCashObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_CASH_COLLECTION, companyId)
+
+        Long taskId = getNextVal(QUERY_TASK_INFO_NEXT_VAL)
+        Date lastTransactionDate = null
+        Date targetReceivingDate = null
+        boolean isLocked = false
+        boolean isRevised = false
+        Long transactionId = null
+        Integer taskInfoPreviousStatus = null
+
+        Integer taskInfoCurrentStatus = 10 // default NEW-TASK status
+        Integer taskInfoProcess = null // default null
+        Integer taskInfoInstrument = null // default null
+        Long mappingBank = null // default null
+        Long mappingDistrict = null // default null
+        Long mappingBranch = null // default null
+        Date mapCreated = null // default null
+        Date approveDate = null // default null
+        Date statusUpdated = new Date()
+
+        String armsPayMethodCashCollection = exhPaymentMethodCacheUtility.read(exhPaymentMethodCashObj.id).value
+        if (order.paymentMethod.intValue() == Integer.parseInt(armsPayMethodCashCollection)) {
+            taskInfoCurrentStatus = 50  // task Sent To Branch status
+            taskInfoProcess = 3         // process Forward
+            taskInfoInstrument = 90     // instrument CC
+            mappingBank = 16            // SEBL id
+            mappingDistrict = -10       // ANY Dist
+            mappingBranch = -10         // ANY branch
+            mapCreated = new Date()
+            approveDate = new Date()
+        }
+
+
+        String query = """INSERT INTO task_info (id,version,amount,
+    beneficiary_name,
+    beneficiary_phone,
+    account_number,
+    outlet_name,
+    outlet_branch_name,
+    outlet_district_name,
+    outlet_thana_name,
+    pin_no,
+    identity_type,
+    identity_no,
+    sender_name,
+    sender_mobile,
+    amount_in_local_currency,
+    local_currency_id,
+ 	country_id, created_on, currency_id,
+ 	current_status, exchange_house_id,
+ 	process,instrument,
+ 	mapping_bank_id,mapping_branch_id,mapping_district_id,
+ 	map_created,approve_date,
+ 	last_transaction_date,locked,
+ 	payment_method,
+ 	previous_status,
+ 	revised,
+ 	target_receiving_date,
+ 	task_list_id, transaction_id,
+ 	transaction_ref_no, note,value_date,status_updated)
+    VALUES(${taskId},0,${order.amount},
+    :beneficiaryName,
+    :beneficiaryPhone,
+    :accountNumber,
+    :outletName,
+    :outletBranchName,
+    :outletDistrictName,
+    :outletThanaName,
+    :pinNo,
+    :identityType,
+    :identityNo,
+    :senderName,
+    :senderMobile,
+    :amountInLocalCurrency,
+    ${order.localCurrencyId},
+    ${order.countryId},
+    '${DateUtility.getDBDateFormat(createDate)}',${order.currencyId} ,${taskInfoCurrentStatus},
+    ${order.companyId},
+    ${taskInfoProcess},${taskInfoInstrument},
+    ${mappingBank},${mappingBranch},${mappingDistrict},
+   ${mapCreated ? "'" + DateUtility.getDBDateFormat(mapCreated) + "'" : null} ,
+   ${approveDate ? "'" + DateUtility.getDBDateFormat(approveDate) + "'" : null} ,
+    ${lastTransactionDate} ,${isLocked} ,
+    ${order.paymentMethod},
+    ${taskInfoPreviousStatus},
+    ${isRevised},
+    ${targetReceivingDate} ,
+    null ,${transactionId} ,:transactionRefNo, :note,
+    '${DateUtility.getDBDateFormat(order.valueDate)}' ,'${DateUtility.getDBDateFormatWithSecond(statusUpdated)}' )"""
+
+        Map queryParams = [
+                beneficiaryName: order.beneficiaryName,
+                beneficiaryPhone: order.beneficiaryPhone,
+                accountNumber: order.accountNumber,
+                outletName: order.outletName,
+                outletBranchName: order.outletBranchName,
+                outletDistrictName: order.outletDistrictName,
+                outletThanaName: order.outletThanaName,
+                pinNo: order.pinNo,
+                identityType: order.identityType,
+                identityNo: order.identityNo,
+                senderName: order.senderName,
+                senderMobile: order.senderMobile,
+                amountInLocalCurrency: order.amountInLocalCurrency,
+                transactionRefNo: order.transactionRefNo,
+                note: order.note
+        ]
+        Sql sql = new Sql(dataSource_arms)
+        List ret = sql.executeInsert(query, queryParams)
+
+        boolean saveTrace = createTaskTraceForOrder(taskId, order, createDate)
+        if (!saveTrace) throw new RuntimeException("Task Trace save failed.")
+
+        return true
+    }
+
+    // get the next id sequence for taskInfo
+    private static final String QUERY_TASK_INFO_NEXT_VAL = "select nextval('task_info_id_seq')"
+    // get the next id sequence for taskInfoTrace
+    private static final String QUERY_TASK_INFO_TRACE_NEXT_VAL = "select nextval('task_info_trace_id_seq')"
+
+    private Long getNextVal(String queryNextVal) {
+        Sql sql = new Sql(dataSource_arms)
+        List result = sql.rows(queryNextVal)
+        Long taskID = (Long) result[0][0]
+        return taskID
+    }
+
+
+    private static final String TASK_TRACE_FIELD_NAMES = """
+        id,
+        action,
+        amount,
+        mapping_branch,
+        mapping_bank,
+        mapping_district,
+        transaction_ref_no,
+        value_date,
+        payment_method,
+        transaction_id,
+        locked,
+        revision_note,
+        revised,
+        previous_status,
+        current_status,
+        task_id,
+        last_transaction_date,
+        process,
+        instrument,
+        fund_transfer_id,
+        task_list_id,
+        exchange_house_id,
+        beneficiary_name,
+        beneficiary_address,
+        beneficiary_phone,
+        account_number,
+        outlet_name,
+        outlet_branch_name,
+        outlet_district_name,
+        outlet_thana_name,
+        pin_no,
+        identity_type,
+        identity_no,
+        sender_name,
+        sender_mobile,
+        amount_in_local_currency,
+        local_currency_id,
+        memo_number,
+        memo_date,
+        courier_dispatch_number,
+        courier_dispatch_date,
+        control_number,
+        advise_number,
+        currency_id,
+        error_codes,
+        action_date,
+        user_id,
+        note,
+        request_status,
+        map_creator_branch"""
+
+// Save Trace for TaskInfo
+    private boolean createTaskTraceForOrder(Long taskInfoId, Order order, Date executionDate) {
+        Long sfslSystemUser = -10          //  SFSL(UK) system user in ARMS
+        Long traceId = getNextVal(QUERY_TASK_INFO_TRACE_NEXT_VAL)
+        Integer taskInfoCurrentStatus = 50 // task Sent To Branch status
+        Integer taskInfoPreviousStatus = null
+        Integer taskInfoProcess = 3 // process Forward
+        Integer taskInfoInstrument = 90 // instrument CC
+        Long seblId = 16
+        Long anyDistrictId = -10
+        Long anyBranchId = -10
+        Date mapCreated = new Date()
+        Date approveDate = new Date()
+        Date lastTransactionDate = null
+        Date targetReceivingDate = null
+        boolean isLocked = false
+        boolean isRevised = false
+        Long transactionId = null
+
+
+        String queryTrace = """
+    INSERT INTO task_info_trace (${TASK_TRACE_FIELD_NAMES})
+    VALUES( ${traceId},
+    '${Tools.ACTION_CREATE}',
+    ${order.amount},
+    ${anyBranchId},
+    ${seblId},
+    ${anyDistrictId},
+    :transactionRefNo,
+    '${DateUtility.getDBDateFormat(order.valueDate)}',
+    ${order.paymentMethod},
+    ${transactionId},
+    ${isLocked},
+    :revisionNote,
+    ${isRevised},
+    ${taskInfoPreviousStatus},
+    ${taskInfoCurrentStatus},
+    ${taskInfoId},
+    ${lastTransactionDate},
+    ${taskInfoProcess},
+    ${taskInfoInstrument},
+    null,
+    null,
+    ${order.companyId},
+    :beneficiaryName,
+    :beneficiaryAddress,
+    :beneficiaryPhone,
+    :accountNumber,
+    :outletName,
+    :outletBranchName,
+    :outletDistrictName,
+    :outletThanaName,
+    :pinNo,
+    :identityType,
+    :identityNo,
+    :senderName,
+    :senderMobile,
+    :amountInLocalCurrency,
+    ${order.localCurrencyId},
+    :memoNumber,
+    null,
+    :courierDispatchNumber,
+    null,
+    :controlNumber,
+    :adviseNumber,
+    ${order.currencyId},
+    null,
+    ${"'" + DateUtility.getDBDateFormatWithSecond(executionDate) + "'"},
+    ${sfslSystemUser},
+    :note,
+    null,
+    null )
+    """
+
+        Map queryParams = [
+                transactionRefNo: order.transactionRefNo,
+                revisionNote: null,
+                beneficiaryName: order.beneficiaryName,
+                beneficiaryAddress: null,
+                beneficiaryPhone: order.beneficiaryPhone,
+                accountNumber: order.accountNumber,
+                outletName: order.outletName,
+                outletBranchName: order.outletBranchName,
+                outletDistrictName: order.outletDistrictName,
+                outletThanaName: order.outletThanaName,
+                pinNo: order.pinNo,
+                identityType: order.identityType,
+                identityNo: order.identityNo,
+                senderName: order.senderName,
+                senderMobile: order.senderMobile,
+                amountInLocalCurrency: order.amountInLocalCurrency,
+                memoNumber: null,
+                courierDispatchNumber: null,
+                controlNumber: null,
+                adviseNumber: null,
+                note: order.note
+        ]
+        Sql sql = new Sql(dataSource_arms)
+        List retTrace = sql.executeInsert(queryTrace, queryParams)
+        return true
+    }
+
+    private static final String ACTION_NAME_BANK = "ExhSendTaskToBankActionService_BankDeposit"
+    private static final String ACTION_NAME_CASH = "ExhSendTaskToBankActionService_CashCollection"
+    private static final String TASK = "task"
+    private static final String OUTLET_INFO = "outletInfo"
+    private static final String BENEFICIARY = "beneficiary"
+    private static final String ANY_BRANCH_OF_SEBL = "any branch of Southeast Bank"
+    private static final String UTF_8 = "UTF-8"
+    private static final String RECIPIENT = 'recipient'
+    private static final String CONTENT = 'content'
+
+    /** Build the list of sms string based on given sms templates and other objects
+     * 1. if beneficiary phone not found/invalid then return
+     * 2. if bank deposit, then outlet = beneficiary.bank + branch
+     *    if cash collection & mapped to other bank, then outlet = outletBank + branch
+     *    if cash collection & is not mapped to other bank,  then outlet = beneficiary.bank + branch
+     * @param task - task object
+     * @param beneficiary - beneficiary object
+     * @param lstSms - List of sms templates
+     * @param lstSmsBody - List of sms string (after evaluation)
+     * @return -N/A, since reference of lstSmsBody will be used by caller method
+     */
+    private void buildSmsString(ExhTask task, ExhBeneficiary beneficiary,
+                                List<Sms> lstSms, List<String> lstSmsBody) {
+
+        // if sms for beneficiary but his phone isn't available then don't send sms
+        if ((!beneficiary.phone) || (beneficiary.phone.length() == 0)) {
+            return
+        }
+        Country benCountry = (Country) countryCacheUtility.read(beneficiary.countryId)
+        beneficiary.phone = benCountry.isdCode + beneficiary.phone
+        task.amountInForeignCurrency = Math.floor(task.amountInForeignCurrency)
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+
+        for (int i = 0; i < lstSms.size(); i++) {
+            Sms sms = lstSms[i]
+
+            SystemEntity exhPayMethodBank = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_BANK_DEPOSIT, companyId)
+            SystemEntity exhPaymentMethodCash = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_CASH_COLLECTION, companyId)
+
+            String outletInfo = Tools.EMPTY_SPACE
+            if (task.paymentMethod == exhPayMethodBank.id) {
+                outletInfo = beneficiary.bank + Tools.COMA + beneficiary.bankBranch
+            } else if (task.paymentMethod == exhPaymentMethodCash.id) {
+                if (task.outletBranchId && task.outletBranchId.longValue() > 0) {
+                    Bank bank = (Bank) bankCacheUtility.read(task.outletBankId)
+                    BankBranch bankBranch = (BankBranch) bankBranchCacheUtility.read(task.outletBranchId)
+                    outletInfo = bank.name + Tools.COMA + bankBranch.name
+                } else {
+                    outletInfo = ANY_BRANCH_OF_SEBL
+                }
+            } else {
+                continue
+            }
+            // fit long text for sms
+            if (outletInfo.length() > 55) {
+                outletInfo = outletInfo.substring(0, 55)
+            }
+            Binding binding = new Binding()
+            binding.setVariable(TASK, task)
+            binding.setVariable(BENEFICIARY, beneficiary)
+            binding.setVariable(OUTLET_INFO, outletInfo)
+            GroovyShell shell = new GroovyShell(binding)
+            String content = shell.evaluate(sms.body)
+            // format content for sms
+            String encodedContent= URLEncoder.encode(content,UTF_8);
+            // now evaluate full sms url
+            binding = new Binding()
+            binding.setVariable(RECIPIENT, beneficiary.phone)
+            binding.setVariable(CONTENT, encodedContent)
+            shell = new GroovyShell(binding)
+            String strSms = shell.evaluate(sms.url)
+            lstSmsBody << strSms
+        }
+    }
+
+    /**
+     * Check if any task is unpaid
+     * @param lstTasks - task for send to bank
+     * @return - unpaid task count
+     */
+    private int checkUnpaid(List<ExhTask> lstTasks) {
+        int unpaidCount = 0
+        for (int i = 0; i < lstTasks.size(); i++) {
+            ExhTask task = lstTasks[i]
+            if (!task.isGatewayPaymentDone) unpaidCount++
+        }
+        return unpaidCount
+    }
+}

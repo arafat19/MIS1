@@ -1,0 +1,54 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Remittance Purpose* | |
+*ActionService:* | ExhCreateRemittancePurposeActionService | *Auditable:* | No
+*Url:* | /exhRemittancePurpose/create | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Remittance Purpose* link.
+* [Show Landing Page of "Remittance Purpose"|guide:ExhShowRemittancePurposeActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Remittance Purpose*.
+
+h4. Pre-condition:
+* User must have "Create remittance purpose" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Name | Text Box | Alpha Numeric | Required & Unique
+ Code | Text Box | Alpha Numeric | Optional
+{table}
+
+
+h4. Process:
+* Create a new *Remittance Purpose*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Remittance Purpose* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Exh/Remittance Purpose_Create.png!

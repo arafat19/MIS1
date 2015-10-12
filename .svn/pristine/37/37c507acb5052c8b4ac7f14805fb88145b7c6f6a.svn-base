@@ -1,0 +1,535 @@
+package com.athena.mis.document.actions.category
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.*
+import com.athena.mis.application.service.AppMailService
+import com.athena.mis.application.service.AppUserService
+import com.athena.mis.application.service.RoleService
+import com.athena.mis.application.service.UserRoleService
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.application.utility.CompanyCacheUtility
+import com.athena.mis.application.utility.RoleTypeCacheUtility
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocAllCategoryUserMapping
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.entity.DocInvitedMembers
+import com.athena.mis.document.entity.DocInvitedMembersCategory
+import com.athena.mis.document.service.DocAllCategoryUserMappingService
+import com.athena.mis.document.service.DocInvitedMembersCategoryService
+import com.athena.mis.document.service.DocInvitedMembersService
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.Tools
+import grails.plugin.mail.MailService
+import grails.plugins.springsecurity.SpringSecurityService
+import groovy.text.SimpleTemplateEngine
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+import javax.servlet.http.HttpServletRequest
+import java.util.concurrent.ExecutorService
+
+class AcceptInvitationDocInvitedMemberActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String NOT_FOUND_MESSAGE = 'Invited member not found'
+    private static final String TIME_EXPIRED_MSG = 'Your invitation has expired'
+    private static final String DEFAULT_ERROR_MESSAGE = 'Failed to load invitation page please refresh'
+    private static final String CATEGORY_NOT_FOUND_MESSAGE = 'Category not found'
+    private static final String CATEGORY_ALREADY_MAPPED = 'You have already accept this invitation'
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String CATEGORY_NAME = 'Category'
+    private static final String CATEGORY = 'category'
+    private static final String LST_SUB_CATEGORY_ID = 'lstSubCategory'
+    private static final String APP_USER = 'appUser'
+    private static final String INVITED_MEMBER = 'invitedMember'
+    private static final String SUCCESS_MESSAGE = 'You have successfully accepted the invitation'
+    private static final String CODE = 'code'
+    private static final String LOGIN_ID = 'loginId'
+
+    private static final String PASSWORD_MISMATCH_MSG = 'Password mismatched, please type again'
+    private static final String INVALID_PASS_LENGTH = 'Password must have at least 8 characters'
+    private static
+    final String INVALID_COMBINATION = 'Password should contain combination of letters, numbers & special character'
+    private static final String PASSWORD_PATTERN = """^.*(?=.{8,})(((?=.*[a-z])(?=.*[A-Z])(?=.*[\\d]))|((?=.*[a-z])(?=.*[A-Z])(?=.*[\\W]))|((?=.*[a-z])(?=.*[\\d])(?=.*[\\W]))|((?=.*[A-Z])(?=.*[\\d])(?=.*[\\W]))).*\$"""
+
+    private static final String TRANSACTION_CODE = 'AcceptInvitationDocInvitedMemberActionService'
+    private static final String MAIL_TEMPLATE_NOT_FOUND = 'Recipients template not found'
+
+
+    DocInvitedMembersService docInvitedMembersService
+    DocInvitedMembersCategoryService docInvitedMembersCategoryService
+    DocAllCategoryUserMappingService docAllCategoryUserMappingService
+    AppUserService appUserService
+    UserRoleService userRoleService
+    RoleService roleService
+    SpringSecurityService springSecurityService
+    ExecutorService executorService
+    MailService mailService
+    AppMailService appMailService
+    LinkGenerator grailsLinkGenerator
+
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+    @Autowired
+    CompanyCacheUtility companyCacheUtility
+
+    /**
+     * 1. Get parameters from UI
+     * 2. check if params is valid/invalid
+     * 3.category label from system configuration
+     * 4.check invited member existance
+     * 5. check category existance
+     * 6.check AppUser existance & mapping with this user
+     * 7. check expire date,password combination,mismatch with confirm password
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all object necessary for execute
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = CATEGORY_NAME
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+
+            HttpServletRequest request = (HttpServletRequest) obj
+            long companyId = getCompanyId(request)
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+            String invitationCode = params.code.toString()
+            DocInvitedMembers invitedMember = docInvitedMembersService.findByInvitationCodeAndCompanyId(invitationCode, companyId)
+            if (!invitedMember) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(Tools.MESSAGE, NOT_FOUND_MESSAGE)
+                return result
+            }
+            List<DocInvitedMembersCategory> lstInvitedMembersCategory = docInvitedMembersCategoryService.findAllByInvitedMemberId(invitedMember.id)
+            if (!lstInvitedMembersCategory) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(Tools.MESSAGE, NOT_FOUND_MESSAGE)
+                return result
+            }
+            long categoryId = lstInvitedMembersCategory[0].categoryId
+            DocCategory category = (DocCategory) docCategoryCacheUtility.readByIdAndCompanyId(categoryId, request)
+            if (!category) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(Tools.MESSAGE, CATEGORY_NOT_FOUND_MESSAGE)
+                return result
+            }
+            String email = invitedMember.email
+            // check required parameter
+            if ((!params.username) || (!params.password) || (!params.confirmPassword)) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(CATEGORY, category)
+                result.put(CODE, invitationCode)
+                result.put(LOGIN_ID, email)
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            AppUser appUser = appUserCacheUtility.readByLoginId(email, companyId)
+            if (appUser) {
+                if (lstInvitedMembersCategory[0].subCategoryId == 0) {
+                    DocAllCategoryUserMapping categoryUserMapping = docAllCategoryUserMappingService.findByCategoryIdAndUserIdAndSubCategoryId(categoryId, appUser.id, 0L)
+                    if (categoryUserMapping) {
+                        result.put(CATEGORY_LABEL, categoryLabel)
+                        result.put(Tools.MESSAGE, CATEGORY_ALREADY_MAPPED)
+                        result.put(CATEGORY, category)
+                        result.put(CODE, invitationCode)
+                        result.put(LOGIN_ID, email)
+                        return result
+                    } else {
+                        List<Long> lstSubCategoryId = listSubCategoryId(appUser.id, lstInvitedMembersCategory)
+                        result.put(LST_SUB_CATEGORY_ID, lstSubCategoryId)
+                        result.put(APP_USER, appUser)
+                    }
+                } else {
+                    List<Long> lstSubCategoryId = listSubCategoryId(appUser.id, lstInvitedMembersCategory)
+                    result.put(LST_SUB_CATEGORY_ID, lstSubCategoryId)
+                    result.put(APP_USER, appUser)
+                }
+
+            } else {
+                List<Long> lstSubCategoryId = listSubCategoryId(lstInvitedMembersCategory)
+                result.put(LST_SUB_CATEGORY_ID, lstSubCategoryId)
+            }
+            Date date = new Date()
+            if (date.compareTo(invitedMember.expiredOn) > 0) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(CATEGORY, category)
+                result.put(CODE, invitationCode)
+                result.put(LOGIN_ID, email)
+                result.put(Tools.MESSAGE, TIME_EXPIRED_MSG)
+                return result
+            }
+
+            String password = params.password.toString()
+            String confirmPassword = params.confirmPassword.toString()
+            // check password confirmation
+            if (!password.equals(confirmPassword)) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(CATEGORY, category)
+                result.put(CODE, invitationCode)
+                result.put(LOGIN_ID, email)
+                result.put(Tools.MESSAGE, PASSWORD_MISMATCH_MSG)
+                return result
+            }
+            // check length of password
+            if (password.length() < 8) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(CATEGORY, category)
+                result.put(CODE, invitationCode)
+                result.put(LOGIN_ID, email)
+                result.put(Tools.MESSAGE, INVALID_PASS_LENGTH)
+                return result
+            }
+            // check password combination
+            if (!password.matches(PASSWORD_PATTERN)) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(CATEGORY, category)
+                result.put(CODE, invitationCode)
+                result.put(LOGIN_ID, email)
+                result.put(Tools.MESSAGE, INVALID_COMBINATION)
+                return result
+            }
+
+            result.put(CATEGORY, category)
+            result.put(INVITED_MEMBER, invitedMember)
+            result.put(CODE, invitationCode)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(LOGIN_ID, email)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            throw new RuntimeException(DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    @Override
+    Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /*
+    * @param parameters - serialize parameters from UI
+    * @param obj -A map from precondition
+    *   1.create appuser and mapping if user does not exists
+    *   or
+    *   2.create mapping for this appuser
+    * @return - A map containing all objects of category,categoryLabel for buildSuccessResultForUI
+    * */
+
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryName = CATEGORY_NAME
+        Map preResult = (Map) obj
+        categoryName = preResult.get(CATEGORY_LABEL)
+        try {
+            GrailsParameterMap parameterMap = (GrailsParameterMap) parameters
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            List<Long> lstSubCategoryId = (List<Long>) preResult.get(LST_SUB_CATEGORY_ID)
+            DocInvitedMembers invitedMember = (DocInvitedMembers) preResult.get(INVITED_MEMBER)
+            AppUser appUser = (AppUser) preResult.get(APP_USER)
+            if (!appUser) {
+                createUserAndMapping(parameterMap, invitedMember, category, lstSubCategoryId)
+            } else {
+                createMapping(appUser, category, invitedMember, lstSubCategoryId)
+            }
+
+            AppMail appMail = appMailService.findByTransactionCodeAndCompanyIdAndIsActive(TRANSACTION_CODE, invitedMember.companyId, true)
+            if (!appMail) {
+                result.put(Tools.MESSAGE, MAIL_TEMPLATE_NOT_FOUND)
+                return result
+            }
+            String loginUrl = grailsLinkGenerator.link(controller: 'login', action: 'auth', absolute: true)
+
+            Map mailParams = [categoryLabel: categoryName, categoryName: category.name,
+                    categoryDescription: category.description, categoryUrl: category.url,
+                    loginId: invitedMember.email, loginUrl: loginUrl]
+            buildMailBody(appMail, mailParams)
+            executeMail(appMail, invitedMember.email)
+
+            result.put(CATEGORY, category)
+            result.put(CATEGORY_LABEL, categoryName)
+            result.put(CODE, preResult.get(CODE))
+            result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            throw new RuntimeException(DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+
+    }
+
+    /*
+    * Build Success Results for grid in UI
+    * @params obj - Map return from execute method
+    * @return a map of containing all object necessary for show page
+    * */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (Map) obj
+        String categoryLabel = preResult.get(CATEGORY_LABEL)
+        try {
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            result.put(CATEGORY, category)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(CODE, preResult.get(CODE))
+            result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+            result.put(Tools.MESSAGE, SUCCESS_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+    * Build Failure result for UI
+    * @params obj - A map from execute method
+    * @return a Map containing IsError and default error message/relevant error message to display
+    * */
+
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (Map) obj
+        String categoryLabel = preResult.get(CATEGORY_LABEL)
+        try {
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(CATEGORY_LABEL, categoryLabel)
+                    result.put(CATEGORY, category)
+                    result.put(CODE, preResult.get(CODE))
+                    result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(CODE, preResult.get(CODE))
+            result.put(CATEGORY, category)
+            result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * retrieve companyUser from request
+     * @param request
+     * @return company ID
+     */
+
+    private long getCompanyId(HttpServletRequest request) {
+        String fullUrl = Tools.getFullUrl(request, false)    // retrieve url with www
+        Company company = companyCacheUtility.readByWebUrl(fullUrl) // compare with www
+        if (company) {
+            return company.id
+        }
+        // if company not found try to retrieve url without www
+        fullUrl = Tools.getFullUrl(request, true)
+        company = companyCacheUtility.readByWebUrlWithoutWWW(fullUrl)     // compare without www
+        if (company) {
+            return company.id
+        } else {
+            return 0L
+        }
+    }
+
+    /*
+    * Create User and mapping this user with selected category
+    * @param parameterMap
+    * @param invitedMember object
+    * @param category object
+    * */
+
+    public void createUserAndMapping(GrailsParameterMap parameterMap, DocInvitedMembers invitedMember, DocCategory category, List<Long> lstSubCategoryId) {
+        String userName = parameterMap.username.toString()
+        String password = parameterMap.password.toString()
+        AppUser appUser = buildAppUser(userName, password, invitedMember)
+        AppUser newAppUser = appUserService.create(appUser)
+        UserRole userRole = buildUserRole(newAppUser)
+        userRoleService.create(userRole)
+        List<DocAllCategoryUserMapping> lstDocAllCategoryUserMapping = buildDocAllCategoryUserMapping(newAppUser, category, lstSubCategoryId)
+        for (int i = 0; i < lstDocAllCategoryUserMapping.size(); i++) {
+            DocAllCategoryUserMapping docAllCategoryUserMapping = lstDocAllCategoryUserMapping[i]
+            docAllCategoryUserMappingService.create(docAllCategoryUserMapping)
+        }
+        DocInvitedMembers buildInvitedMembers = buildInvitedMember(invitedMember)
+        docInvitedMembersService.update(buildInvitedMembers)
+
+        appUserCacheUtility.add(newAppUser, appUserCacheUtility.SORT_ON_NAME, appUserCacheUtility.SORT_ORDER_ASCENDING)
+    }
+    /*
+   * Create mapping this user with selected category
+   * @param appuser
+   * @param invitedMember object
+   * @param category object
+   * */
+
+    public void createMapping(AppUser appUser, DocCategory category, DocInvitedMembers invitedMember, List<Long> lstSubCategoryId) {
+        UserRole userRole = buildUserRole(appUser)
+        UserRole existUserRole = userRoleService.read(userRole.userId, userRole.roleId, appUser.companyId)
+        if (!existUserRole) {
+            userRoleService.create(userRole)
+        }
+        List<DocAllCategoryUserMapping> lstDocAllCategoryUserMapping = buildDocAllCategoryUserMapping(appUser, category, lstSubCategoryId)
+        for (int i = 0; i < lstDocAllCategoryUserMapping.size(); i++) {
+            DocAllCategoryUserMapping docAllCategoryUserMapping = lstDocAllCategoryUserMapping[i]
+            docAllCategoryUserMappingService.create(docAllCategoryUserMapping)
+        }
+        DocInvitedMembers buildInvitedMembers = buildInvitedMember(invitedMember)
+        docInvitedMembersService.update(buildInvitedMembers)
+    }
+    /*
+   * Build AppUser
+   * @param userName
+   * @param password
+   * @param invitedMember object
+   * @return newAppUser object
+   * */
+
+    private AppUser buildAppUser(String userName, String password, DocInvitedMembers invitedMember) {
+        AppUser newAppUser = new AppUser()
+        newAppUser.accountExpired = false
+        newAppUser.accountLocked = false
+        newAppUser.companyId = invitedMember.companyId
+        newAppUser.enabled = true
+        newAppUser.loginId = invitedMember.email
+        newAppUser.nextExpireDate = new Date() + 365
+        newAppUser.password = springSecurityService.encodePassword(password)
+        newAppUser.passwordExpired = false
+        newAppUser.hasSignature = false
+        newAppUser.username = userName
+        newAppUser.createdBy = 0
+        newAppUser.createdOn = new Date()
+        return newAppUser
+    }
+    /*
+   * Build DocAllCategoryUserMapping
+   * @param userName
+   * @param category
+   * @return newDocAllCategoryUserMapping object
+   * */
+
+    public List<DocAllCategoryUserMapping> buildDocAllCategoryUserMapping(AppUser appUser, DocCategory category, List<Long> lstSubCategoryId) {
+        List<DocAllCategoryUserMapping> lstAllCategoryUserMapping = []
+        for (int i = 0; i <= lstSubCategoryId.size();) {
+            DocAllCategoryUserMapping newDocAllCategoryUserMapping = new DocAllCategoryUserMapping()
+            newDocAllCategoryUserMapping.userId = appUser.id
+            newDocAllCategoryUserMapping.categoryId = category.id
+            newDocAllCategoryUserMapping.subCategoryId = (lstSubCategoryId.size() > 0) ? lstSubCategoryId[i] : 0
+            newDocAllCategoryUserMapping.isCategoryManager = false
+            newDocAllCategoryUserMapping.isSubCategoryManager = false
+            newDocAllCategoryUserMapping.companyId = appUser.companyId
+            newDocAllCategoryUserMapping.createdOn = new Date()
+            newDocAllCategoryUserMapping.createdBy = appUser.id
+            newDocAllCategoryUserMapping.updatedBy = 0
+
+            lstAllCategoryUserMapping << newDocAllCategoryUserMapping
+            i++
+            if (i == lstSubCategoryId.size()) break
+        }
+        return lstAllCategoryUserMapping
+    }
+
+    /*
+     * Build UserRole
+     * @param appUser
+     * @return newUserRole object
+     * */
+
+    private UserRole buildUserRole(AppUser appUser) {
+        Role role = roleService.findByCompanyIdAndRoleTypeId(appUser.companyId, RoleTypeCacheUtility.ROLE_TYPE_DOCUMENT_MEMBER)
+        UserRole newUserRole = new UserRole(user: appUser, role: role)
+        return newUserRole
+    }
+    /*
+    * Build DocInvitedMembers
+    * @param oldInvitedMember
+    * @return oldInvitedMember object
+    * */
+
+    private DocInvitedMembers buildInvitedMember(DocInvitedMembers oldInvitedMember) {
+        oldInvitedMember.invitationAcceptedOn = new Date()
+        return oldInvitedMember
+    }
+
+    private void buildMailBody(AppMail appMail, Map parameters) {
+        SimpleTemplateEngine engine = new SimpleTemplateEngine()
+        Writable templateSubject = engine.createTemplate(appMail.subject).make(parameters)
+        Writable templateBody = engine.createTemplate(appMail.body).make(parameters)
+        appMail.subject = templateSubject.toString()
+        appMail.body = templateBody.toString()
+    }
+
+    private void executeMail(AppMail appMail, String userMailAddress) {
+        executorService.submit({
+            println "Sending mail for transaction ${appMail.transactionCode} ..."
+
+            mailService.sendMail {
+                to userMailAddress
+                subject appMail.subject
+                html appMail.body
+            }
+            println "Mail sent successfully for ${appMail.transactionCode}"
+        })
+    }
+
+    private List<Long> listSubCategoryId(long userId, List<DocInvitedMembersCategory> lstInvitedMembersCategory) {
+        List<Long> lstSubCategoryId = []
+
+        for (int i = 0; i < lstInvitedMembersCategory.size(); i++) {
+            DocAllCategoryUserMapping allCategoryUserMapping = docAllCategoryUserMappingService.findByCategoryIdAndUserIdAndSubCategoryId(lstInvitedMembersCategory[i].categoryId, userId, lstInvitedMembersCategory[i].subCategoryId)
+            if (!allCategoryUserMapping) {
+                lstSubCategoryId << lstInvitedMembersCategory[i].subCategoryId
+            }
+        }
+        return lstSubCategoryId
+    }
+
+    private List<Long> listSubCategoryId(List<DocInvitedMembersCategory> lstInvitedMembersCategory) {
+        List<Long> lstSubCategoryId = []
+
+        for (int i = 0; i < lstInvitedMembersCategory.size(); i++) {
+            lstSubCategoryId << lstInvitedMembersCategory[i].subCategoryId
+        }
+        return lstSubCategoryId
+    }
+}

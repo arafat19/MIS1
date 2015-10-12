@@ -1,0 +1,54 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of Un-approve "Inventory In" From another Inventory | |
+ *ActionService:* | ShowForUnapprovedInvInFromInventoryActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/showUnapprovedInvInFromInventory | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Inventory Operator, Inventory Auditor, Production Operator.
+
+h4. Description:
+This is landing page of Un-approved "Inventory In" From another Inventory with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks  [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Clicks "From Inventory" link.
+* [Show Group of "Inventory In" From Another Inventory|guide:ShowForInventoryInFromInventoryActionService].
+* Select a Line-Item from grid view.
+* Click "New" button.
+* Show Landing Page of Un-approve "Inventory In" From another Inventory.
+
+h4. Pre-condition:
+* User must have "Show Unapproved Inv.In From Inventory" privilege.
+
+h4. Process:
+* [Get list of all "Inventory In" from another Inventory|guide:ListForUnapprovedInvInFromInventoryActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Inventory in From Inventory Out" Details|guide:CreateForInventoryInDetailsFromInventoryActionService].
+** Show list of all "Inventory in From Inventory Out" Details in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open Un-approve "Inventory In" From another Inventory in Edit Mode|guide:SelectForInventoryInDetailsFromInventoryActionService].
+* [Delete Un-approve "Inventory In" From another Inventory|guide:DeleteForInventoryInDetailsFromInventoryActionService].
+* [Search Un-approve "Inventory In" From another Inventory From Grid View|guide:SearchForUnapprovedInvInFromInventoryActionService].
+* [Approve Un-approve "Inventory In" From another Inventory|guide:ApproveForInvInDetailsFromInventoryActionService].
+* [Show "Chalan" Report from Grid View|guide:ShowForInvoiceActionService].
+
+!Inv/Add_Item_From_Inventory_Show.png!

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accSupplierWisePayment" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15" uuid="91040c2e-ffe1-41dd-8689-4d9c81f714e4">
+	<property name="ireport.zoom" value="1.6500000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="supplierName" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.sql.Timestamp"/>
+	<parameter name="toDate" class="java.sql.Timestamp"/>
+	<parameter name="supplierId" class="java.lang.Long"/>
+	<parameter name="paidTotal" class="java.lang.String"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="lstProjectId" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[SELECT vw_acc_supplier_payment.id, project.name project_name, to_char(total_po,$P{dbCurrencyFormat}) as po_total_str,
+to_char(total_po-(SUM(total_paid)),$P{dbCurrencyFormat}) as reamaining
+            FROM vw_acc_supplier_payment
+	 LEFT JOIN project ON project.id=po_project_id
+            WHERE (voucher_date BETWEEN $P{fromDate} AND $P{toDate})
+            AND source_id = $P{supplierId}
+            AND posted_by > $P{postedByParam}
+            AND vw_acc_supplier_payment.company_id = $P{companyId}
+	AND ($X{IN,project_id,lstProjectId})
+            GROUP BY vw_acc_supplier_payment.id, project.name, total_po
+            ORDER BY vw_acc_supplier_payment.id]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="project_name" class="java.lang.String"/>
+	<field name="po_total_str" class="java.lang.String"/>
+	<field name="reamaining" class="java.lang.String"/>
+	<pageHeader>
+		<band height="87">
+			<staticText>
+				<reportElement uuid="8e5ffe1f-227b-4f6d-970f-bc1018c447d7" x="0" y="70" width="33" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="885893a7-8e18-40e6-adda-92ca05a6c004" x="420" y="70" width="135" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Reamaining]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="b9be4771-23f5-456f-96cd-066872503afe" x="0" y="69" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement uuid="867e1d44-0453-492b-b752-4ac31d27a611" x="33" y="70" width="67" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PO No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8c037b1-f9c9-47ba-88f2-ad8981138df6" x="0" y="0" width="221" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Supplier Wise Payment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a0dafb7d-a1d1-4dcc-b90e-2b1c52de6986" x="285" y="70" width="135" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total PO Amount]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="8022562c-852e-4e43-a516-b52c62eef7fa" x="59" y="20" width="162" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="99656ad7-b85a-4e3f-b61d-b049c0541864" x="0" y="20" width="49" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="5ec36e95-cbf9-478e-9f6c-d45b58de982d" x="59" y="35" width="162" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f46aa89f-0a7f-4bbf-baae-9ce45ba8f4e6" x="0" y="35" width="49" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="51614690-3376-4cf7-bca4-0b08a3e578c9" x="0" y="50" width="49" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Supplier ]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a8fa3245-421b-4880-b751-c8ee5a751f77" stretchType="RelativeToTallestObject" x="59" y="50" width="496" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{supplierName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="9092bd3c-1836-439c-9510-b21398e2d023" x="49" y="20" width="10" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9adac478-4504-440e-a07d-e77521f51604" x="49" y="35" width="10" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9adac478-4504-440e-a07d-e77521f51604" x="49" y="51" width="10" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="d2026318-6381-4f18-9ebf-5c40d0d38568" x="289" y="0" width="266" height="35"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="a0dafb7d-a1d1-4dcc-b90e-2b1c52de6986" x="100" y="70" width="185" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project Name]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band>
+			<printWhenExpression><![CDATA[($V{PAGE_NUMBER}!=1) ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+		</band>
+		<band height="40">
+			<textField>
+				<reportElement uuid="340e601c-f2a9-473e-a3be-bfae33f81ffc" stretchType="RelativeToTallestObject" x="0" y="1" width="33" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT} + "."]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f890540b-d92c-40fe-ada6-a9b5154d7699" stretchType="RelativeToTallestObject" x="33" y="1" width="67" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id}>0?$F{id}:'None']]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="3c16313f-5f3d-4d7f-b7f1-ca36a2bd5827" x="0" y="0" width="555" height="1" forecolor="#CCCCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.05"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="7bb06e89-31fb-4289-9d44-b8d08c47034e" stretchType="RelativeToTallestObject" x="285" y="1" width="135" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{po_total_str}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="49359aa0-780d-413c-99b3-a6df3cd53611" stretchType="RelativeToTallestObject" x="420" y="1" width="135" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reamaining}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="4364eb04-2dcd-48bf-aaa3-de9fc78c540f" x="151" y="19" width="404" height="20"/>
+				<subreportParameter name="lstProjectId">
+					<subreportParameterExpression><![CDATA[$P{lstProjectId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="poId">
+					<subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="supplierId">
+					<subreportParameterExpression><![CDATA[$P{supplierId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fromDate">
+					<subreportParameterExpression><![CDATA[$P{fromDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="postedByParam">
+					<subreportParameterExpression><![CDATA[$P{postedByParam}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="dbCurrencyFormat">
+					<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="toDate">
+					<subreportParameterExpression><![CDATA[$P{toDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyId">
+					<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} +"/accSupplierWisePaymentSubReport.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement uuid="3c16313f-5f3d-4d7f-b7f1-ca36a2bd5827" x="0" y="18" width="555" height="1" forecolor="#CCCCCC"/>
+				<graphicElement>
+					<pen lineWidth="0.05"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="7bb06e89-31fb-4289-9d44-b8d08c47034e" stretchType="RelativeToTallestObject" x="100" y="1" width="185" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{project_name}?$F{project_name}:'None']]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="14">
+			<subreport>
+				<reportElement uuid="9cd6e473-a7eb-4ec2-a7d5-57af879d2228" x="0" y="0" width="555" height="14"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR}+ "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="bd8e27a2-1cf4-4528-931f-c73d97dff17d" x="0" y="0" width="100" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="8aecced5-6642-4298-9924-9aff6d521925" x="240" y="0" width="89" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="41">
+			<staticText>
+				<reportElement uuid="08fb2784-7a42-4a6a-817f-d28e2678eb6c" x="0" y="1" width="116" height="19"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Grand Total Paid Amount]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="9b0dba60-e8c9-45d5-afe7-e7e221fb5e1c" x="0" y="0" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement uuid="6c761513-4433-4d3f-ab8c-e4ae47e98c21" x="0" y="20" width="555" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<reportElement uuid="55c3c01d-185a-4c69-a6e2-015d23ba1e88" stretchType="RelativeToTallestObject" x="-251" y="10" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<reportElement uuid="408c65ec-70f3-4f4a-9efd-a3e6e4d01083" stretchType="RelativeToTallestObject" x="-251" y="10" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<reportElement uuid="ec5e4b85-6278-4e0a-8fe2-441f38ae61f4" stretchType="RelativeToTallestObject" x="-251" y="10" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yy" isBlankWhenNull="true">
+				<reportElement uuid="d653f0f4-3d9d-4177-9ef8-56209aa8b4e1" stretchType="RelativeToTallestObject" x="-251" y="10" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="c53c9f08-51f4-4674-abb8-07736dbc7ce3" stretchType="RelativeToTallestObject" x="465" y="1" width="90" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paidTotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

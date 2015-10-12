@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accSupplierWisePayment" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="15" bottomMargin="15" uuid="91040c2e-ffe1-41dd-8689-4d9c81f714e4">
+	<property name="ireport.zoom" value="1.363636363636366"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="supplierName" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.sql.Timestamp"/>
+	<parameter name="toDate" class="java.sql.Timestamp"/>
+	<parameter name="supplierId" class="java.lang.Long"/>
+	<parameter name="paidTotal" class="java.lang.String"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="lstProjectId" class="java.util.Collection"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT vwsp.id, vwsp.voucher_date, vwsp.trace_no, vwsp.total_paid
+            FROM vw_acc_supplier_payment vwsp
+  	    LEFT JOIN project ON project.id=vwsp.po_project_id
+            WHERE (vwsp.voucher_date BETWEEN $P{fromDate} AND $P{toDate})
+            AND vwsp.source_id = $P{supplierId}
+            AND vwsp.posted_by > $P{postedByParam}
+            AND vwsp.company_id = $P{companyId}
+            AND vwsp.total_paid > 0
+	  AND ($X{IN,vwsp.project_id,lstProjectId})
+            ORDER BY vwsp.id,vwsp.voucher_date, vwsp.total_paid]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="voucher_date" class="java.sql.Date"/>
+	<field name="trace_no" class="java.lang.String"/>
+	<field name="total_paid" class="java.math.BigDecimal"/>
+	<title>
+		<band height="112">
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="8022562c-852e-4e43-a516-b52c62eef7fa" x="43" y="35" width="134" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="99656ad7-b85a-4e3f-b61d-b049c0541864" x="0" y="35" width="43" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="5ec36e95-cbf9-478e-9f6c-d45b58de982d" x="43" y="50" width="134" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f46aa89f-0a7f-4bbf-baae-9ce45ba8f4e6" x="0" y="50" width="43" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To Date ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="51614690-3376-4cf7-bca4-0b08a3e578c9" x="0" y="65" width="43" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Supplier]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a8fa3245-421b-4880-b751-c8ee5a751f77" stretchType="RelativeToTallestObject" x="43" y="65" width="134" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{supplierName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8e5ffe1f-227b-4f6d-970f-bc1018c447d7" x="0" y="95" width="43" height="17"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left">
+					<font size="8" isBold="false" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="867e1d44-0453-492b-b752-4ac31d27a611" x="43" y="95" width="67" height="17"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="8" isBold="false" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PO No]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="a8fa3245-421b-4880-b751-c8ee5a751f77" stretchType="RelativeToTallestObject" x="43" y="80" width="134" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="51614690-3376-4cf7-bca4-0b08a3e578c9" x="0" y="80" width="43" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="8" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2bc2508d-3d5f-45ad-b273-353278025ee7" x="177" y="95" width="110" height="17"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Voucher Trace No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2bc2508d-3d5f-45ad-b273-353278025ee7" x="287" y="95" width="103" height="17"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Paid Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2bc2508d-3d5f-45ad-b273-353278025ee7" x="110" y="95" width="67" height="17"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Payment Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8c037b1-f9c9-47ba-88f2-ad8981138df6" x="0" y="0" width="177" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Supplier Wise Payment]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="99656ad7-b85a-4e3f-b61d-b049c0541864" x="0" y="20" width="43" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="8022562c-852e-4e43-a516-b52c62eef7fa" x="43" y="20" width="134" height="15"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="17">
+			<textField>
+				<reportElement uuid="340e601c-f2a9-473e-a3be-bfae33f81ffc" stretchType="RelativeToTallestObject" x="0" y="0" width="43" height="17"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT} + "."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fa7e5a90-cde7-46f7-ab71-42d0b073a976" x="287" y="0" width="103" height="17"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_paid}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yy">
+				<reportElement uuid="559baab0-c1f4-45a1-9d2d-d6de518f15c0" x="110" y="0" width="67" height="17"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{voucher_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e5e41a73-2bad-430a-b909-d7490137937b" x="177" y="0" width="110" height="17"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trace_no}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f890540b-d92c-40fe-ada6-a9b5154d7699" stretchType="RelativeToTallestObject" x="43" y="0" width="67" height="17"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{id}>0?$F{id}:'None']]></textFieldExpression>
+			</textField>
+		</band>
+		<band>
+			<printWhenExpression><![CDATA[($V{PAGE_NUMBER}!=1) ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+		</band>
+	</detail>
+</jasperReport>

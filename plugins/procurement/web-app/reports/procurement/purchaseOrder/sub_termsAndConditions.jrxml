@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_termsAndConditions" language="groovy" pageWidth="554" pageHeight="842" columnWidth="554" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ce4e32e8-c9d1-44b9-9bf5-927d901d4bdb">
+	<property name="ireport.zoom" value="1.3310000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="purchaseOrderId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT row_number() over(ORDER BY id ASC)||'.' row_no,details
+FROM proc_terms_and_condition
+WHERE purchase_order_id=$P{purchaseOrderId}
+ORDER BY id ASC]]>
+	</queryString>
+	<field name="row_no" class="java.lang.String"/>
+	<field name="details" class="java.lang.String"/>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="cb0a748a-20d9-4906-bddf-059b4a4201f6" x="0" y="0" width="123" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Terms & Conditions:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Prevent">
+			<textField>
+				<reportElement uuid="4036395b-da70-4238-875f-10fc626c932d" stretchType="RelativeToTallestObject" x="0" y="0" width="26" height="15"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{row_no}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="64e841c8-2e14-4ddc-b1cf-54cd1204b645" stretchType="RelativeToTallestObject" x="26" y="0" width="528" height="15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{details}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

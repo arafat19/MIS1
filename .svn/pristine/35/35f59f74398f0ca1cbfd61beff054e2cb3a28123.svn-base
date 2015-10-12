@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Exchange House Currency Posting* | |
+*ActionService:* | DeleteRmsExchangeHouseCurrencyPostingActionService | *Auditable:* | No
+*Url:* | /rmsExchangeHouseCurrencyPosting/delete | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Exchange House Currency Posting* link.
+* [Show Landing Page of "Exchange House Currency Posting"|guide:ShowRmsExchangeHouseCurrencyPostingActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Exchange House Currency Posting*.
+
+h4. Pre-condition:
+* User must have "Delete Exchange House Currency Posting" privilege.
+
+h4. Process:
+* Delete a selected *Exchange House Currency Posting*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Exchange House Currency Posting* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

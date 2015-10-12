@@ -1,0 +1,35 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate *Company* List | | 
+ *ActionService:* | GetDropDownCompanyTagLibActionService | *Auditable:* | No
+ *Url:* | Taglib:CompanyDropDownTagLib | | 
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 19th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description: 
+Name of use case represents its functionality.
+
+h4. Pre-condition: 
+N/A.
+
+h4. Process: 
+* Get *Company* list from server. [Show Landing Page of Company|guide:ShowCompanyActionService]
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate list of *Company* at drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

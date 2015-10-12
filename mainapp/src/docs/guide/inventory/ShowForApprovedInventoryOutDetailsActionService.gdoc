@@ -1,0 +1,54 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of Approved "Inventory Out" | |
+ *ActionService:* | ShowForApprovedInventoryOutDetailsActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/showApprovedInventoryOutDetails | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 1st July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Inventory Operator, Inventory Auditor, Production Operator.
+
+h4. Description:
+This is the landing page of Approved "Inventory Out" Items with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks  [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Clicks Out link.
+* [Show Group of "Inventory Out" Landing Page|guide:ShowForInventoryOutActionService].
+* Select a Line-Item from grid view.
+* Click "Approved" button.
+* Show Landing Page of Approved "Inventory Out".
+
+h4. Pre-condition:
+* User must have "Show Approved Inv Out Details" privilege.
+
+h4. Process:
+* [Get list of all Approved "Inventory Out"|guide:ListForApprovedInventoryOutDetailsActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form to [Update Approved "Inventory Out"|guide:AdjustmentForInvOutActionService].
+** Show list of all Approved "Inventory Out" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Cancel|common Usecases].
+* [Open Approved "Inventory Out" in Edit Mode|guide:_adjustmentItemFromInventoryOut].
+* [Update Approved "Inventory Out"|guide:AdjustmentForInvOutActionService].
+* [Open Approved "Inventory Out"  to Delete|guide:_reverseInventoryItemsFromInventoryOut].
+* [Delete Approved "Inventory Out"|guide:ReverseAdjustForInvOutActionService].
+* [Open Approved "Inventory Out" in Read Only Mode|guide:_detailsApprovedItemofInventoryOut].
+* [Show "Chalan" Report from Grid View|guide:ShowForInvoiceActionService].
+
+!Inv/Approved_Item_Inventory_Out_Show.png!

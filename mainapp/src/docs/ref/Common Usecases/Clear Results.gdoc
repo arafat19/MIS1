@@ -1,0 +1,37 @@
+
+h2.	Purpose
+System will cleaned searched results and grid has returned to first page with all previous grid settings.
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Clear Results | | 
+ *Action Class:* | ListAnyDomainActionService | *Auditable:* | No
+ *Url:* | /anyDomain/list | | 
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+User.
+
+h4. Description:
+After the search operation if user clicks 'Clear Results' icon, user will see the unfiltered and default list of information from the first page.
+
+h4. Pre-condition:
+* Show the corresponding grid view.
+
+h4. Process:
+* Reload objects in grid view with no criteria.
+
+h4. Post-condition:
+
+* *Success:*
+** Grid show list of information from the first page. 
+** Number of rows per page will remain as previous.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

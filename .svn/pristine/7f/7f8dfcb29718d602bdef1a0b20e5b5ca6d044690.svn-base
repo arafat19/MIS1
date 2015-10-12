@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *IOU Slip* | |
+*ActionService:* | DeleteAccIouSlipActionService | *Auditable:* | No
+*Url:* | /accIouSlip/delete | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click *IOU Slip* link.
+* [Show Landing Page of IOU Slip|guide:ShowAccIouSlipActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor Click "Yes" button.
+* Delete *IOU Slip*.
+
+h4. Pre-condition:
+* User must have "Delete IOU Slip" privilege.
+* Approved *IOU Slip* cannot delete-able.
+* *IOU Slip* with purpose cannot delete-able.
+* If *IOU Slip* has dependency with following business entity then *IOU Slip* will not be delete-able:
+** *Voucher*
+
+h4. Process:
+* Delete selected *IOU Slip*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *IOU Slip* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

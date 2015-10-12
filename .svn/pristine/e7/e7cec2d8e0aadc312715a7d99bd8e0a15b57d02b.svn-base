@@ -1,0 +1,55 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Purchase Request* | |
+*ActionService:* | CreatePurchaseRequestActionService | *Auditable:* | No
+*Url*: | /procPurchaseRequest/create | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show Landing Page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* User must enter valid input.
+* Click "Create" Button.
+* Create *Purchase Request*.
+
+h4. Pre-condition:
+* User must have "Create Purchase Request" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Populate Project List|application] | Drop-Down List |  Numeric  | Required |
+[Indent|guide:GetIndentListByProjectIdActionService] | Drop-Down List | Numeric | Optional
+Comments | Text Area | Alpha Numeric | Optional
+{table}
+
+h4. Process:
+Create a new *Purchase Request*.
+
+h4. Post-condition:
+* After Create *Purchase Request* e-mail must send to "priviledged user"(Director,Project Director).
+
+* *Success:*
+** Add newly created *Purchase Request* into grid-view (should be 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+!procurement/PR_Create.png!

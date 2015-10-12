@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Agent Currency Posting* | |
+*ActionService:* | ShowExhAgentCurrencyPostingActionService | *Auditable:* | No
+*Url:* | /exhAgentCurrencyPosting/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Agent Currency Posting* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent Currency Posting* link.
+* Show Landing Page of *Agent Currency Posting*.
+
+h4. Pre-condition:
+* User must have "Show Agent Currency Posting" privilege.
+
+h4. Process:
+* Show blank input form on top to [Create new "Agent Currency Posting"|guide:CreateExhAgentCurrencyPostingActionService].
+* [List "Agent Currency Posting"|guide:ListExhAgentCurrencyPostingActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Agent Currency Posting* information in grid view.
+** Reset input form on top to create new *Agent Currency Posting*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Agent Currency Posting" in Edit Mode|guide:SelectExhAgentCurrencyPostingActionService].
+* [Delete "Agent Currency Posting"|guide:DeleteExhAgentCurrencyPostingActionService].
+* [Search "Agent Currency Posting" From Grid View|guide:SearchExhAgentCurrencyPostingActionService].
+
+!Exh/Agent Currency Posting_Show.png!

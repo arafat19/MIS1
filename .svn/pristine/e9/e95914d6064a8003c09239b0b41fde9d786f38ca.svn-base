@@ -1,0 +1,347 @@
+<script type="text/javascript">
+
+    var validatorBug, dropDownModule, dropDownStatus, dropDownSeverity,
+        dropDownType, backlogId, uploading, bugStatusId, leftMenu;
+    var ptBugListModel = false;
+
+    $(document).ready(function () {
+        onLoadPtBugPage();
+    });
+
+    // method called on page load
+    function onLoadPtBugPage() {
+        // common initializeForm() is not used here due to customValidation/upload
+        validatorBug = $("#ptBugForm").kendoValidator({
+            validateOnBlur: false
+        }).data("kendoValidator");
+
+        $("#contentObj").kendoUpload({
+            multiple: false
+        });
+
+        var output =${output ? output : ''};
+        bugStatusId = $('#bugStatusId').val();
+
+        if (output.isError) {
+            showError(output.message);              // show error message in case of error
+        } else {
+            ptBugListModel = output.gridObj;        // set data in a global variable to populate
+        }
+        leftMenu = output.leftMenu;
+        dropDownStatus.readonly(true);
+        dropDownStatus.value(bugStatusId);
+        bindBugFormEvents();
+        initFlex();
+        populateFlex();
+
+        $(document).attr('title', "MIS - Create Bug");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, '#'+leftMenu);
+    }
+
+    function bindBugFormEvents() {
+        // set link for create
+        var actionUrl = "${createLink(controller:'ptBug', action: 'createOrphanBug')}";
+
+        $("#ptBugForm").attr('action', actionUrl);
+
+        $('#ptBugForm').iframePostForm({
+            post: function () {
+                uploading = true;
+                showLoadingSpinner(true);
+                setButtonDisabled($('#create'), true);
+            },
+            complete: function (response) {
+                if (uploading == true) {
+                    showLoadingSpinner(false);
+                    executePostCondition(response);
+                    uploading = false;
+                    setButtonDisabled($('#create'), false);
+                }
+            },
+            beforePost: function () {
+                if (executePreCondition() == false) {
+                    return false;
+                }
+                return true;
+            }
+        });
+    }
+
+    // check pre condition before submitting the form
+    function executePreCondition() {
+        // validate form data
+        if (!validateForm($("#ptBugForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    // execute post condition after create or update
+    function executePostCondition(data) {
+        var result = eval('(' + data + ')');
+        if (result.isError) {
+            showError(result.message);              // show error message in case of error
+            showLoadingSpinner(false);              // stop loading spinner
+        }
+        else {
+            try {
+                var newEntry = result;
+                if ($('#id').val().isEmpty() && newEntry.entity != null) {      // show newly created object in a grid row
+                    console.log(newEntry.entity);
+                    var previousTotal = parseInt(ptBugListModel.total);
+                    var firstSerial = 1;
+
+                    if (ptBugListModel.rows.length > 0) {
+                        firstSerial = ptBugListModel.rows[0].cell[0];
+                        regenerateSerial($(ptBugListModel.rows), 0);
+                    }
+                    newEntry.entity.cell[0] = firstSerial;
+                    ptBugListModel.rows.splice(0, 0, newEntry.entity);
+
+                    if ($('#flex').countEqualsResultPerPage(previousTotal)) {
+                        ptBugListModel.rows.pop();
+                    }
+
+                    ptBugListModel.total = ++previousTotal;
+                    $("#flex").flexAddData(ptBugListModel);
+
+                } else if (newEntry.entity != null) {                           // updated existing object data in the grid
+                    updateListModel(ptBugListModel, newEntry.entity, 0);
+                    $("#flex").flexAddData(ptBugListModel);
+                }
+
+                resetBugForm();                        // reset the form
+                showSuccess(result.message);        // show success message
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    // reset the form
+    function resetBugForm() {
+        clearForm($("#ptBugForm"), dropDownModule);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Create");       // reset create button text
+        // reset kendo upload
+        $(".k-delete").parent().click();
+
+        dropDownStatus.value(bugStatusId);
+        dropDownModule.readonly(false);
+        // set link for create
+        var actionUrl = "${createLink(controller:'ptBug', action: 'createOrphanBug')}";
+        $("#ptBugForm").attr('action', actionUrl);
+    }
+
+    // initialize the grid
+    function initFlex() {
+        $("#flex").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                        {display: "Bug ID", name: "id", width: 60, sortable: false, align: "right", hide: true},
+                        {display: "Title", name: "title", width: 180, sortable: false, align: "left"},
+                        {display: "Steps To Reproduce", name: "stepToReproduce", width: 200, sortable: false, align: "left"},
+                        {display: "Status", name: "status", width: 80, sortable: false, align: "left"},
+                        {display: "Severity", name: "severity", width: 70, sortable: false, align: "left"},
+                        {display: "Type", name: "type", width: 100, sortable: false, align: "left"},
+                        {display: "Created On", name: "createdOn", width: 100, sortable: false, align: "left"},
+                        {display: "Created By", name: "createdBy", width: 150, sortable: false, align: "left"},
+                        {display: "Attachment", name: "hasAttachment", width: 80, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/ptBug/select,/ptBug/updateOrphanBug">
+                        {name: 'Edit', bclass: 'edit', onpress: selectPtBug},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptBug/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deletePtBug},
+                        </app:ifAllUrl>
+                        {name: 'Report', bclass: 'report', onpress: viewBugDetails},
+                        <app:ifAllUrl urls="/ptBug/downloadBugContent">
+                        {name: 'Download', bclass: 'report', onpress: downloadContent},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Title", name: "title", width: 180, sortable: true, align: "left"},
+                        {display: "Steps To Reproduce", name: "step_to_reproduce", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "title",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Bugs',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 30,
+                    afterAjax: function () {
+                        afterAjaxError();
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: onLoadListJSON
+                }
+        );
+    }
+
+    // custom populate the grid
+    function onLoadListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            ptBugListModel = getEmptyGridModel();
+        } else {
+            ptBugListModel = data;
+        }
+        $("#flex").flexAddData(ptBugListModel);
+    }
+
+    // select ptBug object for update
+    function selectPtBug(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex'), 'bug') == false) {
+            return;
+        }
+
+        resetBugForm();                    // reset the form
+        showLoadingSpinner(true);       // start loading spinner
+        var id = getSelectedIdFromGrid($('#flex'));
+        // fire ajax method for select
+        $.ajax({
+            url: "${createLink(controller:'ptBug', action: 'select')}?id=" + id,
+            success: executePostConditionForEdit,
+            complete: function () {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    // execute post condition for edit
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showPtBug(data);
+        }
+    }
+
+    // show property of selected ptBug object on UI
+    function showPtBug(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        $('#title').val(entity.title);
+        $('#note').val(entity.note);
+        $('#stepToReproduce').val(entity.stepToReproduce);
+        dropDownModule.value(entity.moduleId);
+        dropDownModule.readonly(true);
+        dropDownStatus.value(entity.status);
+        dropDownSeverity.value(entity.severity);
+        dropDownType.value(entity.type);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Update");
+
+        // set link for update
+        var actionUrl = "${createLink(controller: 'ptBug',action: 'updateOrphanBug')}";
+        $("#ptBugForm").attr('action', actionUrl);
+    }
+
+    function downloadContent(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex'), 'bug') == false) {
+            return;
+        }
+        var hasAttachment = $.trim($('.trSelected').find('td').eq(9).find('div').text());
+        if (hasAttachment == 'NO') {
+            showError('Selected bug has no attachment');
+            return false;
+        }
+
+        var confirmMsg = 'Do you want to download the attachment now?';
+        showLoadingSpinner(true);
+        var entityId = getSelectedIdFromGrid($('#flex'));
+        if (confirm(confirmMsg)) {
+            var url = "${createLink(controller:'ptBug', action: 'downloadBugContent')}?entityId=" + entityId;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+        return true;
+    }
+
+    // execute pre condition for delete
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex'), 'bug') == false) {
+            return false;
+        }
+
+        if (!confirm('Are you sure you want to delete the selected bug?')) {
+            return false;
+        }
+        return true;
+    }
+
+    // delete ptBug object
+    function deletePtBug(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var ptBugId = getSelectedIdFromGrid($('#flex'));
+
+        // fire ajax method for delete
+        $.ajax({
+            url: "${createLink(controller:'ptBug', action:  'delete')}?id=" + ptBugId,
+            success: executePostConditionForDelete,
+            complete: function () {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.isError == false) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetBugForm();
+            $('#flex').decreaseCount(1);
+            showSuccess(data.message);
+            ptBugListModel.total = parseInt(ptBugListModel.total) - 1;
+            removeEntityFromGridRows(ptBugListModel, selectedRow);
+        } else {
+            showError(data.message);
+        }
+    }
+
+    // reload grid
+    function reloadGrid(com, grid) {
+        $('#flex').flexOptions({query: ''}).flexReload();
+    }
+
+    // set link to grid url to populate data
+    function populateFlex() {
+        var strUrl = "${createLink(controller:'ptBug',action:  'listOrphanBug')}";
+        $("#flex").flexOptions({url: strUrl});
+
+        if (ptBugListModel) {
+            $("#flex").flexAddData(ptBugListModel);
+        }
+    }
+
+    function viewBugDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex'), 'bug') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var bugId = getSelectedIdFromGrid($('#flex'));
+        var loc = "${createLink(controller: 'ptBug', action: 'showBugDetails')}?id=" + bugId + "&leftMenu=" + leftMenu;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+</script>

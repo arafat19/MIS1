@@ -1,0 +1,45 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Lading Page of "Manage Task" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsTask/showForManageTask | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 21st July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page for "Manage Task" with search panel on top.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Task Manage" link.
+* Show Lading Page of "Manage Task".
+
+h4. Pre-condition:
+* User must have "Show for manage task" privilege.
+
+h4. Process:
+* Show search panel on top.
+
+h4. Post-condition:
+
+* *Success:*
+** Show search panel on top to [Search "Manage Task"|guide:renderTaskDetails].
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show "Task" Details|guide:renderTaskDetails].
+* [Open "Task" in Edit Mode|guide:SelectRmsTaskActionService].
+* [Cancel "Task"|guide:CancelRmsTaskActionService].
+* [Show Landing Page of "Task History"|guide:showRmsTaskHistory].

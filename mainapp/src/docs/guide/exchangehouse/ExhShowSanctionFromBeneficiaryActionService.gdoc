@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Navigate "Sanction List" from *Beneficiary* Page | |
+*ActionService:* | ExhShowSanctionFromBeneficiaryActionService | *Auditable:* | No
+*Url:* | /exhSanction/showFromBeneficiary | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Insert valid input in "Name" field.
+* If name matched with "Sanction List" then show number of matching in a link.
+* Click the high lighted link.
+* Navigate "Sanction List" from *Beneficiary* Page.
+
+h4. Pre-condition:
+* User must have "Navigate to sanction from beneficiary" privilege.
+* User must enter "Beneficiary Name".
+* "mis.exchangehouse.verifyBeneficiarySanction" Key must contain value 1.
+
+h4. Process:
+* [Show Landing Page of "Sanction Information"|guide:ExhShowSanctionActionService]
+* Show List of Matching "Sanction Information" in grid view.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Sanction* information in grid view.
+** Reset input form on top to see *Sanction* details in read only mode.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Search "Sanction Information" From Grid View|guide:ExhSearchSanctionActionService].
+* [Create "Beneficiary"|guide:ExhCreateBeneficiaryActionService]

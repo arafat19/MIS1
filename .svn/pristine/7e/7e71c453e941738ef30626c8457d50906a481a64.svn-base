@@ -1,0 +1,64 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Transport Cost* | |
+*ActionService:* | UpdateTransportCostActionService | *Auditable:* | No
+*Url*: | /procTransportCost/update | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 6th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show Landing Page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click *Transport Cost* button.
+* [Show Landing Page of "Transport Cost"|guide:ShowTransportCostActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* [Open "Transport Cost" in Edit Mode|guide:SelectTransportCostActionService].
+* User must insert valid input.
+* Click "Update" button.
+* Update *Transport Cost*.
+
+h4. Pre-condition:
+ * User must have "Update Transport Cost" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+ Project | Read Only | Alpha Numeric |
+ Budget Item | Read Only | Alpha Numeric |
+ "Purchase Order Id" | Read Only | Numeric |
+ Rate | Text Box | Numeric | Optional
+ Amount | Text box | Numeric | Required
+ Quantity | Text Box | Numeric | Required
+ Comments | Text Area | Alpha Numeric | Optional
+{table}
+* Match expected version before updating a Transport Cost.
+
+h4. Process:
+Update selected *Transport Cost*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Transport Cost* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Task" Report for "Pay Order Transaction" in CSV Format | |
+*ActionService:* | DownloadTaskReportForIssuePoActionService | *Auditable:* | No
+*Url:* | /rmsInstrument/downloadTaskReportForIssuePo | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Nahida Sultana  | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+ Remittance User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Instrument" sub menu from left menu.
+* Click "Pay Order" link.
+* [Show Landing Page of "Pay Order Transaction"|guide:showForIssuePo].
+* Enter valid input.
+* Click "CSV" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Task" Report for "Pay Order Transaction" in CSV Format.
+
+h4. Pre-condition:
+* User must have "Download task for issue PO" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Status|guide:PopulateTaskStatus]| Drop-Down List | Numeric | Required
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+[Exchange House|guide:PopulateFilterExchangeHouseList] |  Drop Down list | Numeric | Required
+[Task List|guide:GetRmsTaskListDropDownTagLibActionService] |  Drop Down list | Numeric | Required
+{table}
+
+h4. Process:
+* Download the report as CSV format.
+
+h4. Post-condition:
+
+* *Success:*
+** CSV Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+

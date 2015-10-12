@@ -1,0 +1,232 @@
+<script language="javascript">
+    var sprintListModel = false;
+    var dropDownProject, dropDownSprint, sprintId;
+
+    $(document).ready(function () {
+        onLoadSprintPage();
+    });
+
+    // method called on page load
+    function onLoadSprintPage() {
+        initializeForm($("#sprintDetailsForm"),onSubmitSprint);
+        $('.download_icon_set').hide();
+
+        $("#sprintId").kendoDropDownList({
+            dataTextField: "name",
+            dataValueField: "id"
+        });
+        dropDownSprint = $("#sprintId").data("kendoDropDownList");
+        dropDownSprint.setDataSource(getKendoEmptyDataSource(dropDownSprint));
+
+        $('#printPdfBtn').click(function () {
+            downloadSprintDetails();
+        });
+        var output = ${output ? output : ''};
+        if (output.isError) {
+            showError(output.message);  // show error message in case of error
+        }
+        else{
+            sprintListModel = output.gridObj;    // set data in a global variable to populate
+        }
+        initFlex();
+        if (sprintListModel) {
+            dropDownProject.value(output.projectId);
+            sprintId = output.sprintId;
+            dropDownProject.trigger('change', populateSprint);
+            dropDownSprint.value(sprintId);
+            $('#hasOwner').attr('checked', true);
+            populateFlex();
+        }
+        // update page title
+        $(document).attr('title', "MIS - Search Sprint");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#ptReport/showReportSprint");
+    }
+
+    // Populate sprint onchange of project dropdown
+    function populateSprint(){
+        var projectId = dropDownProject.value();
+        dropDownSprint.value('');
+        if(!validateForm($("#sprintDetailsForm"))){
+            return false;
+        }
+        showLoadingSpinner(true);
+        var params = "?projectId=" + projectId+"&sprintTrace="+'sprintTrace';
+        $.ajax({
+            url: "${createLink(controller:'ptSprint', action: 'listSprintByProjectId')}" + params,
+            success: function (data, textStatus) {
+                dropDownSprint.setDataSource(data.sprintList);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    // Check pre condition before submitting the form
+    function executePreCondition() {
+        if (dropDownProject.value() == '') {
+            showError("Please select project");
+            return false;
+        }
+        if (dropDownSprint.value() == '') {
+            showError("Please select sprint");
+            return false;
+        }
+        return true;
+    }
+    // Check post condition after submitting the form
+    function executePostCondition(result) {
+        $("#flex").flexAddData(getEmptyGridModel())  ;
+        if(result.isError)
+        {
+            showError(result.message);
+            return false;
+        }
+        sprintId = dropDownSprint.value();
+        sprintListModel = result.gridObj;
+        populateFlex();
+        if(result.gridObj.rows.length < 1){
+            showError("No sprint details available");
+            return false;
+        }
+    }
+    // method called  on submit of the form
+    function onSubmitSprint() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+        setButtonDisabled($('#search'), true);  // disable the search button
+        showLoadingSpinner(true);               // show loading spinner
+        var sprintId = dropDownSprint.value();
+        var hasOwner = $('#hasOwner').attr('checked');
+            hasOwner = hasOwner ? true : false;
+        var params = "?sprintId=" + sprintId + "&hasOwner=" + hasOwner;
+        var strUrl = "${createLink(controller:'ptReport',action:  'listSprintDetails')}" + params;
+        $.ajax({
+            url: strUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        setButtonDisabled($('#search'), false);  // enable the search button
+    }
+    // method call for download
+    function downloadSprintDetails() {
+        if(dropDownSprint.value() == "")
+        {
+            showError("Invalid report request") ;
+            return false;
+        }
+        showLoadingSpinner(true);
+        var sprintId = dropDownSprint.value();
+        var hasOwner = $('#hasOwner').attr('checked');
+        hasOwner = hasOwner ? true : false;
+        var params = "?sprintId=" + sprintId + "&hasOwner=" + hasOwner;
+        if (confirm('Do you want to download the PDF now?')) {
+            var url = "${createLink(controller: 'ptReport', action: 'downloadSprintDetails')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+        return false;
+    }
+
+    function resetForm() {
+        clearForm($("#sprintDetailsForm"));  // clear errors & form values
+    }
+
+    // initialize the grid
+    function initFlex() {
+        $("#flex").flexigrid
+        (
+            {
+                url: false,
+                dataType: 'json',
+                colModel: [
+                    {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                    {display: "Type", name: "type", width: 70, sortable: false, align: "left"},
+                    {display: "Module", name: "module", width: 60, sortable: false, align: "left"},
+                    {display: "Idea/Title", name: "idea_title", width: 650, sortable: false, align: "left"},
+                    {display: "Priority", name: "priority", width: 80, sortable: false, align: "left"},
+                    {display: "Status", name: "status", width: 100, sortable: false, align: "left"}
+                ],
+                buttons: [
+                    <app:ifAllUrl urls="/ptReport/showForBacklogDetails">
+                    {name: 'Report', bclass: 'note', onpress: showBacklogDetails},
+                    </app:ifAllUrl>
+                    {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                    {separator: true}
+                ],
+                sortname: "backlog",
+                sortorder: "asc",
+                usepager: true,
+                singleSelect: true,
+                title: 'Sprint Details',
+                useRp: true,
+                rp: 15,
+                showTableToggleBtn: false,
+                height: getGridHeight() - 20,
+                afterAjax: function () {
+                    afterAjaxError();
+                    showLoadingSpinner(false);
+                },
+                customPopulate: onLoadListJSON
+            }
+        );
+    }
+    // custom populate the grid
+    function onLoadListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            sprintListModel = getEmptyGridModel();
+        } else {
+            sprintListModel = data.gridObj;
+        }
+        $("#flex").flexAddData(sprintListModel);
+    }
+
+    // reload grid
+    function reloadGrid(com, grid) {
+        $('#flex').flexOptions({query: ''}).flexReload();
+    }
+    // set link to grid url to populate data
+    function populateFlex() {
+        var sprintId = dropDownSprint.value();
+        var hasOwner = $('#hasOwner').attr('checked');
+        hasOwner = hasOwner ? true : false;
+        var params = "?sprintId=" + sprintId + "&hasOwner=" + hasOwner;
+        var strUrl = "${createLink(controller:'ptReport',action:  'listSprintDetails')}" + params;
+        $("#flex").flexOptions({url: strUrl});
+        if (sprintListModel.total > 0) {
+            $('.download_icon_set').show();
+        }
+        if (sprintListModel) {
+            $("#flex").flexAddData(sprintListModel);
+        }
+    }
+
+    function showBacklogDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex'), 'Backlog') == false) {
+            return;
+        }
+        var ids = $('.trSelected', grid);
+        var type = $.trim($(ids[0]).find('td').eq(1).find('div').text());
+
+        if (type && type == 'Bug') {
+            showError('Select a task to view report');
+            return false;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex'));
+        var loc = "${createLink(controller: 'ptReport', action: 'showForBacklogDetails')}?backlogId=" + backlogId + "&leftMenu=" + 'ptReport/showReportSprint';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+</script>

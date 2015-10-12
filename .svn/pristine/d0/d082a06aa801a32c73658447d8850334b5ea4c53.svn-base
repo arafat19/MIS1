@@ -1,0 +1,63 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Task's Decision Mapping | |
+*ActionService:* | CreateRmsTaskNoteActionService | *Auditable:* | No
+*Url:* | /rmsTask/mapTask | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 24th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Remittance User.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Task Instrument Mapping" link.
+* [Show Landing page of "Task Instrument Mapping"|guide:ShowForMapTaskActionService].
+* User must enter valid input.
+* Click "Search" button.
+* [Search Task List to Map|guide:ListTaskForMapTaskActionService].
+* Select a line-item from grid view.
+* User must enter valid input.
+* Click "Save" button.
+* Task's Decision Mapping.
+
+h4. Pre-condition:
+* User must have "Map Task" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+[Process|guide:PopulateProcessTypeList] |  Drop Down list | Numeric | Required
+[Instrument|guide:RmsInstrumentDropDownTagLib] |  Drop Down list | Numeric | Required
+[Bank|guide:GetDropDownBankTagLibActionService] |  Drop Down list | Numeric | Required
+[District|guide:GetDropDownDistrictTagLibActionService] |  Drop Down list | Numeric | Required
+[Branch|guide:GetDropDownBankBranchTagLibActionService] |  Drop Down list | Numeric | Required
+{table}
+
+
+h4. Process:
+* Map a new *Task* decision.
+
+h4. Post-condition:
+
+* *Success:*
+** Mapping decision of a *Task*.
+** Show success message.
+** Remove mapped *Task* from grid view.
+** Reset the field for next decision mapping.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

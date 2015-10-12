@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Scope of Work* From Grid View | |
+*ActionService:* | SearchBudgetScopeActionService | *Auditable:* | No
+*Url:* | /budgetScope/list | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click "Scope of Work" link.
+* [Show Landing Page of *Scope of Work*|guide:ShowBudgetScopeActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Scope of Work* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Budget Scope" privilege.
+* Rules of searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+ Criteria | Text Box | Alpha Numeric | Required
+ Field (Name) | Drop Down List |  Numeric | Required
+{table}
+
+h4. Process:
+* Get list of *Scope of Work* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Scope of Work*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Scope of Work* list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of *Scope of Work* in Landing Page|guide:ListAccChartOfAccountActionService].
+

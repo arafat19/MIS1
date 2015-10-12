@@ -1,0 +1,62 @@
+
+{table}
+*Access Type:* | Restricted| Priority: | High
+ *Name:* | Update *Acceptance Criteria* of "My Task" | |
+ *ActionService:* | UpdatePtAcceptanceCriteriaActionService| *Auditable:* | No
+ *Url*: | /ptAcceptanceCriteria/update | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *My Task* link.
+* [Show Landing Page of "My Task"|guide:ShowMyPtBacklogActionService].
+* Select a line-item from grid view.
+* Click "Acceptance Criteria" button.
+* [Show landing page of Acceptance Criteria of "My Task"|guide:ShowPtAcceptanceCriteriaForMyBacklogActionService].
+* Select a line-item from grid view.
+* Click "Edit" Button.
+* [Open "Acceptance Criteria" in Edit Mode|guide:SelectPtAcceptanceCriteriaActionService]
+* User must insert valid input to update *Acceptance Criteria*.
+* Click "Update" button.
+* Update *Acceptance Criteria* of "My Task".
+
+h4. Pre-condition:
+* User must have "Update an acceptance criteria for my backlog" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Idea | Read Only | Alpha Numeric |
+Criteria | Read Only | Alpha Numeric |
+[Type|guide:PopulateAcceptanceCriteriaTypeList] | Drop-Down List | Numeric | Required
+[Status|guide:PopulateAcceptanceCriteriaTypeList] | Drop-Down List | Numeric | Required
+{table}
+
+* Match expected version before updating an *Acceptance Criteria*.
+
+h4. Process:
+Update selected *Acceptance Criteria*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Acceptance Criteria* from grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

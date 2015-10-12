@@ -1,0 +1,63 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create "Procurement Budget" | |
+*ActionService:* | CreateBudgetActionService | *Auditable:* | No 
+*Url:* | /budgBudget/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* [Show Landing Page of "Procurement Budget"|guide:ShowBudgetActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create "Procurement Budget".
+
+h4. Pre-condition:
+* User must have "Create Budget" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Populate Project List|application] | Drop Down List | Numeric | Required
+[Budget Scope|guide:GetProjectBudgetScopeActionService] | Drop Down List | Numeric | Required
+Line Item | Text Box | Alpha Numeric | Required & Unique
+Budget Quantity | Text Box | Alpha Numeric | Required
+[Unit|guide:PopulateUnitList] | Drop Down List | Numeric | Required
+Contract Rate | Text Box | Alpha Numeric | Optional
+Billable | Check Box | Boolean | Optional (Default Value False)
+Details | Text Area | Alpha Numeric | Required
+Start Date | Calender | Alpha Numeric | Required
+End Date | Calender | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* Create a new "Procurement Budget".
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created "Procurement Budget" into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

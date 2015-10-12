@@ -1,0 +1,43 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show "Inventory Plugin" | |
+ *Action:* | N/A | *Auditable:* | No
+ *Url:* | /inventory/renderInventoryMenu | | 
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 5th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Inventory Operator, Production Operator, Inventory Auditor, Project Manager.
+
+h4. Description:
+This is the landing page of "Inventory Plugin".
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+
+h4. Pre-condition:
+* MIS Platform must be Installed.
+* MIS Project must contain "Inventory Plugin".
+* User must have "Show Inventory Module" privilege to access *Inventory* option from menu bar.
+
+h4. Process:
+* Show "Inventory Widget" [Widget of *Inventory* Option|guide:_widgetofInventoryoption].
+* *Inventory* Left menu must be generate based on user privilege.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Inventory Widget" [Widget of "Inventory Option"|guide:_widgetofInventoryoption].
+** Show *Inventory* left menu based on log in user privilege.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+!Inv/Inventory_Plugin_Show.png!

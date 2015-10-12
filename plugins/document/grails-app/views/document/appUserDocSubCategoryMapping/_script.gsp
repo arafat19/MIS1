@@ -1,0 +1,284 @@
+<script language="javascript">
+
+    var dropDownAppUser, subCategoryID;
+
+    var appUserSubCategoryMappingListModel = false;
+    $(document).ready(function () {
+        onLoadAppUserCategoryMappingPage();
+    });
+
+    function onLoadAppUserCategoryMappingPage() {
+
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#userSubCategoryMappingForm"), onSubmitAppUserCategoryMapping);
+
+        var output =${output ? output : ''};
+
+        if (output.isError) {
+            showError(output.message);
+        } else {
+            appUserSubCategoryMappingListModel = output.gridObj;
+            subCategoryID = output.subCategoryId;
+            $('#subCategoryId').val(subCategoryID);
+            $('#subCategoryName').text(output.subCategoryName);
+        }
+
+        initFlexGrid();
+        loadFlexGrid();
+
+        // update page title
+        $(document).attr('title', "MIS - Create Member");
+        loadNumberedMenu(MENU_ID_DOCUMENT, "#docCategory/show");
+
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#userSubCategoryMappingForm"))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    function onSubmitAppUserCategoryMapping() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller:'docSubCategoryUserMapping', action: 'createForSubCategory')}";
+        } else {
+            actionUrl = "${createLink(controller:'docSubCategoryUserMapping', action: 'updateForSubCategory')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#userSubCategoryMappingForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+        console.log(result);
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                var newEntry = result;
+                if ($('#id').val().isEmpty() && newEntry.entity != null) { // newly created
+                    var previousTotal = parseInt(appUserSubCategoryMappingListModel.total);
+                    var firstSerial = 1;
+
+                    if (appUserSubCategoryMappingListModel.rows.length > 0) {
+                        firstSerial = appUserSubCategoryMappingListModel.rows[0].cell[0];
+                        regenerateSerial($(appUserSubCategoryMappingListModel.rows), 0);
+                    }
+                    newEntry.entity.cell[0] = firstSerial;
+
+                    appUserSubCategoryMappingListModel.rows.splice(0, 0, newEntry.entity);
+
+                    if ($('#flexUserSubCategory').countEqualsResultPerPage(previousTotal)) {
+                        appUserSubCategoryMappingListModel.rows.pop();
+                    }
+
+                    appUserSubCategoryMappingListModel.total = ++previousTotal;
+                    $("#flexUserSubCategory").flexAddData(appUserSubCategoryMappingListModel);
+
+                    resetFormForCreate();
+                } else if (newEntry.entity != null) { // updated existing
+                    updateListModel(appUserSubCategoryMappingListModel, newEntry.entity, 0);
+                    $("#flexUserSubCategory").flexAddData(appUserSubCategoryMappingListModel);
+
+                    resetFormForCreate();
+                }
+
+                showSuccess(result.message);
+
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetFormForCreate() {
+        clearForm($("#userSubCategoryMappingForm"), dropDownAppUser);
+        $('#id').val('');
+        $('#isSubCategoryManager').attr('checked', false);
+        $('#userId').attr('default_value', '');
+        $('#userId').reloadMe();
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+
+    }
+
+    function resetForm() {
+        clearForm($("#userSubCategoryMappingForm"), dropDownAppUser);
+        // re-assign dropDown for cancel action.
+        $('#userId').attr('default_value', '');
+        $('#userId').reloadMe();
+        $('#subCategoryId').val(subCategoryID);
+        $('#isSubCategoryManager').attr('checked', false);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+    function initFlexGrid() {
+        $("#flexUserSubCategory").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 80, sortable: false, align: "right"},
+                        {display: "Id", name: "id", width: 80, sortable: false, align: "right", hide: true},
+                        {display: "Member", name: "user", width: 400, sortable: false, align: "left"},
+                        {display: "Manager", name: "isManager", width: 200, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/docSubCategoryUserMapping/selectForSubCategory,/docSubCategoryUserMapping/updateForSubCategory">
+                        {name: 'Edit', bclass: 'edit', onpress: selectAppUserSubCategoryMapping},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/docSubCategoryUserMapping/deleteForSubCategory">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteAppUserSubCategoryMapping},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Added Member List',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: customPopulateGrid
+                }
+        );
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flexUserSubCategory').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function customPopulateGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            appUserSubCategoryMappingListModel = getEmptyGridModel();
+        } else {
+            appUserSubCategoryMappingListModel = data.gridObj;
+        }
+        $("#flexUserSubCategory").flexAddData(appUserSubCategoryMappingListModel);
+    }
+
+    function deleteAppUserSubCategoryMapping(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var appUserSubCategoryID = getSelectedIdFromGrid($('#flexUserSubCategory'));
+
+        $.ajax({
+            url: "${createLink(controller:'docSubCategoryUserMapping', action:  'deleteForSubCategory')}?id=" + appUserSubCategoryID,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flexUserSubCategory'),' member') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure to delete the selected member?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flexUserSubCategory')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetForm();
+            $('#flexUserSubCategory').decreaseCount(1);
+            showSuccess(data.message);
+            appUserSubCategoryMappingListModel.total = parseInt(appUserSubCategoryMappingListModel.total) - 1;
+            removeEntityFromGridRows(appUserSubCategoryMappingListModel, selectedRow);
+
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function selectAppUserSubCategoryMapping(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flexUserSubCategory'), ' member') == false) {
+            return;
+        }
+
+        dropDownAppUser.value('');
+        showLoadingSpinner(true);
+        var appUserSubCategoryMappingId = getSelectedIdFromGrid($('#flexUserSubCategory'));
+        $.ajax({
+            url: "${createLink(controller:'docSubCategoryUserMapping', action: 'selectForSubCategory')}?id="
+                    + appUserSubCategoryMappingId,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showAppUserSubCategory(data);
+        }
+    }
+
+    function showAppUserSubCategory(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#userId').attr('default_value', entity.userId);
+        $('#userId').reloadMe();
+        $('#isSubCategoryManager').attr('checked', entity.isSubCategoryManager);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+    function loadFlexGrid() {
+        var strUrl = "${createLink(controller:'docSubCategoryUserMapping',action:  'listForSubCategory')}?subCategoryId=" + subCategoryID;
+        $("#flexUserSubCategory").flexOptions({url: strUrl});
+        if (appUserSubCategoryMappingListModel) {
+            $("#flexUserSubCategory").flexAddData(appUserSubCategoryMappingListModel);
+        }
+    }
+
+</script>

@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Task Details of Beneficiary | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsTask/renderTaskDetails | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Help Desk" sub menu from left menu.
+* Click "Search Beneficiary" link.
+* [Show Landing Page of Search Beneficiary|guide:_ShowBeneficiaryDetailsActionService].
+* User must insert valid input.
+* Click "Search" button.
+* [Search Beneficiary|guide:SearchBeneficiaryDetailsActionService].
+* Select a *Beneficiary* from *Beneficiary* list.
+* Click "View Details" button from tool bar.
+* Right side of grid view will show "Beneficiary Task Details".
+
+h4. Pre-condition: 
+* User must have "" privilege.
+
+h4. Process:
+* Show "Beneficiary Task Details" information.
+* Following information should show in grid view:
+** Task Details
+** Beneficiary Information
+** Sender Information
+
+h4. Post-condition:
+
+* *Success:*
+** Show the "Beneficiary Task Details" in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Search "Task History"|guide:searchRmsTaskHistory].

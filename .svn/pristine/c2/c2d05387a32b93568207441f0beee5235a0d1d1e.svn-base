@@ -1,0 +1,43 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show "SARB Plugin" | |
+*Action:* | N/A | *Auditable:* | No
+*Url:* | /sarb/renderSarbMenu | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Development.
+
+h4. Description:
+This is the landing page of "SARB Plugin".
+
+h4. Flow:
+* Click "SARB" option from top menu bar.
+* Show "SARB Plugin".
+
+h4. Pre-condition:
+* MIS Platform must be Installed.
+* MIS Project must contain "SARB Plugin".
+* User must have "Render menu for province" privilege to access "SARB" option from menu bar.
+
+h4. Process:
+* "SARB" Left menu must be generate based on user privilege.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "SARB" left menu based on log in user privilege.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!sarb/SARB_Plugin_Show.png!

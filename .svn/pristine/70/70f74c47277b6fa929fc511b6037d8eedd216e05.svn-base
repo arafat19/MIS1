@@ -1,0 +1,137 @@
+procurement:
+
+         title: Procurement Plugin
+
+         _showProcurementPlugin: Show Procurement Plugin
+         _widgetofprocurement: Widget of "Procurement" Plugin
+
+
+         ListUnApprovedPurchaseOrderActionService: List Un-Approved "PO" Widget tab of Procurement Option
+         ApprovePOForDashBoardActionService: Approve Un-Approved "PO" from Widget Grid View
+
+
+         ListUnApprovedPurchaseRequestActionService: List Un-Approved "PR" Widget tab of Procurement Option
+         ApprovePRForDashBoardActionService: Approve Un-Approved "PR" from Widget Grid View
+
+
+         ListUnApprovedIndentActionService: List Un-Approved "Indent" Widget tab of Procurement Option
+         ApproveIndentForDashBoardActionService: Approve Un-Approved "Indent" from Widget Grid View
+
+
+         GetPOStatusForDashBoardActionService: PO Status Widget tab of Procurement Option
+
+
+
+         ShowPurchaseRequestActionService: Show Landing Page of "Purchase Request"
+         GetBudgetInfoForPRActionService: Add "Budget Line Item" to Create "Purchase Request"
+         GetBudgetGridListByProjectActionService: List of "Budget Line Item" to Create "Purchase Request"
+         CreatePurchaseRequestActionService: Create "Purchase Request"
+         SelectPurchaseRequestActionService: Open "Purchase Request" in Edit Mode
+         UpdatePurchaseRequestActionService: Update "Purchase Request"
+         ListPurchaseRequestActionService: List "Purchase Request"
+         SearchPurchaseRequestActionService: Search "Purchase Request" From Grid View
+         DeletePurchaseRequestActionService: Delete "Purchase Request"
+
+
+         ShowPurchaseRequestDetailsActionService: Show Item of "Purchase Request" Landing Page
+         getItemListForPRDetailsActionService: Populate Item list to add in "Purchase Request"
+         CreatePurchaseRequestDetailsActionService: Create Item in "Purchase Request"
+         SelectPurchaseRequestDetailsActionService: Open Item of "Purchase Request" in Edit Mode
+         UpdatePurchaseRequestDetailsActionService: Update Item of "Purchase Request"
+         ListPurchaseRequestDetailsActionService: List Item of "Purchase Request"
+         SearchPurchaseRequestDetailsActionService: Search Item of "Purchase Request" From Grid View
+         DeletePurchaseRequestDetailsActionService: Delete Item of "Purchase Request"
+
+         SentMailPurchaseRequestActionService: Send "Purchase Request" For Approval
+         ApprovepurchaseRequestActionService: Approve "Purchase Request"
+         UnApprovePurchaseRequestActionService: Make "Purchase Request" in Editable Mode
+
+
+         ShowPurchaseOrderActionService: Show Landing Page of "Purchase Order"
+         populatepaymentmethodlist: Populate "Payment Method" List to Create "Purchase Order"
+         CreatePurchaseOrderActionService: Create "Purchase Order"
+         SelectPurchaseOrderActionService: Open "Purchase Order" in Edit Mode
+         UpdatePurchaseOrderActionService: Update "Purchase Order"
+         ListPurchaseOrderActionService: List "Purchase Order"
+         SearchPurchaseOrderActionService: Search "Purchase Order" From Grid View
+
+
+         ShowPurchaseOrderDetailsActionService: Show "Item of PO" Landing Page
+         GetForItemListForPurchaseOrderDetailsActionService: Get Item List for "Purchase Order"
+         CreatePurchaseOrderDetailsActionService: Create Item in "Purchase Order"
+         SelectPurchaseOrderDetailsActionService: Open Item of "Purchase Order" in Edit Mode
+         UpdatePurchaseOrderDetailsActionService: Update Item of "Purchase Order"
+         ListPurchaseOrderDetailsActionService: List Item of "Purchase Order"
+         SearchPurchaseOrderDetailsActionService: Search Item of "Purchase Order" From Grid View
+         DeletePurchaseOrderDetailsActionService: Delete Item of "Purchase Order"
+
+
+         ShowTransportCostActionService: Show Landing Page of "Transport Cost"
+         CreateTransportCostActionService: Create "Transport Cost"
+         SelectTransportCostActionService: Open "Transport Cost" in Edit Mode
+         UpdateTransportCostActionService: Update "Transport Cost"
+         ListTransportCostActionService: List "Transport Cost"
+         DeleteTransportCostActionService: Delete "Transport Cost"
+
+
+         ShowProcTermsAndConditionActionService: Show Landing Page of "Terms and Condition"
+         CreateProcTermsAndConditionActionService: Create "Terms and Condition"
+         SelectProcTermsAndConditionActionService: Open "Terms and Condition" in Edit Mode
+         UpdateProcTermsAndConditionActionService: Update "Terms and Condition"
+         ListProcTermsAndConditionActionService: List "Terms and Condition"
+         DeleteProcTermsAndConditionActionService: Delete "Terms and Condition"
+
+
+         SendForApprovalPurchaseOrderActionService: Send "Purchase Order" For Approval
+         ApprovePurchaseOrderActionService: Approve "Purchase Order"
+         UnApprovePurchaseOrderActionService: Make "Purchase Order" in Editable Mode
+         CancelPurchaseOrderActionService: Cancel "Purchase Order"
+
+
+         ShowIndentActionService: Show Landing Page of "Indent"
+         CreateIndentActionService: Create "Indent"
+         SelectIndentActionService: Open "Indent" in Edit Mode
+         UpdateIndentActionService: Update "Indent"
+         ListIndentActionService: List "Indent"
+         SearchIndentActionService: Search "Indent" From Grid View
+         DeleteIndentActionService: Delete "Indent"
+
+
+         ShowIndentDetailsActionService: Show Item of "Indent" Landing Page
+         CreateIndentDetailsActionService: Create Item of "Indent"
+         SelectIndentDetailsActionService: Open Item of "Indent" in Edit Mode
+         UpdateIndentDetailsActionService: Update Item of "Indent"
+         ListIndentDetailsActionService: List Item of "Indent"
+         SearchIndentDetailsActionService: Search Item of "Indent" From Grid View
+         DeleteIndentDetailsActionService: Delete Item of "Indent"
+
+         ApproveIndentActionService: Approve "Indent"
+
+
+         ShowForPurchaseRequestActionService: Show Landing Page of "Purchase Request" Report
+         SearchForPurchaseRequestActionService: Generate "Purchase Request" Report in HTML Format
+         DownloadForPurchaseRequestActionService: Download "Purchase Request" PDF Report
+
+
+         ShowForPurchaseOrderActionService: Show Landing Page of "Purchase Order" Report
+         SearchForPurchaseOrderActionService: Generate "Purchase Order" Report in HTML Format
+         DownloadForPurchaseOrderActionService: Download "Purchase Order" Report
+
+
+         ShowForIndentActionService: Show Landing Page of "Indent" Report
+         SearchForIndentActionService: Generate "Indent" Report in HTML Format
+         DownloadIndentReportActionService: Download "Indent" Report
+
+
+         ShowForBudgetWisePOActionService: Show Landing Page of "Budget Wise PO" Report
+         ListForBudgetWisePOActionService: Generate "Budget Wise PO" List in HTML Format
+         DownloadForBudgetWisePOActionService: Download "Budget Wise PO" List
+         GetForBudgetWisePOActionService: Show Landing Page of "Purchase Order" List Grid
+
+
+         ShowForSupplierWisePOActionService: Show Landing Page of "Supplier Wise PO" Report
+         GetSupplierListActionService: Get all "Supplier" List in Right Panel
+         ListForSupplierWisePOActionService: Generate "Supplier Wise PO" Report in HTML Format
+         DownloadForSupplierWisePOActionService: Download "Supplier Wise PO" PDF Report
+         DownloadForSupplierWisePOCsvActionService: Download "Supplier Wise PO" CSV Report
+

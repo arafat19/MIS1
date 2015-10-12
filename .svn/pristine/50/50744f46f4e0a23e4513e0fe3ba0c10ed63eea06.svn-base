@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Make *Purchase Order* in Editable Mode | |
+*ActionService:* | UnApprovePurchaseOrderActionService | *Auditable:* | No
+*Url:* | /procPurchaseOrder/unApprovePO | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 1st March 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show Landing Page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click "Make Editable" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Make *Purchase Order* in Editable Mode.
+
+h4. Pre-condition:
+* User must have "Make PO Editable" privilege.
+* Transaction Code "UnApprovePurchaseOrderActionService" must be active.
+* Must have Valid role id with comma delimited.
+* *Purchase Order* must be "Sended for Approval".
+
+h4. Process:
+* Selected *Purchase Order* Open in edit mode.
+
+h4. Post-condition:
+
+* *Success:*
+** Open *Purchase Order* in edit mood.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

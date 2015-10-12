@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Lading Page of "Task" For Manage | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsTaskList/showForManageTaskList | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 21st July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page for Manage "Task" list with search panel on top and grid view at bottom.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Task List-Manage" link.
+* Show Lading Page of *Task* For Manage.
+
+h4. Pre-condition:
+* User must have "Show for manage task list" privilege.
+
+h4. Process:
+* Show search panel on top.
+* [Get "Status" list in drop down|guide:PopulateTaskStatus].
+
+h4. Post-condition:
+
+* *Success:*
+** Show search panel on top to [Search "Task" For Manage|guide:ListForManageTaskListActionService].
+** Show blank list of *Task* in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* [Remove "Task" from Task List|guide:RemoveTaskFromListActionService].
+* [Rename "Task" List Name|guide:RenameTaskListActionService].
+* [Move "Task" to Another List|guide:MoveTaskToAnotherListActionService].

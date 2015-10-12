@@ -1,0 +1,64 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show "Customer Transaction Summary Panel" | |
+*ActionServices:* | CustomerSummaryForTaskTagLibActionService | *Auditable:* | No
+*Url:* | N/A | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 2nd February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent, Customer.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* [Show Landing Page of Cashier's *Task*|guide:ShowExhTaskForCashierActionService].
+* Show "Customer Transaction Summary Panel".
+
+h4. Pre-condition:
+* Actor must have a *Customer* to see "Customer Transaction Summary Panel".
+* Actor must have a *Beneficiary* to see "Customer Transaction Summary Panel".
+
+h4. Process:
+* Show previous 3 months remittance amount from current date for selected *Customer*.
+* Show previous 6 months remittance amount from current date for selected *Customer*.
+* Show previous 12 months remittance amount from current date for selected *Customer*.
+* Customer's last note can be seen at footer of "Customer Transaction Summary Panel".
+
+h4. Post-condition:
+
+* *Success:*
+**  Show Customer Transaction Summary Panel.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Create Cashier's "Task"|guide:_ExhCreateTaskForCashierActionService].
+* [Create Cashier's "Task"|guide:_ExhCreateTaskForCustomerActionService].
+* [Create Agent's "Task"|guide:ExhCreateTaskActionService].
+* [Update Agent's "Task"|guide:ExhUpdateTaskActionService].
+* [Update Cashier's "Task"|guide:_ExhUpdateTaskForCashierActionService].
+* [Update Cashier's "Task"|guide:_ExhUpdateTaskForCustomerActionService].
+* [Update "Task" Created By "Customer"|guide:_ExhUpdateCustomerTaskForCashierActionService].
+* [Show Landing Page of Agent's "Task"|guide:ExhShowTaskForAgentActionService].
+* [Show Landing Page of Customer's "Task"|guide:ExhShowTaskForCustomerActionService].
+* [Show Landing Page of Cashier's "Task"|guide:ShowExhTaskForCashierActionService].

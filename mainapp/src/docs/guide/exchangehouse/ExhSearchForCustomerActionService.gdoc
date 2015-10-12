@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search "Un-approve Beneficiary" From Grid View | |
+*ActionService:* | ExhSearchForCustomerActionService | *Auditable:* | No
+*Url:* | /exhBeneficiary/listForCustomer | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 27th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Create New" link.
+* [Show Landing Page of "Un-approve Beneficiary"|guide:ExhShowNewBeneficiariesForCustomerActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search "Un-approve Beneficiary" From Grid View.
+
+h4. Pre-condition:
+* User must have "List beneficiary details for customer login" privilege.
+* Rules of Searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*	
+  Find | Text Box | Alpha Numeric | Full Name
+  Find | Text Box | Alpha Numeric | Account No
+  Find | Text Box | Alpha Numeric | Photo Id No
+{table}
+
+
+h4. Process:
+* Get list of "Un-approve Beneficiary" (default: 15 at Max) matching with search criteria.
+
+h4. Post-condition:
+
+* *Success:*
+** "Un-approve Beneficiary" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Un-approve Beneficiary" in Landing Page|guide:ExhListsForCustomerActionService].

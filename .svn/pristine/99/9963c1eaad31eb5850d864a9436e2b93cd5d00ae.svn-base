@@ -1,0 +1,91 @@
+
+<g:render template='/projectTrack/ptBug/scriptBugDetails'/>
+
+<div class="panel-body">
+    <div class="panel panel-default">
+        <div class="panel-heading" style="height: 40px;">Bug Details
+            <span class="download_icon_set">
+                <ul>
+                    <li>Save as :</li>
+                    <li><a href="javascript:void(0)" id="printPdfBtn" class="pdf_icon"></a></li>
+                </ul>
+            </span></div>
+
+        <div class="panel-body">
+            <div class="panel panel-default">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active" >Project</td>
+                        <td>${result.bugMap?.project}</td>
+                        <td class="active">Module</td>
+                        <td>${result.bugMap?.module}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Sprint</td>
+                        <td>${result.bugMap?.sprint}</td>
+                        <td class="active">Type</td>
+                        <td>${result.bugMap?.type}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Status</td>
+                        <td>${result.bugMap?.status}</td>
+                        <td class="active">Severity</td>
+                        <td>${result.bugMap?.severity}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="active">Created By</td>
+                        <td>${result.bugMap?.createdBy}</td>
+                        <td class="active">Created On</td>
+                        <td>${result.bugMap?.createdOn}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Use Case Id</td>
+                        <td>${result.bugMap?.useCaseId}</td>
+                        <td class="active">Updated By</td>
+                        <td>${result.bugMap?.updatedBy}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Owner</td>
+                        <td>${result.bugMap?.owner}
+                            <span id="loggedUser" hidden="hidden">${result.bugMap?.loggedUser}</span>
+                            <sec:access url="/ptBug/addToMyBug">
+                            <button id="addBug" name="addBug" type="button" data-role="button"
+                                    class="k-button k-button-icontext" role="button"
+                                    aria-disabled="false" onclick='addToMyTask();'><span class="k-icon k-i-plus"></span>
+                            Add to my Bug
+                            </button>
+                            </sec:access>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel panel-default">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Task</td>
+                        <td>${result.bugMap?.idea}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="active">Title</td>
+                        <td>${result.bugMap?.title}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Step to Reproduce</td>
+                        <td>${result.bugMap?.stepToReproduce}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Note</td>
+                        <td>${result.bugMap?.note}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

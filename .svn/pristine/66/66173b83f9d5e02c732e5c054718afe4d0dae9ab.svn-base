@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *My Task* | |
+*ActionService:* | ShowMyPtBacklogActionService | *Auditable:* | No
+*Url:* |/ptBacklog/showMyBacklog | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+This is the landing page of *My Task* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *My Task* link.
+* Show Landing Page of *My Task*.
+
+h4. Pre-condition:
+* User must have "Show all my backlog" privilege.
+
+h4. Process:
+* Get [List of all "My Task" from server|guide:ListMyPtBacklogActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *My Task* information in grid view.
+** Reset input form on top to update new *My Task*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "My Task" in Edit Mode|guide:SelectMyPtBacklogActionService].
+* [Search "My Task" From Grid View|guide:SearchMyPtBacklogActionService].
+
+!projecttrack/Show-Update-My-Task.png!
+

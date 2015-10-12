@@ -1,0 +1,60 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Project* | |
+*ActionService:* | ShowProjectActionService | *Auditable:* | No
+*Url:* | /project/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 18th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Project* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Project* link.
+* Show Landing Page of *Project*.
+
+h4. Pre-condition:
+* User must have "Show Project" privilege.
+
+h4. Process:
+* [Get List of all "Project" from server|guide:ListProjectActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Project"|guide:CreateProjectActionService].
+** Show list of all *Project* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Project" in Edit Mode|guide:SelectProjectActionService].
+* [Delete "Project"|guide:DeleteProjectActionService].
+* [Search "Project" From Grid View|guide:SearchProjectActionService].
+
+* [Show Entity Content|application].
+* [List Entity Content|application].
+* [Create Entity Content|application].
+* [Select Entity Content|application].
+* [Update Entity Content|application].
+* [Search Entity Content|application].
+* [Delete Entity Content|application].
+* [Download Entity Content|application].
+
+!application/Project_Show.png!

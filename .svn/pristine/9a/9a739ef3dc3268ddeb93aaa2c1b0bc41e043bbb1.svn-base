@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download *Entity Content* for Bug | |
+*ActionService:* | DownloadEntityContentForBugActionService | *Auditable:* | No
+*Url:* | /ptBug/downloadBugContent | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Nahida Sultana | 6th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *My Task* link.
+* [Show Landing Page of "My Task"|guide:ShowMyPtBacklogActionService].
+* Select a Line-Item from grid view.
+* Click "Bug" button from tool bar.
+* [Show Landing Page of "Bug" for "My Task"|guide:ShowPtBugForMyTaskActionService].
+* Select a Line-Item from grid view.
+* Click "Download" button from tool bar.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download *Entity Content* for Bug.
+
+h4. Pre-condition:
+* User must have "Download entity content for bug" privilege.
+
+h4. Process:
+* Download the selected *Entity Content*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Entity Content* will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

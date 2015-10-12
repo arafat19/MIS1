@@ -1,0 +1,68 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Generate "Project Wise Expense" Report in HTML Format | |
+ *ActionService:* | ListForProjectWiseExpenseActionService | *Auditable:* | No
+ *Url:* | /accReport/listProjectWiseExpense | |
+{table}
+
+h4. Revision History:
+    {table}
+     *Author*   | *Date* | *Reason for Changes*	| *Version*
+     Nahida Sultana | 29th April 2013 | Initial Requirement | 1.0
+    {table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Project Wise Expense" link.
+* [Show Landing Page of Project Wise Expense Report|guide:ShowForProjectWiseExpenseActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Project Wise Expense" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List project wise expense" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Populate Project List|application] | Drop Down List | Numeric | All(Default)
+ From Date | Calender | Alpha Numeric | Required
+ To Date | Calender | Alpha Numeric | Required
+ [Group|guide:GetDropDownAccGroupTagLibActionService] | Drop Down List | Numeric | Required
+ Chart of Account | Drop Down List | Numeric | All(Default)
+{table}
+
+* Given Date must be in between *Financial Year*.
+
+h4. Process:
+* Show a details of "Project Wise Expense" information.
+* Following columns should show in grid view:
+** Serial
+** Project Name
+** Total Credit
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Project Wise Expense" report in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+
+!Acc/Project_Wise_Expense_Report_Generate.png!

@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Invoice" Report For *Customer* in PDF Format | |
+*ActionService:* | ExhDownloadTaskInvoiceForCustomerActionService | *Auditable:* | No
+*Url:* | /exhReport/downloadInvoiceForCustomer | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 28th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Show Invoice" link.
+* [Show Landing Page of "Invoice" Report For "Customer"|guide:ShowInvoiceForCustomer].
+* Enter valid input.
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Invoice" Report For *Customer* in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download invoice" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ Reference No | Text Box | Alpha Numeric | Required 
+{table}
+
+
+h4. Process:
+* Download the report as PDF format.
+* PDF header should show company logo and address.
+* PDF report should show "Customer Copy" and "Bank Copy".
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+"Download Invoice Report For *Customer* in PDF Format":Invoice_Report_customer.pdf

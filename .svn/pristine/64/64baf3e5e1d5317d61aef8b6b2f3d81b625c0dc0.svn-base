@@ -1,0 +1,1209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="informationtechnology (generated)" id="1385637388208-1">
+        <createTable tableName="vw_acc_cash_flow_details">
+            <column name="id" type="int8">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="vw_acc_cash_fPK"/>
+            </column>
+            <column name="balance_activities" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-2">
+        <createTable tableName="vw_acc_iou_details">
+            <column name="iou_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iou_purpose_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_amount" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="purpose_description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_purpose_amount" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-3">
+        <createTable tableName="vw_acc_source_balance">
+            <column name="source_type_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dr_balance" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cr_balance" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_full_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="employee_full_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_cr_balance" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_dr_balance" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sub_account_description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="supplier_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-4">
+        <createTable tableName="vw_acc_supplier_payment">
+            <column name="id" type="int8">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="vw_acc_suppliPK"/>
+            </column>
+            <column name="po_project_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remaining" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_paid" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_po" type="float8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-5">
+        <createTable tableName="vw_acc_voucher_with_details">
+            <column name="voucher_details_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="acc_type_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount_cr" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount_dr" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cheque_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_code" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coa_description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cr_balance" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="division_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dr_balance" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="particulars" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="posted_by" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="project_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="row_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_category_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_type_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_amount_cr" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_amount_dr" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_voucher_date" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trace_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_type_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-6">
+        <createTable tableName="vw_acc_voucher_with_type">
+            <column name="voucher_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_type_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="float8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cheque_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cr_count" type="int4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dr_count" type="int4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instrument_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instrument_type_id" type="int8">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_voucher_posted" type="bool">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_amount" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="str_voucher_date" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trace_no" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voucher_type_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-7">
+        <modifyDataType columnName="amount" newDataType="float8" tableName="acc_bank_statement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-8">
+        <addNotNullConstraint columnDataType="varchar(255)" columnName="transaction_type" tableName="acc_bank_statement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-9">
+        <modifyDataType columnName="company_id" newDataType="int8" tableName="acc_group"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-10">
+        <modifyDataType columnName="amount" newDataType="float8" tableName="acc_iou_purpose"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-11">
+        <modifyDataType columnName="company_id" newDataType="int8" tableName="acc_tier1"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-12">
+        <modifyDataType columnName="company_id" newDataType="int8" tableName="acc_tier2"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-13">
+        <modifyDataType columnName="company_id" newDataType="int8" tableName="acc_tier3"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-14">
+        <modifyDataType columnName="order_id" newDataType="int4" tableName="acc_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-15">
+        <modifyDataType columnName="created_on" newDataType="timestamp" tableName="project"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-16">
+        <modifyDataType columnName="updated_on" newDataType="timestamp" tableName="project"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-17">
+        <addPrimaryKey columnNames="iou_id, iou_purpose_id" constraintName="vw_acc_iou_dePK" tableName="vw_acc_iou_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-18">
+        <addPrimaryKey columnNames="source_type_id, dr_balance" constraintName="vw_acc_sourcePK" tableName="vw_acc_source_balance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-19">
+        <addPrimaryKey columnNames="voucher_details_id, coa_id" constraintName="vw_acc_vouchePK" tableName="vw_acc_voucher_with_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-20">
+        <addPrimaryKey columnNames="voucher_id, voucher_type_id" constraintName="vw_acc_vouchePK" tableName="vw_acc_voucher_with_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-21">
+        <dropIndex indexName="acc_prefix_company_id_idx" tableName="acc_prefix"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-22">
+        <dropIndex indexName="acc_sub_account_coa_id_idx" tableName="acc_sub_account"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-23">
+        <dropIndex indexName="budget_budget_item_idx" tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-24">
+        <dropIndex indexName="budget_budget_type_id_idx" tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-25">
+        <dropIndex indexName="budget_company_id_idx" tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-26">
+        <dropIndex indexName="budget_created_by_idx" tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-27">
+        <dropIndex indexName="budget_project_id_idx" tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-28">
+        <dropIndex indexName="budget_unit_id_idx" tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-29">
+        <dropIndex indexName="budget_updated_by_idx" tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-30">
+        <dropIndex indexName="budget_details_budget_id_idx" tableName="budg_budget_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-31">
+        <dropIndex indexName="budget_details_company_id_idx" tableName="budg_budget_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-32">
+        <dropIndex indexName="budget_details_created_by_idx" tableName="budg_budget_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-33">
+        <dropIndex indexName="budget_details_item_id_idx" tableName="budg_budget_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-34">
+        <dropIndex indexName="budget_details_project_id_idx" tableName="budg_budget_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-35">
+        <dropIndex indexName="budget_details_updated_by_idx" tableName="budg_budget_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-36">
+        <dropIndex indexName="budg_budget_type_company_id_idx" tableName="budg_budget_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-37">
+        <dropIndex indexName="budg_project_budget_type_budget_type_id_idx" tableName="budg_project_budget_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-38">
+        <dropIndex indexName="budg_project_budget_type_project_id_idx" tableName="budg_project_budget_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-39">
+        <dropIndex indexName="entity_note_entity_id_idx" tableName="entity_note"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-40">
+        <dropIndex indexName="exh_agent_company_id_idx" tableName="exh_agent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-41">
+        <dropIndex indexName="exh_agent_country_id_idx" tableName="exh_agent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-42">
+        <dropIndex indexName="exh_agent_created_by_idx" tableName="exh_agent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-43">
+        <dropIndex indexName="exh_agent_currency_id_idx" tableName="exh_agent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-44">
+        <dropIndex indexName="exh_agent_updated_by_idx" tableName="exh_agent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-45">
+        <dropIndex indexName="exh_agent_currency_posting_agent_id_idx" tableName="exh_agent_currency_posting"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-46">
+        <dropIndex indexName="exh_agent_currency_posting_created_by_idx" tableName="exh_agent_currency_posting"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-47">
+        <dropIndex indexName="exh_agent_currency_posting_currency_id_idx" tableName="exh_agent_currency_posting"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-48">
+        <dropIndex indexName="exh_agent_currency_posting_updated_by_idx" tableName="exh_agent_currency_posting"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-49">
+        <dropIndex indexName="exh_bank_branch_bank_id_idx" tableName="exh_bank_branch"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-50">
+        <dropIndex indexName="exh_bank_branch_district_id_idx" tableName="exh_bank_branch"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-51">
+        <dropIndex indexName="exh_beneficiary_company_id_idx" tableName="exh_beneficiary"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-52">
+        <dropIndex indexName="exh_beneficiary_user_id_idx" tableName="exh_beneficiary"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-53">
+        <dropIndex indexName="exh_currency_conversion_company_id_idx" tableName="exh_currency_conversion"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-54">
+        <dropIndex indexName="exh_currency_conversion_user_id_idx" tableName="exh_currency_conversion"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-55">
+        <dropIndex indexName="exh_customer_agent_id_idx" tableName="exh_customer"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-56">
+        <dropIndex indexName="exh_customer_code_idx" tableName="exh_customer"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-57">
+        <dropIndex indexName="exh_customer_company_id_idx" tableName="exh_customer"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-58">
+        <dropIndex indexName="exh_customer_country_id_idx" tableName="exh_customer"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-59">
+        <dropIndex indexName="exh_customer_photo_id_type_id_idx" tableName="exh_customer"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-60">
+        <dropIndex indexName="exh_customer_user_id_idx" tableName="exh_customer"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-61">
+        <dropIndex indexName="exh_customer_beneficiary_mapping_beneficiary_id_idx" tableName="exh_customer_beneficiary_mapping"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-62">
+        <dropIndex indexName="exh_customer_beneficiary_mapping_customer_id_idx" tableName="exh_customer_beneficiary_mapping"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-63">
+        <dropIndex indexName="exh_regular_fee_company_id_idx" tableName="exh_regular_fee"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-64">
+        <dropIndex indexName="exh_regular_fee_created_by_idx" tableName="exh_regular_fee"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-65">
+        <dropIndex indexName="exh_regular_fee_updated_by_idx" tableName="exh_regular_fee"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-66">
+        <dropIndex indexName="exh_task_agent_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-67">
+        <dropIndex indexName="exh_task_approved_by_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-68">
+        <dropIndex indexName="exh_task_beneficiary_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-69">
+        <dropIndex indexName="exh_task_company_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-70">
+        <dropIndex indexName="exh_task_current_status_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-71">
+        <dropIndex indexName="exh_task_customer_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-72">
+        <dropIndex indexName="exh_task_from_currency_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-73">
+        <dropIndex indexName="exh_task_outlet_bank_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-74">
+        <dropIndex indexName="exh_task_outlet_branch_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-75">
+        <dropIndex indexName="exh_task_outlet_district_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-76">
+        <dropIndex indexName="exh_task_paid_by_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-77">
+        <dropIndex indexName="exh_task_payment_method_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-78">
+        <dropIndex indexName="exh_task_pin_no_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-79">
+        <dropIndex indexName="exh_task_ref_no_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-80">
+        <dropIndex indexName="exh_task_remittance_purpose_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-81">
+        <dropIndex indexName="exh_task_task_type_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-82">
+        <dropIndex indexName="exh_task_to_currency_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-83">
+        <dropIndex indexName="exh_task_user_id_idx" tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-84">
+        <dropIndex indexName="fxd_category_maintenance_type_company_id_idx" tableName="fxd_category_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-85">
+        <dropIndex indexName="fxd_category_maintenance_type_created_by_idx" tableName="fxd_category_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-86">
+        <dropIndex indexName="fxd_category_maintenance_type_item_id_idx" tableName="fxd_category_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-87">
+        <dropIndex indexName="fxd_category_maintenance_type_maintenance_type_id_idx" tableName="fxd_category_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-88">
+        <dropIndex indexName="fxd_category_maintenance_type_updated_by_idx" tableName="fxd_category_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-89">
+        <dropIndex indexName="fixed_asset_details_company_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-90">
+        <dropIndex indexName="fixed_asset_details_created_by_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-91">
+        <dropIndex indexName="fixed_asset_details_current_inventory_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-92">
+        <dropIndex indexName="fixed_asset_details_inventory_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-93">
+        <dropIndex indexName="fixed_asset_details_item_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-94">
+        <dropIndex indexName="fixed_asset_details_owner_type_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-95">
+        <dropIndex indexName="fixed_asset_details_po_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-96">
+        <dropIndex indexName="fixed_asset_details_project_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-97">
+        <dropIndex indexName="fixed_asset_details_purchase_date_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-98">
+        <dropIndex indexName="fixed_asset_details_supplier_id_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-99">
+        <dropIndex indexName="fixed_asset_details_updated_by_idx" tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-100">
+        <dropIndex indexName="fixed_asset_trace_company_id_idx" tableName="fxd_fixed_asset_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-101">
+        <dropIndex indexName="fixed_asset_trace_created_by_idx" tableName="fxd_fixed_asset_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-102">
+        <dropIndex indexName="fixed_asset_trace_fixed_asset_details_id_idx" tableName="fxd_fixed_asset_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-103">
+        <dropIndex indexName="fixed_asset_trace_inventory_id_idx" tableName="fxd_fixed_asset_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-104">
+        <dropIndex indexName="fixed_asset_trace_item_id_idx" tableName="fxd_fixed_asset_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-105">
+        <dropIndex indexName="fxd_maintenance_company_id_idx" tableName="fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-106">
+        <dropIndex indexName="fxd_maintenance_created_by_idx" tableName="fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-107">
+        <dropIndex indexName="fxd_maintenance_fixed_asset_details_id_idx" tableName="fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-108">
+        <dropIndex indexName="fxd_maintenance_item_id_idx" tableName="fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-109">
+        <dropIndex indexName="fxd_maintenance_maintenance_type_id_idx" tableName="fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-110">
+        <dropIndex indexName="fxd_maintenance_updated_by_idx" tableName="fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-111">
+        <dropIndex indexName="fxd_maintenance_type_company_id_idx" tableName="fxd_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-112">
+        <dropIndex indexName="fxd_maintenance_type_created_by_idx" tableName="fxd_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-113">
+        <dropIndex indexName="fxd_maintenance_type_updated_by_idx" tableName="fxd_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-114">
+        <dropIndex indexName="inv_inventory_company_id_idx" tableName="inv_inventory"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-115">
+        <dropIndex indexName="inv_inventory_name_idx" tableName="inv_inventory"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-116">
+        <dropIndex indexName="inv_inventory_project_id_idx" tableName="inv_inventory"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-117">
+        <dropIndex indexName="inv_inventory_type_id_idx" tableName="inv_inventory"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-118">
+        <dropIndex indexName="inv_inventory_transaction_budget_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-119">
+        <dropIndex indexName="inv_inventory_transaction_company_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-120">
+        <dropIndex indexName="inv_inventory_transaction_created_by_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-121">
+        <dropIndex indexName="inv_inventory_transaction_inv_production_line_item_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-122">
+        <dropIndex indexName="inv_inventory_transaction_inventory_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-123">
+        <dropIndex indexName="inv_inventory_transaction_inventory_type_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-124">
+        <dropIndex indexName="inv_inventory_transaction_project_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-125">
+        <dropIndex indexName="inv_inventory_transaction_transaction_date_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-126">
+        <dropIndex indexName="inv_inventory_transaction_transaction_entity_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-127">
+        <dropIndex indexName="inv_inventory_transaction_transaction_entity_type_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-128">
+        <dropIndex indexName="inv_inventory_transaction_transaction_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-129">
+        <dropIndex indexName="inv_inventory_transaction_transaction_type_id_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-130">
+        <dropIndex indexName="inv_inventory_transaction_updated_by_idx" tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-131">
+        <dropIndex indexName="inv_inventory_transaction_details_actual_quantity_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-132">
+        <dropIndex indexName="inv_inventory_transaction_details_approved_by_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-133">
+        <dropIndex indexName="inv_inventory_transaction_details_approved_on_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-134">
+        <dropIndex indexName="inv_inventory_transaction_details_created_by_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-135">
+        <dropIndex indexName="inv_inventory_transaction_details_fifo_quantity_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-136">
+        <dropIndex indexName="inv_inventory_transaction_details_fixed_asset_details_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-137">
+        <dropIndex indexName="inv_inventory_transaction_details_fixed_asset_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-138">
+        <dropIndex indexName="inv_inventory_transaction_details_inventory_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-139">
+        <dropIndex indexName="inv_inventory_transaction_details_inventory_transaction_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-140">
+        <dropIndex indexName="inv_inventory_transaction_details_inventory_type_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-141">
+        <dropIndex indexName="inv_inventory_transaction_details_invoice_acknowledged_by_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-142">
+        <dropIndex indexName="inv_inventory_transaction_details_item_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-143">
+        <dropIndex indexName="inv_inventory_transaction_details_lifo_quantity_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-144">
+        <dropIndex indexName="inv_inventory_transaction_details_rate_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-145">
+        <dropIndex indexName="inv_inventory_transaction_details_transaction_date_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-146">
+        <dropIndex indexName="inv_inventory_transaction_details_transaction_details_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-147">
+        <dropIndex indexName="inv_inventory_transaction_details_transaction_type_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-148">
+        <dropIndex indexName="inv_inventory_transaction_details_updated_by_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-149">
+        <dropIndex indexName="inv_inventory_transaction_details_vehicle_id_idx" tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-150">
+        <dropIndex indexName="inv_production_details_material_id_idx" tableName="inv_production_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-151">
+        <dropIndex indexName="inv_production_details_production_item_type_id_idx" tableName="inv_production_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-152">
+        <dropIndex indexName="inv_production_details_production_line_item_id_idx" tableName="inv_production_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-153">
+        <dropIndex indexName="inv_production_line_item_company_id_idx" tableName="inv_production_line_item"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-154">
+        <dropIndex indexName="proc_indent_approved_by_idx" tableName="proc_indent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-155">
+        <dropIndex indexName="proc_indent_company_id_idx" tableName="proc_indent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-156">
+        <dropIndex indexName="proc_indent_created_by_idx" tableName="proc_indent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-157">
+        <dropIndex indexName="proc_indent_project_id_idx" tableName="proc_indent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-158">
+        <dropIndex indexName="proc_indent_updated_by_idx" tableName="proc_indent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-159">
+        <dropIndex indexName="proc_indent_details_company_id_idx" tableName="proc_indent_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-160">
+        <dropIndex indexName="proc_indent_details_created_by_idx" tableName="proc_indent_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-161">
+        <dropIndex indexName="proc_indent_details_indent_id_idx" tableName="proc_indent_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-162">
+        <dropIndex indexName="proc_indent_details_project_id_idx" tableName="proc_indent_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-163">
+        <dropIndex indexName="proc_indent_details_updated_by_idx" tableName="proc_indent_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-164">
+        <dropIndex indexName="proc_purchase_order_approved_by_director_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-165">
+        <dropIndex indexName="proc_purchase_order_approved_by_project_director_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-166">
+        <dropIndex indexName="proc_purchase_order_budget_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-167">
+        <dropIndex indexName="proc_purchase_order_company_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-168">
+        <dropIndex indexName="proc_purchase_order_created_by_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-169">
+        <dropIndex indexName="proc_purchase_order_created_on_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-170">
+        <dropIndex indexName="proc_purchase_order_payment_method_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-171">
+        <dropIndex indexName="proc_purchase_order_project_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-172">
+        <dropIndex indexName="proc_purchase_order_purchase_request_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-173">
+        <dropIndex indexName="proc_purchase_order_supplier_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-174">
+        <dropIndex indexName="proc_purchase_order_updated_by_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-175">
+        <dropIndex indexName="purchase_order_purchase_request_id_idx" tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-176">
+        <dropIndex indexName="proc_purchase_order_details_budget_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-177">
+        <dropIndex indexName="proc_purchase_order_details_company_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-178">
+        <dropIndex indexName="proc_purchase_order_details_created_by_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-179">
+        <dropIndex indexName="proc_purchase_order_details_item_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-180">
+        <dropIndex indexName="proc_purchase_order_details_project_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-181">
+        <dropIndex indexName="proc_purchase_order_details_purchase_order_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-182">
+        <dropIndex indexName="proc_purchase_order_details_purchase_request_details_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-183">
+        <dropIndex indexName="proc_purchase_order_details_purchase_request_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-184">
+        <dropIndex indexName="proc_purchase_order_details_quantity_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-185">
+        <dropIndex indexName="proc_purchase_order_details_rate_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-186">
+        <dropIndex indexName="proc_purchase_order_details_updated_by_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-187">
+        <dropIndex indexName="purchase_order_details_purchase_request_details_id_idx" tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-188">
+        <dropIndex indexName="proc_purchase_request_approved_by_director_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-189">
+        <dropIndex indexName="proc_purchase_request_approved_by_project_director_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-190">
+        <dropIndex indexName="proc_purchase_request_budget_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-191">
+        <dropIndex indexName="proc_purchase_request_company_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-192">
+        <dropIndex indexName="proc_purchase_request_created_by_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-193">
+        <dropIndex indexName="proc_purchase_request_indent_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-194">
+        <dropIndex indexName="proc_purchase_request_project_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-195">
+        <dropIndex indexName="proc_purchase_request_updated_by_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-196">
+        <dropIndex indexName="purchase_request_budget_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-197">
+        <dropIndex indexName="purchase_request_company_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-198">
+        <dropIndex indexName="purchase_request_project_id_idx" tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-199">
+        <dropIndex indexName="proc_purchase_request_details_budget_details_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-200">
+        <dropIndex indexName="proc_purchase_request_details_budget_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-201">
+        <dropIndex indexName="proc_purchase_request_details_company_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-202">
+        <dropIndex indexName="proc_purchase_request_details_created_by_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-203">
+        <dropIndex indexName="proc_purchase_request_details_item_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-204">
+        <dropIndex indexName="proc_purchase_request_details_project_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-205">
+        <dropIndex indexName="proc_purchase_request_details_purchase_request_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-206">
+        <dropIndex indexName="proc_purchase_request_details_updated_by_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-207">
+        <dropIndex indexName="purchase_request_details_budget_details_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-208">
+        <dropIndex indexName="purchase_request_details_purchase_request_id_idx" tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-209">
+        <dropIndex indexName="proc_terms_and_condition_budget_id_idx" tableName="proc_terms_and_condition"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-210">
+        <dropIndex indexName="proc_terms_and_condition_company_id_idx" tableName="proc_terms_and_condition"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-211">
+        <dropIndex indexName="proc_terms_and_condition_created_by_idx" tableName="proc_terms_and_condition"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-212">
+        <dropIndex indexName="proc_terms_and_condition_project_id_idx" tableName="proc_terms_and_condition"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-213">
+        <dropIndex indexName="proc_terms_and_condition_purchase_order_id_idx" tableName="proc_terms_and_condition"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-214">
+        <dropIndex indexName="proc_terms_and_condition_updated_by_idx" tableName="proc_terms_and_condition"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-215">
+        <dropIndex indexName="proc_transport_cost_purchase_order_id_idx" tableName="proc_transport_cost"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-216">
+        <dropIndex indexName="transport_cost_purchase_order_idx" tableName="proc_transport_cost"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-217">
+        <dropIndex indexName="qs_measurement_budget_id_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-218">
+        <dropIndex indexName="qs_measurement_company_id_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-219">
+        <dropIndex indexName="qs_measurement_created_by_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-220">
+        <dropIndex indexName="qs_measurement_is_govt_qs_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-221">
+        <dropIndex indexName="qs_measurement_project_id_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-222">
+        <dropIndex indexName="qs_measurement_qs_measurement_date_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-223">
+        <dropIndex indexName="qs_measurement_quantity_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-224">
+        <dropIndex indexName="qs_measurement_site_id_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-225">
+        <dropIndex indexName="qs_measurement_updated_by_idx" tableName="qs_measurement"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-226">
+        <dropSequence schemaName="public" sequenceName="budg_budget_details_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-227">
+        <dropSequence schemaName="public" sequenceName="budg_budget_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-228">
+        <dropSequence schemaName="public" sequenceName="budg_budget_type_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-229">
+        <dropSequence schemaName="public" sequenceName="budg_project_budget_type_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-230">
+        <dropSequence schemaName="public" sequenceName="entity_comment_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-231">
+        <dropSequence schemaName="public" sequenceName="exh_agent_currency_posting_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-232">
+        <dropSequence schemaName="public" sequenceName="exh_agent_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-233">
+        <dropSequence schemaName="public" sequenceName="exh_bank_branch_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-234">
+        <dropSequence schemaName="public" sequenceName="exh_bank_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-235">
+        <dropSequence schemaName="public" sequenceName="exh_beneficiary_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-236">
+        <dropSequence schemaName="public" sequenceName="exh_currency_conversion_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-237">
+        <dropSequence schemaName="public" sequenceName="exh_customer_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-238">
+        <dropSequence schemaName="public" sequenceName="exh_customer_trace_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-239">
+        <dropSequence schemaName="public" sequenceName="exh_district_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-240">
+        <dropSequence schemaName="public" sequenceName="exh_photo_id_type_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-241">
+        <dropSequence schemaName="public" sequenceName="exh_regular_fee_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-242">
+        <dropSequence schemaName="public" sequenceName="exh_remittance_purpose_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-243">
+        <dropSequence schemaName="public" sequenceName="exh_sanction_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-244">
+        <dropSequence schemaName="public" sequenceName="exh_task_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-245">
+        <dropSequence schemaName="public" sequenceName="exh_task_trace_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-246">
+        <dropSequence schemaName="public" sequenceName="fxd_category_maintenance_type_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-247">
+        <dropSequence schemaName="public" sequenceName="fxd_fixed_asset_details_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-248">
+        <dropSequence schemaName="public" sequenceName="fxd_fixed_asset_trace_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-249">
+        <dropSequence schemaName="public" sequenceName="fxd_maintenance_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-250">
+        <dropSequence schemaName="public" sequenceName="fxd_maintenance_type_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-251">
+        <dropSequence schemaName="public" sequenceName="inv_inventory_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-252">
+        <dropSequence schemaName="public" sequenceName="inv_inventory_transaction_details_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-253">
+        <dropSequence schemaName="public" sequenceName="inv_inventory_transaction_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-254">
+        <dropSequence schemaName="public" sequenceName="inv_item_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-255">
+        <dropSequence schemaName="public" sequenceName="inv_production_details_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-256">
+        <dropSequence schemaName="public" sequenceName="inv_production_line_item_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-257">
+        <dropSequence schemaName="public" sequenceName="proc_indent_details_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-258">
+        <dropSequence schemaName="public" sequenceName="proc_indent_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-259">
+        <dropSequence schemaName="public" sequenceName="proc_purchase_order_details_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-260">
+        <dropSequence schemaName="public" sequenceName="proc_purchase_order_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-261">
+        <dropSequence schemaName="public" sequenceName="proc_purchase_request_details_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-262">
+        <dropSequence schemaName="public" sequenceName="proc_purchase_request_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-263">
+        <dropSequence schemaName="public" sequenceName="proc_terms_and_condition_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-264">
+        <dropSequence schemaName="public" sequenceName="proc_transport_cost_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-265">
+        <dropSequence schemaName="public" sequenceName="qs_measurement_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-266">
+        <dropSequence schemaName="public" sequenceName="system_entity_type_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-267">
+        <dropSequence schemaName="public" sequenceName="transport_cost_id_seq"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-268">
+        <dropView schemaName="public" viewName="vw_acc_cash_flow_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-269">
+        <dropView schemaName="public" viewName="vw_acc_iou_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-270">
+        <dropView schemaName="public" viewName="vw_acc_source_balance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-271">
+        <dropView schemaName="public" viewName="vw_acc_supplier_payment"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-272">
+        <dropView schemaName="public" viewName="vw_acc_voucher_with_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-273">
+        <dropView schemaName="public" viewName="vw_acc_voucher_with_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-274">
+        <dropView schemaName="public" viewName="vw_budg_budget_details_with_item"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-275">
+        <dropView schemaName="public" viewName="vw_budg_budget_status"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-276">
+        <dropView schemaName="public" viewName="vw_budg_budget_with_project"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-277">
+        <dropView schemaName="public" viewName="vw_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-278">
+        <dropView schemaName="public" viewName="vw_fixed_asset_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-279">
+        <dropView schemaName="public" viewName="vw_fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-280">
+        <dropView schemaName="public" viewName="vw_inv_inventory_consumable_stock"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-281">
+        <dropView schemaName="public" viewName="vw_inv_inventory_stock"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-282">
+        <dropView schemaName="public" viewName="vw_inv_inventory_transaction_with_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-283">
+        <dropView schemaName="public" viewName="vw_inv_inventory_valuation"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-284">
+        <dropView schemaName="public" viewName="vw_proc_po_for_store_in"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-285">
+        <dropView schemaName="public" viewName="vw_proc_po_status"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-286">
+        <dropView schemaName="public" viewName="vw_proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-287">
+        <dropView schemaName="public" viewName="vw_proc_purchase_request_with_budget_project"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-288">
+        <dropView schemaName="public" viewName="vw_proc_supplier_wise_po"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-289">
+        <dropView schemaName="public" viewName="vw_qs_measurement_with_budget_inventory"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-290">
+        <dropView schemaName="public" viewName="vw_qs_status"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-291">
+        <dropTable tableName="acc_prefix"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-292">
+        <dropTable tableName="budg_budget"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-293">
+        <dropTable tableName="budg_budget_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-294">
+        <dropTable tableName="budg_budget_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-295">
+        <dropTable tableName="budg_project_budget_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-296">
+        <dropTable tableName="exh_agent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-297">
+        <dropTable tableName="exh_agent_currency_posting"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-298">
+        <dropTable tableName="exh_bank"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-299">
+        <dropTable tableName="exh_bank_branch"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-300">
+        <dropTable tableName="exh_beneficiary"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-301">
+        <dropTable tableName="exh_currency_conversion"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-302">
+        <dropTable tableName="exh_customer"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-303">
+        <dropTable tableName="exh_customer_beneficiary_mapping"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-304">
+        <dropTable tableName="exh_customer_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-305">
+        <dropTable tableName="exh_district"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-306">
+        <dropTable tableName="exh_photo_id_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-307">
+        <dropTable tableName="exh_regular_fee"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-308">
+        <dropTable tableName="exh_remittance_purpose"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-309">
+        <dropTable tableName="exh_sanction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-310">
+        <dropTable tableName="exh_task"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-311">
+        <dropTable tableName="exh_task_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-312">
+        <dropTable tableName="fxd_category_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-313">
+        <dropTable tableName="fxd_fixed_asset_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-314">
+        <dropTable tableName="fxd_fixed_asset_trace"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-315">
+        <dropTable tableName="fxd_maintenance"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-316">
+        <dropTable tableName="fxd_maintenance_type"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-317">
+        <dropTable tableName="inv_inventory"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-318">
+        <dropTable tableName="inv_inventory_transaction"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-319">
+        <dropTable tableName="inv_inventory_transaction_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-320">
+        <dropTable tableName="inv_production_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-321">
+        <dropTable tableName="inv_production_line_item"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-322">
+        <dropTable tableName="proc_indent"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-323">
+        <dropTable tableName="proc_indent_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-324">
+        <dropTable tableName="proc_purchase_order"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-325">
+        <dropTable tableName="proc_purchase_order_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-326">
+        <dropTable tableName="proc_purchase_request"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-327">
+        <dropTable tableName="proc_purchase_request_details"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-328">
+        <dropTable tableName="proc_terms_and_condition"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-329">
+        <dropTable tableName="proc_transport_cost"/>
+    </changeSet>
+    <changeSet author="informationtechnology (generated)" id="1385637388208-330">
+        <dropTable tableName="qs_measurement"/>
+    </changeSet>
+</databaseChangeLog>

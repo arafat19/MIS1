@@ -1,0 +1,66 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Cashier Wise Task" Report in PDF Format | |
+*ActionService:* | ExhDownloadForCashierWiseTaskReportActionService | *Auditable:* | No
+*Url:* | /exhReport/downloadCashierWiseTaskReport | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 28th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Cashier Wise Task report" link.
+* [Show Landing Page of "Cashier Wise Task" Report|guide:ExhShowCashierWiseReportAdminActionService].
+* Enter valid input.
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Cashier Wise Task" Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download cashier wise task report" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ From Date | Calender | Alpha Numeric | Required
+ To Date | Calender | Alpha Numeric | Required
+ [Populate "Cashier" List|guide:ExhCashierDropDownTagLib] | Drop Down List | Numeric | Required
+{table}
+
+
+h4. Process:
+* Download the report as PDF format.
+* Downloaded pdf report show gain/loss column for all created task except "Send to Bank Task" and "Cancel Task".
+* Rules of Gain/loss is Given below:
+[Task Amount in Local Currency + Regular Fee - Discount-Commission * (X-X')* Y']
+where
+X=Buy rate of Local Currency(GBP/AUD)
+X'=Sell Rate of Local Currency(GBP/AUD)
+Y'=Sell Rate of Foreign Currency(BDT)
+* PDF header should show company name.
+* PDF report should show "Cashier Name" wise report.
+* PDF footer should show page no, print date.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+"Download Cashier Wise Task Report in PDF Format":CashierWiseTaskReport_admin.pdf

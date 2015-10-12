@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Inventory Item* | |
+*ActionService:* | DeleteItemCategoryInventoryActionService | *Auditable:* | No
+*Url:* | /item/deleteInventoryItem | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 10th December 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Inventory Item* link.
+* [Show Landing Page of Inventory Item|guide:ShowItemCategoryInventoryActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Inventory Item*.
+
+h4. Pre-condition:
+* User must have "Delete Inventory Item" privilege.
+* If *Inventory Item* has dependency with following business entity then selected *Inventory Item* will not be delete-able:
+** *Supplier* Added Item
+** *Voucher*
+** *LC*
+** *Lease Account*
+** Inventory in From Supplier
+** Inventory Out
+** Inventory in From Inventory
+** Inventory Consumption
+** *Purchase Request* Added Item
+** *Purchase Order* Added Item
+** *Budget* Added Item
+
+h4. Process:
+* Delete a selected *Inventory Item*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Inventory Item* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

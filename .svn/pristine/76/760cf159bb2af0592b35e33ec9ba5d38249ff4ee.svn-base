@@ -1,0 +1,43 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Widget of "Accounting Option" | |
+*Action:* | RenderAction | *Auditable:* | No
+*Url:* | /renderAccountingMenu | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 8th December 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Show "Widget" of Accounting Oprtion.
+
+h4. Pre-condition:
+* User must have "Show Accounting Module" privilege.
+* *Voucher* must be Un-posted.
+
+h4. Process:
+* [Show List of Un-posted "Cash Payment Voucher"|guide:ListUnApprovedPayCashActionService].
+* [Show List of Un-posted "Cheque Payment Voucher"|guide:ListUnApprovedPayBankActionService].
+* [Show List of Un-posted "Cash Receive Voucher"|guide:ListUnApprovedReceiveCashActionService].
+* [Show List of Un-posted "Cheque Receive Voucher"|guide:ListUnApprovedReceiveBankActionService].
+* [Show List of Un-Posted "Journal Voucher"|guide:ListUnApprovedJournalActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show Un-posted *Voucher* list.
+** Show Un-posted Cash Payment *Voucher* list in first tab (by default).
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,76 @@
+package com.athena.mis.integration.document
+
+import com.athena.mis.PluginConnector
+import com.athena.mis.application.entity.Company
+import com.athena.mis.application.service.AppMailService
+import com.athena.mis.application.service.AppUserService
+import com.athena.mis.application.service.RequestMapService
+import com.athena.mis.application.service.ReservedSystemEntityService
+import com.athena.mis.application.service.RoleFeatureMappingService
+import com.athena.mis.application.service.RoleService
+import com.athena.mis.application.service.RoleTypeService
+import com.athena.mis.application.service.SysConfigurationService
+import com.athena.mis.application.service.SystemEntityService
+import com.athena.mis.application.service.SystemEntityTypeService
+import com.athena.mis.application.service.UserRoleService
+import com.athena.mis.document.service.DocAllCategoryUserMappingService
+import com.athena.mis.document.service.DocCategoryService
+import com.athena.mis.document.service.DocSubCategoryService
+import org.hibernate.SessionFactory
+import org.springframework.transaction.annotation.Transactional
+
+class DocumentDefaultDataBootStrapService {
+
+    SessionFactory sessionFactory
+    SysConfigurationService sysConfigurationService
+    RequestMapService requestMapService
+    RoleFeatureMappingService roleFeatureMappingService
+    DocCategoryService docCategoryService
+    DocSubCategoryService docSubCategoryService
+    DocAllCategoryUserMappingService docAllCategoryUserMappingService
+    SystemEntityTypeService systemEntityTypeService
+    ReservedSystemEntityService reservedSystemEntityService
+    SystemEntityService systemEntityService
+    AppUserService appUserService
+    RoleTypeService roleTypeService
+    RoleService roleService
+    UserRoleService userRoleService
+    AppMailService appMailService
+
+
+    @Transactional
+    public void init() {
+        Company company = Company.list(readOnly: true)[0]    // read the only object
+        sysConfigurationService.createDefaultDataDocSysConfig(company.id)
+
+        appUserService.createDefaultDataForDocument(company.id)
+        requestMapService.createRequestMapForDocument()
+        roleTypeService.createDefaultDataForDocument()
+        roleService.createDefaultDataForDocument(company.id)
+        userRoleService.createDefaultDataDocument()
+        roleFeatureMappingService.createRoleFeatureMapForDocumentPlugin()
+
+
+        flushSession()
+        requestMapService.appendRoleInRequestMap(PluginConnector.DOCUMENT_ID)
+
+        docCategoryService.createDefaultDataForDocCategory(company)
+        docSubCategoryService.createDefaultDataForDocSubCategory()
+        docAllCategoryUserMappingService.createDefaultDataForAllCategoryUserMapping()
+
+        systemEntityTypeService.createDefaultDataForDocument()
+        reservedSystemEntityService.createDefaultDataForDocument()
+        systemEntityService.createDefaultDataForDocument(company.id)
+        appMailService.createDefaultDataForDocument(company.id)
+    }
+
+    /**
+     * Flush the current session when necessary to apply GORM
+     */
+    private void flushSession() {
+        def hibSession = sessionFactory.getCurrentSession()
+        if (hibSession) {
+            hibSession.flush()
+        }
+    }
+}

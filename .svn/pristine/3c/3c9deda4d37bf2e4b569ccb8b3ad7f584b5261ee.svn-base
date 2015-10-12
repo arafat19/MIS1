@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search *Division* From Grid View | |
+ *ActionService:* | SearchAccDivisionActionService | *Auditable:* | No
+ *Url:* | /accDivision/list | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Division* link.
+* [Show Landing Page of Division|guide:ShowAccDivisionActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Division* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Division" privilege.
+* Rules of searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*
+ Find | Text Box | Text | Name
+ Find | Text Box | Alpha Numeric | Project 
+{table}
+
+
+h4. Process:
+* Get list of *Division* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Division*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Division* list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Division" in Landing Page|guide:ListAccDivisionActionService].

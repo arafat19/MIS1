@@ -1,0 +1,60 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of "Procurement Budget" in Landing Page | |
+*ActionService:* | ListBudgetActionService | *Auditable:* | No
+*Url:* | /budgBudget/list | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* Show List of "Procurement Budget" in [Landing Page|guide:ShowBudgetActionService].
+
+h4. Pre-condition:
+* User must have "List Budget" privilege.
+
+h4. Process:
+* Get list of all "Procurement Budget" from server (default: 15 at Max) with following columns in grid view:
+** Serial
+** ID (Default: Invisible)
+** Code
+** Head Name
+** Source
+** Source Category
+** Type
+** Group
+** Custom Group
+** Active
+
+h4. Post-condition:
+
+* *Success:*
+** "Procurement Budget" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "Procurement Budget" From Grid View|guide:SearchBudgetActionService].
+

@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Task Note* | |
+*ActionService:* | ShowExhTaskNoteActionService | *Auditable:* | No
+*Url:* | /exhTask/showEntityNoteForTask | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier.
+
+h4. Description:
+This is the landing page of *Task Note* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Manage Task" Created By "Cashier"|guide:ListExhTaskForAdminActionService].
+* Select a Line-Item from grid view.
+* Click "Note" button from tool bar.
+* Show Landing Page of *Task Note*.
+
+h4. Pre-condition:
+* User must have "Show Task Note" privilege.
+
+h4. Process:
+* Show blank input form on top to [Create New "Task Note"|guide:CreateExhTaskNoteActionService].
+* [List "Task Note"|guide:ListExhTaskNoteActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Task Note* information in grid view.
+** Reset input form on top to create new *Task Note*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Task Note" in Edit Mode|guide:EditExhTaskNoteActionService].
+* [Delete "Task Note"|guide:DeleteExhTaskNoteActionService].
+
+!Exh/Task_Note_Show.png!

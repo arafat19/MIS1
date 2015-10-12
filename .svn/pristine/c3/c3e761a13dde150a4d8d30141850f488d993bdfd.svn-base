@@ -1,0 +1,45 @@
+package com.athena.mis.application.model
+
+import com.athena.mis.application.entity.AppUser
+
+import javax.servlet.http.HttpSession
+
+/*  Application User Model holds information about LoggedIn User
+Properties of AppUserModel will be populated in login success event
+and can be accessed through methods of SessionUtility  */
+
+class AppUserModel {
+    AppUser appUser = null
+    HttpSession currentSession      // HttpSession object
+    String ipAddress                // IP address of session
+    String clientBrowser            // client Browser name & version
+    String clientOs                 // client OS name
+    List<Object> lstRoles = []      // List of roles that belongs to loggedIn user
+    List<Long> lstRoleIds = []      // List of roles that belongs to loggedIn user
+    List<Object> lstProjects = []   // List of projects that is mapped with loggedIn user
+    List<Long> lstProjectIds = []   // List of projects that is mapped with loggedIn user
+    List<Object> lstPtProjects = []   // List of pt_projects that is mapped with loggedIn user
+    List<Long> lstPtProjectIds = []   // List of pt_projects that is mapped with loggedIn user
+    List<Object> lstGroups = []     // List of groups that is mapped with loggedIn user
+    List<Long> lstGroupIds = []     // List of groups that is mapped with loggedIn user
+    List<Object> lstInventories = []    // List of Inventories(site,store etc.) that is mapped with loggedIn user
+    List<Long> lstInventoryIds = []    // List of Inventories(site,store etc.) that is mapped with loggedIn user
+    List<Object> lstCustomers = []    // List of Customers that is mapped with loggedIn user
+    List<Long> lstCustomerIds = []    // List of Customers that is mapped with loggedIn user
+    List<Object> lstBankBranches = []    // List of BankBranches that is mapped with loggedIn user
+    List<Long> lstBankBranchIds = []    // List of BankBranch Ids that is mapped with loggedIn user
+    List<Object> lstExchangeHouses = []     // List of ExchangeHouses that is mapped with loggedIn user
+    List<Long> lstExchangeHouseIds = []     // List of ExchangeHouse Ids that is mapped with loggedIn user
+    long agentId = 0L            // exhAgent.id which comes from user mapping domain
+
+    public List<Long> getIds(List lstObjects) {
+        List<Long> lstIds = []
+        if ((lstObjects == null) || (lstObjects.size() <= 0))
+            return lstIds
+        for (int i = 0; i < lstObjects.size(); i++) {
+            lstIds << (Long) lstObjects[i].id
+        }
+        return lstIds
+    }
+
+}

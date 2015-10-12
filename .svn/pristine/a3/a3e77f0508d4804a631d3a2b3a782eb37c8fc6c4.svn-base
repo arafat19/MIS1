@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of *Customer* | |
+ *ActionService:* | ExhShowCustomerActionService | *Auditable:* | No
+ *Url:* | /exhCustomer/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+This is the landing page of *Customer* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* Show Landing Page of *Customer*.
+
+h4. Pre-condition:
+* User must have "show customer for cashier" privilege.
+
+h4. Process:
+* Show input form on top to [Create new "Customer"|guide:_ExhCreateCustomerForSarbActionService].
+* [Get empty List of "Customer" from server|guide:_ExhListCustomerForSarbActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Customer"|guide:_ExhCreateCustomerForSarbActionService].
+** Show empty list of all *Customer* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Customer" in Edit Mode|guide:_ExhSelectCustomerForSarbActionService].
+* [Search "Customer" From Grid View|guide:_ExhSearchCustomerForSarbActionService].
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* [Show Landing Page of "Customer History" Report|guide:ExhShowForCustomerRemittanceActionService].
+* [Show Landing Page of "Customer User Account"|guide:ExhShowForCustomerUserActionService].
+* [Show Landing Page of "Customer Note"|guide:ShowExhCustomerNoteActionService].
+* [Show Landing Page of "Customer Attachment"|guide:ShowExhCustomerContentActionService].
+
+!sarb/SARB_Customer_Show.png!

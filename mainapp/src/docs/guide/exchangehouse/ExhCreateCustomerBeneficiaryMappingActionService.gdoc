@@ -1,0 +1,54 @@
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create Link existing *Beneficiary* with *Customer* | |
+*ActionService:* | ExhCreateCustomerBeneficiaryMappingActionService | *Auditable:* | No
+*Url:* | /exhCustomerBeneficiary/create | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button.
+* [Show Landing page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* User must enter valid input.
+* Click "Link Beneficiary" check box.
+* Create Link existing *Beneficiary* with *Customer*.
+
+h4. Pre-condition:
+* User must have "Map an existing beneficiary with customer" privilege.
+* Create link Beneficiary list if any of searching criteria Matched:
+ ** Account No
+ ** Phone No
+ ** E-mail Address
+
+h4. Process:
+* Create a link with existing *Beneficiary* and *Customer*.
+
+h4. Post-condition:
+
+* *Success:*
+** Matching beneficiary listed into grid-view (should be in 1st row of grid).
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Beneficiary"|guide:ExhCreateBeneficiaryActionService].
+* [Update "Beneficiary"|guide:ExhUpdateBeneficiaryActionService].

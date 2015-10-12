@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Country* | |
+*ActionService:* | UpdateCountryActionService | *Auditable:* | No
+*Url:* | /country/update | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 9th June 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Country* link.
+* [Show Landing Page of Country|guide:ShowCountryActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Country in Edit Mode|guide:SelectCountryActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Country*.
+
+h4. Pre-condition:
+* User must have "Update country" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Name | Text Box | Alpha Numeric | Required
+Code | Text Box | Alpha Numeric | Required & Unique
+ISD Code | Text Box | Alpha Numeric | Required & Unique
+Nationality | Text Box | Alpha Numeric | Required & Unique
+[Currency|guide:GetDropDownCurrencyTagLibActionService] | Drop Down List | Numeric | Required
+Phone Pattern | Text Box | Alpha Numeric | Required
+{table}
+
+* *Country* "Code" must be in 2 characters.
+* Match expected version before updating a *Country*.
+
+h4. Process:
+* Update selected *Country*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Country* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

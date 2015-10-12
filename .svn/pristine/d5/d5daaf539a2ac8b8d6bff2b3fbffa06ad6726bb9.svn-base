@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Approve "Task" | |
+*Action:* | ApproveRmsTaskActionService | *Auditable:* | No
+*Url:* |/rmsTask/approve | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 21th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Approve" link.
+* [Show Landing Page for "Approve Task" |guide:_ShowForApproveTask].
+* Enter Valid input.
+* Click "Search" button.
+* [Search for "Approve Task"|guide:ListTaskForApproveTaskActionService].
+* Select line item from grid view.
+* Click "Approve" button from tool bar.
+
+h4. Pre-condition:
+* User must have "Approve Task" privilege.
+* *Task* amount must not exceed "Exchange House" balance limit.
+* Only decision taken *Task* can approve.
+
+h4. Process:
+* *Task* amount will be dedcuted from "Exchange House" balance.
+* *Task* Status Change to "Decision Approve".
+* Approved selected "Task".
+
+
+h4. Post-condition:
+* *Success:*
+** Show Success message.
+** Remove approved "Task" from grid view.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

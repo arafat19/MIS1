@@ -1,0 +1,76 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Company User* | |
+*ActionService:* | UpdateAppCompanyUserActionService | *Auditable:* | No
+*Url:* | /appUser/updateForCompanyUser | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 19th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click *Company User* link.
+* [Show Landing Page of Company User|guide:ShowAppCompanyUserActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Company User in Edit Mode|guide:SelectAppCompanyUserActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Company User*.
+
+h4. Pre-condition:
+* User must have "Update Company User" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Login Id | Text Box | Alpha Numeric | Required & Unique
+User Name | Text Box | Text | Required
+Password | Text Box | Alpha Numeric | Required
+Confirm Password | Text Box | Alpha Numeric | Required & must match with given Password
+Cell Number | Text Box | Numeric | Optional
+IP Address | Text Box | Numeric | Optional & must be valid
+[Populate Company List|application] | Drop Down List | Numeric | Required
+Enabled | Check Box | Boolean | Default Value False
+Account Locked | Check Box | Boolean | Default Value False
+Account Expired | Check Box | Boolean | Default Value False
+Signature Image | Image File Upload Box | Alpha Numeric | Optional
+{table}
+
+* "Login ID" must be any valid e-mail address.
+* "Password" must be combination of any 3 of sets given below:
+** Set of small letter (a, b, c,...z).
+** Set of capital letter (A,B,C,...Z).
+** Set of numeric (1,2,3,..9).
+** Set of special character (! @,#,$,%....).
+* *Company User* "Login Id" must be unique.
+* *Company User* "Cell Number" must be any valid Bangladeshi cell phone number.
+* Signature Image must be with extension of JPG,PNG,BMP,JPEG and GIF.
+* Signature Image size must have a boundary value.
+* Match expected version before updating a *Company User*.
+
+h4. Process:
+* Update selected *Company User*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Company User* show in grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,251 @@
+<script type="text/javascript">
+    var taskListModel = false;
+    $(document).ready(function () {
+        onLoadTaskStatus();
+    });
+    function onLoadTaskStatus() {
+        try {
+            initializeForm($('#showTaskForm'), onSubmitTaskStatus);
+            initFlexGrid();
+            $(document).attr('title', "SARB - Show Task Status");
+            loadNumberedMenu(MENU_ID_SARB, "#sarbTaskModel/showTaskStatus");
+
+        } catch (e) {
+            showError('Error occurred on page load');
+        }
+    }
+
+    function onSubmitTaskStatus() {
+        if (!checkDates($('#createdDateFrom'), $('#createdDateTo'))) return false;
+
+        var createdDateFrom = $('#createdDateFrom').val();
+        var createdDateTo = $('#createdDateTo').val();
+        var taskRefNo = $('#taskRefNo').val();
+
+        var paramForSearch = "?createdDateFrom=" + createdDateFrom + "&createdDateTo=" + createdDateTo + '&taskRefNo=' + taskRefNo;
+        var strUrl = "${createLink(controller: 'sarbTaskModel', action: 'listTaskStatus')}" + paramForSearch;
+        showLoadingSpinner(true);
+        $('#flex').flexOptions({url: strUrl, query: ''}).flexReload();
+        return false;
+    }
+
+
+    function initFlexGrid() {
+        $("#flex").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 50, sortable: false, hide: true, align: "left"},
+                        {display: "Ref No", name: "refNo", width: 100, sortable: false, align: "left"},
+                        {display: "Customer Name", name: "customerName", width: 130, sortable: false, align: "left"},
+                        {display: "Beneficiary Name", name: "beneficiaryName", width: 130, sortable: false, align: "left"},
+                        {display: "Payment Method", name: "paymentMethod", width: 110, sortable: false, align: "left"},
+                        {display: "Submitted File", name: "submittedFileCount", width: 120, sortable: false, align: "left"},
+                        {display: "Amount(BDT)", name: "amountInForeignCurrency", width: 100, sortable: false, align: "left"},
+                        {display: "Amount(" + $('#hidLocalCurrency').val() + ")", name: "amountInLocalCurrency", width: 100, sortable: false, align: "left"},
+                        {display: "Accepted", name: "isAcceptedBySarb", width: 100, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        {name: 'Details', bclass: 'report', onpress: detailsTaskStatus},
+                        {name: 'Get Response', bclass: 'down', onpress: retrieveResponseAgain},
+                        <app:ifAllUrl urls="/sarbTaskModel/moveForResend">
+                        {name: 'Move For Resend', bclass: 'send', onpress: moveForResend},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/sarbTaskModel/moveForCancel">
+                        {name: 'Move To Cancel', bclass: 'delete', onpress: moveToCancel},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/sarbTaskModel/moveForCancel">
+                        {name: 'Move To Replace', bclass: 'send', onpress: moveForReplace},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/sarbTaskModel/moveForCancel">
+                        {name: 'Refund', bclass: 'send', onpress: refundTask}
+                        </app:ifAllUrl>
+                    ],
+                    sortname: "refNo",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'Tasks Status',
+                    useRp: true,
+                    rp: 10,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 300,
+                    customPopulate: populateTaskGrid,
+                    afterAjax: function () {
+                        showLoadingSpinner(false);
+                    }
+                }
+        );
+    }
+
+    function populateTaskGrid(data) {
+        if (data.isError) {
+            taskListModel = getEmptyGridModel();
+        } else {
+            taskListModel = data.gridObj;
+        }
+        $('#flex').flexAddData(taskListModel);
+        return false;
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex').flexOptions({query: ''}).flexReload();
+    }
+
+    function detailsTaskStatus(com, grid) {
+
+        $("#lblSarbRefNo").text('SARB Reference:');
+        $("#lblResponseOfRef").text('');
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', true) == false) {
+            return;
+        }
+        var id = getSelectedIdFromGrid($('#flex'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'sarbTaskModel', action: 'showTaskStatusDetails')}?id=" + id,
+            success: executePostCondition,
+            complete: onCompleteAjaxCall,
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+    function executePostCondition(data) {
+        $("#lblSarbRefNo").text('SARB Reference: ' + data.sarbRefNo);
+        $("#lblResponseOfRef").text(data.response);
+    }
+
+    function retrieveResponseAgain(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', false) == false) {
+            return;
+        }
+        var ids = getSelectedIdFromGrid($('#flex'));
+        var selectedIds = $('.trSelected', grid);
+
+        if (!confirm("Are you sure you want to retrieve selected task's status from SARB again?")) {
+            return false;
+        }
+
+        $('span.send').hide();
+
+        showLoadingSpinner(true);
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            url: "${createLink(controller: 'sarbTaskModel',action: 'retrieveResponseAgain')}?id=" + ids,
+            success: function (data) {
+                if (data.isError == false) {
+                    showSuccess(data.message);
+                    executePostConditionForRetrieveStatus(data);
+                } else {
+                    showError(data.message);
+                }
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                $('span.send').show();
+                onCompleteAjaxCall();
+            }
+        });
+    }
+
+    function moveForResend() {
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', true) == false) {
+            return;
+        }
+        if (!confirm("Are you sure you want to move task for Re-Send ?")) {
+            return false;
+        }
+        var id = getSelectedIdFromGrid($('#flex'));
+
+        showLoadingSpinner(true);
+        try{
+        $.ajax({
+            url: "${createLink(controller: 'sarbTaskModel', action: 'moveForResend')}?id=" + id,
+            success: executePostConditionMoveForResend,
+            complete: onCompleteAjaxCall,
+            dataType: 'json',
+            type: 'post'
+        });
+        }catch (e) {
+            alert('e:' + e);
+        }
+        return false;
+    }
+    function executePostConditionMoveForResend(data) {
+        if (data.isError == true) {
+            showError(data.message);
+            return
+        }
+        var selectedRow = null;
+        $('.trSelected', $('#flex')).each(function (e) {
+            selectedRow = $(this).remove();
+        });
+        $('#flex').decreaseCount(1);
+        showSuccess(data.message);
+
+    }
+    function executePostConditionForRetrieveStatus(data) {
+        updateListModel(taskListModel, data.entity, 0);
+        $("#flex").flexAddData(taskListModel);
+    }
+
+    function moveToCancel() {
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', true) == false) {
+            return;
+        }
+        if (!confirm("Are you sure you want to move task for Cancel ?")) {
+            return false;
+        }
+        var id = getSelectedIdFromGrid($('#flex'));
+        showLoadingSpinner(true);
+        try{
+            $.ajax({
+                url: "${createLink(controller: 'sarbTaskModel', action: 'moveForCancel')}?id=" + id,
+                success: executePostConditionMoveForCancel,
+                complete: onCompleteAjaxCall,
+                dataType: 'json',
+                type: 'post'
+            });
+        }catch (e) {
+            alert('e:' + e);
+        }
+        return false;
+    }
+
+    function executePostConditionMoveForCancel(data) {
+        if (data.isError == true) {
+            showError(data.message);
+            return
+        }
+        var selectedRow = null;
+        $('.trSelected', $('#flex')).each(function (e) {
+            selectedRow = $(this).remove();
+        });
+        $('#flex').decreaseCount(1);
+        showSuccess(data.message);
+    }
+
+    function moveForReplace() {
+    }
+
+    function refundTask() {
+        if (executeCommonPreConditionForSelect($('#flex'), 'task', true) == false) {
+            return;
+        }
+        var taskId = getSelectedIdFromGrid($('#flex'));
+        //YES (Cancel) task will not be refunded.
+        var ids = $('.trSelected', $('#flex'));
+        var isAcceptedBySarb=$(ids[0]).find('td').eq(9).find('div').text();
+        if(isAcceptedBySarb== "YES (Cancel)"){
+            showError('This task can not be refunded.');
+            return;
+        }
+        showLoadingSpinner(true);
+        var loc = "${createLink(controller: 'sarbTaskModel', action: 'showDetailsForRefundTask')}?taskId=" + taskId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+</script>

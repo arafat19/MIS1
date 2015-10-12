@@ -1,0 +1,426 @@
+package com.athena.mis.document.actions.memberjoinrequest
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.AppMail
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.Role
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.application.entity.UserRole
+import com.athena.mis.application.service.AppMailService
+import com.athena.mis.application.service.AppUserService
+import com.athena.mis.application.service.RoleService
+import com.athena.mis.application.service.UserRoleService
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.application.utility.CompanyCacheUtility
+import com.athena.mis.application.utility.RoleTypeCacheUtility
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocAllCategoryUserMapping
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.entity.DocMemberJoinRequest
+import com.athena.mis.document.entity.DocSubCategory
+import com.athena.mis.document.service.DocAllCategoryUserMappingService
+import com.athena.mis.document.service.DocMemberJoinRequestService
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.document.utility.DocSubCategoryCacheUtility
+import com.athena.mis.utility.Tools
+import grails.plugin.mail.MailService
+import grails.plugins.springsecurity.SpringSecurityService
+import groovy.text.SimpleTemplateEngine
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+import java.util.concurrent.ExecutorService
+
+class ApprovedDocMemberJoinRequestActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String NOT_FOUND_MESSAGE = 'Requested member not found'
+    private static final String TIME_EXPIRED_MSG = 'Time to approve request has expired'
+    private static final String DEFAULT_ERROR_MESSAGE = 'Failed to load applied request page'
+    private static final String CATEGORY_NOT_FOUND_MESSAGE = ' not found'
+    private static final String CATEGORY_ALREADY_MAPPED = 'This user already mapped with this '
+    private static final String CATEGORY_NAME = 'Category'
+    private static final String SUB_CATEGORY_NAME = 'Sub Category'
+    private static final String APP_USER = 'appUser'
+    private static final String REQUESTED_MEMBER = 'requestedMember'
+    private static final String SUCCESS_MESSAGE = 'Requested has been successfully approved'
+    private static final String TRANSACTION_CODE = 'ApprovedDocMemberJoinRequestActionService'
+    private static final String MAIL_TEMPLATE_NOT_FOUND = 'Recipients template not found'
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String SUB_CATEGORY_LABEL = 'subCategoryLabel'
+    private static final String CATEGORY = 'category'
+    private static final String SUB_CATEGORY = 'subCategory'
+    private static final String TEMPORARY_PASSWORD = 'Temporary Password: '
+
+    DocMemberJoinRequestService docMemberJoinRequestService
+    DocAllCategoryUserMappingService docAllCategoryUserMappingService
+    AppUserService appUserService
+    UserRoleService userRoleService
+    RoleService roleService
+    SpringSecurityService springSecurityService
+    ExecutorService executorService
+    MailService mailService
+    AppMailService appMailService
+    LinkGenerator grailsLinkGenerator
+
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSubCategoryCacheUtility docSubCategoryCacheUtility
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+    @Autowired
+    CompanyCacheUtility companyCacheUtility
+
+    /**
+     * 1. Get parameters from UI
+     * 2. category label from system configuration
+     * 3. Check invalid input
+     * 4. check DocMemberJoinRequest existance
+     * 5. check category existance
+     * 6. check appuser and category mapping
+     * 7. check expire date
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all object necessary for execute
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = CATEGORY_NAME
+        String subCategoryLabel = SUB_CATEGORY_NAME
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            // check required parameter
+            long joinRequestId = Long.parseLong(params.id.toString())
+            if (!joinRequestId) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            DocMemberJoinRequest joinRequest = docMemberJoinRequestService.read(joinRequestId)
+            if (!joinRequest) {
+                result.put(Tools.MESSAGE, NOT_FOUND_MESSAGE)
+                return result
+            }
+            DocCategory category = (DocCategory) docCategoryCacheUtility.read(joinRequest.categoryId)
+            if (!category) {
+                result.put(Tools.MESSAGE, categoryLabel + CATEGORY_NOT_FOUND_MESSAGE)
+                return result
+            }
+
+            long subCategoryId = 0L
+            if (joinRequest.subCategoryId > 0) {
+                sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_SUB_CATEGORY_LABEL, companyId)
+                if (sysConfiguration) {
+                    subCategoryLabel = sysConfiguration.value
+                }
+                DocSubCategory subCategory = (DocSubCategory) docSubCategoryCacheUtility.read(joinRequest.subCategoryId)
+                if (!subCategory) {
+                    result.put(Tools.MESSAGE, subCategoryLabel + CATEGORY_NOT_FOUND_MESSAGE)
+                    return result
+                }
+
+                subCategoryId = joinRequest.categoryId
+                result.put(SUB_CATEGORY, subCategory)
+                result.put(SUB_CATEGORY_LABEL, subCategoryLabel)
+            }
+
+            AppUser appUser = appUserCacheUtility.readByLoginId(joinRequest.email, companyId)
+            if (appUser) {
+                DocAllCategoryUserMapping categoryUserMapping = docAllCategoryUserMappingService.findByCategoryIdAndUserIdAndSubCategoryId(joinRequest.categoryId, appUser.id, subCategoryId)
+                if (categoryUserMapping) {
+                    result.put(Tools.MESSAGE, CATEGORY_ALREADY_MAPPED + categoryLabel)
+                    return result
+                } else {
+                    result.put(APP_USER, appUser)
+                }
+            }
+            Date date = new Date()
+            if (date.compareTo(joinRequest.expiredOn) > 0) {
+                result.put(Tools.MESSAGE, TIME_EXPIRED_MSG)
+                return result
+            }
+
+            result.put(REQUESTED_MEMBER, joinRequest)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(CATEGORY, category)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    @Override
+    Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /*
+    * @param parameters - N/A
+    * @param obj - A map from precondition
+    *   1.create appuser if it does not exists and mapping with category
+    *   2.check mail template for send success mail to user
+    *   3.send mail to user with success message for be a member in this category
+    * @return - A map containing all objects for buildSuccessResultForUI
+    * */
+
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            DocMemberJoinRequest joinRequest = (DocMemberJoinRequest) preResult.get(REQUESTED_MEMBER)
+            String password = generatePassword()
+            AppUser appUser = (AppUser) preResult.get(APP_USER)
+            if (!appUser) {
+                appUser = createUserAndMapping(joinRequest, password)
+                password = TEMPORARY_PASSWORD + password
+            } else {
+                createMapping(appUser, joinRequest)
+                password = Tools.EMPTY_SPACE
+            }
+
+            AppMail appMail = appMailService.findByTransactionCodeAndCompanyIdAndIsActive(TRANSACTION_CODE, joinRequest.companyId, true)
+            if (!appMail) {
+                result.put(Tools.MESSAGE, MAIL_TEMPLATE_NOT_FOUND)
+                return result
+            }
+            String categoryLabel = preResult.get(CATEGORY_LABEL)
+            String subCategoryLabel = preResult.get(SUB_CATEGORY_LABEL)
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            DocSubCategory subCategory = (DocSubCategory) preResult.get(SUB_CATEGORY)
+            String loginUrl = grailsLinkGenerator.link(controller: 'login', action: 'auth', absolute: true)
+
+            Map mailParams
+
+            if(subCategory){
+                String subCategoryParam = """<p><strong>${subCategoryLabel} Details:</strong> <br/>Name: ${subCategory.name}, <br/>Description :${subCategory?subCategory.description:Tools.NOT_APPLICABLE} <br/></p>"""
+                mailParams = [categoryLabel:categoryLabel, categoryName: category.name,categoryDescription: category.description?category.description:Tools.NOT_APPLICABLE,
+                              subCategoryParam:subCategoryParam,
+                              loginId:joinRequest.email, loginUrl: loginUrl, password: password]
+            } else {
+                mailParams = [categoryLabel:categoryLabel, categoryName: category.name,categoryDescription: category.description?category.description:Tools.NOT_APPLICABLE,
+                              subCategoryParam:'',
+                              loginId:joinRequest.email, loginUrl: loginUrl, password: password]
+            }
+
+            buildMailBody(appMail, mailParams)
+            executeMail(appMail, joinRequest.email)
+
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            throw new RuntimeException(DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+
+    }
+
+    /*
+    * Build Success Results for UI
+    * @params obj - Map return from execute method
+    * @return a map of containing all object necessary for show page
+    * */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.MESSAGE, SUCCESS_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+    * Build Failure result for UI
+    * @params obj - A map from execute method
+    * @return a Map containing IsError and default error message/relevant error message to display
+    * */
+
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            Map preResult = (Map) obj
+            if (obj) {
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /*
+    * Create User and mapping with category
+    * @param joinRequest - DocMemberJoinRequest object
+    * */
+
+    public AppUser createUserAndMapping(DocMemberJoinRequest joinRequest, String password) {
+        AppUser appUser = buildAppUser(joinRequest, password)
+        AppUser newAppUser = appUserService.create(appUser)
+        UserRole userRole = buildUserRole(newAppUser)
+        userRoleService.create(userRole)
+        DocAllCategoryUserMapping docAllCategoryUserMapping = buildDocAllCategoryUserMapping(newAppUser, joinRequest)
+        docAllCategoryUserMappingService.create(docAllCategoryUserMapping)
+        DocMemberJoinRequest docMemberJoinRequest = buildJoinedRequest(joinRequest)
+        docMemberJoinRequestService.update(docMemberJoinRequest)
+        appUserCacheUtility.add(newAppUser, appUserCacheUtility.SORT_ON_NAME, appUserCacheUtility.SORT_ORDER_ASCENDING)
+        return appUser
+    }
+
+    /*
+    * Create mapping with category
+    * @param appUser - AppUser object
+    * @param joinRequest - DocMemberJoinRequest object
+    * */
+
+    public void createMapping(AppUser appUser, DocMemberJoinRequest joinRequest) {
+        UserRole userRole = buildUserRole(appUser)
+        UserRole existUserRole = userRoleService.read(userRole.roleId, userRole.userId)
+        if (!existUserRole) {
+            userRoleService.create(userRole)
+        }
+        DocAllCategoryUserMapping docAllCategoryUserMapping = buildDocAllCategoryUserMapping(appUser, joinRequest)
+        docAllCategoryUserMappingService.create(docAllCategoryUserMapping)
+        DocMemberJoinRequest docMemberJoinRequest = buildJoinedRequest(joinRequest)
+        docMemberJoinRequestService.update(docMemberJoinRequest)
+    }
+    /*
+    * Build AppUser Object
+    * @param joinRequest
+    * */
+
+    private AppUser buildAppUser(DocMemberJoinRequest joinRequest, String password) {
+        AppUser newAppUser = new AppUser()
+        newAppUser.accountExpired = false
+        newAppUser.accountLocked = false
+        newAppUser.companyId = joinRequest.companyId
+        newAppUser.enabled = true
+        newAppUser.loginId = joinRequest.email
+        newAppUser.nextExpireDate = new Date()
+        newAppUser.password = springSecurityService.encodePassword(password)
+        newAppUser.passwordExpired = false
+        newAppUser.hasSignature = false
+        newAppUser.username = joinRequest.userName
+        newAppUser.createdBy = docSessionUtil.appSessionUtil.getAppUser().id
+        newAppUser.createdOn = new Date()
+
+        return newAppUser
+    }
+
+    public DocAllCategoryUserMapping buildDocAllCategoryUserMapping(AppUser appUser, DocMemberJoinRequest joinRequest) {
+        DocAllCategoryUserMapping newDocAllCategoryUserMapping = new DocAllCategoryUserMapping()
+        newDocAllCategoryUserMapping.userId = appUser.id
+        newDocAllCategoryUserMapping.categoryId = joinRequest.categoryId
+        if (joinRequest.subCategoryId > 0) {
+            newDocAllCategoryUserMapping.subCategoryId = joinRequest.subCategoryId
+        } else {
+            newDocAllCategoryUserMapping.subCategoryId
+        }
+
+        newDocAllCategoryUserMapping.isCategoryManager = false
+        newDocAllCategoryUserMapping.isSubCategoryManager = false
+        newDocAllCategoryUserMapping.companyId = appUser.companyId
+        newDocAllCategoryUserMapping.createdOn = new Date()
+        newDocAllCategoryUserMapping.createdBy = docSessionUtil.appSessionUtil.getAppUser().id
+        newDocAllCategoryUserMapping.updatedBy = 0
+
+        return newDocAllCategoryUserMapping
+    }
+
+    private UserRole buildUserRole(AppUser appUser) {
+        Role role = roleService.findByCompanyIdAndRoleTypeId(appUser.companyId, RoleTypeCacheUtility.ROLE_TYPE_DOCUMENT_MEMBER)
+        UserRole newUserRole = new UserRole(user: appUser, role: role)
+        return newUserRole
+    }
+
+    private DocMemberJoinRequest buildJoinedRequest(DocMemberJoinRequest oldDocMemberJoinRequest) {
+        oldDocMemberJoinRequest.approvedBy = docSessionUtil.appSessionUtil.getAppUser().id
+        oldDocMemberJoinRequest.approvedOn = new Date()
+        return oldDocMemberJoinRequest
+    }
+
+    private void buildMailBody(AppMail appMail, Map parameters) {
+        SimpleTemplateEngine engine = new SimpleTemplateEngine()
+        Writable templateSubject = engine.createTemplate(appMail.subject).make(parameters)
+        Writable templateBody = engine.createTemplate(appMail.body).make(parameters)
+        appMail.subject = templateSubject.toString()
+        appMail.body = templateBody.toString()
+    }
+
+    private void executeMail(AppMail appMail, String userMailAddress) {
+        executorService.submit({
+            println "Sending mail for transaction ${appMail.transactionCode} ..."
+
+            mailService.sendMail {
+                to userMailAddress
+                subject appMail.subject
+                html appMail.body
+            }
+            println "Mail sent successfully for ${appMail.transactionCode}"
+        })
+    }
+
+    private static final String CHAR_ALPHA = "abcdefghijklmnpqrstuvwxyz"
+    private static final String CHAR_NUMERIC = "123456789"
+    private static final String CHAR_AT = "@"
+
+    /**
+     * Generate password with alphanumeric & special character combination
+     * @return -generated password
+     */
+    private String generatePassword() {
+        Random random = new Random()
+        char[] passAlpha = new char[4]
+        for (int i = 0; i < 4; i++) {
+            passAlpha[i] = CHAR_ALPHA.charAt(random.nextInt(CHAR_ALPHA.length()))
+        }
+        char[] passNumeric = new char[3]
+        for (int i = 0; i < 3; i++) {
+            passNumeric[i] = CHAR_NUMERIC.charAt(random.nextInt(CHAR_NUMERIC.length()))
+        }
+        return new String(passAlpha) + CHAR_AT + new String(passNumeric)
+    }
+
+}

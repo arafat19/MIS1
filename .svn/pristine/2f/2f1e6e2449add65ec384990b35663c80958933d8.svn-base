@@ -1,0 +1,27 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+
+class ShowSarbTaskDetailsForRefundTaskActionService extends BaseService implements ActionIntf {
+
+    public Object executePreCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    public Object execute(Object parameters, Object obj) {
+        return null
+    }
+
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    public Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+}

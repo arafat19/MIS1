@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate Budget Requirement | |
+*ActionService:* | GenerateBudgetRequirementActionService | *Auditable:* | No
+*Url:* | /budgBudgetDetails/generateBudgetRequirement | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 7th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* [Show Landing Page of "Procurement Budget"|guide:ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Schema" button from tool bar.
+* [Show Landing Page of "Budget Schema"|guide:ShowBudgSchemaActionService].
+* Select a Line-Item from grid view.
+* Click "Generate Budget Requirement" button from tool bar.
+* System will show confirmation message of "Generate Budget Requirement".
+* Actor clicks "Ok" button.
+* System will show confirmation message box to navigate "Budget Details" page.
+* Actor clicks "Ok" button.
+* Generate Budget Requirement.
+
+h4. Pre-condition:
+* User must have "Generate budget requirements according to schema" privilege.
+
+h4. Process:
+* Generate Budget Requirement.
+
+h4. Post-condition:
+
+* *Success:*
+** Generate Budget Requirement for the specific *Budget*.
+** Show ["Budget Details"|guide:ShowBudgetDetailsActionService] landing page with genereated budget requirement.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

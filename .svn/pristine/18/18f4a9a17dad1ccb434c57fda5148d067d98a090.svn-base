@@ -1,0 +1,43 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show ARMS Plugin | |
+*Action:* | N/A | *Auditable:* | No
+*Url:* | /arms/renderArmsMenu | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 19th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Configuration Manager, ARMS Remittance User, ARMS Branch User, ARMS ExchangeHouse User, ARMS Other Bank User.
+
+h4. Description:
+This is the landing page of ARMS Plugin.
+
+h4. Flow:
+* Click "ARMS" option from top menu bar.
+* Show ARMS Plugin.
+
+h4. Pre-condition:
+* MIS Project must contain "ARMS Plugin".
+* User must have "ARMS Module Menu" privilege to access ARMS option from menu bar.
+
+h4. Process:
+* Show "ARMS Plugin" Widget based on user privilege.
+* ARMS Left menu must be generate based on user privilege.
+
+h4. Post-condition:
+
+* *Success:*
+** Show ARMS widget in landing page.
+** Show ARMS left menu based on log in user privilege.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

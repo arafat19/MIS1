@@ -1,0 +1,64 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download *Chart Of Account* List in PDF Format | |
+*ActionService:* | DownloadChartOfAccountActionService | *Auditable:* | No
+*Url:* | /accReport/downloadChartOfAccount | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Chart Of Account* link.
+* [Show Landing Page of Chart Of Account|guide:ShowAccChartOfAccountActionService].
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download *Chart Of Account* List in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download Chart Of Accounts" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Account Type|guide:GetDropDownAccTypeTagLibActionService] | Drop Down List | Numeric | Required
+ [Populate Tier1 List|guide:GetTier1ListByAccTypeIdActionService] | Drop Down List | Numeric | Required
+ [Populate Tier2 List|guide:GetTier2ListByAccTier1IdActionService] | Drop Down List | Numeric | Optional
+ [Populate Tier3 List|guide:GetTier3ListByAccTier2IdActionService] | Drop Down List | Numeric | Optional
+ [Group|guide:GetDropDownAccGroupTagLibActionService] | Drop Down List | Numeric | Optional
+ Is Active | Check Box | Boolean | Default Value False
+ [Populate Source Type List|guide:PopulateSourceTypeList] | Drop Down List | Numeric | Required
+ [Populate Source Category List|guide:GetSourceCategoryByAccSourceIdActionService] | Drop Down List | Numeric | Optional
+ [Custom Group|guide:GetDropDownAccCustomGroupTagLibActionService] | Drop Down List | Numeric | Optional
+ Head Name | Text Area | Alpha Numeric | Required
+ [Code|guide:SystemGeneratedCOACode] |  | Auto Generated | Alpha Numeric
+{table}
+
+* Create *Chart of Account* to download list.
+* Downloded PDF report shows all hierarchy details of all *Tier* information.
+
+h4. Process:
+* To get *Chart Of Account* List in PDF Format "Click Here":ChartOfAccount.pdf
+* Download the PDF format of *Chart Of Account* list.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF format Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,47 @@
+
+ {table}
+ Access Type: | Restricted  | Priority: | High
+ *Name:* | Open Approved "Inventory Production" to Delete | |
+ *ActionService:* | SelectForInvProductionWithConsumptionActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransaction/selectInvProductionWithConsumption | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director,Production Operator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "Approved"(Production) link.
+* [Show Landing Page of Approved "Inventory Production"|guide:ShowForApprovedProductionWithConsumptionActionService].
+* Show Approved "Inventory Production" list in grid view.
+* Select a Line-Item from grid view.
+* Click "Reverse" button.
+* Open Approved "Inventory Production" to Delete.
+
+
+h4. Pre-condition:
+* User must have "Reverse Adjustment for Inventory.Production With Consumption" privilege.
+
+h4. Process:
+Get approved "Inventory Production" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected approved "Inventory Production" in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Delete Approved "Inventory Production"|guide:ReverseAdjustmentForInvProdWithConsumpActionService].

@@ -1,0 +1,81 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Generate "Chalan" Report in HTML Format | |
+ *ActionService:* | SearchForInvoiceActionService | *Auditable:* | No
+ *Url:* | /invReport/searchInvoice | | 
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Chalan" link.
+* [Show Landing Page of "Chalan" Report|guide:ShowForInvoiceActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Chalan" Report in HTMl Format.
+
+h4. Pre-condition:
+* User must have "Search Invoice of Inventory-In" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Trace No | Text Box | Numeric | Required
+{table}
+
+h4. Process:
+* Get "Chalan" Report from server.
+* Following columns should show in grid view:
+** Inventory Chalan Report
+*** Trace No(Sub Rows)
+** Inventory Details
+*** Inventory Type
+*** Inventory
+*** Transaction Type
+*** Transaction Date
+*** Transaction Entity
+*** Entity Name
+** Item Details
+*** Item Name
+*** Quantity
+*** Rate
+*** Total
+** Approval Details
+*** Approved By
+*** Approved On
+** Adjustment Details
+*** Derived From
+*** Current Chalan
+** Others
+*** Vehicle
+*** Vehicle No
+*** Reference Chalan
+*** Stack Measurement
+*** Budget Item
+*** Comments
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Chalan" Report landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Landing Page of "Chalan" Report|guide:ShowForInvoiceActionService].
+
+!Inv/Chalan_Report_Generate.png!

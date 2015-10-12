@@ -1,0 +1,48 @@
+
+{table}
+ Use Case ID: | MIS-Budget-45 | Priority: | High
+ *Name* | List Budget Wise PO Summary Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budgetqReport/listBudgetWisePOSummary | *Action Class:* | ListForBudgetWisePOSummaryActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th January 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+User will see all Budget Line Item within the system under following columns:
+# Serial
+# ID (Default: Invisible)
+# Line Item
+# Budget Details
+# Total Budget Price {Sum (Budget Items * Rate)}
+# Net PO Price (Total PO Cost + Transport Cost - Discount - Vat/Tax)
+# Remaining
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Get list of Budget Wise PO Summary from server (default: 15 at Max).
+
+h4. Post-condition:
+
+# *Success:*
+## Budget Wise PO Summary will be listed in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+# [Refresh|common Usecases]
+# [Previous Page|common Usecases]
+# [Forward Page|common Usecases]
+# [First Page|common Usecases]
+# [Last Page|common Usecases]

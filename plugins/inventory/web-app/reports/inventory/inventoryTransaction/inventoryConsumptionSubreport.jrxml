@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="inventoryConsumptionSubreport" language="groovy" pageWidth="530" pageHeight="800" whenNoDataType="AllSectionsNoDetail" columnWidth="500" leftMargin="30" rightMargin="0" topMargin="0" bottomMargin="10" uuid="46b134ac-813c-4d6c-a19f-ebb46d9f2718">
+	<property name="ireport.zoom" value="1.1000000000000005"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="inventoryIds" class="java.lang.Long"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="transactionTypeConsumption" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT iit.id, se.key AS inventory_type, inventory.name AS inventory_name,
+                  iit.item_count, COALESCE(COUNT(iitd.id), 0) AS total_pending
+           FROM inv_inventory_transaction iit
+                  LEFT JOIN inv_inventory inventory ON inventory.id = iit.inventory_id
+                  LEFT JOIN inv_inventory_transaction_details iitd ON iitd.inventory_transaction_id = iit.id
+                  LEFT JOIN system_entity se ON se.id = inventory.type_id
+           WHERE ($X{IN,iit.inventory_id, inventoryIds}) AND
+                 iit.transaction_type_id = $P{transactionTypeConsumption} AND
+                 iit.budget_id > 0 AND
+                 iitd.approved_by = 0
+           GROUP BY  iit.id,inventory_type, inventory_name, iit.item_count]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="inventory_type" class="java.lang.String"/>
+	<field name="inventory_name" class="java.lang.String"/>
+	<field name="item_count" class="java.lang.Integer"/>
+	<field name="total_pending" class="java.lang.Long"/>
+	<variable name="subTotal" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<title>
+		<band height="38">
+			<staticText>
+				<reportElement uuid="6f4bf033-c88d-4a5b-b11a-82733fe7e382" mode="Opaque" x="0" y="2" width="500" height="18" backcolor="#CCCCCC"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Inventory Consumption]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a1f73cb8-12bf-4cc8-90cc-914425d3ab27" x="289" y="20" width="100" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item Count]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ca20441a-37b2-4427-a707-b67fd5cc7916" x="0" y="20" width="99" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Transaction ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="86bf0258-1f29-4b1f-9211-7264dff79b2b" x="389" y="20" width="111" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Unapproved Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29965283-2f43-4d27-8eb5-5e39cce2b90d" x="99" y="20" width="190" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Inventory Name]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<textField>
+				<reportElement uuid="b30d007f-d613-4440-a9fa-d369144278e6" x="389" y="0" width="111" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total_pending}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3b9e58c9-d80f-4f08-b363-68839e4f59e8" x="289" y="0" width="100" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_count}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fd289982-e905-40e8-9e4c-73b90f0be49f" x="99" y="0" width="190" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inventory_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8534d988-b1be-4c94-b486-a27ae16c6498" x="0" y="0" width="99" height="18"/>
+				<box leftPadding="1">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inventory_type}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

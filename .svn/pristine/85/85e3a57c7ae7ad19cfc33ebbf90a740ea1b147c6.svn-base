@@ -1,0 +1,145 @@
+<g:render template="/budget/report/projectStatus/script"/>
+
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Search Project Status
+        </div>
+    </div>
+
+    <form id="searchForm" name="searchForm" class="form-horizontal form-widgets" role="form">
+        <div class="panel-body">
+            <input type="hidden" name="hideProjectId" id="hideProjectId"/>
+
+            <div class="form-group">
+
+                <label class="col-md-1 control-label label-required" for="projectId">Project:</label>
+
+                <div class="col-md-5">
+                    <app:dropDownProject
+                            name="projectId"
+                            required="true"
+                            validationMessage="Select a project"
+                            dataModelName="dropDownProject">
+                    </app:dropDownProject>
+                </div>
+
+                <div class="col-md-2 pull-left">
+                    <span class="k-invalid-msg" data-for="projectId"></span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button id="showProjectStatus" name="showProjectStatus" type="submit" data-role="button"
+                    class="k-button k-button-icontext"
+                    role="button" tabindex="2"
+                    aria-disabled="false"><span class="k-icon k-i-search"></span>Search
+            </button>
+
+            <app:ifAllUrl urls="/budgReport/downloadProjectStatus">
+                <span class="download_icon_set">
+                    <ul>
+                        <li>Save as :</li>
+                        <li><a href="javascript:void(0)" id="printProjectStatus" class="pdf_icon"></a></li>
+                    </ul>
+                </span>
+            </app:ifAllUrl>
+        </div>
+    </form>
+</div>
+
+<div id="divProjectStatus" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td colspan="2" class="success">PROJECT</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Name</td>
+                        <td><span id='lblProjectName'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Code</td>
+                        <td><span id='lblProjectCode'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="success">Status Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active" colspan="2">Current Status of Project</td>
+                    </tr>
+                    <tr>
+                        <td>Project Completed</td>
+                        <td><span id='lblProjectCompleted'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active" colspan="2">Consumption</td>
+                    </tr>
+                    <tr>
+                        <td>Approved</td>
+                        <td><span id='lblInvTotalApprovedConsumption'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active" colspan="2">Inventory</td>
+                    </tr>
+                    <tr>
+                        <td>Material</td>
+                        <td><span id='lblInvTotalMaterial'></span></td>
+                    </tr>
+                    <tr>
+                        <td>Fixed Asset</td>
+                        <td><span id='lblInvTotalFixedAsset'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active" colspan="2">Quantity Survey</td>
+                    </tr>
+                    <tr>
+                        <td>Receivable(Internal)</td>
+                        <td><span id='lblQsTotalReceivableInternal'></span></td>
+                    </tr>
+                    <tr>
+                        <td>Approved By Government</td>
+                        <td><span id='lblQsTotalReceivableApprovedByGov'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="unPostedVoucher" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1a2c75df-ff9b-4899-b7f4-91b1ff8d5316">
+	<property name="ireport.zoom" value="2.139837529582505"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT voucher.trace_no, to_char(voucher.amount,'FM৳ 99,99,999,99,99,990.0099') AS amount,
+to_char(voucher.voucher_date, 'dd-Mon-yyyy') AS voucher_date,
+app_user.username, se.key, COUNT(voucher.id) AS voucher_count
+FROM acc_voucher voucher
+LEFT JOIN app_user ON voucher.created_by = app_user.id
+LEFT JOIN system_entity se ON se.id = voucher.voucher_type_id
+WHERE voucher.is_voucher_posted = 'false'
+AND voucher.company_id = 1
+GROUP BY voucher.trace_no, voucher.amount, voucher.voucher_date, app_user.username, se.key, voucher.voucher_count
+ORDER BY se.key, voucher_date;]]>
+	</queryString>
+	<field name="trace_no" class="java.lang.String"/>
+	<field name="amount" class="java.lang.String"/>
+	<field name="voucher_date" class="java.lang.String"/>
+	<field name="username" class="java.lang.String"/>
+	<field name="key" class="java.lang.String"/>
+	<field name="voucher_count" class="java.lang.Long"/>
+	<variable name="voucher_count" class="java.lang.Integer" resetType="Group" resetGroup="AccVoucher" calculation="Sum">
+		<variableExpression><![CDATA[$F{voucher_count}]]></variableExpression>
+	</variable>
+	<group name="AccVoucher">
+		<groupExpression><![CDATA[$F{key}]]></groupExpression>
+		<groupHeader>
+			<band height="48">
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="5e847582-209c-468b-bfed-02b3502627c6" mode="Opaque" x="0" y="8" width="378" height="20" backcolor="#CCCCCC"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+					<textElement>
+						<font size="11" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{key}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="44a453db-147c-4357-8950-2c799529d19f" x="241" y="28" width="167" height="20"/>
+					<box rightPadding="5">
+						<pen lineColor="#CCCCCC"/>
+						<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Amount]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5550bd10-0435-4958-9a4c-b06dbcc9a48e" x="134" y="28" width="107" height="20"/>
+					<box leftPadding="5">
+						<pen lineColor="#CCCCCC"/>
+						<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					</box>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Voucher Date]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="44a453db-147c-4357-8950-2c799529d19f" x="20" y="28" width="114" height="20"/>
+					<box leftPadding="5">
+						<pen lineColor="#CCCCCC"/>
+						<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					</box>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Trace No]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5550bd10-0435-4958-9a4c-b06dbcc9a48e" x="408" y="28" width="147" height="20"/>
+					<box leftPadding="5">
+						<pen lineColor="#CCCCCC"/>
+						<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+						<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					</box>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<text><![CDATA[Created By]]></text>
+				</staticText>
+				<textField evaluationTime="Group" evaluationGroup="AccVoucher" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement uuid="8818bd7e-9206-495d-a641-3358f9608fa8" mode="Opaque" x="378" y="8" width="177" height="20" backcolor="#CCCCCC"/>
+					<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="3"/>
+					<textElement textAlignment="Right">
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Total : " + $V{voucher_count}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<pageHeader>
+		<band height="36">
+			<image>
+				<reportElement uuid="bef5d1e0-96af-4c90-b3f9-8252554138ec" x="322" y="0" width="233" height="30"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="6883747e-e21a-4cd3-94a1-63a54cc17dd5" x="0" y="0" width="174" height="20"/>
+				<box leftPadding="2">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[All Unposted Vouchers]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement uuid="b6356d2d-a5b6-4119-99fd-6e70180f044d" x="20" y="0" width="114" height="20"/>
+				<box leftPadding="5">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{trace_no}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="20efdf85-8c86-4d57-979a-eb5e99db9675" x="241" y="0" width="167" height="20"/>
+				<box rightPadding="5">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="e054a3a3-6e5d-49c0-b6ed-34d8b8405b3f" x="134" y="0" width="107" height="20"/>
+				<box leftPadding="5">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{voucher_date}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="dee9dcad-b854-4c12-a1cf-87131b9d93ce" x="408" y="0" width="147" height="20"/>
+				<box leftPadding="5">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{username}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="15" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a0b3ac35-56f4-4a04-bd8b-439afe850859" x="0" y="0" width="555" height="15"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement uuid="7a32ad0b-7ffe-4fee-b2b3-a5a9cdc6e19b" x="0" y="0" width="45" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="c7276151-8a12-41d3-9d77-38fe24228c76" x="45" y="0" width="104" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5b600708-a9aa-4001-96c2-297495fa9d6e" x="241" y="0" width="38" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Page No]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4ad29b6c-e662-4d41-9510-5e9448b209d6" x="279" y="0" width="58" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " +$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

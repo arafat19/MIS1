@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sourceWiseBalanceByCoaId" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" uuid="2e6931d1-fda3-4ace-a4ac-20b42ddeb5de">
+	<property name="ireport.zoom" value="1.0000000000000007"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sourceTypeId" class="java.lang.Long"/>
+	<parameter name="sourceTypeName" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<parameter name="sourceTypeIdCustomer" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sourceTypeIdEmployee" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sourceTypeIdSubAccount" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sourceTypeIdSupplier" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="sourceTypeIdItem" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sourceTypeIdLC" class="java.lang.Long"/>
+	<parameter name="sourceTypeIdIPC" class="java.lang.Long"/>
+	<parameter name="sourceTypeIdLeaseAccount" class="java.lang.Long"/>
+	<parameter name="coaId" class="java.lang.Long"/>
+	<parameter name="coaCode" class="java.lang.String"/>
+	<parameter name="projectIds" class="java.util.Collection"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="sourceCategoryIds" class="java.util.Collection"/>
+	<parameter name="dateRange" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT source.source_id,
+            CASE
+                WHEN source.source_type_id = $P{sourceTypeIdCustomer}
+                THEN customer.full_name
+                WHEN source.source_type_id = $P{sourceTypeIdEmployee}
+                THEN employee.full_name
+                WHEN source.source_type_id = $P{sourceTypeIdSubAccount}
+                THEN acc_sub_account.description
+                WHEN source.source_type_id = $P{sourceTypeIdSupplier}
+                THEN supplier.name
+	      WHEN source.source_type_id = $P{sourceTypeIdItem}
+                THEN item.name
+                WHEN source.source_type_id = $P{sourceTypeIdLC}
+                THEN lc.lc_no
+                WHEN source.source_type_id = $P{sourceTypeIdIPC}
+                THEN ipc.ipc_no
+                WHEN source.source_type_id = $P{sourceTypeIdLeaseAccount}
+                THEN ala.institution
+            END AS source_name,
+	  coalesce(previous_balance.balance,0) AS prev_balance,
+	  coalesce(avd.amount_dr,0) AS dr_balance,
+	  coalesce(avd.amount_cr,0) AS cr_balance,
+
+	CASE
+                WHEN (coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0)) > 0
+                THEN ABS(coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0))
+                ELSE 0.00
+                END AS total_dr_balance,
+                CASE
+                WHEN (coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0)) < 0
+                THEN ABS(coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0))
+                ELSE 0.00
+                END AS total_cr_balance,
+
+	  to_char(coalesce(previous_balance.balance,0),$P{dbCurrencyFormat}) AS prev_balance_str,
+            to_char(coalesce(avd.amount_dr,0),$P{dbCurrencyFormat}) AS dr_balance_str,
+            to_char(coalesce(avd.amount_cr,0),$P{dbCurrencyFormat}) AS cr_balance_str,
+
+            CASE
+                WHEN (coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0)) > 0
+                THEN to_char(ABS(coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0)),$P{dbCurrencyFormat})
+                ELSE '0.00'
+                END AS total_dr_balance_str,
+                CASE
+                WHEN (coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0)) < 0
+                THEN to_char(ABS(coalesce((avd.amount_dr-avd.amount_cr),0)+coalesce(previous_balance.balance,0)),$P{dbCurrencyFormat})
+                ELSE '0.00'
+                END AS total_cr_balance_str
+                   FROM (
+                SELECT DISTINCT source_type_id, source_id
+                FROM acc_voucher_details avd
+                LEFT JOIN acc_voucher av ON av.id = avd.voucher_id
+                WHERE avd.source_type_id = $P{sourceTypeId}
+                AND ($X{IN,avd.source_category_id,sourceCategoryIds})
+                AND av.voucher_date <= $P{toDate}
+                AND av.company_id = $P{companyId}
+                AND av.posted_by > $P{postedByParam}
+                AND ($X{IN,av.project_id,projectIds})
+	      AND avd.coa_id = $P{coaId}
+            ) AS source
+
+		FULL OUTER JOIN (
+                SELECT SUM(amount_dr)amount_dr, SUM(amount_cr) amount_cr, source_id
+                FROM acc_voucher_details avd
+                LEFT JOIN acc_voucher av ON av.id = avd.voucher_id
+                WHERE avd.source_type_id = $P{sourceTypeId}
+                AND ($X{IN,avd.source_category_id,sourceCategoryIds})
+                AND av.voucher_date BETWEEN $P{fromDate} AND $P{toDate}
+                AND av.company_id = $P{companyId}
+                AND av.posted_by > $P{postedByParam}
+                AND ($X{IN,av.project_id,projectIds})
+	      AND avd.coa_id = $P{coaId}
+                GROUP BY source_id
+            ) AS avd
+            ON avd.source_id = source.source_id
+
+            FULL OUTER JOIN (
+                SELECT  avd.source_id, SUM(avd.amount_dr-avd.amount_cr) AS balance
+                FROM acc_voucher_details avd
+                LEFT JOIN acc_voucher av ON av.id = avd.voucher_id
+                WHERE avd.source_type_id = $P{sourceTypeId}
+                AND ($X{IN,avd.source_category_id,sourceCategoryIds})
+                AND av.voucher_date < $P{fromDate}
+                AND av.company_id = $P{companyId}
+                AND av.posted_by > $P{postedByParam}
+                AND ($X{IN,av.project_id,projectIds})
+	       AND avd.coa_id = $P{coaId}
+                GROUP BY avd.source_id order by source_id
+            ) AS previous_balance
+            ON previous_balance.source_id = source.source_id
+
+                    LEFT JOIN supplier ON source.source_id = supplier.id
+                    LEFT JOIN customer ON source.source_id = customer.id
+                    LEFT JOIN employee ON source.source_id = employee.id
+                    LEFT JOIN acc_sub_account ON source.source_id = acc_sub_account.id
+	          LEFT JOIN item ON source.source_id = item.id
+                    LEFT JOIN acc_lc lc ON source.source_id = lc.id
+   		LEFT JOIN acc_ipc ipc ON source.source_id = ipc.id
+    		LEFT JOIN acc_lease_account ala ON source.source_id = ala.id
+
+                GROUP BY source.source_id, source.source_type_id, avd.amount_dr, avd.amount_cr, acc_sub_account.description,
+            customer.full_name, employee.full_name, supplier.name, item.name, lc.lc_no, ipc.ipc_no, ala.institution, previous_balance.balance
+ORDER BY source_name ASC]]>
+	</queryString>
+	<field name="source_id" class="java.lang.Long"/>
+	<field name="source_name" class="java.lang.String"/>
+	<field name="prev_balance" class="java.math.BigDecimal"/>
+	<field name="dr_balance" class="java.math.BigDecimal"/>
+	<field name="cr_balance" class="java.math.BigDecimal"/>
+	<field name="total_dr_balance" class="java.math.BigDecimal"/>
+	<field name="total_cr_balance" class="java.math.BigDecimal"/>
+	<field name="prev_balance_str" class="java.lang.String"/>
+	<field name="dr_balance_str" class="java.lang.String"/>
+	<field name="cr_balance_str" class="java.lang.String"/>
+	<field name="total_dr_balance_str" class="java.lang.String"/>
+	<field name="total_cr_balance_str" class="java.lang.String"/>
+	<variable name="totalDebitBalance" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{dr_balance}]]></variableExpression>
+	</variable>
+	<variable name="totalCreditBalance" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{cr_balance}]]></variableExpression>
+	</variable>
+	<variable name="totalPreviousbalance" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{prev_balance}]]></variableExpression>
+	</variable>
+	<variable name="totalBalanceDr" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_dr_balance}]]></variableExpression>
+	</variable>
+	<variable name="totalBalanceCr" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{total_cr_balance}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="94" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="5d5627e0-bf71-4b80-aa99-0c35fbc9c4c5" x="0" y="64" width="63" height="15"/>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Source Type]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="0ca83209-6213-4cf1-9e80-d8dcf71bc660" x="68" y="64" width="507" height="15"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{sourceTypeName}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="d2026318-6381-4f18-9ebf-5c40d0d38568" x="347" y="0" width="228" height="30"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="46232ab8-3a3e-4444-90f8-8cb0a681667a" x="0" y="0" width="155" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Source wise Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46232ab8-3a3e-4444-90f8-8cb0a681667a" x="0" y="34" width="63" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d5627e0-bf71-4b80-aa99-0c35fbc9c4c5" x="63" y="34" width="5" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="8fb7cfb7-a506-478a-af91-f4d2fd276a3a" x="68" y="49" width="507" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="5d5627e0-bf71-4b80-aa99-0c35fbc9c4c5" x="63" y="49" width="5" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46232ab8-3a3e-4444-90f8-8cb0a681667a" x="0" y="49" width="63" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d5627e0-bf71-4b80-aa99-0c35fbc9c4c5" x="63" y="64" width="5" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46232ab8-3a3e-4444-90f8-8cb0a681667a" x="0" y="79" width="63" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5d5627e0-bf71-4b80-aa99-0c35fbc9c4c5" x="63" y="79" width="5" height="15"/>
+				<textElement textAlignment="Center" verticalAlignment="Top"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="8fb7cfb7-a506-478a-af91-f4d2fd276a3a" x="68" y="79" width="507" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{coaCode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1093fe7a-fb24-48be-983a-409de45f93a0" x="68" y="34" width="507" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{dateRange}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="18">
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="215" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Debit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f415b04e-0597-4fe4-9478-cfcb656619d1" x="0" y="0" width="35" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="35" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Source ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="305" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="125" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Previous Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="395" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Debit Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="485" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Credit Balance]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="18">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" positionType="Float" stretchType="RelativeToTallestObject" x="215" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{dr_balance_str}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="3592fe39-110f-4754-9799-6d8415fcdbdf" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="35" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" positionType="Float" stretchType="RelativeToTallestObject" x="35" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{source_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" positionType="Float" stretchType="RelativeToTallestObject" x="305" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{cr_balance_str}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" positionType="Float" stretchType="RelativeToTallestObject" x="125" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{prev_balance_str}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" positionType="Float" stretchType="RelativeToTallestObject" x="395" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{total_dr_balance_str}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" positionType="Float" stretchType="RelativeToTallestObject" x="485" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{total_cr_balance_str}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="10">
+			<subreport isUsingCache="false" runToBottom="false">
+				<reportElement uuid="d36f5041-a94d-4b3d-8989-7319a2fd859b" x="35" y="0" width="450" height="10"/>
+				<subreportParameter name="sourceCategoryIds">
+					<subreportParameterExpression><![CDATA[$P{sourceCategoryIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="projectIds">
+					<subreportParameterExpression><![CDATA[$P{projectIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="postedByParam">
+					<subreportParameterExpression><![CDATA[$P{postedByParam}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fromDate">
+					<subreportParameterExpression><![CDATA[$P{fromDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="dbCurrencyFormat">
+					<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sourceTypeId">
+					<subreportParameterExpression><![CDATA[$P{sourceTypeId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="coaId">
+					<subreportParameterExpression><![CDATA[$P{coaId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="toDate">
+					<subreportParameterExpression><![CDATA[$P{toDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyId">
+					<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sourceId">
+					<subreportParameterExpression><![CDATA[$F{source_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/" + "subReportForDivision.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="10" splitType="Prevent">
+			<subreport>
+				<reportElement uuid="24dd649a-a47e-4aa2-9bdd-81994ac66cfb" x="35" y="0" width="450" height="10"/>
+				<subreportParameter name="projectIds">
+					<subreportParameterExpression><![CDATA[$P{projectIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sourceCategoryIds">
+					<subreportParameterExpression><![CDATA[$P{sourceCategoryIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="postedByParam">
+					<subreportParameterExpression><![CDATA[$P{postedByParam}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fromDate">
+					<subreportParameterExpression><![CDATA[$P{fromDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="dbCurrencyFormat">
+					<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sourceTypeId">
+					<subreportParameterExpression><![CDATA[$P{sourceTypeId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="coaId">
+					<subreportParameterExpression><![CDATA[$P{coaId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="toDate">
+					<subreportParameterExpression><![CDATA[$P{toDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyId">
+					<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sourceId">
+					<subreportParameterExpression><![CDATA[$F{source_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "/" + "subReportWithOutDivisionByCoaId.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="14" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="cc52cb8f-8678-4368-8b33-aa884df0235f" x="20" y="0" width="555" height="14"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" +"inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="9fabb965-92b6-4725-a328-ddaf232ef416" x="20" y="0" width="100" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="bcf84a52-1ea9-48a3-b456-a83996242e14" x="251" y="0" width="93" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="18">
+			<staticText>
+				<reportElement uuid="53f6da45-05c0-47db-8c2b-9c3db7a2511b" x="0" y="0" width="125" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total :]]></text>
+			</staticText>
+			<textField pattern="##,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" x="215" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalDebitBalance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" x="305" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalCreditBalance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" x="125" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalPreviousbalance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" x="395" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalBalanceDr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="##,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="717ee7de-dc19-45d8-a805-d362eeb5812b" x="485" y="0" width="90" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{totalBalanceCr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

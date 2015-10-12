@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of *Purchase Request* | |
+ *ActionService:* | ShowPurchaseRequestActionService | *Auditable:* | No
+ *Url*: | /procPurchaseRequest/show | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is landing page of *Purchase Request* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* Show Landing Page of *Purchase Request*.
+
+h4. Pre-condition:
+* User must have "Show Purchase Request" privilege.
+
+h4. Process:
+* [Get List of all "Purchase Request" from server|guide:ListPurchaseRequestActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Purchase Request"|guide:CreatePurchaseRequestActionService].
+** Show list of all *Purchase Request* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Populate Indent List|guide:GetIndentListByProjectIdActionService].
+* [Open "Purchase Request" in Edit Mode|guide:SelectPurchaseRequestActionService].
+* [Delete "Purchase Request"|guide:DeletePurchaseRequestActionService].
+* [Approve "Purchase Request"|guide:ApprovepurchaseRequestActionService].
+
+!procurement/PR_Show.png!

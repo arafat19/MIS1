@@ -1,0 +1,43 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Budget Plugin | |
+*Action:* | N/A | *Auditable:* | No
+*Url:* | /budgBudget/renderBudgetMenu | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Project manager.
+
+h4. Description:
+This is the landing page of Budget Plugin.
+
+h4. Flow:
+* Click "Budget" option from top menu bar.
+* Show Budget Plugin.
+
+h4. Pre-condition:
+* User must have "Budget Module" privilege to access Budget option from menu bar.
+* MIS Platform must be Installed.
+* MIS Project must contain "Budget Plugin".
+
+h4. Process:
+* Show "Budget Status List" Widget based on user privilege. [Widget of Budget Option|guide:_WidgetOfBudgetPlugin]
+* Budget Left menu must be generate based on user privilege.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Budget Status List" widget in landing page.
+** Show Budget left menu based on log in user privilege.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

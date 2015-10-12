@@ -1,0 +1,501 @@
+package com.athena.mis.application.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.utility.AppSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import grails.plugins.springsecurity.SpringSecurityService
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * AppUserService is used to handle only CRUD related object manipulation (e.g. list, read, create, delete etc.)
+ */
+class AppUserService extends BaseService {
+
+    static transactional = false
+    SpringSecurityService springSecurityService
+    @Autowired
+    AppSessionUtil appSessionUtil
+
+    private static final String INSERT_QUERY = """
+        INSERT INTO app_user(id, version, account_expired, account_locked, company_id, enabled, login_id, next_expire_date,
+            password, password_expired, has_signature, username, cell_number, ip_address, employee_id, is_company_user,
+            activation_link, is_activated_by_mail, is_power_user, is_config_manager, is_disable_password_expiration,
+            created_on, created_by, updated_by, updated_on)
+        VALUES(NEXTVAL('app_user_id_seq'), :version, :accountExpired, :accountLocked, :companyId, :enabled, :loginId,
+            :nextExpireDate, :password, :passwordExpired, :hasSignature, :username, :cellNumber, :ipAddress, :employeeId,
+            :isCompanyUser, :activationLink, :isActivatedByMail, :isPowerUser, :isConfigManager, :isDisablePasswordExpiration,
+            :createdOn, :createdBy, :updatedBy, null)
+    """
+
+    /**
+     * Save AppUser object into DB
+     * @param appUser -object of AppUser
+     * @return -saved AppUser object
+     */
+    public AppUser create(AppUser appUser) {
+        appUser.version = 0
+        Map queryParams = [
+                version: appUser.version,
+                accountExpired: appUser.accountExpired,
+                accountLocked: appUser.accountLocked,
+                companyId: appUser.companyId,
+                enabled: appUser.enabled,
+                loginId: appUser.loginId,
+                nextExpireDate: DateUtility.getSqlDateWithSeconds(appUser.nextExpireDate),
+                password: appUser.password,
+                passwordExpired: appUser.passwordExpired,
+                hasSignature: appUser.hasSignature,
+                username: appUser.username,
+                cellNumber: appUser.cellNumber,
+                ipAddress: appUser.ipAddress,
+                employeeId: appUser.employeeId,
+                isCompanyUser: appUser.isCompanyUser,
+                activationLink: appUser.activationLink,
+                isActivatedByMail: appUser.isActivatedByMail,
+                isPowerUser: appUser.isPowerUser,
+                isConfigManager: appUser.isConfigManager,
+                isDisablePasswordExpiration: appUser.isDisablePasswordExpiration,
+                createdOn: DateUtility.getSqlDateWithSeconds(appUser.createdOn),
+                createdBy: appUser.createdBy,
+                updatedBy: appUser.updatedBy
+        ]
+
+        List result = executeInsertSql(INSERT_QUERY, queryParams)
+        if (result.size() <= 0) {
+            throw new RuntimeException('Error occurred while insert app user information')
+        }
+
+        int userId = (int) result[0][0]
+        appUser.id = userId
+        return appUser
+    }
+
+    private static final String UPDATE_QUERY = """
+                      UPDATE app_user SET
+                          version=version+1,
+                          enabled=:enabled,
+                          account_locked=:accountLocked,
+                          account_expired=:accountExpired,
+                          has_signature=:hasSignature,
+                          login_id=:loginId,
+                          password=:password,
+                          username=:userName,
+                          company_id=:companyId,
+                          cell_number=:cellNumber,
+                          ip_address=:ipAddress,
+                          employee_id=:employeeId,
+                          is_activated_by_mail = :isActivatedByMail,
+                          is_power_user=:isPowerUser,
+                          is_config_manager=:isConfigManager,
+                          is_disable_password_expiration=:isDisablePasswordExpiration,
+                          updated_on=:updatedOn,
+                          updated_by=:updatedBy
+                      WHERE
+                          id=:id AND
+                          version=:version
+    """
+
+    /**
+     * Update AppUser object in DB
+     * @param appUser -object of AppUser
+     * @return -an integer containing the value of update count
+     */
+    public AppUser update(AppUser appUser) {
+
+        Map queryParams = [
+                id: appUser.id,
+                version: appUser.version,
+                enabled: appUser.enabled,
+                accountLocked: appUser.accountLocked,
+                accountExpired: appUser.accountExpired,
+                hasSignature: appUser.hasSignature,
+                loginId: appUser.loginId,
+                password: appUser.password,
+                userName: appUser.username,
+                companyId: appUser.companyId,
+                cellNumber: appUser.cellNumber,
+                ipAddress: appUser.ipAddress,
+                employeeId: appUser.employeeId,
+                isActivatedByMail: appUser.isActivatedByMail,
+                isPowerUser: appUser.isPowerUser,
+                isConfigManager: appUser.isConfigManager,
+                isDisablePasswordExpiration: appUser.isDisablePasswordExpiration,
+                updatedBy: appUser.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(appUser.updatedOn)
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams)
+        if (updateCount <= 0) {
+            throw new RuntimeException("error occurred at appUserService.update")
+        }
+        appUser.version = appUser.version + 1
+        return appUser
+    }
+
+    /**
+     * Delete AppUser object from DB
+     * @param appUser -object of AppUser
+     * @return -a boolean value(true/false) depending on method success
+     */
+    public boolean delete(AppUser appUser) {
+        if (appUser == null) {
+            return false
+        }
+        appUser.delete()
+        return true
+    }
+
+    private static final String UPDATE_QUERY_FOR_ENABLED="""
+        UPDATE app_user
+        SET enabled=:isEnabled,
+            version=:version
+        WHERE id=:id
+        AND company_id=:companyId
+
+    """
+
+    /**
+     * For exchange house block and unblock customer
+     * Update enabled property of appUser
+     * @param appUser- appUser obj
+     * @return- updateCount
+     */
+    public int updateEnabled(AppUser appUser){
+        Map queryParams=[
+                isEnabled:appUser.enabled,
+                id:appUser.id,
+                companyId: appUser.companyId,
+                version: appUser.version
+        ]
+        int updateCount=executeUpdateSql(UPDATE_QUERY_FOR_ENABLED,queryParams)
+        if (updateCount <= 0) {
+            throw new RuntimeException("Error occurred while updating app user")
+        }
+        return updateCount
+    }
+    /**
+     * @return - list of AppUser
+     */
+    public List listForUtility() {
+        return AppUser.list(sort: 'username', order: 'asc', readOnly: true);
+    }
+
+    /**
+     * Get AppUser object by id
+     * @param id -id of AppUser
+     * @return -object of AppUser
+     */
+    public AppUser read(long id) {
+        AppUser appUser = AppUser.read(id)
+        return appUser
+    }
+
+    private static final String UPDATE_PASSWORD_QUERY = """
+                  UPDATE app_user SET
+                      version=version+1,
+                      password=:password
+                  WHERE
+                      id=:id AND
+                      version=:version
+    """
+
+    /**
+     * Update password of AppUser
+     * @param appUser -object of AppUser
+     * @return -an integer containing the value of update count
+     */
+    public int updatePassword(AppUser appUser) {
+        Map queryParams = [
+                id: appUser.id,
+                version: appUser.version,
+                password: appUser.password
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_PASSWORD_QUERY, queryParams)
+        if (updateCount <= 0) {
+            throw new RuntimeException("Error occurred at appUserService.updatePassword")
+        }
+        return updateCount
+    }
+
+    /**
+     * Get count of AppUser by companyId
+     * @param companyId -id of company
+     * @return -an integer containing the value of count
+     */
+    public int countByCompanyId(long companyId) {
+        int count = AppUser.countByCompanyId(companyId)
+        return count
+    }
+
+    /**
+     * Get list of AppUser by isCompanyUser(true/false)
+     * @param isCompanyUser -true/false
+     * @param baseService -instance of baseService
+     * @return -list of AppUser
+     */
+    public List<AppUser> findAllByIsCompanyUser(boolean isCompanyUser) {
+        List<AppUser> lstAppUser = AppUser.findAllByIsCompanyUser(isCompanyUser, [max: resultPerPage, offset: start, sort: sortColumn, order: sortOrder, readOnly: true])
+        return lstAppUser
+    }
+
+    /**
+     * Get count of AppUser by isCompanyUser(true/false)
+     * @param isCompanyUser -true/false
+     * @return -an integer containing the value of count
+     */
+    public int countByIsCompanyUser(boolean isCompanyUser) {
+        int count = AppUser.countByIsCompanyUser(isCompanyUser)
+        return count
+    }
+
+    /**
+     * Get AppUser object by passwordResetLink and companyId
+     * @param passwordResetLink -link for reset password
+     * @param companyId -id of company
+     * @return -object of AppUser
+     */
+    public AppUser findByPasswordResetLinkAndCompanyId(String passwordResetLink, long companyId) {
+        AppUser appUser = AppUser.findByPasswordResetLinkAndCompanyId(passwordResetLink, companyId, [readOnly: true])
+        return appUser
+    }
+
+    /**
+     * Get AppUser object by loginId and companyId
+     * @param loginId -loginId of AppUser
+     * @param companyId -id of company
+     * @return -object of AppUser
+     */
+    public AppUser findByLoginIdAndCompanyId(String loginId, long companyId) {
+        AppUser appUser = AppUser.findByLoginIdAndCompanyId(loginId, companyId, [readOnly: true])
+        return appUser
+    }
+
+    /**
+     * Get AppUser object by loginId
+     * @param loginId -loginId of AppUser
+     * @return -object of AppUser
+     */
+    public AppUser findByLoginId(String loginId) {
+        AppUser appUser = AppUser.findByLoginId(loginId, [readOnly: true])
+        return appUser
+    }
+
+    /**
+     * Get AppUser object by activationLink and companyId
+     * @param activationLink -activationLink of AppUser
+     * @param companyId -id of company
+     * @return -object of AppUser
+     */
+    public AppUser findByActivationLinkAndCompanyId(String activationLink, long companyId) {
+        AppUser appUser = AppUser.findByActivationLinkAndCompanyId(activationLink, companyId, [readOnly: true])
+        return appUser
+    }
+
+    /**
+     * get list of AppUser by companyId, enabled(true/false) and list of user ids
+     * @param companyId -id of company
+     * @param enabled -true/false
+     * @param lstUserIds -list of user ids
+     * @return -a list of AppUser
+     */
+    public List<AppUser> findAllByCompanyIdAndEnabledAndIdInList(long companyId, boolean enabled, List lstUserIds) {
+        List<AppUser> lstAppUser = AppUser.findAllByCompanyIdAndEnabledAndIdInList(companyId, enabled, lstUserIds)
+        return lstAppUser
+    }
+
+    /**
+     * Get list and count of AppUser by specific search keyword
+     * @return -a map containing list and count of AppUser
+     */
+    public Map search(BaseService baseService) {
+        long companyId = appSessionUtil.getCompanyId()
+        List<AppUser> appUserList = AppUser.withCriteria {
+            eq('companyId', companyId)
+            eq('isCompanyUser', false)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        } as List
+
+        List counts = AppUser.withCriteria {
+            eq('companyId', companyId)
+            eq('isCompanyUser', false)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            projections { rowCount() }
+        } as List
+
+        int total = counts[0] as int
+        return [appUserList: appUserList, count: total]
+    }
+
+    /**
+     * Create default AppUser objects for Application plugin
+     */
+    public void createDefaultDataForApplication(long companyId) {
+        new AppUser(accountExpired: false, accountLocked: false, isPowerUser: true,
+                enabled: true, loginId: 'admin@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Administrator', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false, isPowerUser: true,
+                enabled: true, loginId: 'super@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Super Admin', companyId: companyId,
+                isConfigManager: true, createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+
+    /**
+     * Create default AppUser objects for Budget and Procurement plugin
+     */
+    public void createDefaultDataForBudgetAndProcurement(long companyId) {
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'dir@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Mr. Director', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'pd@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Mr. Project Director', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+
+    /**
+     * Create default AppUser objects for Inventory plugin
+     */
+    public void createDefaultDataForInventory(long companyId) {
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'pm@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Mr. Project Manager', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'io@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Inventory Operator', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+
+    /**
+     * Create default AppUser objects for Accounting plugin
+     */
+    public void createDefaultDataForAccounting(long companyId) {
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'cfo@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Mr. CFO', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+
+    /**
+     * Create default AppUser objects for ExchangeHouse plugin
+     */
+    public void createDefaultDataForExchangeHouse(long companyId) {
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'cashier@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Cashier', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'agent@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Agent', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'other@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Other Bank User', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+
+    /**
+     * Create default appUser for ARMS
+     */
+    public void createDefaultDataForArms(long companyId) {
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'remittance@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Remittance User', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'branch_banani@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Banani Branch User', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'exh@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'ExchangeHouse User', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'other_gulshan@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'DBBL-Gulshan User', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+
+    /**
+     * Create default AppUser objects for Document plugin
+     */
+    public void createDefaultDataForDocument(long companyId) {
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'member@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Member', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+
+    /**
+     * Create default AppUser objects for Document plugin
+     */
+    public void createDefaultDataForProjectTrack(long companyId) {
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'sadmin@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Software Project Admin', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'sengineer@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'Software Engineer', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+
+        new AppUser(accountExpired: false, accountLocked: false,
+                enabled: true, loginId: 'sqa@athena.com',
+                nextExpireDate: new Date() + 365,
+                password: springSecurityService.encodePassword('athena@123'),
+                passwordExpired: false, username: 'SQA Engineer', companyId: companyId,
+                createdBy: 1, createdOn: new Date()).save(flush: true)
+    }
+}

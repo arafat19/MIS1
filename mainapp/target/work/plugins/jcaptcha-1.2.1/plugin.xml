@@ -1,0 +1,19 @@
+<plugin name='jcaptcha' version='1.2.1' grailsVersion='1.2.1 &gt; *'>
+  <author>Luke Daley</author>
+  <authorEmail>ld@ldaley.com</authorEmail>
+  <title>Grails JCaptcha Plugin</title>
+  <description>Makes using JCaptcha within a Grails app simple</description>
+  <documentation>http://grails.org/JCaptcha+Plugin</documentation>
+  <resources>
+    <resource>UrlMappings</resource>
+    <resource>org.grails.plugin.jcaptcha.JcaptchaController</resource>
+    <resource>org.grails.plugin.jcaptcha.JcaptchaService</resource>
+    <resource>org.grails.plugin.jcaptcha.JcaptchaTagLib</resource>
+  </resources>
+  <dependencies>
+    <resolvers>
+      <resolver type='grailsPlugins' name='grailsPlugins' />
+    </resolvers>
+  </dependencies>
+  <behavior />
+</plugin>

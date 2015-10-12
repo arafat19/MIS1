@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Sprint's Backlog* | |
+*ActionService:* | ShowBackLogForSprintActionService | *Auditable:* | No
+*Url:* | /ptBacklog/showBackLogForSprint | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Sprint's Backlog* with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:ShowBackLogForSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Task" button from tool bar.
+* Show Landing Page of *Sprint's Backlog*.
+
+h4. Pre-condition:
+* User must have "Show Backlog for sprint" privilege.
+
+h4. Process:
+*  [Get List of all "Sprint's Backlog" from server|guide:ListBackLogForSprintActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Sprint's Backlog* information in grid view.
+** Reset input form on top to create new *Sprint's Backlog*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Delete "Sprint's Backlog"|guide:DeleteBackLogForSprintActionService].
+* [Search "Sprint's Backlog" From Grid View|guide:SearchBackLogForSprintActionService].
+
+!projecttrack/Show-Sprint-Backlog.png!

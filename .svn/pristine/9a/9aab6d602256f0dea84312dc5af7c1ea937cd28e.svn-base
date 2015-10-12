@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Employee* | |
+*ActionService:* | DeleteEmployeeActionService | *Auditable:* | No
+*Url:* | /employee/delete | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 25th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Employee* link.
+* [Show Landing Page of Employee|guide:ShowEmployeeActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Employee*.
+
+h4. Pre-condition:
+* User must have "Delete Employee" privilege.
+* If *Employee* has dependency with following business entity then selected *Employee* will not be delete-able:
+** *User*
+** *Voucher*
+** *IOU Slip*
+
+h4. Process:
+* Delete a selected *Employee*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Employee* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

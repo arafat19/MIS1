@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show "Budget Status List" in Widget tab of Budget Option | |
+*ActionService:* | GetBudgetStatusForDashBoardActionService | *Auditable:* | No
+*Url:* | /budgBudget/getBudgetStatusForDashBoard | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Project manager.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget Status" widget tab should show by default.
+* Show "Budget Status List" in Widget tab of Budget Option.
+
+h4. Pre-condition:
+* User must have "Get Budget Status in Dash Board" privilege.
+
+h4. Process:
+* Show "Budget Status List" (default: 10 at Max).
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Id (Default: Invisible)
+** Project Code
+** Total Budget
+** Contract Value
+** Revenue Margin
+
+h4. Post-condition:
+
+* *Success:*
+** "Budget Status" will be listed in corresponding widget tab.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+

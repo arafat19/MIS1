@@ -1,0 +1,164 @@
+<script type="text/javascript">
+    var modelJsonForPurchaseRequest;
+    jQuery(function ($) {
+        modelJsonForPurchaseRequest = ${modelJson};
+        $('#printPurchaseRequestReport').click(function () {
+            printPurchaseRequest();
+            return false;
+        });
+
+        // update page title
+        $(document).attr('title', "MIS - Purchase Request");
+        loadNumberedMenu(MENU_ID_PROCUREMENT, "#procReport/showPurchaseRequestRpt");
+
+
+        onLoadPurchaseRequest();
+    });
+
+    function printPurchaseRequest() {
+        var purchaseRequestId = $('#hidPurchaseRequestId').val();
+        if (purchaseRequestId.length <= 0) {
+            showError('First populate PR details then click print');
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?purchaseRequestId=" + purchaseRequestId;
+        if (confirm('Do you want to download the Purchase Request now?')) {
+            var url = "${createLink(controller: 'procReport', action: 'downloadPurchaseRequestRpt')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function onLoadPurchaseRequest() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#searchForm"), getPurchaseRequest);
+
+        try {   // Model will be supplied to grid on load _list.gsp
+            $('.download_icon_set').hide();
+            if (modelJsonForPurchaseRequest.purchaseRequestMap) {
+                populatePurchaseRequest(modelJsonForPurchaseRequest.purchaseRequestMap);
+                populateItemDetails(modelJsonForPurchaseRequest.lstItems);
+                $("#purchaseRequestId").val(modelJsonForPurchaseRequest.purchaseRequestMap.purchaseRequestId);
+                setGrandTotalCost();
+            }
+        } catch (e) {
+            showError(e.message);
+        }
+    }
+
+    function executePreConditionToGetPurchaseRequest(ids) {
+        if (!validateForm($('#searchForm'))) {
+            return false;
+        }
+        if (ids.length == 0) {
+            showError("Please enter a PR No");
+            return false;
+        }
+        return true;
+    }
+
+    function getPurchaseRequest() {
+        var purchaseRequestId = $('#purchaseRequestId').val();
+        if (executePreConditionToGetPurchaseRequest(purchaseRequestId) == false) {
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'procReport', action: 'searchPurchaseRequestRpt')}?purchaseRequestId=" + purchaseRequestId,
+            success: executePostConditionForPurchaseRequest,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForPurchaseRequest(data) {
+
+        if (data.isError) {
+            showError(data.message);
+            $('#divPurchaseRequest').hide();
+            $('.download_icon_set').hide();
+            return;
+        }
+
+        populatePurchaseRequest(data.purchaseRequestMap);
+        populateItemDetails(data.lstItems);
+        setGrandTotalCost();
+        return false;
+
+    }
+    var grandTotalCostOfItem = null;
+    var grandTotalCostOfWorks = null;
+    function clearPurchaseRequest() {
+        $('#lblPurchaseRequestNo').text('');
+        $('#hidPurchaseRequestId').val('');
+        $('#lblPurchaseRequestDate').text('');
+        $('#lblProjectName').text('');
+        $('#lblProjectDescription').text('');
+        $('#lblNumberOfItem').text('');
+        $('#lblBudgetDetails').text('');
+        $('#lblApprovedByDirector').text('');
+        $('#lblApprovedByProjectDirector').text('');
+    }
+    function populatePurchaseRequest(prMap) {
+        $('.download_icon_set').show();
+        clearPurchaseRequest();
+        $('#divPurchaseRequest').show();
+        $('#lblPurchaseRequestNo').text(prMap.purchaseRequestId);
+        $('#hidPurchaseRequestId').val(prMap.purchaseRequestId);
+        $('#lblPurchaseRequestDate').text(prMap.createdOn);
+        $('#lblProjectName').text(prMap.projectName);
+        $('#lblProjectDescription').text(prMap.projectDescription);
+        $('#lblNumberOfItem').text(prMap.numberOfItems);
+        $('#lblBudgetDetails').text(prMap.budgetDetails);
+        $('#lblApprovedByDirector').text(prMap.approvedByDirector);
+        $('#lblApprovedByProjectDirector').text(prMap.approvedByProjectDirector);
+
+    }
+
+    function setGrandTotalCost() {
+        $('span#lblGrandTotalOfItem').text(grandTotalCostOfItem);
+    }
+
+    function populateItemDetails(lstItems) {
+        grandTotalCostOfItem = 0;
+        var lstItems = $(lstItems);
+        if (lstItems.length <= 0) {
+            $('#valueOfMaterial').hide();
+            $('#tagValueOfMaterial').hide();
+        }
+        else {
+            $('#valueOfMaterial').show();
+            $('#tagValueOfMaterial').show();
+            var serialCount = 1;
+            var tdClass_05 = "class='info_box topedge' width='5%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_10 = "class='info_box topedge' width='10%' style='text-align: left;border-right: 1px solid #BDC7D8;'";
+            var tdClass_12 = "class='info_box topedge' width='12%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_13 = "class='info_box topedge' width='13%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_15 = "class='info_box topedge' width='15%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_25 = "class='info_box topedge' width='25%' style='text-align: left;border-right: 1px solid #BDC7D8;'";
+
+            var tbody = $('#tblItems');
+            tbody.html('');
+
+            lstItems.each(function (idx) {
+                var eachObject = lstItems[idx];
+                var totalCost = eachObject.totalCost;
+                grandTotalCostOfItem = grandTotalCostOfItem + parseFloat(totalCost);
+                tbody.append($('<tr></tr>')
+                        .append($('<td ' + tdClass_05 + ' ></td>').html(serialCount++))
+                        .append($('<td ' + tdClass_10 + ' ></td>').html(eachObject.itemType))
+                        .append($('<td ' + tdClass_25 + ' ></td>').html(eachObject.itemName))
+                        .append($('<td ' + tdClass_10 + ' ></td>').html(eachObject.itemCode))
+                        .append($('<td ' + tdClass_15 + ' ></td>').html(eachObject.quantity))
+                        .append($('<td ' + tdClass_12 + ' ></td>').html(eachObject.rateStr))
+                        .append($('<td ' + tdClass_13 + ' ></td>').html(eachObject.totalCostStr))
+                );
+            });
+        }
+    }
+</script>

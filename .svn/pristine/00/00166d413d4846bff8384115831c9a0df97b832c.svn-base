@@ -1,0 +1,182 @@
+<%@ page import="com.athena.mis.projecttrack.utility.PtAcceptanceCriteriaTypeCacheUtility; com.athena.mis.application.utility.NoteEntityTypeCacheUtility" %>
+<script language="javascript">
+    var linkBugDetails,linkACDetails, isError, backlogId, noteCount,countPreCondition,
+        countPostCondition, countBusinessLogic, countOthers, countFlow;
+    $(document).ready(function () {
+        isError = "${result.isError}";
+        backlogId = "${result.backlogMap?.id}";
+        noteCount = "${result.backlogMap?.noteCount}";
+        countPreCondition = "${result.backlogMap?.countPreCondition}";
+        countPostCondition = "${result.backlogMap?.countPostCondition}";
+        countBusinessLogic = "${result.backlogMap?.countBusinessLogic}";
+        countOthers = "${result.backlogMap?.countOthers}";
+        countFlow = "${result.backlogMap?.countFlow}";
+        var message = "${result.message}";
+        var bugCount = "${result.backlogMap?.bugCount}";
+        var acCount = "${result.backlogMap?.acCount}";
+        linkBugDetails = "${createLink(controller: 'ptBug', action: 'show')}?backlogId=" + backlogId + "&leftMenu=" + '${leftMenu}'
+        linkACDetails = "${createLink(controller: 'ptAcceptanceCriteria', action: 'show')}?backlogId=" + backlogId + "&leftMenu=" + '${leftMenu}'
+
+        if (isError == 'true') {
+            showError(message);
+            $('#updateBacklogDetailsDiv').hide();
+            return false;
+        }
+        if (backlogId > 0) {
+            $('#updateBacklogDetailsDiv').show();
+        }
+        if (bugCount == 0) {
+            $('#bugCountZeroLink').show();
+            $('#bugCountLink').hide();
+        }
+        if (acCount == 0) {
+            $('#acCountZeroLink').show();
+            $('#acCountLink').hide();
+        }
+    });
+</script>
+
+<div class="panel panel-default">
+    <div class="panel-heading">Backlog Details</div>
+
+    <div class="panel-body">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td class="active" rowspan="5" width="10%">Idea</td>
+                <td colspan="3" style="border: none;">As a : ${result.backlogMap?.actor}</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="border: none; padding-bottom: 2px;padding-top: 0px">I want to :</td>
+            </tr>
+            <tr>
+                <td colspan="3"
+                    style="border: none; padding-left: 30px; padding-top: 0px">${result.backlogMap?.purpose}</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="border: none; padding-bottom: 2px;padding-top: 0px">So that :</td>
+            </tr>
+            <tr>
+                <td colspan="3"
+                    style="border: none; padding-left: 30px ; padding-top: 0px">${result.backlogMap?.benefit}</td>
+            </tr>
+            <tr>
+                <td class="active" width="10%">Bug Count</td>
+                <td><span id="bugCountLink">
+                    ${result.backlogMap?.bugCount}<span style="cursor:pointer;"
+                                                        onclick="$.history.load(formatLink(linkBugDetails));"><a>&nbsp;&nbsp;( Show details )</a>
+                    </span></span>
+                    <span id="bugCountZeroLink" hidden="hidden" style="cursor:pointer;"
+                          onclick="$.history.load(formatLink(linkBugDetails));">
+                        ${result.backlogMap?.bugCount} <a>&nbsp;&nbsp;( Click here to post bug )</a>
+                    </span>
+                </td>
+                <td class="active" width="10%">A.C Count</td>
+                <td><span id="acCountLink">
+                    ${result.backlogMap?.acCount}<span style="cursor:pointer;"
+                                                        onclick="$.history.load(formatLink(linkACDetails));"><a>&nbsp;&nbsp;( Show details )</a>
+                    </span></span>
+                    <span id="acCountZeroLink" hidden="hidden" style="cursor:pointer;"
+                          onclick="$.history.load(formatLink(linkACDetails));">
+                        ${result.backlogMap?.acCount} <a>&nbsp;&nbsp;( Click here to post Acceptance Criteria )</a>
+                    </span>
+                </td>
+
+            </tr>
+            <tr>
+                <td class="active" width="10%">Use Case ID</td>
+                <td width="40%">${result.backlogMap?.useCaseId}</td>
+                <td class="active" width="10%">Owner</td>
+                <td width="40%">${result.backlogMap?.owner}</td>
+            </tr>
+            <tr>
+                <td class="active" width="10%">Module</td>
+                <td width="40%">${result.backlogMap?.module}</td>
+                <td class="active" width="10%">Sprint</td>
+                <td width="40%">${result.backlogMap?.sprint}</td>
+            </tr>
+            <tr>
+                <td class="active" width="10%">Created By</td>
+                <td width="40%">${result.backlogMap?.createdBy}</td>
+                <td class="active" width="10%">Created On</td>
+                <td width="40%">${result.backlogMap?.createdOn}</td>
+            </tr>
+            <tr>
+                <td class="active" width="10%">Status</td>
+                <td width="40%">${result.backlogMap?.status}</td>
+                <td class="active" width="10%">Priority</td>
+                <td width="40%">${result.backlogMap?.priority}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="divFlow" class="panel panel-default" style="display: none;">
+    <div class="panel-heading">Flow</div>
+
+    <div class="panel-body">
+       <pt:flow id="lstFlow" backlog_id="${result.backlogMap?.id}">
+       </pt:flow>
+    </div>
+</div>
+
+<div id="divPreCondition" class="panel panel-default" style="display: none;">
+    <div class="panel-heading">Pre Condition</div>
+
+    <div class="panel-body">
+        <pt:acceptanceCriteria
+                id="lstPreCondition"
+                type_id="${PtAcceptanceCriteriaTypeCacheUtility.PRE_CONDITION_RESERVED_ID}"
+                backlog_id="${result.backlogMap?.id}">
+        </pt:acceptanceCriteria>
+    </div>
+</div>
+
+<div id="divBusinessLogic" class="panel panel-default" style="display: none;">
+    <div class="panel-heading">Business Logic</div>
+
+    <div class="panel-body">
+        <pt:acceptanceCriteria
+                id="lstBusinessLogic"
+                type_id="${PtAcceptanceCriteriaTypeCacheUtility.BUSINESS_LOGIC_RESERVED_ID}"
+                backlog_id="${result.backlogMap?.id}">
+        </pt:acceptanceCriteria>
+    </div>
+</div>
+
+<div id="divPostCondition" class="panel panel-default" style="display: none;">
+    <div class="panel-heading">Post Condition</div>
+
+    <div class="panel-body">
+        <pt:acceptanceCriteria
+                id="lstPostCondition"
+                type_id="${PtAcceptanceCriteriaTypeCacheUtility.POST_CONDITION_RESERVED_ID}"
+                backlog_id="${result.backlogMap?.id}">
+        </pt:acceptanceCriteria>
+    </div>
+</div>
+
+<div id="divOthers" class="panel panel-default" style="display: none;">
+    <div class="panel-heading">Others</div>
+
+    <div class="panel-body">
+        <pt:acceptanceCriteria
+                id="lstOthers"
+                type_id="${PtAcceptanceCriteriaTypeCacheUtility.OTHERS_RESERVED_ID}"
+                backlog_id="${result.backlogMap?.id}">
+        </pt:acceptanceCriteria>
+    </div>
+</div>
+
+<div id="lstNotesBacklog" class="panel panel-default" style="display: none;">
+    <div class="panel-heading">Backlog Notes</div>
+
+    <div class="panel-body">
+        <app:entityNote
+                id="lstBacklogNotes"
+                entity_type_id="${NoteEntityTypeCacheUtility.COMMENT_ENTITY_TYPE_PT_TASK}"
+                entity_id="${result.backlogMap?.id}">
+        </app:entityNote>
+    </div>
+</div>

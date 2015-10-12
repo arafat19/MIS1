@@ -1,0 +1,292 @@
+inventory:
+
+         title: Inventory Plugin
+
+         _showInventoryPlugin: Show Inventory Plugin
+
+         _widgetofInventoryoption: Widget of Inventory Option
+
+         ListUnApprovedConsumptionActionService: List Un-approve "Inventory Consumption" Widget tab of Inventory Option
+         ListUnApprovedInFromSupplierActionService: List Un-approve "Inventory In" From Supplier Widget tab of Inventory Option
+         ListUnApprovedInventoryOutActionService: List Un-approve "Inventory Out" Widget tab of Inventory Option
+         ListUnApprovedInFromInventoryActionService: List Un-approve "Inventory In" From another Inventory Widget tab of Inventory Option
+
+         GetPurchaseOrderActionService: Populate "Purchase Order" List to Create "Inventory In" from Supplier Group
+
+         ShowForInventoryInFromSupplierActionService: Show Group of "Inventory In" From Supplier Landing Page
+         CreateForInventoryInFromSupplierActionService: Create Group of "Inventory In" From Supplier
+         SelectForInventoryInFromSupplierActionService: Open Group of "Inventory In" From Supplier in Edit Mode
+         UpdateForInventoryInFromSupplierActionService: Update Group of "Inventory In" From Supplier
+         ListForInventoryInFromSupplierActionService: List Group of "Inventory In" From Supplier
+         SearchForInventoryInFromSupplierActionService: Search Group of "Inventory In" From Supplier From Grid View
+         DeleteForInventoryInFromSupplierActionService: Delete Group of "Inventory In" From Supplier
+
+
+         _populateitemListforinvsupplier: Populate "Item" List for "Inventory in" From Supplier
+
+         ShowForUnapprovedInvInFromSupplierActionService: Show Landing Page of Un-approve "Inventory in" From Supplier
+         CreateForInventoryInDetailsFromSupplierActionService: Create Un-approved "Inventory in" From Supplier
+         SelectForInventoryInDetailsFromSupplierActionService: Open Un-approved "Inventory in" From Supplier in Edit Mode
+         UpdateForInventoryInDetailsFromSupplierActionService: Update Un-approved "Inventory in" From Supplier
+         ListForUnapprovedInvInFromSupplierActionService: List Un-approved "Inventory in" From Supplier
+         SearchForUnapprovedInvInFromSupplierActionService: Search Un-approved "Inventory in" From Supplier From Grid View
+         DeleteForInventoryInDetailsFromSupplierActionService: Delete Un-approved "Inventory in" From Supplier
+         ApproveForInventoryInDetailsFromSupplierActionService: Approve Un-approved "Inventory in" From Supplier
+
+         ShowForApprovedInvInFromSupplierActionService: Show Landing Page of Approved "Inventory in" From Supplier
+         _detailsApprovedItemofSupplier: Open Approved "Inventory in" From Supplier in Read Only Mode
+         _adjustmentInventoryinFromSupplierItem: Open Approved "Inventory in" From Supplier in Edit Mode
+         AdjustForInvInFromSupplierActionService: Update Approved "Inventory in" From Supplier
+         _reverseInventoryinFromSupplierApproveItems: Open Approved "Inventory in" From Supplier to Delete
+         ReverseAdjustForInvInFromSupplierActionService: Delete Approved "Inventory in" From Supplier
+         ListForApprovedInvInFromSupplierActionService: List Approved "Inventory in" From Supplier
+         SearchForApprovedInvInFromSupplierActionService: Search Approved "Inventory in" From Supplier From Grid View
+
+         GetAllInventoryListByInventoryTypeActionService: Populate "To Inventory" List for Group of "Inventory Out"
+
+         ShowForInventoryOutActionService: Show Group of "Inventory Out" Landing Page
+         CreateForInventoryOutActionService: Create Group of "Inventory Out"
+         SelectForInventoryOutActionService: Open Group of "Inventory Out" in Edit Mode
+         UpdateForInventoryOutActionService: Update Group of "Inventory Out"
+         ListForInventoryOutActionService: List Group of "Inventory Out"
+         SearchForInventoryOutActionService: Search Group of "Inventory Out"
+         DeleteForInventoryOutActionService: Delete Group of "Inventory Out"
+
+         _populateitemlistforinvout: Populate "Item" List to Create Un-aprrove "Inventory Out"
+
+
+         ShowForUnApprovedInventoryOutDetailsActionService: Show Landing Page of Un-Approved "Inventory Out"
+         CreateForInventoryOutDetailsActionService: Create Un-Approved "Inventory Out"
+         SelectForInventoryOutDetailsActionService: Open Un-Approved "Inventory Out" in Edit Mode
+         UpdateForInventoryOutDetailsActionService: Update Un-Approved "Inventory Out"
+         ListForUnApprovedInventoryOutDetailsActionService: List Un-Approved "Inventory Out"
+         SearchForUnApprovedInventoryOutDetailsActionService: Search Un-Approved "Inventory Out" From Grid View
+         DeleteForInventoryOutDetailsActionService: Delete Un-Approved "Inventory Out"
+         ApproveForInventoryOutDetailsActionService: Approve Un-Approved "Inventory Out"
+
+         ShowForApprovedInventoryOutDetailsActionService: Show Landing Page of Approved "Inventory Out"
+         _detailsApprovedItemofInventoryOut: Open Approved "Inventory Out" in Read Only Mode
+         _adjustmentItemFromInventoryOut: Open Approved "Inventory Out" in Edit Mode
+         AdjustmentForInvOutActionService: Update Approved "Inventory Out"
+         _reverseInventoryItemsFromInventoryOut: Open Approved "Inventory Out" to Delete
+         ReverseAdjustForInvOutActionService: Delete Approved "Inventory Out"
+         ListForApprovedInventoryOutDetailsActionService: List Approved "Inventory Out"
+         SearchForApprovedInventoryOutDetailsActionService: Search Approved "Inventory Out" From Grid View
+
+         GetForInvListOfTransactionOutActionService: Populate "From Inventory" List for Group of "Inv In" From Another Inv
+         GetForInvTransactionListActionService: Populate "Transferred Date" List
+
+         ShowForInventoryInFromInventoryActionService: Show Group of "Inventory In" From Another Inventory
+         CreateForInventoryInFromInventoryActionService: Create Group of "Inventory In" From Another Inventory
+         SelectForInventoryInFromInventoryActionService: Open Group of "Inventory In" From Another Inventory in Edit Mode
+         UpdateForInventoryInFromInventoryActionService: Update Group of "Inventory In" From Another Inventory
+         ListForInventoryInFromInventoryActionService: List Group of "Inventory In" From Another Inventory
+         SearchForInventoryInFromInventoryActionService: Search Group of "Inventory In" From Another Inventory From Grid View
+         DeleteForInventoryInFromInventoryActionService: Delete Group of "Inventory In" From Another Inventory
+
+         _populatelistforinvinfrminvout: Populate "Item" List for Un-approve "Inventory In" From Another Inventory
+
+         ShowForUnapprovedInvInFromInventoryActionService: Show Landing Page of Un-approved "Inventory In" From Another Inventory
+         CreateForInventoryInDetailsFromInventoryActionService: Create Un-approved "Inventory In" From Another Inventory
+         SelectForInventoryInDetailsFromInventoryActionService: Open Un-approved "Inventory In" From Another Inventory in Edit Mode
+         UpdateForInventoryInDetailsFromInventoryActionService: Update Un-approved "Inventory In" From Another Inventory
+         ListForUnapprovedInvInFromInventoryActionService: List Un-approved "Inventory In" From Another Inventory
+         SearchForUnapprovedInvInFromInventoryActionService: Search Un-approved "Inventory In" From Another Inventory From Grid View
+         DeleteForInventoryInDetailsFromInventoryActionService: Delete Un-approved "Inventory In" From Another Inventory
+         ApproveForInvInDetailsFromInventoryActionService: Approve Un-approved "Inventory In" From Another Inventory
+
+         ShowForApprovedInvInFromInventoryActionService: Show Landing Page of Approved "Inventory In" From Another Inventory
+         _detailsApprovedItemofInvinFromInvOut: Open Approved "Inventory In" From Another Inventory Out in Read Only Mode
+         _reverseInventoryinFromInventoryOutApproveItems: Open Approved "Inventory In" From Another Inventory to Delete
+         ReverseAdjustForInvInFromInventoryActionService: Delete Approved "Inventory In" From another Inventory
+         ListForApprovedInvInFromInventoryActionService: List Approved "Inventory In" From another Inventory
+         SearchForApprovedInvInFromInventoryActionService: Search Approved "Inventory In" From another Inventory From Grid View
+
+         _selectBudgetLineItemFromRightPanel: Select "Budget Line Item" From Right Panel
+         SearchBudgetGridByInventoryActionService: Search "Budget Line Item" Right Panel
+
+         ShowForInventoryConsumptionActionService: Show Group of "Inventory Consumption" Landing Page
+         CreateForInventoryConsumptionActionService: Create Group of "Inventory Consumption"
+         SelectForInventoryConsumptionActionService: Open Group of "Inventory Consumption" in Edit Mode
+         UpdateForInventoryConsumptionActionService: Update Group of "Inventory Consumption"
+         ListForInventoryConsumptionActionService: List Group of "Inventory Consumption"
+         SearchForInventoryConsumptionActionService: Search Group of "Inventory Consumption" From Grid View
+         DeleteForInventoryConsumptionActionService: Delete Group of "Inventory Consumption"
+
+         _populatelistforinvconsumption: Populate "Item" List for Un-approved "Inventory Consumption"
+         GetFixedAssetListByInventoryIdActionService: Populate "Fixed Asset" List
+         GetFixedAssetListByInventoryIdAndItemIdActionService: Populate "Fixed Asset Details" List
+
+         ShowForUnApprovedInventoryConsumptionDetailsActionService: Show Landing Page of Un-Approved "Inventory Consumption"
+         CreateForInventoryConsumptionDetailsActionService: Create Un-Approved "Inventory Consumption"
+         SelectForInventoryConsumptionDetailsActionService: Open Un-Approved "Inventory Consumption" in Edit Mode
+         UpdateForInventoryConsumptionDetailsActionService: Update Un-Approved "Inventory Consumption"
+         ListForUnApprovedInventoryConsumptionDetailsActionService: List Un-Approved "Inventory Consumption"
+         SearchForUnApprovedInventoryConsumptionDetailsActionService: Search Un-Approved "Inventory Consumption" From Grid View
+         DeleteForInventoryConsumptionDetailsActionService: Delete Un-Approved "Inventory Consumption"
+         ApproveForInventoryConsumptionDetailsActionService: Approve Un-Approved "Inventory Consumption"
+
+         ShowForApprovedInventoryConsumptionDetailsActionService: Show Landing Page of Approved "Inventory Consumption"
+         _detailsApprovedItemofInventoryConsumption: Open Approved "Inventory Consumption" in Read Only Mode
+         _adjustmentInventoryConsumptionItem: Open Approved "Inventory Consumption" in Edit Mode
+         AdjustmentForInvConsumptionActionService: Update Approved "Inventory Consumption"
+         _reverseInventoryConsumptionApproveItems: Open Approved "Inventory Consumption" to Delete
+         ReverseAdjustmentForInvConsumptionActionService: Delete Approved "Inventory Consumption"
+         ListForApprovedInventoryConsumptionDetailsActionService: List Approved "Inventory Consumption"
+         SearchForApprovedInventoryConsumptionDetailsActionService: Search Approved "Inventory Consumption" From Grid View
+
+         GetInventoryListIsFactoryByInvTypeActionService: Populate "Inventory" List for "Inventory Production"
+         GetBothMaterialsForLineItemActionService: Populate "Material(Raw,Finish)" List for "Inventory Production"
+
+         _PopulateProductionLineItemList: Populate "Production Line Item" List
+
+         ShowForInvProductionWithConsumptionActionService: Show Landing Page of Un-Approved "Inventory Production"
+         CreateForInvProductionWithConsumptionActionService: Create Un-Approved "Inventory Production"
+         SelectForInvProductionWithConsumptionActionService: Open Un-Approved "Inventory Production" in Edit Mode
+         UpdateForInvProductionWithConsumptionActionService: Update Un-Approved "Inventory Production"
+         ListForInvProductionWithConsumptionActionService: List Un-Approved "Inventory Production"
+         SearchForInvProductionWithConsumptionActionService: Search Un-Approved "Inventory Production" From Grid View
+         DeleteForInvProductionWithConsumptionActionService: Delete Un-Approved "Inventory Production"
+         ApproveForInvProductionWithConsumptionActionService: Approve Un-Approved "Inventory Production"
+
+         ShowForApprovedProductionWithConsumptionActionService: Show Landing Page of Approved "Inventory Production"
+         _detailsApprovedItemofProduction: Open Approved "Inventory Production" in Read Only Mode
+         _adjustmentApprovedProduction: Open Approved "Inventory Production" in Edit Mode
+         AdjustForInvProductionWithConsumptionActionService: Update Approved "Inventory Production"
+         _reverseApprovedProduction: Open Approved "Inventory Production" to Delete
+         ReverseAdjustmentForInvProdWithConsumpActionService: Delete Approved "Inventory Production"
+         ListForApprovedProductionWithConsumptionActionService: List Approved "Inventory Production"
+         SearchForApprovedProductionWithConsumptionActionService: Search Approved "Inventory Production" From Grid View
+
+
+         ShowForInvoiceActionService: Show Landing Page of "Chalan" Report
+         SearchForInvoiceActionService: Generate "Chalan" Report
+         DownloadForInvoiceActionService: Download "Chalan" Report in PDF Format
+
+
+         InvShowForSupplierChalanActionService: Show Landing Page of "Supplier Chalan" Report
+         InvListForSupplierChalanActionService: Generate "Supplier Chalan" Report in HTML Format
+         DownloadForInventorySupplierchalanActionService: Download "Supplier Chalan" Report in PDF Format
+         DownloadForInventorySupplierchalanCsvActionService: Download "Supplier Chalan" Report in CSV Format
+         AcknowledgeInvoiceFromSupplierActionService: Acknowledge "Supplier Chalan" Report
+
+
+         ShowForInventoryStockActionService: Show Landing Page of "Inventory Stock" Report
+         ListForInventoryStockActionService: Generate "Inventory Stock" Report in HTML Format
+         DownloadForInventoryStockActionService: Download "Inventory Stock" Report in PDF Format
+         DownloadForInventoryStockCsvActionService: Download "Inventory Stock" Report in CSV Format
+
+
+         ShowForInventoryStatusWithValueActionService: Show Landing Page of "Inventory Status With Value" Report
+         ListForInventoryStatusWithValueActionService: Generate "Inventory Status With Value" Report in HTML Format
+         DownloadForInventoryStatusWithValueActionService: Download "Inventory Status With Value" Report in PDF Format
+         DownloadForInventoryStatusWithValueCsvActionService: Download "Inventory Status With Value" Report in CSV Format
+
+
+         ShowForInventoryStatusWithQuantityActionService: Show Landing Page of "Inventory Status With Quantity" Report
+         ListForInventoryStatusWithQuantityActionService: Generate "Inventory Status With Quantity" Report in HTML Format
+         DownloadForInventoryStatusWithQuantityActionService: Download "Inventory Status With Quantity" Report in PDF Format
+         DownloadForInventoryStatusWithQuantityCsvActionService: Download "Inventory Status With Quantity" Report in CSV Format
+
+
+         ShowForInventoryStatusWithQuantityAndValueActionService: Show Landing Page of "Inventory Status With Value and Quantity" Report
+         ListForInventoryStatusWithQuantityAndValueActionService: Generate "Inventory Status With Value and Quantity" Report in HTML Format
+         DownloadForInventoryStatusWithQuantityAndValueActionService: Download "Inventory Status With Value and Quantity" Report in PDF Format
+         DownloadForInventoryStatusWithQuantityAndValueCsvActionService: Download "Inventory Status With Value and Quantity" Report in CSV Format
+
+
+         ShowForItemReconciliationActionService: Show Landing Page of "Item Reconciliation" Report
+         ListForItemReconciliationActionService: Generate "Item Reconciliation" Report in HTML Format
+         DownloadForItemReconciliationActionService: Download "Item Reconciliation" Report in PDF Format
+         DownloadForItemReconciliationCsvActionService: Download "Item Reconciliation" Report in CSV Format
+
+         GetInventoryListByInvTypeAndProjectActionService: Populate Inventory List by Inventory Type and Project
+         GetInventoryListByInventoryTypeActionService: Populate Inventory Name List as per User Priviledged
+
+         ShowForInventorySummaryActionService: Show Landing Page of "Inventory Summary" Report
+         GetForInventorySummaryActionService: Generate "Inventory Summary" Report in HTML Format
+         DownloadForInventorySummaryActionService: Download "Inventory Summary" Report in PDF Format
+         DownloadForInventorySummaryCsvActionService: Download "Inventory Summary" Report in CSV Format
+
+         populateTransactionTypeList: Populate "Transaction Type" List
+
+         ShowForInventoryTransactionListActionService: Show Landing Page of "Inventory Transaction" Report
+         SearchForInventoryTransactionListActionService: Generate "Inventory Transaction" Report in HTML Format
+         DownloadForInventoryTransactionListActionService: Download "Inventory Transaction" Report in PDF Format
+         DownloadForInventoryTransactionListCsvActionService: Download "Inventory Transaction" Report in CSV Format
+
+
+         ShowForInventoryValuationActionService: Show Landing Page of "Inventory Valuation" Report
+         SearchForInventoryValuationActionService: Generate "Inventory Valuation" Report in HTML Format
+         DownloadForInventoryValuationActionService: Download "Inventory Valuation" Report in PDF Format
+         DownloadForInventoryValuationCsvActionService: Download "Inventory Valuation" Report in CSV Format
+
+
+         ShowForConsumedItemListActionService: Show Landing Page of "Consumption" Report
+         ListForBudgetOfConsumptionActionService: Generate "Consumption" Report in HTML Format
+         DownloadForConsumedItemListActionService: Download "Consumption" Report in PDF Format
+
+
+         ShowForItemStockListActionService: Show Landing Page of "Item Stock" Report
+         SearchForItemStockListActionService: Generate "Item Stock" List in HTML Format
+         GetForStockDetailsListByItemIdActionService: Show "Stock Details" by Select Item
+
+
+         ShowForItemReceivedStockActionService: Show Landing Page of "Item Received" Report
+         SearchForItemReceivedStockActionService: Generate "Item received" Report in HTML Format
+         DownloadForItemReceivedStockActionService: Download "Item Received" Report in PDF Format
+         DownloadForItemReceivedStockCsvActionService: Download "Item Received" Report in CSV Format
+
+
+         ShowForItemWiseBudgetSummaryActionService: Show Landing Page of "Item Wise Budget Summary" Report
+         ListForItemWiseBudgetSummaryActionService: Generate "Item Wise Budget Summary" Report in HTML Format
+         DownloadForItemWiseBudgetSummaryActionService: Download "Item Wise Budget Summary" Report in PDF Format
+         DownloadForItemWiseBudgetSummaryCsvActionService: Download "Item Wise Budget Summary" Report in CSV Format
+
+
+         ShowForInventoryProductionActionService: Show Landing Page of "Inventory Production" Report
+         SearchForInventoryProductionActionService: Generate "Inventory Production" Report in HTML Format
+         DownloadForInventoryProductionActionService: Download "Inventory Production" Report in PDF Format
+
+
+         InvShowForPoItemReceivedActionService: Show Landing Page of "PO Item Received" Report
+         InvListForPoItemReceivedActionService: Generate "PO Item Received" Report in HTML Format
+         InvDownloadForPoItemReceivedActionService: Download "PO Item Received" Report in PDF Format
+         InvDownloadForPoItemReceivedCsvActionService: Download "PO Item Received" Report in CSV Format
+
+         _showReCalculateValuation: Show "ReCalculateValuation"
+         RecalculateAllInvInventoryValuationActionService: Re-Calculate All Inventory Item Valuation
+
+         ShowInvUserInventoryActionService: Show Landing Page of "User Inventory Mapping"
+         CreateInvUserInventoryActionService: Create "User Inventory Mapping"
+         SelectInvUserInventoryActionService: Open "User Inventory Mapping" in Edit Mode
+         UpdateInvUserInventoryActionService: Update "User Inventory Mapping"
+         ListInvUserInventoryActionService: List "User Inventory Mapping"
+         SearchInvUserInventoryActionService: Search "User Inventory Mapping" From Grid View
+         DeleteInvUserInventoryActionService: Delete "User Inventory Mapping"
+
+
+         ShowInvProductionLineItemActionService: Show Landing Page of "Production Line Item"
+         CreateInvProductionLineItemActionService: Create "Production Line Item"
+         SelectInvProductionLineItemActionService: Open "Production Line Item" in Edit Mode
+         UpdateInvProductionLineItemActionService: Update "Production Line Item"
+         ListInvProductionLineItemActionService: List "Production Line Item"
+         SearchInvProductionLineItemActionService: Search "Production Line Item" From Grid View
+         DeleteInvProductionLineItemActionService: Delete "Production Line Item"
+
+         populateProductionItemTypeList: Populate "Production Item Type" in Drop Down List
+         _populateMaterialList: Populate "Material" list
+
+         ShowInvProductionDetailsActionService: Show Item of "Production Line Item" Landing Page
+         CreateInvProductionDetailsActionService: Add Item in "Production Line Item"
+         SelectInvProductionDetailsActionService: Open Item of "Production Line Item" in Edit Mode
+         UpdateInvProductionDetailsActionService: Update Item of "Production Line Item"
+         ListInvProductionDetailsActionService: List Item of "Production Line Item"
+         SearchInvProductionDetailsActionService: Search Item of "Production Line Item" From Grid View
+         DeleteInvProductionDetailsActionService: Delete Item of "Production Line Item"
+
+         GetInvProdFinishedMaterialByLineItemIdActionService: Populate Finish Product List to Modify Overhead Cost
+
+         ShowInvModifyOverheadCostActionService: Show Landing Page of "Modify Production Overhead Cost"
+         SearchInvModifyOverheadCostActionService: Search "Modify Production Overhead Cost"
+         UpdateInvModifyOverheadCostActionService: Change "Modify Production Overhead Cost"

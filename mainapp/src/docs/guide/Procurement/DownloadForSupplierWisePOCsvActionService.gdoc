@@ -1,0 +1,54 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Download "Supplier Wise Purchase Order" Report in CSV Format | |
+ *ActionService:* | DownloadForSupplierWisePOCsvActionService| *Auditable:* | No
+ *Url*: | /procReport/downloadSupplierWisePOCsv | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 11th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Supplier Wise PO" link.
+* [Show Landing Page of Supplier Wise PO Report|guide:ShowForSupplierWisePOActionService].
+* User must insert valid input.
+* Click "PDF" icon upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Supplier Wise Purchase Order" Report in CSV Format.
+
+h4. Pre-condition: 
+* User must have "Download Supplier wise Purchase Order Csv Report" privilege.
+* Follow the rules of Validation:
+{table}
+*Field* | *Input Type* | *Rules* |
+  From Date | Calender | Required  |
+  To Date | Calender | Required   |
+  [Populate Project List|application] |*Project* Drop Down | All(Default) |
+  [Populate Item Type List|application] | Drop-Down List | All(Default) |
+  [*Supplier*|guide:GetSupplierListActionService]| Supplier Right Panel | Required  |
+{table}
+
+h4. Process:
+* Download report as a CSV format.
+
+h4. Post-condition:
+
+* *Success:*
+** CSV Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,53 @@
+
+{table}
+ *Use Case ID:* | MIS-QS_Measurement-43 | Priority: | High
+ *Name* | List Budget Wise QS Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url:* | /qsReport/listBudgetWiseQs | *Action Class:* | ListForBudgetWiseQsActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+User will see all Budget Wise QS Report within the system under following columns:
+# Serial (Default: Invisible)
+# Line Item
+# Quantity
+# Certified
+# Remaining
+# Achieved (%)
+# Remaining (%)
+# Gross Receivable
+# Net Receivables
+# Budget Details
+
+h4. Pre-condition:
+# If "Is Govt" is active then Government Budget Wise QS will be listed in grid view.
+# Listed budget line Item must be unique.
+# Only billable budget line item of the project show.
+
+h4. Process:
+Get list of Budget Wise QS Report from server (default: 20 at Max).
+
+h4. Post-condition:
+
+# *Success:*
+## Budget Wise QS Report will be listed in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+# [Refresh|common Usecases]
+# [Previous Page|common Usecases]
+# [Forward Page|common Usecases]
+# [First Page|common Usecases]
+# [Last Page|common Usecases]

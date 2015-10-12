@@ -1,0 +1,264 @@
+<script type="text/javascript">
+    var customerListModel,modelJsonForCustomer,entityTypeId;
+
+    jQuery(function ($) {
+        modelJsonForCustomer = ${modelJson};
+
+        $('#printCsvBtn').click(function () {
+            downloadCustomerCSV();
+        });
+
+        onLoadCreateCustomer();
+    });
+
+    function onLoadCreateCustomer() {
+
+        try {   // Model will be supplied to grid on load _list.gsp
+            var isError = modelJsonForCustomer.isError;
+            if (isError == true) {
+                var message = modelJsonForCustomer.message;
+                showError(message);
+                return;
+            }
+            customerListModel = modelJsonForCustomer.customerListJSON ? modelJsonForCustomer.customerListJSON : false;
+        } catch (e) {
+            customerListModel = false;
+        }
+        entityTypeId = $("#entityTypeId").val();
+        initFlex();
+        populateCustomerGridOnPageLoad();
+    }
+
+    function downloadCustomerCSV() {
+        showLoadingSpinner(true);
+        if (confirm('Do you want to download the CSV now?')) {
+            var url = "${createLink(controller: 'exhReport', action: 'downloadCustomerCSV')}";
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+        return false;
+    }
+
+    // update page title
+
+    $(document).attr('title', "ARMS - Show Customer");
+    loadNumberedMenu(MENU_ID_EXCHANGE_HOUSE, "#exhCustomer/showForAdmin");
+
+    function initFlex(){
+    $("#flex1").flexigrid
+    (
+            {
+                url: false,
+                dataType: 'json',
+                colModel: [
+                    {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                    {display: "Customer A/C No", name: "code", width: 100, sortable: true, align: "left"},
+                    {display: "Full Name", name: "fullName", width: 190, sortable: true, align: "left"},
+                    {display: "Date Of Birth", name: "dateOfBirth", width: 190, sortable: false, align: "left"},
+                    {display: "Photo ID Type", name: "photoIdTypeId", width: 150, sortable: false, align: "left"},
+                    {display: "Photo ID No", name: "photoIdNo", width: 120, sortable: false, align: "left"},
+                    {display: "Phone No", name: "phone", width: 120, sortable: false, align: "left"}
+                ],
+                buttons: [
+                    {name: 'View Details', bclass: 'viewDetails', onpress: viewCustomer},
+                    {name: 'Report', bclass: 'remittanceReport', onpress: viewRemittanceReport},
+                    {name: 'Note', bclass: 'note', onpress: viewEntityNote},
+                    {name: 'Attachment', bclass: 'attachment', onpress: viewEntityContent},
+                    {name: 'Block Customer', bclass: 'delete', onpress: blockCustomer},
+                    {name: 'Unblock Customer', bclass: 'send', onpress: unblockCustomer},
+                    {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                    {separator: true}
+                ],
+                searchitems: [
+                    {display: "Customer A/C No", name: "code", width: 100, sortable: true, align: "left"},
+                    {display: "Full Name", name: "fullName", width: 180, sortable: true, align: "left"},
+                    {display: "Photo Id No", name: "photo_id_no", width: 120, sortable: true, align: "left"},
+                    {display: "Phone No", name: "phone", width: 120, sortable: true, align: "left"}
+                ],
+                sortname: "name",
+                sortorder: "asc",
+                usepager: true,
+                singleSelect: true,
+                title: 'All Customers',
+                useRp: true,
+                rp: 15,
+                showTableToggleBtn: false,
+                //width: 725,
+                height: getGridHeight()-20,
+                afterAjax: function () {
+                    showLoadingSpinner(false);// Spinner hide after AJAX Call
+                }
+            }
+    );
+    }
+
+    function viewCustomer(com, grid) {
+     if(executeCommonPreConditionForSelect($('#flex1'),'task',true)==false){
+         return;
+     }
+
+        clearCustomerPanel();
+        showLoadingSpinner(true);
+        var ids = $('.trSelected', grid);
+        var customerCode =$(ids[ids.length - 1]).find('td').eq(1).find('div').text();
+        $.ajax({
+            url: "${createLink(controller: 'exhCustomer', action: 'searchCustomerUser')}?customerCode="+ customerCode,
+            success: executePostConditionForView,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+
+    }
+
+
+    function executePreConditionForView(ids) {
+        if (ids.length == 0) {
+            showError("Please select a customer to view details");
+            return false;
+        }
+        return true;
+    }
+
+    function executePostConditionForView(data) {
+        if (data.customerInfoMap == null) {
+            showError(data.message);
+        } else {
+            populateCustomer(data);
+        }
+    }
+
+    function populateCustomer(data) {
+        var entity = data.customerInfoMap;
+        $('#name').text(entity.name);
+        $('#photoIdTypeId').text(entity.photoIdType);
+        $('#countryId').text(entity.country);
+        $('#photoIdNo').text(entity.photoIdNo);
+        $('#phone').text(entity.phone ? entity.phone : '');
+        $('#customerDateOfBirth').text(entity.dateOfBirthForUI);
+        $('#customerPhotoIdExpiryDate').text(entity.photoIdExpiryDateForUI);
+        $('#email').text(entity.email);
+        $('#address').text(entity.address ? entity.address : '');
+        $('#postCode').text(entity.postCode ? entity.postCode : '');
+        $('#sourceOfFund').text(entity.postCode ? entity.sourceOfFund : '');
+        if (entity.addressVerifiedStatus == '1') {
+            $('#addressVerifiedBy').attr('checked', 'checked')
+        } else {
+            $('#addressVerifiedBy').removeAttr("checked");
+        }
+    }
+
+    function clearCustomerPanel() {
+        $('#name').text('');
+        $('#photoIdTypeId').text('');
+        $('#countryId').text('');
+        $('#photoIdNo').text('');
+        $('#phone').text('');
+        $('#customerDateOfBirth').text('');
+        $('#customerPhotoIdExpiryDate').text('');
+        $('#email').text('');
+        $('#address').text('');
+        $('#postCode').text('');
+        $('#sourceOfFund').text('');
+        $('#addressVerifiedBy').removeAttr("checked");
+    }
+
+    function viewRemittanceReport(com, grid) {
+        var customerId=getSelectedIdFromGrid($('#flex1'));
+        if(executeCommonPreConditionForSelect($('#flex1'),'task',true)==false){
+            return;
+        }
+
+        showLoadingSpinner(true);
+        var loc = "${createLink(controller: 'exhReport', action: 'showCustomerHistory')}?customerId=" + customerId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    function viewEntityNote(com, grid) {
+
+        if(executeCommonPreConditionForSelect($('#flex1'),'task',true)==false){
+            return;
+        }
+        var customerId=getSelectedIdFromGrid($('#flex1'));
+        showLoadingSpinner(true);
+        var loc = "${createLink(controller: 'exhCustomer', action: 'showEntityNote')}?customerId=" + customerId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+
+    function viewEntityContent(com, grid) {
+
+        if(executeCommonPreConditionForSelect($('#flex1'),'task',true)==false){
+            return;
+        }
+        var customerId=getSelectedIdFromGrid($('#flex1'));
+
+        showLoadingSpinner(true);
+        var loc = "${createLink(controller: 'entityContent', action: 'show')}?entityId=" + customerId + "&entityTypeId=" + entityTypeId+"&leftMenu="+'showForAdmin';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+
+   // window.onload = populateCustomerGridOnPageLoad();
+
+    function populateCustomerGridOnPageLoad() {
+        var strUrl = "${createLink(controller: 'exhCustomer', action: 'list')}";
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (customerListModel) {
+            $("#flex1").flexAddData(customerListModel);
+        }
+    }
+    function blockCustomer(grid){
+        if(executeCommonPreConditionForSelect($('#flex1'),'customer',true)==false){
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'exhCustomer', action: 'blockExhCustomer')}?id="+ id,
+            success: executePostConditionForBlock,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+    function executePostConditionForBlock(data){
+           if(data.isError){
+               showError(data.message);
+           }
+           else{
+               showSuccess(data.message);
+           }
+    }
+    function unblockCustomer(){
+        if(executeCommonPreConditionForSelect($('#flex1'),'customer',true)==false){
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'exhCustomer', action: 'unblockExhCustomer')}?customerId="+ id,
+            success: executePostConditionForUnblock,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+    function executePostConditionForUnblock(data){
+        if(data.isError){
+            showError(data.message);
+        }
+        else{
+            showSuccess(data.message);
+        }
+    }
+</script>

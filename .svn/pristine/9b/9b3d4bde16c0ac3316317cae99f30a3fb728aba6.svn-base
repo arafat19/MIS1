@@ -1,0 +1,407 @@
+package com.athena.mis.arms.actions.rmstask
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.application.utility.CountryCacheUtility
+import com.athena.mis.application.utility.CurrencyCacheUtility
+import com.athena.mis.arms.entity.RmsExchangeHouse
+import com.athena.mis.arms.entity.RmsTask
+import com.athena.mis.arms.model.WrapCashCollectionTask
+import com.athena.mis.arms.service.RmsTaskService
+import com.athena.mis.arms.utility.RmsExchangeHouseCacheUtility
+import com.athena.mis.arms.utility.RmsPaymentMethodCacheUtility
+import com.athena.mis.arms.utility.RmsSessionUtil
+import com.athena.mis.arms.utility.RmsTaskStatusCacheUtility
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+import javax.servlet.http.HttpServletRequest
+
+/**
+ * Create tasks from uploaded .csv file
+ * For details go through use-case doc named 'UploadCashCollectionTaskActionService'
+ */
+class UploadCashCollectionTaskActionService extends BaseService implements ActionIntf {
+
+    RmsTaskService rmsTaskService
+    @Autowired
+    RmsExchangeHouseCacheUtility rmsExchangeHouseCacheUtility
+    @Autowired
+    RmsPaymentMethodCacheUtility rmsPaymentMethodCacheUtility
+    @Autowired
+    RmsTaskStatusCacheUtility rmsTaskStatusCacheUtility
+    @Autowired
+    RmsSessionUtil rmsSessionUtil
+    @Autowired
+    CurrencyCacheUtility currencyCacheUtility
+    @Autowired
+    CountryCacheUtility countryCacheUtility
+
+    private Logger log = Logger.getLogger(getClass());
+
+    private static final String INVALID_TEMPLATE = "Invalid template"
+    private static final String NO_TASK_FOUND = "No tasks found in the CSV file"
+    private static final String UPLOAD_FAILED = "Task upload failed"
+    private static final String UPLOAD_SUCCESS = "Tasks upload successful"
+    private static final String ERROR_TASK_FAILURE = "Following tasks contains error"
+    private static final String INVALID_FILE_EXTENSION = "Invalid file extension (.csv expected)"
+
+    private static final String LIST_TASK = "lstTask"
+    private static final String TASK_STATUS = "taskStatus"
+    private static final String LIST_ERROR_TASK = "lstErrorTasks"
+    private static final String GRID_OBJ = "gridObj"
+    private static final String DUPLICATE_REF_MSG = "Duplicate Ref No: "
+    private static final String DUPLICATE_PIN_MSG = "Duplicate PIN No: "
+
+    private static final String FILE_NAME = "taskFile"
+    private static final String UTF_8 = 'UTF-8'
+    private static final String CSV_EXTENSION = ".csv"
+    private static final int CASH_COLLECTION_TASK_FILE_COLUMN = 14;
+    private static final int TASK_UPLOAD_PER_FILE_LIMIT = 200;
+
+    /**
+     * build list of WrapCashCollectionTask
+     * 1. Parse CSV file
+     * 2. check template & validate each task
+     * 3. check duplicate refNo
+     * @param params - parameters from UI
+     * @param obj - N/A
+     * @return - Map for execute
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        GrailsParameterMap parameterMap = (GrailsParameterMap) params
+        try {
+            result.put(Tools.IS_ERROR, true)
+
+            HttpServletRequest request = (HttpServletRequest) obj
+            def uploadedFile = request.getFile(FILE_NAME)
+
+            // check file extension
+            String strFileName = uploadedFile.properties.originalFilename.toString()
+            if (!isCsvFile(strFileName)) {
+                result.put(Tools.MESSAGE, INVALID_FILE_EXTENSION)
+                return result
+            }
+
+            def csvReader = uploadedFile.inputStream.toCsvReader(['charset': UTF_8, 'separatorChar': Tools.COMA, 'skipLines': 1])
+
+            List<WrapCashCollectionTask> tasks = []
+            long exchangeHouseId = 0l
+            boolean isExhUser = Boolean.FALSE
+            if (parameterMap.isExhUser) {
+                isExhUser = Boolean.TRUE
+            }
+            if (isExhUser.booleanValue()) {
+                exchangeHouseId = rmsSessionUtil.getUserExchangeHouseId()
+            } else {
+                exchangeHouseId = Tools.parseLongInput(parameterMap.exchangeHouseId)
+            }
+            RmsExchangeHouse exchangeHouse = (RmsExchangeHouse) rmsExchangeHouseCacheUtility.read(exchangeHouseId)
+
+            boolean isInvalidTemplate = false
+            csvReader.eachLine { tokens ->
+                if (tokens.size() != CASH_COLLECTION_TASK_FILE_COLUMN) {
+                    isInvalidTemplate = true
+                } else {
+                    WrapCashCollectionTask wrapCashCollectionTask = new WrapCashCollectionTask(this)
+                    wrapCashCollectionTask.parseTokens(tokens, exchangeHouse)
+                    tasks << wrapCashCollectionTask
+                }
+            }
+            if (isInvalidTemplate) {
+                result.put(Tools.MESSAGE, INVALID_TEMPLATE)
+                return result
+            }
+            if (tasks.size() == 0) {
+                result.put(Tools.MESSAGE, NO_TASK_FOUND)
+                return result
+            } else if (tasks.size() > TASK_UPLOAD_PER_FILE_LIMIT) {
+                result.put(Tools.MESSAGE, "CSV file exceeds task limit ( ${TASK_UPLOAD_PER_FILE_LIMIT} tasks per file )")
+                return result
+            }
+
+            List<WrapCashCollectionTask> errorTasks
+            errorTasks = validateTask(tasks)
+            if (errorTasks.size() > 0) {
+                result.put(LIST_ERROR_TASK, errorTasks)
+                return result
+            }
+            List lstDuplicate
+            lstDuplicate = checkDuplicateRefNo(tasks)
+            if (lstDuplicate.size() > 0) {
+                result.put(LIST_ERROR_TASK, lstDuplicate)
+                return result
+            }
+            lstDuplicate = checkDuplicatePinNo(tasks, exchangeHouse.id)
+            if (lstDuplicate.size() > 0) {
+                result.put(LIST_ERROR_TASK, lstDuplicate)
+                return result
+            }
+            long companyId = rmsSessionUtil.appSessionUtil.getCompanyId()
+            SystemEntity newTaskStatusObj = (SystemEntity) rmsTaskStatusCacheUtility.readByReservedAndCompany(RmsTaskStatusCacheUtility.NEW_TASK, companyId)
+            Long status = newTaskStatusObj.id
+            if (isExhUser.booleanValue()) {
+                SystemEntity pendingTask = (SystemEntity) rmsTaskStatusCacheUtility.readByReservedAndCompany(rmsTaskStatusCacheUtility.PENDING_TASK, companyId)
+                status = pendingTask.id
+            }
+            result.put(Tools.IS_ERROR, false)
+            result.put(TASK_STATUS, status)
+            result.put(LIST_TASK, tasks)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, true)
+            result.put(Tools.MESSAGE, UPLOAD_FAILED)
+            return result
+        }
+    }
+
+    /**
+     * Save cashCollectionTask to DB
+     * @param params N/A
+     * @param obj - preResult from executePreCondition
+     * @return
+     */
+    @Transactional
+    Object execute(Object params, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (LinkedHashMap) obj
+            List<WrapCashCollectionTask> lstTask = (List<WrapCashCollectionTask>) preResult.get(LIST_TASK)
+            Long taskStatus = (Long) preResult.get(TASK_STATUS)
+            boolean success = rmsTaskService.saveCashCollectionBulkTasks(lstTask, taskStatus.longValue())
+            if (success) {
+                result.put(Tools.IS_ERROR, false)
+                result.put(Tools.MESSAGE, UPLOAD_SUCCESS)
+                return result
+            } else {
+                result.put(Tools.IS_ERROR, true)
+                result.put(Tools.MESSAGE, UPLOAD_FAILED)
+                return result
+            }
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            throw new RuntimeException(UPLOAD_FAILED)
+            result.put(Tools.IS_ERROR, true)
+            result.put(Tools.MESSAGE, UPLOAD_FAILED)
+            return result
+        }
+
+    }
+
+    /**
+     * do nothing for post condition
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * do nothing for post condition
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * build failure result for UI
+     * @param obj
+     * @return - Map containing gridObj & lstErrorTasks
+     */
+    @Transactional(readOnly = true)
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            Map executeResult = (LinkedHashMap) obj
+            result.put(Tools.IS_ERROR, true)
+
+            String message = executeResult.get(Tools.MESSAGE)
+            if (message) {
+                result.put(Tools.MESSAGE, message)
+                return result
+            }
+            result.put(Tools.MESSAGE, UPLOAD_FAILED)
+            List<WrapCashCollectionTask> lstErrorTaskDetails = (List<WrapCashCollectionTask>) executeResult.get(LIST_ERROR_TASK)
+            if ((!lstErrorTaskDetails) || (lstErrorTaskDetails.size() == 0)) {
+                return result
+            }
+            List<Map> lstErrorTask = buildErrorTasks(lstErrorTaskDetails)
+            List wrapList = wrapErrorTask(lstErrorTaskDetails)
+            Map gridObj = [page: pageNumber, total: wrapList.size(), rows: wrapList]
+            result.put(LIST_ERROR_TASK, lstErrorTask)
+            result.put(GRID_OBJ, gridObj)
+            result.put(Tools.MESSAGE, ERROR_TASK_FAILURE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, true)
+            result.put(Tools.MESSAGE, UPLOAD_FAILED)
+            return result
+        }
+    }
+
+    /**
+     * validate if .csv file
+     * @param fileName
+     * @return
+     */
+    private boolean isCsvFile(String fileName) {
+        String lowerFileName = fileName.toLowerCase();
+        return lowerFileName.endsWith(CSV_EXTENSION);
+    }
+
+    /**
+     * validate task and build errors
+     * @param tasks
+     * @return
+     */
+    private List validateTask(List<WrapCashCollectionTask> tasks) {
+        List<WrapCashCollectionTask> errorTasks = []
+        for (WrapCashCollectionTask it in tasks) {
+            it.validate()
+            if (it.errors.size() > 0) {
+                errorTasks << it
+            }
+        }
+        return errorTasks
+    }
+
+    /**
+     * Check if refNo is duplicated
+     * 1. check in csv file first
+     * 2. check in DB
+     * @param tasks
+     * @return
+     */
+    private List checkDuplicateRefNo(List<WrapCashCollectionTask> tasks) {
+        List allRefNo = []
+        List lstDuplicate = []
+
+        for (int i = 0; i < tasks.size(); i++) {
+            allRefNo << tasks[i].transactionRefNo
+            for (int j = i + 1; j < tasks.size(); j++) {
+                if (tasks[i].transactionRefNo.equalsIgnoreCase(tasks[j].transactionRefNo)) {
+                    WrapCashCollectionTask task = tasks[i]
+                    task.errors << DUPLICATE_REF_MSG + tasks[i].transactionRefNo
+                    lstDuplicate << task
+                }
+            }
+        }
+        if (lstDuplicate.size() > 0) {
+            return lstDuplicate
+        }
+        List<RmsTask> duplicateList = (List<RmsTask>) rmsTaskService.findAllByRefNoInList(allRefNo)
+        if (duplicateList.size() > 0) {
+            for (int i = 0; i < duplicateList.size(); i++) {
+                for (int j = 0; j < tasks.size(); j++) {
+                    if (duplicateList[i].refNo.equalsIgnoreCase(tasks[j].transactionRefNo)) {
+                        WrapCashCollectionTask task = tasks[j]
+                        task.errors << DUPLICATE_REF_MSG + tasks[j].transactionRefNo
+                        lstDuplicate << task
+                        break
+                    }
+                }
+            }
+        }
+        return lstDuplicate
+    }
+
+    /**
+     * Check if PIN no is duplicated
+     * 1. check in csv file first
+     * 2. check in DB
+     * @param tasks
+     * @return
+     */
+    private List checkDuplicatePinNo(List<WrapCashCollectionTask> tasks, long exchangeHouseId) {
+        List allPinNo = []
+        List lstDuplicate = []
+
+        for (int i = 0; i < tasks.size(); i++) {
+            allPinNo << tasks[i].pinNo
+            for (int j = i + 1; j < tasks.size(); j++) {
+                if (tasks[i].pinNo.equalsIgnoreCase(tasks[j].pinNo)) {
+                    WrapCashCollectionTask task = tasks[i]
+                    task.errors << DUPLICATE_PIN_MSG + tasks[i].pinNo
+                    lstDuplicate << task
+                }
+            }
+        }
+        if (lstDuplicate.size() > 0) {
+            return lstDuplicate
+        }
+        List<RmsTask> duplicateList = (List<RmsTask>) rmsTaskService.findAllByPinNoInListAndExchangeHouseId(allPinNo, exchangeHouseId)
+        if (duplicateList.size() > 0) {
+            for (int i = 0; i < duplicateList.size(); i++) {
+                for (int j = 0; j < tasks.size(); j++) {
+                    if (duplicateList[i].pinNo.equalsIgnoreCase(tasks[j].pinNo)) {
+                        WrapCashCollectionTask task = tasks[j]
+                        task.errors << DUPLICATE_PIN_MSG + tasks[j].pinNo
+                        lstDuplicate << task
+                        break
+                    }
+                }
+            }
+        }
+        return lstDuplicate
+    }
+
+    /**
+     * wrap list of task for grid
+     * @param lstTask
+     * @return
+     */
+    private List wrapErrorTask(List<WrapCashCollectionTask> lstTask) {
+        List lstWrapTask = []
+        int counter = start + 1
+        for (int i = 0; i < lstTask.size(); i++) {
+            WrapCashCollectionTask wrapCashCollectionTask = lstTask[i]
+            GridEntity obj = new GridEntity()
+            obj.id = wrapCashCollectionTask.serial
+            obj.cell = [
+                    counter,
+                    wrapCashCollectionTask.taskValueDate,
+                    wrapCashCollectionTask.transactionRefNo,
+                    wrapCashCollectionTask.beneficiaryName,
+                    wrapCashCollectionTask.beneficiaryPhone,
+                    wrapCashCollectionTask.currency,
+                    wrapCashCollectionTask.amount,
+                    wrapCashCollectionTask.outletName,
+                    wrapCashCollectionTask.outletBranchName,
+                    wrapCashCollectionTask.outletDistrictName
+            ]
+            lstWrapTask << obj
+            counter++
+        }
+        return lstWrapTask
+    }
+
+    /**
+     * build list of error map for kendoListView
+     * @param lstErrorTaskDetails
+     * @return
+     */
+    private List<Map> buildErrorTasks(List<WrapCashCollectionTask> lstErrorTaskDetails) {
+        List<Map> lstErrorTask = []      // keep only necessary properties
+
+        for (int i = 0; i < lstErrorTaskDetails.size(); i++) {
+            List errors = []
+            for (int j = 0; j < lstErrorTaskDetails[i].errors.size(); j++) {
+                errors << [id: j + 1, name: lstErrorTaskDetails[i].errors[j]]
+            }
+            lstErrorTaskDetails[i].errors = errors
+            lstErrorTask << lstErrorTaskDetails[i].properties
+        }
+        return lstErrorTask
+    }
+
+}

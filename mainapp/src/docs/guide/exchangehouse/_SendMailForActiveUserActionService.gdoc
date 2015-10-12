@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Send E-mail to Active *User* with Activation Link | |
+*ActionServices:* | ExhSignupForCustomerUserActionService | *Auditable:* | No
+*Url:* | /exhCustomer/signup  | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 7th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* User must request to access "Log-In" page.
+* Actor clicks "New User? Click Here" option from show page.
+* [Show "User Registration" Page|guide:ExhShowRegistrationCustomerActionService].
+* User must enter valid input.
+* Click "Sign Up" button.
+* [Create "User Registration"|guide:ExhSignupForCustomerUserActionService].
+* Send E-mail to Active *User* with Activation Link.
+
+h4. Pre-condition:
+* Transaction code "ExhSignupForCustomerUserActionService" must be active.
+* *User* must insert valid e-mail address.
+
+h4. Process:
+* Send e-mail for corresponding *User* with a activation link.
+
+h4. Post-condition:
+
+* *Success:*
+** Send System generated e-mail for corresponding *User* with a activation link.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Active "User" by clicking activation link|guide:ExhActivateCustomerUserActionService].

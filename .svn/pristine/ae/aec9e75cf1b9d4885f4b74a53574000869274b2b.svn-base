@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Remittance Purpose* | |
+*ActionService:* | ExhShowRemittancePurposeActionService | *Auditable:* | No
+*Url:* | /exhRemittancePurpose/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Remittance Purpose* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Remittance Purpose* link.
+* Show Landing Page of *Remittance Purpose*.
+
+h4. Pre-condition:
+* User must have "Show remittance purpose" privilege.
+
+h4. Process:
+* [Get list of "Remittance Purpose"|guide:ExhListRemittancePurposeActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Remittance Purpose"|guide:ExhCreateRemittancePurposeActionService].
+** Show list of "Remittance Purpose" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Remittance Purpose" in Edit Mode|guide:ExhSelectRemittancePurposeActionService].
+* [Delete "Remittance Purpose"|guide:ExhDeleteRemittancePurposeActionService].
+* [Search "Remittance Purpose" From Grid View|guide:ExhSearchRemittancePurposeActionService].
+
+!Exh/Remittance Purpose_Show.png!

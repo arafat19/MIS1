@@ -1,0 +1,47 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show "Task" Details | |
+ *ActionService:* | GetRmsTaskDetailsTagLibActionService | *Auditable:* | No
+ *Url:* |/rmsTask/renderTaskDetails | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 21th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page for *Show Task Details* Search Panel on top and "Task" betails at bottom.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click "Manage" link from left menu under task .
+* [Show landing page for "Manage Task"|guide:_ShowManageTask].
+* Enter valid input
+* Click on search button
+* Show "Task" details
+
+h4. Pre-condition:
+* User must have "Show Task Details" privilege.
+
+h4. Process:
+* Get specific "Task" details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "task" details in HTML format at bottom.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Edit "Task"|guide:ShowRmsTaskActionService].
+* [Cancel "Task"|guide:CancelRmsTaskActionService].
+* ["Task" History |guide:showRmsTaskHistory].

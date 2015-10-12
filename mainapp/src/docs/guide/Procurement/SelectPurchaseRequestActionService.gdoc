@@ -1,0 +1,45 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open *Purchase Request* in Edit Mode | |
+ *ActionService:* | SelectPurchaseRequestActionService | *Auditable:* | No
+ *Url*: | /procPurchaseRequest/select | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show landing page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* Open *Purchase Request* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Purchase Request" privilege.
+
+h4. Process:
+Get selected *Purchase Request* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Purchase Request* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Update "Purchase Request"|guide:UpdatePurchaseRequestActionService].

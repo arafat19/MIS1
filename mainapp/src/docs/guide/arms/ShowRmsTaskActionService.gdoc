@@ -1,0 +1,45 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show Landing Page of "Create Task" | |
+ *ActionService:* | ShowRmsTaskActionService | *Auditable:* | No
+ *Url:* | /rmsTask/show | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Exchange House User.
+
+h4. Description:
+This is the landing page of "Create Task" with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Create" link under "Task".
+* Show Landing Page of Create *Task*.
+
+h4. Pre-condition:
+* User must have "Show Task" privilege.
+
+h4. Process:
+* Get [List of all "Task" from server|guide:ListRmsTaskActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show blank input form on top to [Create "Task"|guide:CreateRmsTaskActionService].
+** Show *Task* information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Task" in Edit Mode|guide:SelectRmsTaskActionService].
+* [Delete "Task"|guide:DeleteRmsTaskActionService].

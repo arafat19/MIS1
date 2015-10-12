@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted  | Priority: | High
+*Name:* | Update *Purchase Request* | |
+*ActionService:* | UpdatePurchaseRequestActionService | *Auditable:* | No
+*Url*: | /procPurchaseRequest/update | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director,Chief Financial Officer.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show Landing Page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* [Open "Purchase Request" in Edit Mode|guide:SelectPurchaseRequestActionService].
+* User must insert valid input.
+* Click "Update" button.
+* Update *Purchase Request*.
+
+h4. Pre-condition:
+* User must have "Update Purchase Request" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Populate Project List|application] | Drop-Down List |  Numeric  | Required |
+[Indent|guide:GetIndentListByProjectIdActionService] | Drop-Down List | Numeric | Optional
+Comments | Text Area | Alpha Numeric | Optional
+{table}
+
+* Match expected version before updating a *Purchase Request*.
+
+
+h4. Process:
+Update selected *Purchase Request*.
+
+h4. Post-condition:
+* After Update *Purchase Request* e-mail must send to priviledged user.
+
+* *Success:*
+** Update selected *Purchase Request* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

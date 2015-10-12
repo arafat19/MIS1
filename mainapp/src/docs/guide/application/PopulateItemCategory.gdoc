@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *Item Category* List in drop-down | |
+*ActionService:* | GetDropDownSystemEntityTagLibActionService | *Auditable:* | No
+*Url:* | /itemType/show  | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 12th June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 705.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Item Type* link.
+* [Show Landing Page of "Item Type"|guide:ShowItemTypeActionService].
+* Populate *Item Category* List in drop-down.
+
+h4. Pre-condition:
+* Key must be Active to populate in drop-down.
+
+h4. Process:
+* Get Active list of *Item Category* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate active *Item Category* in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Item Type"|guide:CreateItemTypeActionService].

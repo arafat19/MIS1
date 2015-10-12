@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Budget Task* From Grid View | |
+*ActionService:* | SearchBudgTaskActionService | *Auditable:* | No
+*Url:* | /budgTask/list | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* [Show Landing Page of "Procurement Budget"|guide:ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Task" button from tool bar.
+* [Show Landing Page of "Budget Task"|guide:ShowBudgTaskActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Budget Task* From Grid View.
+
+h4. Pre-condition:
+* User must have "List budget task" privilege.
+* Rules of searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+ Criteria | Text Box | Alpha Numeric | Required
+ Field (Name) | Drop Down List | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* Get list of *Budget Task* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Budget Task*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Budget Task* list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Budget Task" in Landing Page|guide:ListBudgTaskActionService].

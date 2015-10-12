@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Task" Report For A "Specific Cashier" | |
+*ActionServices:* | ExhShowCashierWiseReportCashierActionService | *Auditable:* | No
+*Url:* | /exhReport/showCashierWiseReportForCashier | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 1st February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+This is the landing page of "Task" Report for a specific "Cashier" with input form on top.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Cashier Wise Task" link.
+* Show Landing Page of "Task" Report For A "Specific Cashier".
+
+h4. Pre-condition:
+* User must have "Show cashier wise report for cashier" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+
+h4. Post-condition:
+
+* *Success:*
+** Show Landing Page of "Task" Report For A "Specific Cashier".
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Task" Report in HTML Format For A "Specific Cashier"|guide:ExhListCashierWiseReportCashierActionService].
+
+!Exh/Cashier_CashierWiseTask_Report_Show.png!

@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Send e-mail to approve *Purchase Order*   | |
+ *ActionServices:* | SendForApprovalPurchaseOrderActionService | *Auditable:* | No
+ *Url:* | /procPurchaseOrder/sendForPOApproval | |
+{table}
+
+
+h4. Revision History
+    {table}
+     *Author*   | *Date*	| *Reason for Changes*	| *Version*
+     Nahida Sultana | 1st March 2014	| Initial Requirement | 1.0
+    {table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant, HO Computer Operator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show Landing Page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click "Send for Approval" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Send e-mail to approve *Purchase Order*.
+
+h4. Pre-condition:
+* User must have "Send for PO Approval" privilege.
+* Transaction Code "SendForApprovalPurchaseOrderActionService" must be active.
+* Must have Valid role id with comma delimited.
+* *Purchase Order* must be un-approve.
+* *Purchase Order* must have one Item.
+
+h4. Process:
+* Send *Purchase Order* for Approval.
+
+h4. Post-condition:
+* After send for approval, *Purchase Order* must not be editable.
+* Send e-mail to corresponding *User*.
+* PDF Report attached with e-mail.
+
+* *Success:*
+** Selected *Purchase Order* send for approval.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

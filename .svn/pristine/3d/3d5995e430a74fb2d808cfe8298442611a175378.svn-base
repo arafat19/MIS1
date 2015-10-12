@@ -1,0 +1,61 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Generate "Financial Statement (Hierarchy 3)" Report in HTML Format | |
+ *ActionService:* | ListForFinancialStatementOfLevel3ActionService | *Auditable:* | No
+ *Url:* | /accReport/listFinancialStatementOfLevel3 | |
+{table}
+
+h4. Revision History:
+    {table}
+     *Author*   | *Date* | *Reason for Changes*	| *Version*
+     Meherun Nessa | 25th December 2013	| Initial Requirement | 1.0
+    {table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Financial Report" sub menu from left menu.
+* Click "Financial Statement (Hierarchy 3)" link.
+* [Show Landing Page of Financial Statement (Hierarchy 3) Report|guide:_ShowForFinancialStatementL3ActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Financial Statement (Hierarchy 3)" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List financial statement of level 3" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ From Date | Calender | Alpha Numeric | Required
+ To Date | Calender | Alpha Numeric | Required
+ [Populate Project List|application] | Drop Down List | Numeric | All(Default)
+ [Division|guide:GetAccDivisionByProjectActionService] | Drop Down List | Numeric | All(Default)
+{table}
+
+* Given Date must be in between Financial Year.
+
+h4. Process:
+* Show a list of "Financial Statement (Hierarchy 3)" information, for the selected *Project* and *Division*.
+* Following columns should show in grid view:
+** Serial
+** COA ID/Tier2 ID (Default: Invisible)
+** Description
+** Asset
+** Liabilities
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Financial Statement (Hierarchy 3)" information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Acc/FinancialStatement_H3_Generate.png!

@@ -1,0 +1,317 @@
+package com.athena.mis.projecttrack.actions.ptbacklog
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.projecttrack.entity.PtBacklog
+import com.athena.mis.projecttrack.service.PtAcceptanceCriteriaService
+import com.athena.mis.projecttrack.service.PtBacklogService
+import com.athena.mis.projecttrack.service.PtBugService
+import com.athena.mis.projecttrack.utility.*
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ *  Update ptBacklog object and grid data in MyBacklog
+ *  For details go through Use-Case doc named 'UpdateMyPtBacklogActionService'
+ */
+
+class UpdateMyPtBacklogActionService extends BaseService implements ActionIntf {
+
+    PtBacklogService ptBacklogService
+    PtAcceptanceCriteriaService ptAcceptanceCriteriaService
+    PtBugService ptBugService
+    @Autowired
+    PtSessionUtil ptSessionUtil
+    @Autowired
+    PtBacklogPriorityCacheUtility ptBacklogPriorityCacheUtility
+    @Autowired
+    PtBacklogStatusCacheUtility ptBacklogStatusCacheUtility
+    @Autowired
+    PtAcceptanceCriteriaStatusCacheUtility ptAcceptanceCriteriaStatusCacheUtility
+    @Autowired
+    PtBugStatusCacheUtility ptBugStatusCacheUtility
+
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    private static final String BACKLOG_UPDATE_FAILURE_MESSAGE = "Backlog could not be updated"
+    private static final String ACCEPTANCE_CRITERIA_FAILURE_MESSAGE = " acceptance criteria is not Completed"
+    private static final String BUG_FAILURE_MESSAGE = " bug is not Fixed"
+    private static final String USE_CASE_ID_REQUIRED = "Use case id required"
+    private static final String BACKLOG_UPDATE_SUCCESS_MESSAGE = "Backlog has been updated successfully"
+    private static final String OBJ_NOT_FOUND = "Selected Backlog not found"
+    private static final String OBJ_MODIFIED = "Backlog already modified. Try again"
+    private static final String BACKLOG_OBJ = "backlog"
+    private static final String SPAN_START = "<span style='color:red'>"
+    private static final String SPAN_END = "</span>"
+    private static final String INVALID_HOURS_INPUT = "Hours can't be zero"
+    private static final String IS_OWNER_CHANGED = "isOwnerChanged"
+    private static final String BACKLOG_STATUS = "backlogStatus"
+
+    private static final String COUNT_QUERY_AC = """
+        SELECT COUNT(id) FROM pt_acceptance_criteria WHERE backlog_id =:backLogId AND status_id <>:statusId
+	"""
+
+    private static final String COUNT_QUERY_BUG = """
+        SELECT COUNT(id) FROM pt_bug WHERE backlog_id =:backLogId AND status <>:fixedId AND status <>:closedId
+	"""
+    /**
+     * Get parameters from UI and build ptBacklog object for update
+     * 1. check if id exists in parameterMap
+     * 2. check if old ptBacklog object exists
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap parameterMap = (GrailsParameterMap) params
+            // check required parameters
+            if (!parameterMap.id || !parameterMap.statusId || !parameterMap.hours) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            float hours = Float.parseFloat(parameterMap.hours.toString())
+            if (hours <= 0) {
+                result.put(Tools.MESSAGE, INVALID_HOURS_INPUT)
+                return result
+            }
+            long statusId = Long.parseLong(parameterMap.statusId.toString())
+            long backlogId = Long.parseLong(parameterMap.id.toString())
+            int backlogVersion = Integer.parseInt(parameterMap.version.toString())
+            long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+
+            SystemEntity ptBacklogStatusCompleted = (SystemEntity) ptBacklogStatusCacheUtility.readByReservedAndCompany(ptBacklogStatusCacheUtility.COMPLETED_RESERVED_ID, companyId)
+            if (statusId == ptBacklogStatusCompleted.id) {
+                //checking how many acceptance criteria remaining for acceptance
+                SystemEntity ptAcceptanceCrStatus = (SystemEntity) ptAcceptanceCriteriaStatusCacheUtility.readByReservedAndCompany(ptAcceptanceCriteriaStatusCacheUtility.COMPLETED_RESERVED_ID, companyId)
+                Map queryParams = [
+                        backLogId: backlogId,
+                        statusId: ptAcceptanceCrStatus.id
+                ]
+                List countResults = executeSelectSql(COUNT_QUERY_AC, queryParams)
+                int queryCounts = countResults[0].count
+                if (queryCounts > 0) {
+                    result.put(Tools.MESSAGE, queryCounts + ACCEPTANCE_CRITERIA_FAILURE_MESSAGE)
+                    return result
+                }
+                //checking how many bugs are remaining to be fixed or closed
+                SystemEntity bugStatusFixed = (SystemEntity) ptBugStatusCacheUtility.readByReservedAndCompany(ptBugStatusCacheUtility.FIXED_RESERVED_ID, companyId)
+                SystemEntity bugStatusClosed = (SystemEntity) ptBugStatusCacheUtility.readByReservedAndCompany(ptBugStatusCacheUtility.CLOSED_RESERVED_ID, companyId)
+                Map queryParam = [
+                        backLogId: backlogId,
+                        fixedId: bugStatusFixed.id,
+                        closedId: bugStatusClosed.id
+                ]
+                List countResultForBug = executeSelectSql(COUNT_QUERY_BUG, queryParam)
+                int queryCountForBug = countResultForBug[0].count
+                if (queryCountForBug > 0) {
+                    result.put(Tools.MESSAGE, queryCountForBug + BUG_FAILURE_MESSAGE)
+                    return result
+                }
+
+                if (parameterMap.useCaseId == '') {
+                    result.put(Tools.MESSAGE, USE_CASE_ID_REQUIRED)
+                    return result
+                }
+            }
+            PtBacklog oldBacklog = ptBacklogService.read(backlogId) // get PtBacklog object
+
+            long newOwnerId = Long.parseLong(parameterMap.ownerId.toString())
+            if (oldBacklog.ownerId != newOwnerId) {
+                result.put(IS_OWNER_CHANGED, Tools.TRUE)
+            } else {
+                result.put(IS_OWNER_CHANGED, Tools.FALSE)
+            }
+            // check whether selected ptBacklog object exists or not
+            if (!oldBacklog) {
+                result.put(Tools.MESSAGE, OBJ_NOT_FOUND)
+                return result
+            }
+            if (backlogVersion != oldBacklog.version) {
+                result.put(Tools.MESSAGE, OBJ_MODIFIED)
+                return result
+            }
+            PtBacklog backlog = buildPtBacklogObject(parameterMap, oldBacklog)  // build ptBacklog object for update
+
+
+            result.put(BACKLOG_OBJ, backlog)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BACKLOG_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Update ptBacklog object in DB
+     * This function is in transactional block and will roll back in case of any exception
+     * @param parameters -N/A
+     * @param obj -map returned from executePreCondition method
+     * @return -a map containing all objects necessary for buildSuccessResultForUI
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj   // cast map returned from executePreCondition method
+            PtBacklog backlog = (PtBacklog) preResult.get(BACKLOG_OBJ)
+            ptBacklogService.updateMyBacklog(backlog)  // update backlog object in DB
+            result.put(BACKLOG_OBJ, backlog)
+            result.put(IS_OWNER_CHANGED, preResult.get(IS_OWNER_CHANGED))
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BACKLOG_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for post condition
+     */
+    public Object executePostCondition(Object params, Object obj) {
+        return null
+    }
+
+    /**
+     * Show updated ptBacklog object in grid
+     * Show success message
+     * @param obj -map returned from execute method
+     * @return -a map containing all objects necessary for grid view
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap executeResult = (LinkedHashMap) obj   // cast map returned from execute method
+            PtBacklog backlog = (PtBacklog) executeResult.get(BACKLOG_OBJ)
+            GridEntity object = new GridEntity()    // build grid entity object
+            SystemEntity priority = (SystemEntity) ptBacklogPriorityCacheUtility.read(backlog.priorityId)
+            SystemEntity status = (SystemEntity) ptBacklogStatusCacheUtility.read(backlog.statusId)
+            long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+            int acceptanceCrCount = ptAcceptanceCriteriaService.countByCompanyIdAndBacklogId(companyId, backlog.id)
+            int bugCount = ptBugService.countByCompanyIdAndBacklogId(companyId, backlog.id)
+
+            long unresolved = getCountUnresolved(backlog.id)
+            object.id = backlog.id
+            object.cell = [
+                    Tools.LABEL_NEW,
+                    backlog.actor,
+                    backlog.purpose,
+                    backlog.benefit,
+                    priority.key,
+                    status.key,
+                    backlog.hours,
+                    acceptanceCrCount,
+                    bugCount,
+                    unresolved > 0 ? SPAN_START + unresolved + SPAN_END : unresolved
+            ]
+            result.put(Tools.MESSAGE, BACKLOG_UPDATE_SUCCESS_MESSAGE)
+            result.put(Tools.ENTITY, object)
+            result.put(Tools.VERSION, backlog.version.toInteger())
+            result.put(IS_OWNER_CHANGED, executeResult.get(IS_OWNER_CHANGED))
+            result.put(BACKLOG_STATUS, status.key)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BACKLOG_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                LinkedHashMap preResult = (LinkedHashMap) obj   // cast map returned from previous method
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, BACKLOG_UPDATE_FAILURE_MESSAGE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BACKLOG_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build ptBacklog object for update
+     * @param parameterMap -serialized parameters from UI
+     * @param oldBacklog -old ptBacklog object
+     * @return -updated ptBacklog object
+     */
+    private PtBacklog buildPtBacklogObject(GrailsParameterMap parameterMap, PtBacklog oldBacklog) {
+        SystemEntity statusCompleted = (SystemEntity) ptBacklogStatusCacheUtility.readByReservedAndCompany(ptBacklogStatusCacheUtility.COMPLETED_RESERVED_ID, oldBacklog.companyId)
+
+        PtBacklog newBacklog = new PtBacklog(parameterMap)
+        oldBacklog.hours = newBacklog.hours
+        oldBacklog.statusId = newBacklog.statusId
+        oldBacklog.updatedOn = new Date()
+        oldBacklog.updatedBy = ptSessionUtil.appSessionUtil.getAppUser().id
+        oldBacklog.ownerId = newBacklog.ownerId
+        oldBacklog.useCaseId = newBacklog.useCaseId
+        if(newBacklog.statusId == statusCompleted.id){
+            oldBacklog.completedOn = new Date()
+        }else{
+            oldBacklog.completedOn = null
+        }
+        return oldBacklog
+    }
+
+    /**
+     * @return -an integer of unresolved bug count
+     */
+    private long getCountUnresolved(long backLogId) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        SystemEntity statusReopened = (SystemEntity) ptBugStatusCacheUtility.readByReservedAndCompany(ptBugStatusCacheUtility.RE_OPENED_RESERVED_ID, companyId)
+        SystemEntity statusSubmitted = (SystemEntity) ptBugStatusCacheUtility.readByReservedAndCompany(ptBugStatusCacheUtility.SUBMITTED_RESERVED_ID, companyId)
+
+        String queryStr = """
+            SELECT COUNT(pbug.id) AS unresolved
+            FROM pt_bug pbug
+            WHERE status IN (${statusReopened.id},${statusSubmitted.id})
+            AND company_id =:companyId
+            AND backlog_id =:backlogId
+        """
+        Map queryParams = [
+                companyId: companyId,
+                backlogId: backLogId
+        ]
+
+        List countResults = executeSelectSql(queryStr, queryParams)
+        long unresolvedCount = countResults[0].unresolved
+        return unresolvedCount
+    }
+
+}

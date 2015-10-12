@@ -1,0 +1,145 @@
+package com.athena.mis.document.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.document.entity.DocArticle
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import groovy.sql.GroovyRowResult
+
+class DocArticleService extends BaseService {
+
+    public DocArticle create(DocArticle article) {
+        DocArticle newArticle = article.save()
+        return newArticle
+    }
+
+    public List<GroovyRowResult> list(BaseService baseService, long companyId, long createdBy) {
+        String sql = """
+        SELECT id, title FROM doc_article
+        WHERE is_moved_to_trash = false
+        AND company_id = :companyId
+        AND created_by = :createdBy
+        ORDER BY created_on desc
+        LIMIT ${baseService.resultPerPage} OFFSET ${baseService.start}
+     """
+        Map queryParams = [
+                companyId: companyId,
+                createdBy: createdBy
+        ]
+        List<GroovyRowResult> lstDocArticle = executeSelectSql(sql, queryParams)
+        return lstDocArticle
+    }
+
+    public int count(long companyId, long createdBy) {
+        String sql = """
+        SELECT COUNT(id) FROM doc_article
+        WHERE is_moved_to_trash = false
+        AND company_id = :companyId
+        AND created_by = :createdBy
+     """
+        Map queryParams = [
+                companyId: companyId,
+                createdBy: createdBy
+        ]
+        List<GroovyRowResult> lstDocArticle = executeSelectSql(sql, queryParams)
+        int count = (int) lstDocArticle[0][0]
+        return count
+    }
+
+
+    public DocArticle read(long id) {
+        DocArticle article = DocArticle.read(id)
+        return article
+    }
+
+    public static final String UPDATE_QUERY = """
+        UPDATE doc_article SET
+            version=version+1,
+            category_id=:categoryId,
+            sub_category_id=:subCategoryId,
+            title=:title,
+            details=:details,
+            is_moved_to_trash=:isMovedToTrash,
+            updated_on=:updatedOn,
+            updated_by=:updatedBy
+        WHERE
+            id=:id AND
+            version=:oldVersion
+    """
+
+    /**
+     * Update Article object in DB
+     * @param article - Article object
+     * @return -an int containing the value of update count
+     */
+    public int update(DocArticle article) {
+        Map queryParams = [
+                categoryId: article.categoryId,
+                subCategoryId: article.subCategoryId,
+                title: article.title,
+                details: article.details,
+                isMovedToTrash: article.isMovedToTrash,
+                id: article.id,
+                oldVersion: article.version,
+                updatedOn: DateUtility.getSqlDateWithSeconds(article.updatedOn),
+                updatedBy: article.updatedBy
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams);
+        if (updateCount <= 0) {
+            throw new RuntimeException("Failed to update Article")
+        }
+
+        article.version = article.version + 1
+        return updateCount
+    }
+
+    public Map searchMyArticles(String queryType, String query, long companyId, long createdBy, BaseService baseService) {
+        String queryForList = """
+            SELECT id, title FROM doc_article
+            WHERE is_moved_to_trash = false
+            AND company_id = :companyId
+            AND created_by = :createdBy
+            AND ${queryType} ilike :query
+            ORDER BY created_on desc
+            LIMIT :resultPerPage OFFSET :start
+        """
+        String queryForCount = """
+            SELECT COUNT(id) FROM doc_article
+            WHERE is_moved_to_trash = false
+            AND company_id = :companyId
+            AND created_by = :createdBy
+            AND ${queryType} ilike :query
+        """
+
+        Map queryParams = [
+                query: Tools.PERCENTAGE + query + Tools.PERCENTAGE,
+                companyId: companyId,
+                createdBy: createdBy,
+                resultPerPage: baseService.resultPerPage, start: baseService.start
+        ]
+        List<GroovyRowResult> lstArticle = executeSelectSql(queryForList, queryParams)
+        List<GroovyRowResult> resultCount = executeSelectSql(queryForCount, queryParams)
+        int count = (int) resultCount[0][0]
+        return [lstArticle: lstArticle, count: count]
+    }
+
+    private static final String DELETE_QUERY = """
+                    DELETE FROM doc_article WHERE id=:id
+                 """
+
+    /**
+     * Delete Article object from DB
+     * @param id -id of Article object
+     * @return -an integer containing the value of update count
+     */
+    public int delete(long id) {
+        Map queryParams = [id: id]
+        int deleteCount = executeUpdateSql(DELETE_QUERY, queryParams)
+
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Error occurred while delete article')
+        }
+        return deleteCount;
+    }
+}

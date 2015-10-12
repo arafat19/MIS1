@@ -1,0 +1,39 @@
+
+{table}
+ *Use Case ID:* | MIS-QS_Measurement-41 | Priority: | High
+ *Name* | Search Budget Wise QS Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url:* | /qsReport/listBudgetWiseQs | *Action Class:* | ListForBudgetWiseQsActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select a Project from drop down list.
+# Click the "Search" button.
+
+h4. Pre-condition:
+# Selected projects create date show at from date when select a project.
+# If "Is govt" active then only Government QS Measurement results show at grid view.
+
+h4. Process:
+Get a details information of Budget Wise QS Measurement Report from server.
+
+h4. Post-condition:
+
+# *Success:*
+## Show Budget Wise QS Measurement Report in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

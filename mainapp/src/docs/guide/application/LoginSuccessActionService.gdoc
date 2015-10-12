@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | User Authentication Process | |
+*ActionService:* | LoginSuccessActionService | *Auditable:* | No
+*Url:* | /login/loginSuccess | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Anonymous User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* User must request to access "Log-In" page.
+* [Show "User Login" Page|guide:_ShowLoginPage].
+* User must enter valid input.
+* Click "Login" button.
+* User Authentication Process.
+
+h4. Pre-condition:
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Login ID | Text Box | Alpha Numeric | Required & UniqueValid E-mail
+Password | Text Box | Alpha Numeric | Required
+Security ID | Text Box | Alpha Numeric | Required & match with given image
+{table}
+
+* "User ID" must be Valid E-mail.
+* "User ID" must be enabled, unlocked and un-expired.
+* "User ID", "Password" and "IP Address" must be match with register.
+
+h4. Process:
+* Login user for given "Login ID", "Password" and "Security ID".
+* Register user in session.
+
+h4. Post-condition:
+
+* *Success:*
+** Login user successfully.
+** Show landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

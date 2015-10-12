@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of Un-approve "Inventory In" From Supplier | |
+ *ActionService:* | ShowForUnapprovedInvInFromSupplierActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/showUnapprovedInvInFromSupplier | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 30th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Inventory Operator, Inventory Auditor, Production Operator.
+
+h4. Description:
+This is the landing page of Un-approve "Inventory In" From Supplier with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Supplier" link.
+* [Show Group of "Inventory In" From Supplier Landing Page|guide:ShowForInventoryInFromSupplierActionService].
+* Select a line item in from grid view.
+* Click "New" button.
+* Show Landing Page of Un-approve "Inventory In" From Supplier.
+
+h4. Pre-condition:
+* User must have "Show Unapproved Inv.In From Supplier" privilege.
+
+h4. Process:
+* [Get list of all Un-approve "Inventory In" From Supplier|guide:ListForUnapprovedInvInFromSupplierActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create Un-approve "Inventory In" From Supplier|guide:CreateForInventoryInDetailsFromSupplierActionService].
+** Show list of all Un-approve "Inventory In" From Supplier in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open Un-approve "Inventory In" From Supplier in Edit Mode|guide:SelectForInventoryInDetailsFromSupplierActionService].
+* [Delete Un-approve "Inventory In" From Supplier|guide:DeleteForInventoryInDetailsFromSupplierActionService].
+* [Search Un-approve "Inventory In" From Supplier From Grid View|guide:SearchForUnapprovedInvInFromSupplierActionService].
+* [Approve Un-approve "Inventory In" From Supplier|guide:ApproveForInventoryInDetailsFromSupplierActionService].
+* [Show "Chalan" Report from Grid View|guide:ShowForInvoiceActionService].
+
+!Inv/Add_Item_From_Supplier_Show.png!

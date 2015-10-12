@@ -1,0 +1,141 @@
+package com.athena.mis.exchangehouse.actions.photoidtype
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.utility.RoleTypeCacheUtility
+import com.athena.mis.exchangehouse.entity.ExhPhotoIdType
+import com.athena.mis.exchangehouse.service.ExhPhotoIdTypeService
+import com.athena.mis.exchangehouse.utility.ExhPhotoIdTypeCacheUtility
+import com.athena.mis.exchangehouse.utility.ExhSessionUtil
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class ExhCreatePhotoIdTypeActionService extends BaseService implements ActionIntf {
+
+    ExhPhotoIdTypeService exhPhotoIdTypeService
+    @Autowired
+    ExhPhotoIdTypeCacheUtility exhPhotoIdTypeCacheUtility
+    @Autowired
+    ExhSessionUtil exhSessionUtil
+    @Autowired
+    RoleTypeCacheUtility roleTypeCacheUtility
+
+    private static String PHOTO_ID_TYPE_CREATE_SUCCESS_MSG = "Photo id type has been successfully saved"
+    private static String PHOTO_ID_TYPE_CREATE_FAILURE_MSG = "Photo id type has not been saved"
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    //implement the precondition method of action class
+    /*
+    Get all pre condition to save photoIdType info
+     */
+
+    public Object executePreCondition(Object parameters, Object obj) {
+        //set a map object to send all information to caller
+        Map output = new HashMap()
+        try {
+            //now check session log
+            //only admin can create new photoIdType
+            if (exhSessionUtil.appSessionUtil.getAppUser().isPowerUser) {
+                output.put('hasAccess', new Boolean(true))
+            } else {
+                output.put('hasAccess', new Boolean(false))
+                return null
+            }
+
+            //create a photoIdType instance
+            ExhPhotoIdType photoIdTypeInstance = (ExhPhotoIdType) obj
+            photoIdTypeInstance.companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+
+            //check photoIdType photoIdType input validation
+            photoIdTypeInstance.validate()
+
+            if (photoIdTypeInstance.hasErrors()) {
+                output.put("isValid", new Boolean(false))
+            } else {
+                output.put("isValid", new Boolean(true))
+            }
+
+            return output
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            output.put("isValid", new Boolean(true))
+            return output
+        }
+    }
+
+    //implement the execute method of action class
+    /*
+    if precondition is ok. then save photoIdType info using
+    execute method
+     */
+
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        try {
+            ExhPhotoIdType objPhotoIdType = (ExhPhotoIdType) obj
+            ExhPhotoIdType photoIdTypeServiceReturn = exhPhotoIdTypeService.create(objPhotoIdType)
+            exhPhotoIdTypeCacheUtility.add(photoIdTypeServiceReturn, exhPhotoIdTypeCacheUtility.DEFAULT_SORT_PROPERTY, exhPhotoIdTypeCacheUtility.SORT_ORDER_ASCENDING)
+            return photoIdTypeServiceReturn
+        }
+        catch (Exception e) {
+            log.error(e.message)
+            //@todo:rollback
+            throw new RuntimeException(PHOTO_ID_TYPE_CREATE_FAILURE_MSG)
+            return null
+        }
+    }
+
+    //implement the executePostCondition method of action class
+    /*
+    if execute is ok. then executePostCondition method will be checked
+     */
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        //there are not post condition
+        return null
+    }
+
+    //implement the buildSuccessResultForUI method of action class
+    /*
+    if photoIdType build successfully then initiate success message
+     */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        LinkedHashMap result
+
+        try {
+
+            ExhPhotoIdType objPhotoIdType = (ExhPhotoIdType) obj
+            GridEntity objGrid = new GridEntity()
+            objGrid.id = objPhotoIdType.id
+            objGrid.cell = [ Tools.LABEL_NEW,
+                            objPhotoIdType.id,
+                            objPhotoIdType.name,
+                            objPhotoIdType.code]
+            result = [isError: false, entity: objGrid, version: objPhotoIdType.version, message: PHOTO_ID_TYPE_CREATE_SUCCESS_MSG];
+            return result
+        }
+        catch (Exception e) {
+            log.error(e.getMessage())
+            result = [isError: true, entity: obj, version: 0, message: PHOTO_ID_TYPE_CREATE_FAILURE_MSG]
+            return result
+        }
+    }
+
+    //implement the buildFailureResultForUI method of action class
+    /*
+    if photoIdType build failed then initiate failure message
+     */
+
+    public Object buildFailureResultForUI(Object obj) {
+        // add try catch and add log entry
+        LinkedHashMap result = [isError: true, entity: obj, message: PHOTO_ID_TYPE_CREATE_FAILURE_MSG]
+        return result
+    }
+}
+

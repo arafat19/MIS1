@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | "Accept Backlog" | |
+*ActionService:* | AcceptPtBacklogActionService | *Auditable:* | No
+*Url:* | /ptBacklog/acceptStory | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 7th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, SQA.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "Active" link.
+* [Show Landing Page of *Active Backlog*|guide:_showForActive].
+* Select a line-item from grid view.
+* Click "Accept" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Accept Backlog.
+
+h4. Pre-condition:
+* User must have "Accept Story(Backlog)" privilege.
+* Only completed task must be accepted.
+* Already accepted task must not acceptable.
+* All bugs of corresponding task must be closed.
+
+h4. Process:
+* Accepted Backlog show in grid view with status.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Accepted Backlog show in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+

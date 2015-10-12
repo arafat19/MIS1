@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Sprint's Bug* in landing page | |
+*ActionService:* | ListPtBugForSprintActionService | *Auditable:* | No
+*Url:* | /ptBug/listBugForSprint | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService]. *Sprint* list will be display in landing page.
+* Select a Line-Item from grid view.
+* Click "Bug" button from tool bar.
+* Show List of *Sprint's Bug* in [landing page|guide:ShowPtBugForSprintActionService].
+
+h4. Pre-condition:
+* User must have "List Bug for sprint" privilege.
+
+h4. Process:
+* Get list of *Sprint's Bug* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Bug ID
+** Module
+** Title
+** Severity
+** Type
+
+h4. Post-condition:
+
+* *Success:*
+** *Sprint's Bug* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "Sprint's Bug" From Grid View|guide:SearchPtBugForSprintActionService].
+
+!projecttrack/List-Sprint-Bug.png!

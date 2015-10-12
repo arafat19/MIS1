@@ -1,0 +1,146 @@
+<script type="text/javascript">
+    var output = ${modelJson};
+    var dropDownBank,dropDownDistrict,dropDownBankBranch;
+    var dropDownRemittancePurpose;
+    var taskModel;
+
+    $(document).ready(function () {
+        onLoadReplaceTask();
+    });
+
+    function onLoadReplaceTask(){
+        if (output.isError) {
+            showError(output.message);
+            return false;
+        }
+        taskModel = output.exhTask;
+        populateTaskDetails();
+        initializeForm($('#basicInfoForm'), isValidBasicInfo);
+        initializeForm($('#disbursementInfoForm'), isValidDisbursementInfo);
+        initializeForm($('#amountInfoForm'), isValidAmountInfo);
+    }
+
+    function isValidBasicInfo() {
+
+        if (validateForm($('#basicInfoForm')) == false) {
+            $('a[href=#fragmentBasicInfo]').tab('show');
+            return false;
+        }
+
+        if (isEmpty($('#customerId').val()) ||
+                isEmpty($('#customerName').val()) ||
+                isEmpty($('#beneficiaryId').val()) ||
+                isEmpty($('#beneficiaryName').val())) {
+            $('a[href=#fragmentBasicInfo]').tab('show');
+            showError('Please select customer and beneficiary');
+            return false;
+        }
+        return true;
+    }
+
+    function isValidDisbursementInfo() {
+        if (validateForm($('#disbursementInfoForm')) == false) {
+            $('a[href=#fragmentDisbursementInfo]').tab('show');
+            return false;
+        }
+        return true;
+    }
+
+    function isValidAmountInfo() {
+        if (validateForm($('#amountInfoForm')) == false) {
+            $('a[href=#fragmentAmountInfo]').tab('show');
+            return false;
+        }
+
+        if (!checkAmountFields()) {
+            $('a[href=#fragmentAmountInfo]').tab('show');
+            return false;
+        }
+
+        // Check if hidden fields are empty & switch tab
+        var strGBPAmount = $('#hidAmountInLocalCurrency').val();
+        if ((isNaN(strGBPAmount)) || (isEmpty(strGBPAmount)) || strGBPAmount <= 0) {
+            $('a[href=#fragmentAmountInfo]').tab('show');
+            showError('Please Calculate the Fees & Charges');
+            return false;
+        }
+
+        // now check all 4 hiden field VS UI fields respectively
+        var actualVal, hiddenVal;
+
+        actualVal = $('#fromAmount').val();
+        hiddenVal = $('#hidFromAmount').val();
+        if (actualVal != hiddenVal) {
+            showError('Change detected in From Amount field, press calculate to update');
+            $('a[href=#fragmentAmountInfo]').tab('show');
+            $('#fromAmount').focus();
+            return false;
+        }
+
+        actualVal = $('#conversionRate').val();
+        hiddenVal = $('#hidConversionRate').val();
+        if (actualVal != hiddenVal) {
+            showError('Change detected in conversion rate field, press calculate to update');
+            $('a[href=#fragmentAmountInfo]').tab('show');
+            $('#conversionRate').focus();
+            return false;
+        }
+
+        actualVal = $('#discount').val();
+        hiddenVal = $('#hidDiscount').val();
+        if (actualVal != hiddenVal) {
+            showError('Change detected in discount field, press calculate to update');
+            $('a[href=#fragmentAmountInfo]').tab('show');
+            $('#discount').focus();
+            return false;
+        }
+
+        return true;
+    }
+
+    function populateTaskDetails() {
+        $('#lblCustomerId').text(taskModel.customerId);
+        $('#txtboxCustomerName').val(taskModel.customerName);
+        $('#lblBeneficiaryId').text(taskModel.beneficiaryId);
+        $('#txtboxBeneficiaryName').val(taskModel.beneficiaryName);
+        $('#lblRefNo').text(taskModel.refNo);
+        $('#lblRegularFee').text(taskModel.regularFee);
+        // other bank info
+        if (output.outletDistrictId && output.outletBranchId) {
+            $('#isOtherBank').attr('checked', 'checked');
+            $('#isOtherBank').change();
+            dropDownDistrict.value(output.outletDistrictId);
+            dropDownBank.value(output.outletBankId);
+            dropDownBankBranch.value(output.outletBranchId);
+        }
+        dropDownRemittancePurpose.value(output.remittancePurpose);
+    }
+
+    function displayOtherBankPanel() {
+        if ($('#isOtherBank').attr('checked') == 'checked') {
+            $('#otherBankInfo').show();
+            enableOtherBankRequired();
+        } else {
+            $('#otherBankInfo').hide();
+            disableOtherBankRequired();
+            dropDownDistrict.value('');
+            dropDownBank.setDataSource(getKendoEmptyDataSource());
+            dropDownBankBranch.setDataSource(getKendoEmptyDataSource());
+            dropDownBank.value('');
+            dropDownBankBranch.value('');
+        }
+    }
+
+    function enableOtherBankRequired() {
+        $('#outletDistrictId').attr("required", true);
+        $('#outletBankId').attr("required", true);
+        $('#outletBranchId').attr("required", true);
+    }
+
+    function disableBankDepositRequired() {
+        $('#accountNumber').attr("required", false);
+        $('#bankName').attr("required", false);
+        $('#bankBranchName').attr("required", false);
+        $('#districtName').attr("required", false);
+    }
+</script>

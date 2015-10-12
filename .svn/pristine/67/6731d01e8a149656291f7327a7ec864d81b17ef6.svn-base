@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Bug Severity" List in drop-down | |
+*ActionService:* | GetDropDownSystemEntityTagLibActionService | *Auditable:* | No
+*Url:* | /ptBug/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 8th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 10709.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Active* link.
+* [Show Landing Page of "Active Backlog"|guide:_showForActive].
+* [Select "Project" List in drop-down|guide:GetDropDownPtProjectTagLibActionService].
+* [Select "Backlog Status Type" List in drop-down|guide:PopulateBacklogStatusTypeList].
+* [Click on Search Button|guide:ListInActiveBacklogActionService].
+* Select line-item from the grid view.
+* Click on "Bug" button from the toolbar.
+* [Show Landing Page of "Bug"|guide:ShowPtBugActionService].
+* Populate "Bug Severity" List in drop-down.
+
+
+h4. Pre-condition:
+* Key must be Active to populate in drop-down.
+
+h4. Process:
+* Get list of "Bug Severity" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate active "Bug Severity" in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Bug"|guide:CreatePtBugActionService].
+* [Update "Bug"|guide:UpdatePtBugActionService].

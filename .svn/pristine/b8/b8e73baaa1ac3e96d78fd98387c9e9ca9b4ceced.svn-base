@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="supplierWisePayable" language="groovy" pageWidth="840" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="762" leftMargin="40" rightMargin="38" topMargin="30" bottomMargin="20" uuid="703f9980-2d94-4d6a-998e-bb64af52c838">
+	<property name="ireport.zoom" value="0.9090909090909118"/>
+	<property name="ireport.x" value="51"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.sql.Timestamp"/>
+	<parameter name="toDate" class="java.sql.Timestamp"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="transactionTypeIn" class="java.lang.Long"/>
+	<parameter name="entityTypeSupplier" class="java.lang.Long"/>
+	<parameter name="sourceTypeId" class="java.lang.Long"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="projectIds" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[SELECT
+                supplier.id AS supplier_id,
+                supplier.name AS supplier_name
+                FROM  supplier
+
+                FULL OUTER JOIN
+                    (
+                               SELECT  supplier_id, SUM(total_price) total_po_price
+                                from proc_purchase_order
+                                where ($X{IN,project_id,projectIds})
+                                AND (created_on BETWEEN $P{fromDate} AND $P{toDate})
+			AND approved_by_director_id >0 AND approved_by_project_director_id >0
+                                GROUP BY supplier_id
+                    ) po
+                ON po.supplier_id=supplier.id
+
+                FULL OUTER JOIN
+                    (
+                               SELECT  transaction_entity_id supplier_id, SUM(actual_quantity*rate) AS total_received_in_inventory
+                                from vw_inv_inventory_transaction_with_details
+                                where ($X{IN,project_id,projectIds})
+                                AND (transaction_date BETWEEN $P{fromDate} AND $P{toDate})
+                           	AND transaction_type_id= $P{transactionTypeIn}
+                            AND transaction_entity_type_id = $P{entityTypeSupplier}
+			AND is_current = true
+			AND approved_by > 0
+                                GROUP BY supplier_id
+                    ) iitd
+                ON iitd.supplier_id=supplier.id
+
+                FULL OUTER JOIN
+                    (
+                               SELECT  supplier_id, SUM(cost) AS total_fad_cost
+                               from fxd_fixed_asset_details
+                               where ($X{IN,project_id,projectIds})
+                               AND (purchase_date BETWEEN $P{fromDate} AND $P{toDate})
+                               GROUP BY supplier_id
+                    ) fad
+                ON fad.supplier_id=supplier.id
+
+                FULL OUTER JOIN
+                    (
+                               SELECT source_id supplier_id, SUM(amount_dr) AS total_paid
+                                from vw_acc_voucher_with_details
+                                where ($X{IN,project_id,projectIds})
+                                AND (voucher_date BETWEEN $P{fromDate} AND $P{toDate})
+                                AND source_type_id = $P{sourceTypeId}
+                                GROUP BY supplier_id
+                    ) avd
+                ON avd.supplier_id=supplier.id
+
+                                WHERE supplier.company_id  = $P{companyId}
+                                GROUP BY supplier.id, supplier.name, total_po_price, total_received_in_inventory, total_fad_cost, total_paid
+                                HAVING (total_po_price >0) OR (total_received_in_inventory >0) OR (total_fad_cost>0) OR (total_paid>0)
+                                ORDER BY supplier.name]]>
+	</queryString>
+	<field name="supplier_id" class="java.lang.Long"/>
+	<field name="supplier_name" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="89">
+			<staticText>
+				<reportElement uuid="a5e30d52-4979-47a1-a6cf-c87a76b304fa" x="0" y="0" width="214" height="25"/>
+				<box>
+					<pen lineStyle="Dashed"/>
+					<topPen lineStyle="Dashed"/>
+					<leftPen lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+					<rightPen lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Supplier Wise Payable Report]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="71d35330-3e3b-4194-8301-b43607ca8ff9" x="501" y="0" width="261" height="35"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="0" y="25" width="65" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="0" y="43" width="65" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="0" y="61" width="65" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Project Name ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="65" y="25" width="5" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="65" y="43" width="5" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="65" y="61" width="5" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yy">
+				<reportElement uuid="7f1a8ba6-f7ea-46be-bbed-cbffa4adf5e0" x="70" y="25" width="144" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yy">
+				<reportElement uuid="d16c9090-588d-4827-a619-8f2a882aef1b" x="70" y="43" width="144" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fdae0380-ef47-4b93-bca9-ec2a6134a0c0" x="70" y="61" width="692" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="45" splitType="Stretch">
+			<textField>
+				<reportElement uuid="977bf63a-e422-4305-9241-4fd0fca23822" stretchType="RelativeToTallestObject" x="0" y="1" width="20" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT} + "."]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="26cb5cce-6d9a-4c3e-ac0c-977eb552b810" stretchType="RelativeToTallestObject" mode="Transparent" x="20" y="1" width="742" height="20" backcolor="#CCCCCC"/>
+				<box topPadding="3" leftPadding="3" bottomPadding="3" rightPadding="3">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{supplier_name}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="db993030-308a-481f-afd5-c3ab11c5b4e6" x="42" y="21" width="720" height="24"/>
+				<subreportParameter name="projectIds">
+					<subreportParameterExpression><![CDATA[$P{projectIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="supplierId">
+					<subreportParameterExpression><![CDATA[$F{supplier_id}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="fromDate">
+					<subreportParameterExpression><![CDATA[$P{fromDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="dbCurrencyFormat">
+					<subreportParameterExpression><![CDATA[$P{dbCurrencyFormat}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeIn">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeIn}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="sourceTypeId">
+					<subreportParameterExpression><![CDATA[$P{sourceTypeId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="entityTypeSupplier">
+					<subreportParameterExpression><![CDATA[$P{entityTypeSupplier}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyId">
+					<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="toDate">
+					<subreportParameterExpression><![CDATA[$P{toDate}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{REPORT_DIR} +"/subProjectWisePayable.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="21" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="4e499f64-e5d8-4043-bd66-adf35e3be37b" x="207" y="0" width="555" height="21"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="3b1c1178-6841-40bc-921f-743249a5639c" x="0" y="0" width="100" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4b1e0071-490d-442b-9c5b-ba73cf67da1b" x="332" y="0" width="35" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[Printed On :]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy" isBlankWhenNull="true">
+				<reportElement uuid="d695a198-20bc-4427-8312-590764fc402b" x="367" y="0" width="55" height="15"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

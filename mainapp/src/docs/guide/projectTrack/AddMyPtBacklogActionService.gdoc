@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Add Backlog to "My Task List" | |
+*ActionService:* | AddMyPtBacklogActionService | *Auditable:* | No
+*Url:* | /ptBacklog/addToMyBacklog | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Nahida Sultana | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Software Engineer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "Active" link.
+* [Show Landing Page of *Active Backlog*|guide:_showForActive].
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Active Backlog"|guide:ListActiveBacklogActionService].
+* Select a line-item from grid view.
+* Click "Add to My Task" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Add Backlog to "My Task List".
+
+h4. Pre-condition:
+* User must have "add to my backlog" privilege.
+* Task which has owner must not possible to add task list.
+
+h4. Process:
+* Add backlog to "My Task List".
+
+
+h4. Post-condition:
+
+* *Success:*
+** Add backlog to task list.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+

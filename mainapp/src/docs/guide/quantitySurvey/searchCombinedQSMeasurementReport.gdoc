@@ -1,0 +1,38 @@
+
+{table}
+ *Use Case ID:* | MIS-QS_Measurement-46 | Priority: | High
+ *Name* | Search Combined QS Measurement Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url:* | /qsReport/listCombinedQSM | *Action Class:* | ListForCombinedQSMActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select a Project from drop down list.
+# Click the "Search" button.
+
+h4. Pre-condition:
+# Selected projects create date show at from date when select a project.
+
+h4. Process:
+Get a details information of Combined QS Measurement Report from server.
+
+h4. Post-condition:
+
+# *Success:*
+## Show Combined QS Measurement Report in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

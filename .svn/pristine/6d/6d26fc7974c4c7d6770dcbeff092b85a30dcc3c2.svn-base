@@ -1,0 +1,284 @@
+<script type="text/javascript">
+    var modelJson, customerId;
+    var isReadonlyCustomer;
+    var photoIdImageSrc = "${createLink(controller:'exhCustomer', action: 'displayPhotoIdImage')}?id=";
+    $(document).ready(function (e) {
+
+        onLoadCustomerUser();
+    });
+
+    function onSetDefaultPassword() {
+
+        clearErrors($("#customerUserForm"));
+        if ($('#setDefaultPassword').attr("checked")) {
+            $('#password').attr("disabled", "disabled");
+            $('#confirmPassword').attr("disabled", "disabled");
+            $('#password').val('');
+            $('#confirmPassword').val('');
+            checkPasswordMatch();
+        } else {
+            $('#setDefaultPassword').attr("checked", false);
+            $('#password').removeAttr("disabled");
+            $('#confirmPassword').removeAttr("disabled");
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#customerUserForm"));  // clear errors & form values & bind focus event
+        $('#password').removeAttr("disabled");
+        $('#confirmPassword').removeAttr("disabled");
+        $("#create").html("<span class='k-icon k-i-plus'></span>Create");   // reset create button text
+    }
+    function trimTextFields() {
+        $('#loginId').val($.trim($('#loginId').val()));
+        $('#username').val($.trim($('#username').val()));
+    }
+
+    function checkPasswordMatch() {
+        if ($("#password").val() != $("#confirmPassword").val()) {
+            $('#retypePassError').show();
+            return false;
+        } else {
+            $('#retypePassError').hide();
+            return true;
+        }
+    }
+
+    function onSubmitUser() {
+        if (isReadonlyCustomer) {
+            return false;
+        }
+        if (!validateForm($("#customerUserForm"))) {
+            return false;
+        }
+        var passLength = $("#password").val().length;
+
+        if (passLength == 0) {
+            $("#password").removeClass('required');
+            $("#confirmPassword").removeClass('required');
+        }
+
+
+    //    now check two password fields
+        if (checkPasswordMatch() == false) return false;
+        setButtonDisabled($('.save'), true);
+        showLoadingSpinner(true);	// Spinner Show on AJAX Call
+
+        var actionUrl = "${createLink(controller: 'exhCustomer', action: 'createCustomerUser')}?customerId="+customerId;
+
+        jQuery.ajax({
+            type:'post',
+            data:jQuery('#customerUserForm').serialize(),
+            url:actionUrl,
+            success:function (data, textStatus) {
+                onSaveUser(data);
+            },
+            error:function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete:function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('.save'), false);
+                showLoadingSpinner(false);
+            }, // Spinner Hide on AJAX Call
+            dataType:'json'
+        });
+        return false;
+    }
+
+    function onSaveUser(data) {
+        if (data.entity) {
+            $('#loginId').val(data.entity.loginId);
+            $('#password').val(data.entity.password);
+            $('#confirmPassword').val(data.entity.password);
+            showSuccess(data.message);
+            disableCreateCustomerForm();
+        } else {
+            showError(data.message);
+            enableCreateCustomerForm();
+        }
+
+    }
+
+    function onLoadCustomerUser() {
+        // Model will be supplied to grid on load _list.gsp
+
+
+        modelJson = ${modelJson};
+
+
+        $('#setDefaultPassword').click(function () {
+            onSetDefaultPassword();
+        });
+
+        if(modelJson.isError){
+            showError(modelJson.message);
+            return false;
+        }
+        if (modelJson.customerInfoMap) {
+            populateCustomer(modelJson.customerInfoMap);
+            $("#customerCode").val(modelJson.customerInfoMap.code);
+        }
+
+        initializeForm($('#searchForm'),getCustomerUser);
+        initializeForm($('#customerUserForm'),onSubmitUser);
+
+        $(document).attr('title', "ARMS - Customer User Account");
+        loadNumberedMenu(MENU_ID_EXCHANGE_HOUSE, "#exhCustomer/showCustomerUser");
+    }
+
+    function executePreConditionForEdit(ids) {
+        if (ids.length == 0) {
+            showError("Please enter a customer A/C no");
+            return false;
+        }
+        return true;
+    }
+
+    function getCustomerUser() {
+
+        if (!validateForm($("#searchForm"))) {
+            return false;
+        }
+
+        var customerCode = $('#customerCode').val();
+        if (executePreConditionForEdit(customerCode) == false) {
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url:"${createLink(controller: 'exhCustomer', action: 'searchCustomerUser')}?customerCode=" + customerCode + "&isCashier=true",
+            success:executePostConditionForViewCustomer,
+            complete:onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType:'json',
+            type:'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForViewCustomer(data) {
+
+        if (data.isError) {
+            showError(data.message);
+            $('#customerDetails').hide();
+            return;
+        }
+        populateCustomer(data.customerInfoMap);
+        return false;
+
+    }
+
+    function populateCustomer(data) {
+        clearCreateCustomerUserForm();
+        cleanPopulatedCustomer();
+
+        $('#customerName').text(data.name);
+        $('#nationality').text(data.country);
+        $('#phone').text(data.phone);
+        $('#photoIdType').text(data.photoIdType);
+        $('#photoIdNo').text(data.photoIdNo);
+        $('#dateOfBirth').text(data.dateOfBirth);
+        $('#photoIdExpiryDate').text(data.photoIdExpiryDate);
+        $('#email').text(data.email);
+        $('#address').text(data.address);
+        $('#postCode').text(data.postCode);
+        $('#createdBy').text(data.userName);
+
+        $('#sourceOfFund').text(data.sourceOfFund);
+
+        // hidden fields
+        $('#customerId').val(data.id);
+       // customerId=$('#customerId').val(data.id);
+        customerId=data.id;
+
+        $('#loginId').val(data.loginId);
+        $('#username').val(data.name);
+        $('#phoneNo').val(data.phone);
+        $('#password').val(data.password);
+        $('#confirmPassword').val(data.password);
+        $('#role\\.id').val(data.role);
+
+        if (data.loginId) {
+            disableCreateCustomerForm();
+        } else {
+            enableCreateCustomerForm();
+        }
+        // unused
+   /*     if(data.hasPhotoIdImage==true){
+            $('#photoIdImage').attr('src', photoIdImageSrc + data.id);
+        } else {
+            $('.photoIdImage').attr('alt', "Customer will send photo id image by mail");
+        }*/
+        $('#customerDetails').show();
+    }
+
+    function cleanPopulatedCustomer() {
+        clearErrors($("#customerUserForm"));
+        $('#retypePassError').hide();
+
+        $('#customerName').text('');
+        $('#nationality').text('');
+        $('#phone').text('');
+        $('#photoIdType').text('');
+        $('#photoIdNo').text('');
+        $('#dateOfBirth').text('');
+        $('#email').text('');
+        $('#address').text('');
+        $('#postCode').text('');
+        $('#createdBy').text('');
+        $('#photoIdExpiryDate').text('');
+        $('#sourceOfFund').text('');
+
+        // hidden fields
+        $('#customerId').val('');
+        $('#loginId').val('');
+        $('#username').val('');
+        $('#phoneNo').val('');
+        $('#password').val('');
+        $('#confirmPassword').val('');
+        $('.photoIdImage').attr('src','');
+        $('#role\\.id').val('');
+    }
+
+    function enableCreateCustomerForm() {
+        isReadonlyCustomer = false;
+        clearErrors($("#customerUserForm"));
+        $('#retypePassError').hide();
+        $("#btnCreateCustomerUser").show();
+        $("#clearFormButton").show();
+        $(".clsCreateCustomerUser").show();
+        $("#setDefaultPassword").removeAttr("disabled");
+        $("#loginId").removeAttr("readOnly");
+        $("#password").removeAttr("readOnly");
+        $('#password').addClass('armspass');
+        $("#confirmPassword").removeAttr("readOnly");
+    }
+
+
+    function disableCreateCustomerForm() {
+        isReadonlyCustomer = true;
+        clearErrors($("#customerUserForm"));
+        $("#btnCreateCustomerUser").hide();
+        $("#clearFormButton").hide();
+        $('#setDefaultPassword').attr("disabled", "disabled");
+        $(".clsCreateCustomerUser").hide();
+        $("#loginId").attr("readOnly", true);
+        $("#password").attr("readOnly", true);
+        $('#password').removeClass('armspass');
+        $("#confirmPassword").attr("readOnly", true);
+        $('#retypePassError').hide();
+    }
+
+    function clearCreateCustomerUserForm() {
+        clearErrors($("#customerUserForm"));
+        $('#setDefaultPassword').attr("checked", false);
+        $('#password').removeAttr("disabled");
+        $('#confirmPassword').removeAttr("disabled");
+
+        $('#password').val("");
+        $('#confirmPassword').val("");
+        $('#loginId').val("");
+        $('#retypePassError').hide();
+    }
+
+    // update page title
+
+</script>

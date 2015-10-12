@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Employee* | |
+*ActionService:* | ShowEmployeeActionService | *Auditable:* | No
+*Url:* | /employee/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 25th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of *Employee* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Employee* link.
+* Show Landing Page of *Employee*.
+
+h4. Pre-condition:
+* User must have "Show Employee" privilege.
+
+h4. Process:
+* [Get List of all "Employee" from server|guide:ListEmployeeActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Employee"|guide:CreateEmployeeActionService].
+** Show list of all *Employee* in grid view of landing page.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Employee" in Edit Mode|guide:SelectEmployeeActionService].
+* [Delete "Employee"|guide:DeleteEmployeeActionService].
+* [Search "Employee" From Grid View|guide:SearchEmployeeActionService].
+
+!application/Employee_Show.png!

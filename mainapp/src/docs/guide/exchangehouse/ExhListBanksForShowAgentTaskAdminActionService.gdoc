@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *Bank* Drop Down to Search *Task* Created By *Agent* | |
+*ActionService:* | ExhListBanksForShowAgentTaskAdminActionService | *Auditable:* | No
+*Url:* | /bank/getBanksForShowAgentTaskForAdmin | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Agent* link.
+* [Show Landing Page of "Manage Task" Created By "Agent"|guide:ShowAgentTaskForAdminActionService].
+* [Select "Status" from drop down list|guide:GetDropDownSystemEntityTagLibActionService].
+* Populate *Bank* Drop Down to Search *Task* Created By *Agent*.
+
+h4. Pre-condition:
+* User must have "List bank by districtId for agent task" privilege.
+* Bank list populate criteria:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Start Date | Calender | Alpha Numeric | Required
+End Date | Calender | Alpha Numeric | Required
+[Status|guide:GetDropDownSystemEntityTagLibActionService] | Drop-Down |  Numeric | Required
+{table}
+
+* Bank list which contain only Agent's Task must be populate.
+
+h4. Process:
+* Get list of *Bank* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate *Bank* list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Reload Bank List|guide:ReloadBankList].
+* [Search "Manage Task" Created By "Agent"|guide:ListAgentTaskForAdminActionService].
+

@@ -1,0 +1,243 @@
+<script type="text/javascript">
+    var modelJsonForVoucher, cancelledVoucher = false;
+    jQuery(function ($) {
+        modelJsonForVoucher = ${modelJson};
+        $('#divVoucher').show();
+        $('#lblCancelledByOn').hide();
+        $('#lblCancelledReason').hide();
+        $('#lblVoucherTypeName').text('Voucher Type Title');
+
+        $('#showVoucher').click(function () {
+            getVoucher();
+            return false;
+        });
+
+        $('#printVoucher').click(function () {
+            printVoucher();
+            return false;
+        });
+
+        $('#printVoucherBankCheque').click(function () {
+            printVoucherBankCheque();
+            return false;
+        });
+
+        $('#printVoucherChequePreview').click(function () {
+            printVoucherChequePreview();
+            return false;
+        });
+    });
+
+    function printVoucher() {
+        var voucherId = $('#hideVoucherId').val();
+        if (voucherId.length <= 0) {
+            showError('First populate voucher then click print');
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        cancelledVoucher = $('#cancelledVoucher').is(":checked");
+        var params = "?voucherId=" + voucherId + "&cancelledVoucher=" + cancelledVoucher;
+        if (confirm('Do you want to download the voucher now?')) {
+            var url = "${createLink(controller:'accReport', action: 'downloadVoucher')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function printVoucherBankCheque() {
+        var voucherId = $('#hideVoucherId').val();
+        if (voucherId.length <= 0) {
+            showError('First populate voucher then click print');
+            return false;
+        }
+
+        var accountName = $('#accountName').val();
+        var isAccountPayable = $('#isAccountPayable').attr('checked');
+        isAccountPayable = isAccountPayable ? true : false;
+
+        showLoadingSpinner(true);
+        var params = "?voucherId=" + voucherId + "&accountName=" + encodeURIComponent(accountName) + "&isAccountPayable=" + isAccountPayable;
+        if (confirm('Do you want to download the cheque now?')) {
+            var url = "${createLink(controller:'accReport', action: 'downloadVoucherBankCheque')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function printVoucherChequePreview() {
+        var voucherId = $('#hideVoucherId').val();
+        if (voucherId.length <= 0) {
+            showError('First populate voucher then click print');
+            return false;
+        }
+
+        var accountName = $('#accountName').val();
+        var isAccountPayable = $('#isAccountPayable').attr('checked');
+        isAccountPayable = isAccountPayable ? true : false;
+
+        showLoadingSpinner(true);
+        var params = "?voucherId=" + voucherId + "&accountName=" + encodeURIComponent(accountName) + "&isAccountPayable=" + isAccountPayable;
+        if (confirm('Do you want to download the bank cheque preview now?')) {
+            var url = "${createLink(controller:'accReport', action: 'downloadVoucherBankChequePreview')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function onLoadVoucher() {
+        initializeForm($("#searchForm"), getVoucher);
+        try {   // Model will be supplied to grid on load _list.gsp
+            $('.download_icon_set').hide();
+            $('#accountNameDiv').hide();
+            if (modelJsonForVoucher.voucherMap) {
+                populateVoucher(modelJsonForVoucher.voucherMap);
+            }
+        } catch (e) {
+            showError(e.message);
+        }
+
+        // update page title
+        $(document).attr('title', "MIS - Voucher");
+        loadNumberedMenu(MENU_ID_ACCOUNTING, "#accReport/showVoucher");
+    }
+
+    function executePreConditionToGetVoucher(ids) {
+        if (ids.length == 0) {
+            showError("Please enter a Voucher Trace No");
+            return false;
+        }
+        return true;
+    }
+
+    function getVoucher() {
+        if (!validateForm($("#searchForm"))) {
+            return false;
+        }
+        var traceNo = $('#traceNo').val().trim();
+        cancelledVoucher = $('#cancelledVoucher').is(":checked");
+
+        if (executePreConditionToGetVoucher(traceNo) == false) {
+            return false;
+        }
+        clearVoucher();
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller:'accReport', action: 'searchVoucher')}?traceNo=" + traceNo + "&cancelledVoucher=" + cancelledVoucher,
+            success: executePostConditionForVoucher,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForVoucher(data) {
+        if (data.isError) {
+            showError(data.message);
+            $('#lblVoucherTypeName').text('Voucher Type Title');
+            doGridEmpty();
+            $('.download_icon_set').hide();
+            $('#accountNameDiv').hide();
+            return;
+        }
+        populateVoucher(data.voucherMap);
+        return false;
+    }
+
+    function clearVoucher() {
+        $('#lblCancelledByOn').hide();
+        $('#lblCancelledReason').hide();
+        $('#lblVoucherTypeName').text('');
+        $('#lblCancelled').text('');
+        $('#cancelledBy').text('');
+        $('#cancelledOn').text('');
+        $('#cancelReason').text('');
+        $('#lblTraceNo').text('');
+        $('#lblVoucherDate').text('');
+        doGridEmpty();
+        $("#flex1").flexAddData('');
+        $('#hideVoucherId').val('');
+        $('#lblPreparedBy').text('');
+        $('#lblCheckedBy').text('');
+        $('#lblProjectName').text('');
+        $('#lblInstrumentType').text('');
+        $('#lblInstrumentNo').text('');
+        $('#accountName').val('');
+    }
+
+    function populateVoucher(result) {
+        $('.download_icon_set').show();
+        $('.accountNameDiv').show();
+        clearVoucher();
+        $('#lblVoucherTypeName').text(result.voucherTypeName);
+        $('#traceNo').val(result.traceNo);
+        $('#lblTraceNo').text(result.traceNo);
+        $('#lblVoucherDate').text(result.voucherDate);
+        $("#flex1").flexAddData(result.voucherList);
+        $('#hideVoucherId').val(result.voucherId);
+        $('#lblPreparedBy').text(result.preparedBy);
+        $('#lblCheckedBy').text(result.approvedBy);
+        $('#lblProjectName').text(result.projectName);
+        $('#lblInstrumentType').text(result.instrumentType);
+        $('#lblInstrumentNo').text(result.instrumentNo);
+        $('#lblChequeNo').text(result.chequeNo);
+        if (result.isCancelledVoucher == true) {
+            cancelledVoucher = true;
+            $('#cancelledVoucher').attr('checked', true);
+        }
+        if (result.isChequePrintable == true) {
+            $('#accountNameDiv').show();
+        } else {
+            $('#accountNameDiv').hide();
+        }
+
+        if (cancelledVoucher) {
+            $('#lblCancelledByOn').show();
+            $('#lblCancelledReason').show();
+            $('#accountNameDiv').hide();
+            $('#lblCancelled').text(' ( Cancelled )');
+            $('#cancelledBy').text(result.cancelledBy);
+            $('#cancelledOn').text(result.cancelledOn);
+            $('#cancelReason').text(result.cancelledReason);
+            cancelledVoucher = false;
+        }
+    }
+
+    $("#flex1").flexigrid
+    (
+            {
+                url: false,
+                dataType: 'json',
+                colModel: [
+                    {display: "SL", name: "serial", width: 20, sortable: false, align: "right", hide: true},
+                    {display: "Code", name: "code", width: 50, sortable: false, align: "left"},
+                    {display: "Head Name & Particulars", name: "headNameAndParticulars", width: 400, sortable: false, align: "left"},
+                    {display: "Source", name: "sourceId", width: 200, sortable: false, align: "left"},
+                    {display: "Debit", name: "debit", width: 120, sortable: false, align: "right"},
+                    {display: "Credit", name: "credit", width: 120, sortable: false, align: "right"}
+                ],
+                sortname: "avd.row_id",
+                sortorder: "asc",
+                usepager: false,
+                singleSelect: true,
+                title: 'Transaction Details',
+                useRp: false,
+                showTableToggleBtn: false,
+                height: getGridHeight() - 220,
+                afterAjax: function (XMLHttpRequest, textStatus) {
+                    showLoadingSpinner(false);// Spinner hide after AJAX Call
+                }
+            }
+    );
+
+    function doGridEmpty() {
+        var emptyGridModel = getEmptyGridModel();
+        $("#flex1").flexAddData(emptyGridModel);
+        $("#flex1").flexOptions({url: false, newp: 1}).flexReload();
+    }
+
+    window.onLoad = onLoadVoucher();
+
+
+</script>

@@ -1,0 +1,161 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.integration.exchangehouse.ExchangeHousePluginConnector
+import com.athena.mis.sarb.utility.SarbSessionUtil
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import groovy.sql.GroovyRowResult
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+
+class ListCancelTaskForSendToSarbActionService extends BaseService implements ActionIntf{
+
+    @Autowired
+    SarbSessionUtil sarbSessionUtil
+    @Autowired(required = false)
+    ExchangeHousePluginConnector exchangeHouseImplService
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    private static final String LOAD_FAILED = "Failed to load task lists."
+    private static final String LST_TASK = "lstTask"
+
+    /**
+     * Do nothing for executePreCondition
+     */
+    public Object executePreCondition(Object parameters, Object obj){
+        return null
+    }
+    /**
+     * Do nothing for executePostCondition
+     */
+    public Object executePostCondition(Object parameters, Object obj){
+        return null
+    }
+    /**
+     * Get parameters from UI
+     * @param parameters
+     * @param obj-N/A
+     * @return list and count
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object parameters, Object obj){
+        Map result = new LinkedHashMap()
+        try{
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            initPager(params)
+            long companyId= sarbSessionUtil.appSessionUtil.getCompanyId()
+            SystemEntity cancelStatus = exchangeHouseImplService.readExhTaskStatusCancel(companyId)
+            List<GroovyRowResult> lstSarbTaskModel = listTaskForCancel(cancelStatus.id,this)
+            int count = countTaskForCancel(cancelStatus.id)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            result.put(LST_TASK, lstSarbTaskModel)
+            result.put(Tools.COUNT, count)
+            return result
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, LOAD_FAILED)
+            return result
+        }
+    }
+    /**
+     * Wrap sarb task details list for grid
+     * @param obj -map returned from execute method
+     * @return -a map containing all objects necessary for grid view
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result=new LinkedHashMap()
+        try{
+            Map executeResult = (Map) obj
+            List<GroovyRowResult> lstSarbTask = (List<GroovyRowResult>) executeResult.get(LST_TASK)
+            int count = (int) executeResult.get(Tools.COUNT)
+            List wrappedSarbTaskModel = wrapListSarbTaskModel(lstSarbTask, start)
+            Map output = [page: pageNumber, total: count, rows: wrappedSarbTaskModel]
+            return output
+        }
+        catch(Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, LOAD_FAILED)
+            return result
+        }
+    }
+
+    /**
+     * Do nothing
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+    /**
+     * Wrap list of sarb task in grid entity
+     * @param lstSarbTaskModel -list of  object(s)
+     * @param start -starting index of the page
+     * @return -list of wrapped objects
+     */
+    private List wrapListSarbTaskModel(List<GroovyRowResult> lstSarbTaskModel, int start) {
+        List SarbTaskModelList = []
+        int counter = start + 1
+        for (int i = 0; i < lstSarbTaskModel.size(); i++) {
+            GridEntity obj = new GridEntity()
+            obj.id = lstSarbTaskModel[i].id
+            obj.cell = [
+                    counter,
+                    lstSarbTaskModel[i].id,
+                    lstSarbTaskModel[i].ref_no,
+                    lstSarbTaskModel[i].amount_in_foreign_currency,
+                    lstSarbTaskModel[i].amount_in_local_currency,
+                    lstSarbTaskModel[i].customer_name,
+                    lstSarbTaskModel[i].beneficiary_name
+            ]
+            SarbTaskModelList << obj
+            counter++
+        }
+        return SarbTaskModelList
+    }
+    private static final String LIST_QUERY_TASK_FOR_CANCEL="""
+        SELECT t.id,t.ref_no, t.amount_in_foreign_currency, t.amount_in_local_currency, t.customer_name, t.beneficiary_name
+        FROM exh_task t
+        LEFT join sarb_task_details st
+        ON t.id = st.task_id  AND st.id = (SELECT MAX(sarb_task_details.id) FROM sarb_task_details WHERE sarb_task_details.task_id = t.id)
+        WHERE t.current_status =:cancelStatus
+        AND st.enabled=false
+        AND st.is_accepted_by_sarb = true
+        limit :resultPerPage
+        OFFSET :start
+    """
+    private List<GroovyRowResult> listTaskForCancel(long cancelStatus,BaseService baseService){
+        Map queryParams=[
+                cancelStatus : cancelStatus,
+                resultPerPage: baseService.resultPerPage,
+                start : baseService.start
+        ]
+        List<GroovyRowResult> lstTaskForCancel=executeSelectSql(LIST_QUERY_TASK_FOR_CANCEL,queryParams)
+        return lstTaskForCancel
+    }
+
+    private static final String COUNT_QUERY_TASK_FOR_CANCEL="""
+        SELECT COUNT(t.id)
+        FROM exh_task t
+        LEFT join sarb_task_details st ON t.id = st.task_id
+        AND st.id = (SELECT MAX(sarb_task_details.id) FROM sarb_task_details WHERE sarb_task_details.task_id = t.id)
+        WHERE t.current_status = :cancelStatus
+        AND st.enabled=false AND st.is_accepted_by_sarb = true
+    """
+    private int countTaskForCancel(long cancelStatus){
+        Map queryParams=[
+                cancelStatus : cancelStatus
+        ]
+        List<GroovyRowResult> resultList=executeSelectSql(COUNT_QUERY_TASK_FOR_CANCEL,queryParams)
+        int count=(int)resultList[0][0]
+        return  count
+    }
+}

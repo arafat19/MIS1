@@ -1,0 +1,64 @@
+package com.athena.mis.document.taglib
+
+import com.athena.mis.document.actions.taglib.DocSubCategoriesDetailsTaglibActionService
+import com.athena.mis.document.actions.taglib.GetDocSubCategoriesManagersTaglibActionService
+import com.athena.mis.document.actions.taglib.ListDocSubCategoriesTagLibActionService
+import com.athena.mis.utility.Tools
+
+class DocSubCategoriesTagLib {
+    static namespace = "doc"
+
+    ListDocSubCategoriesTagLibActionService listDocSubCategoriesTagLibActionService
+    DocSubCategoriesDetailsTaglibActionService docSubCategoriesDetailsTaglibActionService
+    GetDocSubCategoriesManagersTaglibActionService getDocSubCategoriesManagersTaglibActionService
+    /**
+     * Render lisView of sub categories
+     * example: <doc:mySubCategories name="listView"></doc:mySubCategories>
+     * @attr name REQUIRED - name & id of html component
+     * @attr categoryId REQUIRED - categoryId of html component
+     */
+
+    def listMySubCategories = { attrs, body ->
+        Map preResult = (Map) listDocSubCategoriesTagLibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = listDocSubCategoriesTagLibActionService.execute(preResult, null)
+        out << output
+    }
+
+    /**
+     * Render details of my categories
+     * example: <doc:myCategoriesDetails id="cagegoryId"></doc:myCategoriesDetails>
+     * @attr sub_category_id REQUIRED - id of html component
+     */
+    def subCategoriesDetails = { attrs, body ->
+        Map preResult = (Map) docSubCategoriesDetailsTaglibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = docSubCategoriesDetailsTaglibActionService.execute(preResult, null)
+        out << output
+    }
+
+    /**
+     * Render lisView of my categories
+     * example: <doc:myCategories name="listView"></doc:myCategories>
+     * @attr sub_category_id REQUIRED - name & id of html component
+     */
+    def subCategoryManagers = { attrs, body ->
+        Map preResult = (Map) getDocSubCategoriesManagersTaglibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = getDocSubCategoriesManagersTaglibActionService.execute(preResult, null)
+        out << output
+    }
+
+}

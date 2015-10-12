@@ -1,0 +1,48 @@
+
+{table}
+ *Access Type:* | Restricted  | Priority: | High
+ *Name:* | Open Item of *Purchase Request* in Edit Mode | |
+ *ActionService:* | SelectPurchaseRequestDetailsActionService| *Auditable:* | No
+ *Url*: | /purchaseRequestDetails/select | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show landing page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* [Show Item  of "Purchase Request" Landing Page|guide:ShowPurchaseRequestDetailsActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* Open Item of *Purchase Request* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Purchase Request Details of Material" privilege.
+
+h4. Process:
+Get selected *Item* of *Purchase Request* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Item* of *Purchase Request* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Update Item of "Purchase Request"|guide:UpdatePurchaseRequestDetailsActionService].

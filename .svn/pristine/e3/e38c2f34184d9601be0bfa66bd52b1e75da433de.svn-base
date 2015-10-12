@@ -1,0 +1,136 @@
+package com.athena.mis.application.actions.vehicle
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.Vehicle
+import com.athena.mis.application.utility.AppSessionUtil
+import com.athena.mis.application.utility.VehicleCacheUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ *  Show list of vehicle for grid
+ *  For details go through Use-Case doc named 'ListVehicleActionService'
+ */
+class ListVehicleActionService extends BaseService implements ActionIntf {
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    private static final String PAGE_LOAD_ERROR_MESSAGE = "Failed to search vehicle grid"
+
+    @Autowired
+    VehicleCacheUtility vehicleUtility
+    @Autowired
+    AppSessionUtil appSessionUtil
+
+    /**
+     * 1. check user access as Admin role
+     * @param params -N/A
+     * @param obj - N/A
+     * @return - a map containing isAccess(true/false) depending on method success &  relevant message.
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.HAS_ACCESS, Boolean.TRUE)
+            if (!appSessionUtil.getAppUser().isPowerUser) {
+                result.put(Tools.HAS_ACCESS, Boolean.FALSE)
+                return result
+            }
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.HAS_ACCESS, Boolean.TRUE)
+            return result
+        }
+    }
+    /**
+     * 1. initialize params for pagination of Flexi-grid
+     * 2. pull vehicle list from cache utility
+     * @param params -serialize parameters from UI
+     * @param obj -N/A
+     * @return - vehicle list
+     */
+    public Object execute(Object params, Object obj = null) {
+        try {
+            if ((!params.sortname) || (params.sortname.toString().equals(ID))) {
+                params.sortname = vehicleUtility.SORT_ON_NAME
+                params.sortorder = vehicleUtility.SORT_ORDER_ASCENDING
+            }
+            initPager(params)
+            int count = vehicleUtility.count()
+            List vehicleList = vehicleUtility.list(this)
+            return [vehicleList: vehicleList, count: count]
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            return null
+        }
+    }
+    /**
+     * Wrap list of vehicle in grid entity
+     * @param vehicleList -list of vehicle
+     * @param start -starting index of the page
+     * @return -list of wrapped vehicle
+     */
+    private List wrapListInGridEntityList(List<Vehicle> vehicleList, int start) {
+        List vehicles = [] as List
+        try {
+            int counter = start + 1
+            for (int i = 0; i < vehicleList.size(); i++) {
+                Vehicle vehicle = vehicleList[i]
+                GridEntity obj = new GridEntity()
+                obj.id = vehicle.id
+                obj.cell = [
+                        counter,
+                        vehicle.id,
+                        vehicle.name,
+                        vehicle.description ? vehicle.description : Tools.EMPTY_SPACE
+                ]
+                vehicles << obj
+                counter++
+            }
+            return vehicles
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            vehicles = []
+            return vehicles
+        }
+    }
+    /**
+     * do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Wrap vehicle list for grid
+     * @param obj -map returned from execute method
+     * @return -a map containing all objects necessary for grid view
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        try {
+            Map executeResult = (Map) obj
+            List<Vehicle> vehicleList = (List<Vehicle>) executeResult.vehicleList
+            int count = (int) executeResult.count
+            List inventory = wrapListInGridEntityList(vehicleList, start)
+            return [page: pageNumber, total: count, rows: inventory]
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            return [page: pageNumber, total: 0, rows: null]
+        }
+    }
+    /**
+     * Build failure result in case of any error
+     * @param obj -N/A
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        result.put(Tools.IS_ERROR, Boolean.TRUE)
+        result.put(Tools.MESSAGE, PAGE_LOAD_ERROR_MESSAGE)
+        return result
+    }
+}

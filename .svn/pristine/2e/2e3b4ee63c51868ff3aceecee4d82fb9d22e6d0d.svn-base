@@ -1,0 +1,84 @@
+package com.athena.mis.application.utility
+
+import com.athena.mis.ExtendedCacheUtility
+import com.athena.mis.application.entity.Company
+import com.athena.mis.application.entity.Country
+import com.athena.mis.application.entity.Currency
+import com.athena.mis.application.service.CurrencyService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+
+@Component('currencyCacheUtility')
+class CurrencyCacheUtility extends ExtendedCacheUtility {
+    public static final String DEFAULT_SORT_PROPERTY = 'id'
+    private static Currency toCurrency = null
+    private static Currency fromCurrency = null
+
+    @Autowired
+    CurrencyService currencyService
+    @Autowired
+    CompanyCacheUtility companyCacheUtility
+
+    public void init() {
+        List currencyList = currencyService.list()
+        setList(currencyList)
+    }
+
+    // return BDT
+    public Currency getForeignCurrency() {
+        List<Currency> lstCurrency = (List<Currency>) list()
+        List lst = lstCurrency.findAll { it.isToCurrency }
+        if (lst && lst.size() > 0) {
+            return lst[0]
+        }
+        return null
+    }
+
+    // return GBP , USD etc
+    public Currency getLocalCurrency() {
+        Company company = (Company) companyCacheUtility.read(appSessionUtil.appUser.companyId)
+        Currency currency = (Currency) read(company.currencyId)
+        return currency
+    }
+    // return number of same Currency name in a specific company
+    public int countByName(String name){
+        int count = 0;
+        List<Currency> lstCurrency = (List<Currency>) list()
+        for (int i = 0; i < lstCurrency.size(); i++) {
+            if (lstCurrency[i].name.equalsIgnoreCase(name))
+                count++
+        }
+        return count;
+    }
+
+    public int countByNameAndIdNotEqual(String name, long id){
+        int count = 0;
+        List<Currency> lstCurrency = (List<Currency>) list()
+        for (int i = 0; i < lstCurrency.size(); i++) {
+            if (lstCurrency[i].name.equalsIgnoreCase(name) && lstCurrency[i].id != id)
+                count++
+        }
+        return count;
+    }
+
+    // return number of same Currency name in a specific company
+    public int countBySymbol(String symbol){
+        int count = 0;
+        List<Currency> lstCurrency = (List<Currency>) list()
+        for (int i = 0; i < lstCurrency.size(); i++) {
+            if (lstCurrency[i].symbol.equalsIgnoreCase(symbol))
+                count++
+        }
+        return count;
+    }
+
+    public int countBySymbolAndIdNotEqual(String symbol, long id){
+        int count = 0;
+        List<Currency> lstCurrency = (List<Currency>) list()
+        for (int i = 0; i < lstCurrency.size(); i++) {
+            if (lstCurrency[i].symbol.equalsIgnoreCase(symbol) && lstCurrency[i].id != id)
+                count++
+        }
+        return count;
+    }
+}

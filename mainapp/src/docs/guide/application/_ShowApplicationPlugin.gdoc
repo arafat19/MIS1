@@ -1,0 +1,44 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Application Plugin | |
+*Action:* | N/A | *Auditable:* | No
+*Url:* | /application/renderApplicationMenu | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 9th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Administrator, Configuration Manager.
+
+h4. Description:
+This is the landing page of Application Plugin.
+
+h4. Flow:
+* Click "Settings" option from top menu bar.
+* Show Application Plugin.
+
+h4. Pre-condition:
+* MIS Project must contain "Application Plugin".
+* User must have "Application Module" privilege to access Application option from menu bar.
+
+h4. Process:
+* Show "Application Plugin" Widget based on user privilege.
+* Application Left menu must be generate based on user privilege.
+
+h4. Post-condition:
+
+* *Success:*
+** Show Application widget in landing page.
+** Show Application left menu based on log in user privilege.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!application/Application_Plugin_Show.png!

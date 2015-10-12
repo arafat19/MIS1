@@ -1,0 +1,35 @@
+
+{table}
+ Use Case ID: | MIS-Budget-34 | Priority: | High
+ *Name* | Show Project Budget Type | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /projectBudgetType/show | *Action Class:* | ShowProjectBudgetTypeActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System Admin.
+
+h4. Description:
+This is the landing page of project budget type with input form on top and grid view at the bottom.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+# Show drop-down list of Project, so that actor can assign budget type of that project.
+# List of all available budget type. 
+
+h4. Post-condition:
+
+# *Success:*
+## Show project budget type list.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

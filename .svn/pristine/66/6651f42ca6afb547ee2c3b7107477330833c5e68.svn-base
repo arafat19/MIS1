@@ -1,0 +1,45 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Bank Wise District" List in drop-down | | 
+*Action:* | GetDropDownDistrictTagLibActionService | *Auditable:* | No
+*Url:* | /district/reloadDistrictDropDown | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User.
+
+h4. Description: 
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Purchase Instrument Mapping* link.
+* [Show Landing Page of "Purchase Instrument Mapping"|guide:ShowRmsPurchaseInstrumentMappingActionService].
+* Populate "Bank Wise District" List in drop-down.
+
+h4. Pre-condition: 
+* User must have "Reload District dropdown independently" privilege.
+
+h4. Process: 
+* Get "Bank Wise District" list from server. [Show Landing Page of "District"|guide:ShowDistrictActionService]
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate all "Bank Wise District" list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase: 
+* [Create "Purchase Instrument Mapping"|guide:CreateRmsPurchaseInstrumentMappingActionService].
+* [Update "Purchase Instrument Mapping"|guide:UpdateRmsPurchaseInstrumentMappingActionService].

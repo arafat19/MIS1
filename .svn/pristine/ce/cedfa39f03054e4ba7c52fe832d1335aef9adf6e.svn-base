@@ -1,0 +1,370 @@
+<%@ page import="com.athena.mis.application.utility.RoleTypeCacheUtility" %>
+<script language="javascript">
+    var storyListModel = false;
+    var dropDownProject, dropDownStatus, projectId, statusId, reservedStatusCompleted, reservedStatusAccepted;
+
+    $(document).ready(function () {
+        onLoadStoryPage();
+    });
+
+    // method called on page load
+    function onLoadStoryPage() {
+        initializeForm($("#storyForm"), onSearchStory);
+        storyListModel = false;
+        initFlex();
+
+        // update page title
+        $(document).attr('title', "MIS - Search Story");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#ptBacklog/showForActive");
+    }
+
+    // check pre condition before submitting the form
+    function executePreConditionForSearchStory() {
+        // validate form data
+        if (!validateForm($("#storyForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    // perform on click of search button
+    function onSearchStory() {
+        if (executePreConditionForSearchStory() == false) {
+            return false;
+        }
+        projectId = dropDownProject.value();
+        statusId = dropDownStatus.value();
+
+        setButtonDisabled($('#search'), true);  // disable the save button
+        showLoadingSpinner(true);   // show loading spinner
+
+        var params = "?projectId=" + projectId + "&statusId=" + statusId;
+        var strUrl = "${createLink(controller: 'ptBacklog', action: 'listForActive')}" + params;
+
+        $.ajax({
+            url: strUrl,
+            success: function (data, textStatus) {
+                executePostConditionForStory(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+                setButtonDisabled($('#search'), false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForStory(result) {
+        $("#flex1").flexAddData(getEmptyGridModel());
+        if (result.isError) {
+            showError(result.message);
+            return false;
+        }
+        storyListModel = result.gridObj;
+        reservedStatusCompleted = result.Completed;
+        reservedStatusAccepted = result.Accepted;
+        populateFlex1();
+    }
+
+    // initialize the grid
+    function initFlex() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                        {display: "Type", name: "type", width: 40, sortable: false, align: "left"},
+                        {display: "Idea", name: "idea", width: 540, sortable: false, align: "left"},
+                        {display: "Status", name: "status", width: 70, sortable: false, align: "left"},
+                        {display: "Owner", name: "user", width: 140, sortable: false, align: "left"},
+                        {display: "A.C.(s)", name: "pac_count", width: 45, sortable: true, align: "right"},
+                        {display: "Bug(s)", name: "bug_count", width: 55, sortable: true, align: "right"},
+                        {display: "Unresolved", name: "unresolved", width: 70, sortable: true, align: "right"}
+                    ],
+                    buttons: [
+                        <app:hasRoleType id="${RoleTypeCacheUtility.ROLE_SOFTWARE_ENGINEER}">
+                        <app:ifAllUrl urls="/ptBacklog/addToMyBacklog">
+                        {name: 'Add to My Task', bclass: 'addItem', onpress: addToMyBacklog},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptBug/addToMyBug">
+                        {name: 'Add to My Bug', bclass: 'addItem', onpress: addToMyBug},
+                        </app:ifAllUrl>
+                        </app:hasRoleType>
+                        <app:ifAllUrl urls="/ptBug/show">
+                        {name: 'Bug', bclass: 'note', onpress: showBug},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptBacklog/acceptStory">
+                        {name: 'Accept', bclass: 'note', onpress: acceptStory},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptReport/showForBacklogDetails">
+                        {name: 'Report', bclass: 'note', onpress: showBacklogDetails},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Idea", name: "backlog.idea", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: false,
+                    title: 'All Story',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: onLoadListJSON
+                }
+        );
+    }
+
+    // custom populate the grid
+    function onLoadListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            storyListModel = getEmptyGridModel();
+        } else {
+            storyListModel = data.gridObj;
+        }
+        $("#flex1").flexAddData(storyListModel);
+    }
+
+    // load bug for selected backlog
+    function showBug(com, grid) {
+        if ((executeCommonPreConditionForSelect($('#flex1'), 'story') == false)) {
+            return;
+        }
+        var ids = $('.trSelected', grid);
+        if (ids.length > 1) {
+            showError('Select a single row to view bug');
+            return;
+        }
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+        var loc;
+        loc = "${createLink(controller: 'ptBug', action: 'show')}?backlogId=" + backlogId + "&leftMenu=" + 'ptBacklog/showForActive';
+        var type = $.trim($(ids[0]).find('td').eq(1).find('div').text());
+        if (type == "Bug") {
+            loc = "${createLink(controller: 'ptBug', action: 'showOrphanBug')}?leftMenu=" + 'ptBacklog/showForActive';
+        }
+        showLoadingSpinner(true);
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    // add ownerId to backlog
+    function addToMyBacklog(com, grid) {
+        var ids = $('.trSelected', grid);
+        if ((executeCommonPreConditionForSelect($('#flex1'), 'story') == false) || (executePreConditionForAddToMyBacklog(ids) == false)) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backlogIds = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'ptBacklog', action: 'addToMyBacklog')}?ids=" + backlogIds,
+            success: function (data, textStatus) {
+                executePostConditionForAddToMyBacklog(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForAccepted(ids) {
+        if (ids.length > 1) {
+            showError('Select a single task to accept');
+            return false;
+        }
+        var type = $.trim($(ids[0]).find('td').eq(1).find('div').text());
+        if (type == "Bug") {
+            showError('Select a task to accept');
+            return false;
+        }
+        if (!confirm('Are you sure you want to accept this backlog?')) {
+            return false;
+        }
+        var storyStatus = $.trim($(ids[0]).find('td').eq(3).find('div').text());
+
+        if (storyStatus && storyStatus == reservedStatusAccepted) {
+            showError('Story already accepted.');
+            return false;
+        }
+
+        if (storyStatus && storyStatus != reservedStatusCompleted) {
+            showError('Only Completed task could be Accepted.');
+            return false;
+        }
+
+        return true;
+    }
+
+    // set backlog 'Completed' status 'Accepted'
+    function acceptStory(com, grid) {
+        var ids = $('.trSelected', grid);
+        if ((executeCommonPreConditionForSelect($('#flex1'), 'story') == false) || (executePreConditionForAccepted(ids) == false)) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'ptBacklog', action: 'acceptStory')}?id=" + id,
+            success: function (data, textStatus) {
+                executePostConditionForAcceptStory(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForAcceptStory(result) {
+        if (result.isError) {
+            showError(result.message);  // show error message in case of error
+            showLoadingSpinner(false);  // stop loading spinner
+        } else {
+            updateListModel(storyListModel, result.entity, 0);
+            $("#flex1").flexAddData(storyListModel);
+            showSuccess(result.message);    // show success message
+            showLoadingSpinner(false);  // stop loading spinner
+        }
+    }
+
+    function executePreConditionForAddToMyBacklog(ids) {
+        for (var i = 0; i < ids.length; i++) {
+            var type = $.trim($(ids[i]).find('td').eq(1).find('div').text());
+            if (type == "Bug") {
+                showError('Select only tasks for add to my task');
+                return false;
+            }
+        }
+
+        if (!confirm('Are you sure you want to add this backlog(s)?')) {
+            return false;
+        }
+
+        for (var j = 0; j < ids.length; j++) {
+            var hasOwner = $.trim($(ids[j]).find('td').eq(3).find('div').text());
+            if (hasOwner && hasOwner.length > 0) {
+                showError('Story already has owner');
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    function executePostConditionForAddToMyBacklog(result) {
+        if (result.isError) {
+            showError(result.message);  // show error message in case of error
+            showLoadingSpinner(false);  // stop loading spinner
+        } else {
+            for (var i = 0; i < result.entity.length; i++) {
+                updateListModel(storyListModel, result.entity[i], 0);
+                $("#flex1").flexAddData(storyListModel);
+            }
+            showSuccess(result.message);    // show success message
+            showLoadingSpinner(false);  // stop loading spinner
+        }
+    }
+
+    // reload grid
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    // set link to grid url to populate data
+    function populateFlex1() {
+        var params = "?projectId=" + projectId + "&statusId=" + statusId;
+        var strUrl = "${createLink(controller: 'ptBacklog', action: 'listForActive')}" + params;
+        $("#flex1").flexOptions({url: strUrl});
+        if (storyListModel) {
+            $("#flex1").flexAddData(storyListModel);
+        }
+    }
+
+    function showBacklogDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'Backlog') == false) {
+            return;
+        }
+        var ids = $('.trSelected', grid);
+        if (ids.length > 1) {
+            showError('Select a single task to view report');
+            return;
+        }
+        var type = $.trim($(ids[0]).find('td').eq(1).find('div').text());
+        if (type == "Bug") {
+            showError('Select a task to view report');
+            return false;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'ptReport', action: 'showForBacklogDetails')}?backlogId=" + backlogId + "&leftMenu=" + 'ptBacklog/showForActive';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    function addToMyBug(com, grid) {
+        var ids = $('.trSelected', grid);
+        if (executeCommonPreConditionForSelect($('#flex1'), 'bug') == false) {
+            return;
+        }
+        for (var i = 0; i < ids.length; i++) {
+            var type = $.trim($(ids[i]).find('td').eq(1).find('div').text());
+            if (type == "Task") {
+                showError('Select only bugs for add to my bug');
+                return false;
+            }
+        }
+        for (var j = 0; j < ids.length; j++) {
+            var hasOwner = $.trim($(ids[j]).find('td').eq(4).find('div').text());
+            if (hasOwner && hasOwner.length > 0) {
+                showError('Bug already has owner');
+                return false;
+            }
+        }
+        if (!confirm('Are you sure you want to add this bug(s)?')) {
+            return false;
+        }
+        showLoadingSpinner(true);
+        var bugIds = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'ptBug', action: 'addToMyBug')}?ids=" + bugIds,
+            success: function (data, textStatus) {
+                executePostConditionForAddToMyBug(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForAddToMyBug(result) {
+        if (result.isError) {
+            showError(result.message);  // show error message in case of error
+            showLoadingSpinner(false);  // stop loading spinner
+        } else {
+            for (var i = 0; i < result.entity.length; i++) {
+                updateListModel(storyListModel, result.entity[i], 0);
+                $("#flex1").flexAddData(storyListModel);
+            }
+            showSuccess(result.message);    // show success message
+            showLoadingSpinner(false);  // stop loading spinner
+        }
+    }
+
+</script>

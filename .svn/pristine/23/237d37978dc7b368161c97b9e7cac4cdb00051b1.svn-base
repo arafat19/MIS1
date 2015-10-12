@@ -1,0 +1,33 @@
+package com.athena.mis.document.controller
+
+import com.athena.mis.document.actions.subcategory.ListMySubCategoryFavouriteActionService
+import grails.converters.JSON
+
+class DocumentController {
+    static allowedMethods = [renderDocumentMenu: "POST"]
+
+    def springSecurityService
+    ListMySubCategoryFavouriteActionService listMySubCategoryFavouriteActionService
+
+    def renderDocumentMenu() {
+        if (!springSecurityService.isLoggedIn()) {
+            render('false')
+            return
+        }
+        Map result
+        Map executeResult = (Map) listMySubCategoryFavouriteActionService.execute(params, null);
+        Boolean isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) listMySubCategoryFavouriteActionService.buildFailureResultForUI(executeResult);
+        } else {
+            result = (Map) listMySubCategoryFavouriteActionService.buildSuccessResultForUI(executeResult);
+        }
+        String output = result as JSON
+        render(contentType: "text/json") {
+            lstTemplates = array {
+                element([name: 'menu', content: g.render(plugin:'document', template: '/document/leftmenuDocument')])
+                element([name: 'dashBoard', content: g.render(plugin: 'document', template: '/document/dashBoardDocument',  model: [output: output])])
+            }
+        }
+    }
+}

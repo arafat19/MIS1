@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accBankReconciliationChequeCsv" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15" uuid="5924b743-6fb0-4f2a-8827-201a4a179fab">
+	<property name="ireport.zoom" value="1.1269722013523664"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="toDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT cheque_from,source,cheque_no, amount,cheque_date FROM
+            ((SELECT 'COMPANY' AS cheque_from, ('Voucher: ' || av.trace_no) AS source, av.cheque_no,
+	  av.amount AS amount,
+            TO_CHAR(av.cheque_date,'dd-MON-yyyy') AS  cheque_date
+            FROM acc_voucher av
+            WHERE av.cheque_no IS NOT NULL
+            AND av.company_id = $P{companyId}
+            AND av.cheque_date <= $P{toDate}
+            AND av.cheque_no NOT IN
+            (
+            SELECT cheque_no FROM acc_voucher WHERE cheque_no IS NOT NULL AND company_id = $P{companyId} AND cheque_date <= $P{toDate}
+            INTERSECT
+            SELECT cheque_no FROM acc_bank_statement WHERE cheque_no IS NOT NULL AND company_id = $P{companyId} AND transaction_date <= $P{toDate}
+            )
+            )
+            UNION ALL
+            (SELECT 'BANK' AS cheque_from, (coa.description || ': ' || coa.code) AS source,  abs.cheque_no,
+            abs.amount AS amount,
+            TO_CHAR(abs.transaction_date,'dd-MON-yyyy') AS cheque_date
+            FROM acc_bank_statement abs
+            LEFT JOIN acc_chart_of_account coa ON coa.id = abs.bank_acc_id
+            WHERE abs.cheque_no IS NOT NULL
+            AND abs.company_id = $P{companyId}
+            AND abs.transaction_date <= $P{toDate}
+            AND abs.cheque_no NOT IN
+                (
+                    SELECT cheque_no FROM acc_voucher WHERE cheque_no IS NOT NULL AND company_id = $P{companyId} AND cheque_date <= $P{toDate}
+                    INTERSECT
+                    SELECT cheque_no FROM acc_bank_statement WHERE cheque_no IS NOT NULL AND company_id = $P{companyId} AND transaction_date <= $P{toDate}
+                )
+            )
+            ) bank_reconciliation_cheque
+ORDER BY cheque_from DESC, source ASC]]>
+	</queryString>
+	<field name="cheque_from" class="java.lang.String"/>
+	<field name="source" class="java.lang.String"/>
+	<field name="cheque_no" class="java.lang.String"/>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="cheque_date" class="java.lang.String"/>
+	<variable name="cheque_sum" class="java.lang.Double" resetType="Group" resetGroup="Cheque From" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+	</variable>
+	<variable name="group_count" class="java.lang.Integer" incrementType="Group" incrementGroup="Cheque From" calculation="Count">
+		<variableExpression><![CDATA[$V{group_count}]]></variableExpression>
+		<initialValueExpression><![CDATA[new Integer(1)]]></initialValueExpression>
+	</variable>
+	<variable name="grand_total" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount}]]></variableExpression>
+	</variable>
+	<group name="Cheque From">
+		<groupExpression><![CDATA[$F{cheque_from}]]></groupExpression>
+	</group>
+	<title>
+		<band height="76">
+			<staticText>
+				<reportElement uuid="e79e275a-f769-48c0-ac27-195c26d048cb" x="0" y="0" width="201" height="20"/>
+				<box bottomPadding="0"/>
+				<textElement>
+					<font size="14" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cheque Reconciliation]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b5d63388-08fe-4acf-9101-313b32a6ea84" x="0" y="38" width="201" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy">
+				<reportElement uuid="8dd2ef27-e09d-4aa5-abd1-5d5c9b4fe583" x="201" y="38" width="110" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f10c2b04-0b66-4bc2-a7ac-9fea0843c82d" x="376" y="56" width="179" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="83a18f6e-b9ec-4db2-aa79-5d8feb00dc0a" x="0" y="56" width="201" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Source]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fcdbd3a5-bd38-4dbe-8b49-32ab34c3c19c" x="311" y="56" width="65" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cheque Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="286bf5f3-43db-49e1-88d3-1375f5f557aa" x="201" y="56" width="110" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="9" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cheque No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b5d63388-08fe-4acf-9101-313b32a6ea84" x="0" y="20" width="201" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy">
+				<reportElement uuid="8dd2ef27-e09d-4aa5-abd1-5d5c9b4fe583" x="201" y="20" width="110" height="18"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="20">
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="74cf1812-f4be-41a7-8be1-685ae1e5cb4f" stretchType="RelativeToTallestObject" x="311" y="0" width="65" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cheque_date}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="8db91706-215a-4ca6-8bc1-7baf9ef1934c" stretchType="RelativeToTallestObject" x="376" y="0" width="179" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4556d204-bf9b-401c-8167-09e3c80c37ec" x="0" y="0" width="201" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{source}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="917d4fc0-38d3-49c4-afd1-e07851fc0b52" x="201" y="0" width="110" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cheque_no}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="storeInFromSupplier" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="373b5532-a1a6-4f60-b4c5-1bc20aee9638">
+	<property name="ireport.zoom" value="1.7715610000000048"/>
+	<property name="ireport.x" value="406"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="projectStatusMap" class="java.lang.Object"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="69" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="78cf5a09-513b-4bcd-9e4e-23dfb48507aa" x="1" y="8" width="193" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROJECT STATUS REPORT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8a81fe9f-2b80-40c1-9aee-d1b5d2199b6a" x="0" y="37" width="55" height="16"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9a48bd1f-3809-414b-ae34-9a8cd1aed190" x="55" y="37" width="499" height="16"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[': ' + $P{projectStatusMap}.projectName]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="d2026318-6381-4f18-9ebf-5c40d0d38568" x="295" y="2" width="260" height="35"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="9a48bd1f-3809-414b-ae34-9a8cd1aed190" x="55" y="53" width="499" height="16"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[': ' + $P{projectStatusMap}.projectCode]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8a81fe9f-2b80-40c1-9aee-d1b5d2199b6a" x="0" y="53" width="55" height="16"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<pageFooter>
+		<band height="17" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="a934b3f3-3178-4b09-854c-15cfe11f8580" x="0" y="2" width="554" height="15"/>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="7d9e5485-ae06-4178-9069-8509872598ab" x="0" y="2" width="100" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="bcf84a52-1ea9-48a3-b456-a83996242e14" x="238" y="2" width="94" height="14"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="103" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="0" y="30" width="78" height="18"/>
+				<box topPadding="2" leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Project Completed]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ab2f64ef-41c3-4bbb-989a-41fead5ed671" x="83" y="30" width="152" height="18"/>
+				<box topPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectStatusMap}.projectCompleted]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a25d52a2-0c1b-4086-971d-6be8dcdc0986" mode="Opaque" x="0" y="18" width="235" height="12" forecolor="#000000" backcolor="#CCCCCC"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Current Status of Project]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c648c7c6-0f28-4401-80da-43c79934c2cd" x="78" y="30" width="5" height="18"/>
+				<box topPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6353edf4-04c8-4ae2-9a7b-a46050ee74ef" x="0" y="1" width="555" height="17" forecolor="#000000"/>
+				<box topPadding="2" bottomPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[STATUS DETAILS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="246" y="30" width="110" height="18"/>
+				<box topPadding="2" leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Approved]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c648c7c6-0f28-4401-80da-43c79934c2cd" x="356" y="30" width="5" height="18"/>
+				<box topPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a25d52a2-0c1b-4086-971d-6be8dcdc0986" mode="Opaque" x="246" y="18" width="309" height="12" forecolor="#000000" backcolor="#CCCCCC"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Consumption]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ab2f64ef-41c3-4bbb-989a-41fead5ed671" x="361" y="30" width="194" height="18"/>
+				<box topPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectStatusMap}.invTotalApprovedConsumption]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="0" y="65" width="78" height="18"/>
+				<box topPadding="2" leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Material]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a25d52a2-0c1b-4086-971d-6be8dcdc0986" mode="Opaque" x="246" y="53" width="309" height="12" forecolor="#000000" backcolor="#CCCCCC"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Quantity Survey]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c648c7c6-0f28-4401-80da-43c79934c2cd" x="356" y="65" width="5" height="18"/>
+				<box topPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ab2f64ef-41c3-4bbb-989a-41fead5ed671" x="361" y="65" width="194" height="18"/>
+				<box topPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectStatusMap}.qsTotalReceivableInternal]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c648c7c6-0f28-4401-80da-43c79934c2cd" x="356" y="83" width="5" height="18"/>
+				<box topPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="246" y="83" width="110" height="18"/>
+				<box topPadding="2" leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Approved By Government]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c648c7c6-0f28-4401-80da-43c79934c2cd" x="78" y="65" width="5" height="18"/>
+				<box topPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a25d52a2-0c1b-4086-971d-6be8dcdc0986" mode="Opaque" x="0" y="53" width="235" height="12" forecolor="#000000" backcolor="#CCCCCC"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Inventory]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ab2f64ef-41c3-4bbb-989a-41fead5ed671" x="361" y="83" width="194" height="18"/>
+				<box topPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectStatusMap}.qsTotalReceivableApprovedByGov]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ab2f64ef-41c3-4bbb-989a-41fead5ed671" x="83" y="65" width="152" height="18"/>
+				<box topPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectStatusMap}.invTotalMaterial]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="246" y="65" width="110" height="18"/>
+				<box topPadding="2" leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Receivable(Internal)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c648c7c6-0f28-4401-80da-43c79934c2cd" x="78" y="83" width="5" height="18"/>
+				<box topPadding="2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b883708-7a34-4429-8eb5-4e419d56edf6" x="0" y="83" width="78" height="18"/>
+				<box topPadding="2" leftPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Fixed Asset]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ab2f64ef-41c3-4bbb-989a-41fead5ed671" x="83" y="83" width="152" height="18"/>
+				<box topPadding="2"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{projectStatusMap}.invTotalFixedAsset]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

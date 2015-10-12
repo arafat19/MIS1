@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Send "New Task" to *Bank* | |
+*ActionService:* | ExhSendTaskToBankActionService | *Auditable:* | No 
+*Url:* | /exhTask/sendToBank | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Manage Task" Created By "Cashier"|guide:ListExhTaskForAdminActionService].
+* Show *Task* list in grid view.
+* Select a Line-Item from grid view.
+* Click "Send To Bank" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Ok" button.
+* Send "New Task" to *Bank*.
+
+h4. Pre-condition:
+* User must have "Send task to Bank" privilege.
+* Task initiate with "Payment Gateway" must not send to bank.
+* Customer's *Task* must be approved to send bank.
+* "Un-approved" Task must not send to bank.
+* "Cancelled" Task must not send to Bank.
+* Only newly created task must consider to send bank.
+
+h4. Process:
+* Send selected *Task* to "Bank".
+
+h4. Post-condition:
+
+* *Success:*
+** Send *Task* to "Bank".
+** Show Success message.
+** Remove sending *Task* from grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

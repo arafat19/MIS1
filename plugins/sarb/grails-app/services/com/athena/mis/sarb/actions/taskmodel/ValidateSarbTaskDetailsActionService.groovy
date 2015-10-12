@@ -1,0 +1,64 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+
+class ValidateSarbTaskDetailsActionService extends BaseService implements ActionIntf {
+
+    private static final String MIGRANT_REMITTANCE_CODE = "416"
+    private static final String GIFT_CODE = "401"
+    private static final String COMPENSATION_PAID_BY_RESIDENT = "305" //Compensation paid by a resident to a migrant worker employee
+
+    private static final String NATIONAL_PHOTO_ID_CODE = "IDNumber"
+
+    private static final String FAILED = "Failed to save task details"
+    private static final String UNKNOWN_REMITTANCE = "Unknown remittance purpose"
+    private static final String PHOTO_ID_ERROR = "Photo ID should be National ID for remittance purpose GIFT"
+
+    private static List<String> lstRemittancePurposeCode = [MIGRANT_REMITTANCE_CODE, GIFT_CODE, COMPENSATION_PAID_BY_RESIDENT]
+    private Logger log = Logger.getLogger(getClass())
+
+    Object executePreCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            Map params = (Map) parameters
+            String remittancePurposeCode = params.remittancePurposeCode
+            String photoIdTypeCode = params.photoIdTypeCode
+            if(!lstRemittancePurposeCode.contains(remittancePurposeCode)) {
+                result.put(Tools.MESSAGE, UNKNOWN_REMITTANCE)
+                return result
+            }
+            if (remittancePurposeCode.equals(GIFT_CODE) && !photoIdTypeCode.equals(NATIONAL_PHOTO_ID_CODE)) {
+                result.put(Tools.MESSAGE, PHOTO_ID_ERROR)
+                return result
+            }
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        }
+        catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILED)
+            return result
+        }
+    }
+
+    Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+}

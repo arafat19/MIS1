@@ -1,0 +1,42 @@
+
+
+{table}
+Access Type: | Un-Restricted | Priority: | High
+*Name:* | Show "User Login" Page | |
+*ActionService:* | auth | *Auditable:* | No
+*Url:* | /login/auth | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author* | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Anonymous User.
+
+h4. Description:
+This is the page of "User Login". So that, user can login by giving "User ID", "Password" and "Security ID".
+
+h4. Flow:
+* User must request to access "Log-In" page.
+* Show "User Login" Page.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Show User login page.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "User Login" page.
+** Show input form on top to [Create User Authentication Process|guide:LoginSuccessActionService].
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!application/Show_User_Login_Page.png!

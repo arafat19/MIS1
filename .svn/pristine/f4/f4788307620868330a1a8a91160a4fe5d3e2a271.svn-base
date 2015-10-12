@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *Sprint* List in drop-down | |
+*ActionService:* | PtGetSprintListByProjectIdActionService | *Auditable:* | No
+*Url:* | /ptSprint/listSprintByProjectId | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint Detials" Report|guide:PtShowSprintDetailsReportActionService].
+* Populate *Sprint* List in drop-down.
+
+h4. Pre-condition:
+* User must have "Get Sprint By projectId" privilege.
+* Populate Criteria:
+{table}
+*Field*   | *Input Type* | *Data Type* | *Rules*
+[Project|guide:GetDropDownPtProjectTagLibActionService] | Drop Down Box |  Numeric | Required
+[Sprint|guide:PtGetSprintListByProjectIdActionService] | Drop Down Box | Numeric | Optional
+{table}
+
+h4. Process:
+* Get *Sprint* list from server as per selection of *Project*.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate list of *Sprint* at drop down as per selection of *Project*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Sprint Detials" Report in HTML Format|guide:PtListSprintDetailsReportActionService].

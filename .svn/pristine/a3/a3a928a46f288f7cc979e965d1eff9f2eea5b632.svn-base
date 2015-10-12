@@ -1,0 +1,285 @@
+package com.athena.mis.document.actions.invitedmembers
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.AppMail
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.application.service.AppMailService
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.entity.DocInvitedMembers
+import com.athena.mis.document.service.DocInvitedMembersService
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import grails.plugin.mail.MailService
+import groovy.text.SimpleTemplateEngine
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+import java.util.concurrent.ExecutorService
+
+/**
+ *  Resend invitation to specific recipient
+ *  For details go through Use-Case doc named 'ResendInvitationDocInvitedMembersActionService'
+ */
+class ResendInvitationDocInvitedMembersActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String DEFAULT_ERROR_MESSAGE = 'Failed to load send invitation page'
+    private static final String NOT_FOUND_MESSAGE = ' not found'
+    private static final String TRANSACTION_CODE = 'SendInvitationDocInvitedMembersActionService'
+    private static final String MAIL_TEMPLATE_NOT_FOUND = 'Recipient template not found'
+    private static final String INVITATION_DATE_EXPIRE_MSG = 'Recipient invitation accept date not expire'
+    private static final String INVITATION_ACCEPTATION_MSG = 'Recipient already invitation accepted'
+    private static final String RECIPIENT = 'recipient'
+    private static final String APP_MAIL_OBJ = 'appMailObj'
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String CATEGORY_NAME = 'Category'
+    private static final String CATEGORY = 'category'
+    private static final String MAIL_SEND_SUCCESS_MESSAGE = 'Successfully resend invitation to recipient'
+    private static final String MAIL_SEND = 'mailSend'
+
+    AppMailService appMailService
+    DocInvitedMembersService docInvitedMembersService
+    ExecutorService executorService
+    MailService mailService
+
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+    @Autowired
+    DocSessionUtil docSessionUtil
+
+    /**
+     * 1. Get parameters from UI
+     * 2. check recipient invitation accepted on and expired date
+     * 3. category label from system configuration
+     * 4. check AppMail template existance
+     * 5. check category existance
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all object necessary for execute
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = CATEGORY_NAME
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+
+            long companyId = docSessionUtil.appSessionUtil.companyId
+            long recipientId = Long.parseLong(params.id.toString())
+
+            DocInvitedMembers docInvitedMember = docInvitedMembersService.readByIdAndCompany(recipientId, companyId)
+
+            if (docInvitedMember.invitationAcceptedOn) {
+                result.put(Tools.MESSAGE, INVITATION_ACCEPTATION_MSG)
+                return result
+            }
+
+            if (!docInvitedMember.expiredOn.before(new Date())) {
+                result.put(Tools.MESSAGE, INVITATION_DATE_EXPIRE_MSG)
+                return result
+            }
+
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+
+            AppMail appMail = appMailService.findByTransactionCodeAndCompanyIdAndIsActive(TRANSACTION_CODE, companyId, true)
+            if (!appMail) {
+                result.put(Tools.MESSAGE, MAIL_TEMPLATE_NOT_FOUND)
+                return result
+            }
+
+            DocCategory category = (DocCategory) docCategoryCacheUtility.read(docInvitedMember.categoryId)
+            if (!category) {
+                result.put(Tools.MESSAGE, categoryLabel + NOT_FOUND_MESSAGE)
+                return result
+            }
+
+            result.put(CATEGORY, category)
+            result.put(RECIPIENT, docInvitedMember)
+            result.put(APP_MAIL_OBJ, appMail)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        //Do nothing for post-operation
+        return null
+
+    }
+
+    /*
+    * @param parameters - from UI
+    * @param obj - a map from precondition
+    * Send mail to recipient
+    * Update invited member info to DB
+    * @return - A map containing error/success for buildSuccessResultForUI
+    * */
+
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            String categoryLabel = preResult.get(CATEGORY_LABEL)
+            DocInvitedMembers docInvitedMembersObj = (DocInvitedMembers)preResult.get(RECIPIENT)
+            AppMail appMail = (AppMail) preResult.get(APP_MAIL_OBJ)
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            docInvitedMembersObj = buildDocInvitedMembers(docInvitedMembersObj)
+
+            executeMail(categoryLabel, appMail, params, category, docInvitedMembersObj)
+            updateInvitation(docInvitedMembersObj)
+
+            result.put(RECIPIENT, docInvitedMembersObj)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+
+    }
+
+    /*
+    * Build Success Results for UI
+    * @params obj - N/A
+    * @return a map of containing all object necessary for show page
+    * */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        result.put(Tools.MESSAGE, MAIL_SEND_SUCCESS_MESSAGE)
+        result.put(MAIL_SEND, Boolean.TRUE)
+        result.put(Tools.IS_ERROR, Boolean.FALSE)
+        return result
+    }
+
+    /*
+    * Build Failure result for UI
+    * @params obj - A map from execute method
+    * @return a Map containing IsError and default error message/relevant error message to display
+    * */
+
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            Map preResult = (Map) obj
+            if (obj) {
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /*
+    * Build invited member
+    * @param category
+    * @param docInvitedMembersObj
+    * @return docInvitedMembersObj
+    * */
+
+    private DocInvitedMembers buildDocInvitedMembers(DocInvitedMembers docInvitedMembersObj) {
+        String expiredOn = Tools.EMPTY_SPACE
+        long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+        SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_EXPIRATION_INVITED_MEMBER, companyId)
+        if (sysConfiguration) {
+            expiredOn = (String)sysConfiguration.value
+        }
+        docInvitedMembersObj.expiredOn = new Date() + Integer.parseInt(expiredOn.toString())
+        docInvitedMembersObj.invitationSentOn = new Date()
+        docInvitedMembersObj.resendBy = docSessionUtil.appSessionUtil.appUser.id
+        return docInvitedMembersObj
+    }
+
+    /**
+     * process mail for sending
+     */
+    private void executeMail(String categoryLabel, AppMail appMail, GrailsParameterMap parameterMap, DocCategory category, DocInvitedMembers docInvitedMembersObj) {
+            String message = parameterMap.message.toString()
+            Map mailBodyParams = [message: message, categoryLabel: categoryLabel, categoryName: category.name, categoryDescription: category.description, categoryUrl: category.url, invitationLink: docInvitedMembersObj.invitationLink]
+            AppMail mail = new AppMail()
+            mail.properties = appMail.properties
+            buildMailBody(mail, mailBodyParams)
+
+            String recipients = docInvitedMembersObj.email
+            executorService.submit({
+                println "Sending mail for transaction ${appMail.transactionCode} ..."
+                mailService.sendMail {
+                    to recipients
+                    subject mail.subject
+                    html mail.body
+                }
+                println "Mail sent successfully for ${appMail.transactionCode}"
+            })
+
+    }
+
+    /**
+     * Build mail body
+     * @param appMail - object of AppMail
+     * @param parameters - params from the caller method
+     */
+    private void buildMailBody(AppMail appMail, Map parameters) {
+        SimpleTemplateEngine engine = new SimpleTemplateEngine()
+        Writable template = engine.createTemplate(appMail.body).make(parameters)
+        appMail.body = template.toString()
+    }
+
+    /*
+    * update DocInvitedMembers by resendBy and invitationAcceptedOn
+    **/
+    boolean updateInvitation(DocInvitedMembers invitedMember) {
+        String query =
+        """
+            UPDATE doc_invited_members SET
+                expired_on =:expiredOn,
+                invitation_accepted_on =:invitationAcceptedOn,
+                resend_by =:resendBy
+            WHERE
+                id=:id
+        """
+
+        Map queryParams = [
+                expiredOn: DateUtility.getSqlDateWithSeconds(invitedMember.expiredOn),
+                invitationAcceptedOn: DateUtility.getSqlDateWithSeconds(invitedMember.invitationAcceptedOn),
+                resendBy: invitedMember.resendBy,
+                id: invitedMember.id
+        ]
+        int updateCount = executeUpdateSql(query, queryParams);
+        if (updateCount <= 0) {
+            throw new RuntimeException("error occurred at DocInvitedMembers update")
+        }
+        return true
+    }
+}

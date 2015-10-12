@@ -1,0 +1,555 @@
+<%@ page import="com.athena.mis.application.utility.RoleTypeCacheUtility" %>
+<script language="javascript">
+    var dropDownItemId, dropDownFixedAsset, dropDownFixedAssetDetails,
+            actualQuantity;
+    var inventoryConsumptionDetailsListModel =${output ? output : ''};
+    var inventoryConsumptionDetailsGrid = null;
+    var itemId = -1;
+
+    $(document).ready(function () {
+        onLoadInventoryConsumption();
+    });
+
+    function onLoadInventoryConsumption() {
+        initializeForm($("#invConsumptionDetailsForm"), onSubmitInventoryConsumption);
+
+        dropDownFixedAsset = initKendoDropdown($('#fixedAssetId'), null, null, null);
+        dropDownFixedAssetDetails = initKendoDropdown($('#fixedAssetDetailsId'), null, null, null);
+
+        $('#actualQuantity').kendoNumericTextBox({
+            min: 0,
+            decimals: 4,
+            format: "#.####"
+        });
+        actualQuantity = $("#actualQuantity").data("kendoNumericTextBox");
+
+        var isError = inventoryConsumptionDetailsListModel.isError;
+        if (isError == 'true') {
+            var message = inventoryConsumptionDetailsListModel.message;
+            showError(message);
+            return;
+        }
+
+        inventoryConsumptionDetailsGrid = inventoryConsumptionDetailsListModel.inventoryTransactionDetailsList;
+        populateInventoryConsumption(inventoryConsumptionDetailsListModel.inventoryTransactionMap);
+
+        dropDownFixedAsset.enable(false);
+        dropDownFixedAssetDetails.enable(false);
+
+        // update page title
+        $(document).attr('title', "MIS - Item(s) of Inventory-Out Transaction");
+        loadNumberedMenu(MENU_ID_INVENTORY, "#invInventoryTransaction/showInventoryConsumption");
+    }
+
+    function updateItemDetails() {
+        $('#availableQuantity').val('');
+        $('#unit').text('');
+        var itemId = dropDownItemId.value();
+        if (itemId == '') {
+            return;
+        }
+        var availableQuantity = dropDownItemId.dataItem().quantity;
+        var unit = dropDownItemId.dataItem().unit;
+        $('#availableQuantity').val(availableQuantity);
+        $('#unit').text(' of ' + availableQuantity + ' ' + unit);
+    }
+
+    function populateInventoryConsumption(inventoryConsumptionMap) {
+        if (!inventoryConsumptionMap) {
+            return false;
+        }
+
+        $('#budgetId').val(inventoryConsumptionMap.inventoryTransaction.budgetId);
+        $('#inventoryTransactionId').val(inventoryConsumptionMap.inventoryTransaction.id);
+        $('#lblInventoryTransactionId').html(inventoryConsumptionMap.inventoryTransaction.id);
+        $('#inventoryId').val(inventoryConsumptionMap.inventory.id);
+        $('#inventoryName').html(inventoryConsumptionMap.inventory.name);
+        $('#budgetItem').html(inventoryConsumptionMap.budgetItem);
+        return true;
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#invConsumptionDetailsForm"))) {
+            return false;
+        }
+        var availableQuantity = parseFloat($('#availableQuantity').val());
+        var actualQuantityVar = parseFloat(actualQuantity.value());
+        if (actualQuantityVar > availableQuantity) {
+            showError("Item could not be added because available quantity is lower than the actual Quantity");
+            return false;
+        }
+        var consumpDate = getDate($('#transactionDate'), 'Consumption Date', true);
+        if (consumpDate == false) return false;
+        if (consumpDate > new Date()) {
+            showError('Consumption date can not be future date');
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitInventoryConsumption() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+
+        var data = jQuery("#invConsumptionDetailsForm").serialize();
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'createInventoryConsumptionDetails')}";
+        } else {
+            actionUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'updateInventoryConsumptionDetails')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: data,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            try {
+
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(inventoryConsumptionDetailsGrid.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (inventoryConsumptionDetailsGrid.rows.length > 0) {
+                        firstSerial = inventoryConsumptionDetailsGrid.rows[0].cell[0];
+                        regenerateSerial($(inventoryConsumptionDetailsGrid.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+                    inventoryConsumptionDetailsGrid.rows.splice(0, 0, result.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        inventoryConsumptionDetailsGrid.rows.pop();
+                    }
+
+                    inventoryConsumptionDetailsGrid.total = ++previousTotal;
+                    $("#flex1").flexAddData(inventoryConsumptionDetailsGrid);
+
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(inventoryConsumptionDetailsGrid, result.entity, 0);
+                    $("#flex1").flexAddData(inventoryConsumptionDetailsGrid);
+                }
+                resetCreateForm(result);
+                if (result.mailSendingErrMsg) {
+                    showError(result.mailSendingErrMsg);
+                } else {
+                    showSuccess(result.message);
+                }
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+    function resetCreateForm(result) {
+        clearErrors($('#invConsumptionDetailsForm'));
+
+        $('#id').val('');
+        $('#version').val('');
+        actualQuantity.value('');
+        $('#comments').val('');
+        $('#availableQuantity').val('');
+
+        $('#itemId').attr('default_value', '');
+        $('#itemId').reloadMe();
+        dropDownItemId.enable(false);
+
+        dropDownFixedAssetDetails.setDataSource(getKendoEmptyDataSource());
+        dropDownFixedAssetDetails.value('');
+        dropDownFixedAsset.setDataSource(getKendoEmptyDataSource());
+        dropDownFixedAsset.value('');
+        dropDownFixedAsset.enable(false);
+        dropDownFixedAssetDetails.enable(false);
+
+        $('#unit').text('');
+        $("#transactionDate").val('');
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+
+    function resetForm() {
+        clearForm($("#invConsumptionDetailsForm"), dropDownItemId);
+        $('#itemId').attr('default_value', '');
+        $('#itemId').reloadMe();
+        dropDownItemId.enable(false);
+
+        dropDownFixedAsset.enable(false);
+        dropDownFixedAssetDetails.enable(false);
+
+        $('#unit').text('');
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        populateInventoryConsumption(inventoryConsumptionDetailsListModel.inventoryTransactionMap);
+    }
+
+    //-------------
+    $("#flex1").flexigrid
+    (
+            {
+                url: false,
+                dataType: 'json',
+                colModel: [
+                    {display: "Serial", name: "serial", width: 30, sortable: false, align: "right", hide: true},
+                    {display: "Chalan", name: "id", width: 50, sortable: false, align: "left"},
+                    {display: "Item", name: "itemId", width: 150, sortable: false, align: "left"},
+                    {display: "Quantity", name: "actualQuantity", width: 100, sortable: false, align: "right"},
+                    {display: "Consumption Date", name: "ConsumptionDate", width: 100, sortable: false, align: "left"},
+                    {display: "Fixed Asset", name: "fixedAsset", width: 100, sortable: false, align: "left"},
+                    {display: "Fixed Asset Details", name: "fixedAssetDetails", width: 100, sortable: false, align: "left"},
+                    {display: "Created By", name: "createdBy", width: 150, sortable: false, align: "left"},
+                    {display: "Updated By", name: "updatedBy", width: 150, sortable: false, align: "left"}
+                ],
+                buttons: [
+                    <app:ifAllUrl urls="/invInventoryTransactionDetails/selectInventoryConsumptionDetails,/invInventoryTransactionDetails/updateInventoryConsumptionDetails">
+                    {name: 'Edit', bclass: 'edit', onpress: editInventoryConsumptionDetails},
+                    </app:ifAllUrl>
+                    <sec:access url="/invInventoryTransactionDetails/deleteInventoryConsumptionDetails">
+                    {name: 'Delete', bclass: 'delete', onpress: deleteInventoryConsumptionDetails},
+                    </sec:access>
+                    <sec:access url="/invInventoryTransactionDetails/approveInventoryConsumptionDetails">
+                    <app:hasRoleType id="${RoleTypeCacheUtility.ROLE_TYPE_PROJECT_MANAGER}">
+                    {name: 'Approve', bclass: 'approve', onpress: approveInventoryConsumption},
+                    </app:hasRoleType>
+                    </sec:access>
+                    {name: 'Report', bclass: 'addDoc', onpress: getInvoiceInventoryConsumption},
+                    {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                    {separator: true}
+                ],
+                searchitems: [
+                    {display: "Item", name: "item.name", width: 180, sortable: true, align: "left"},
+                    {display: "Chalan No", name: "iitd.id", width: 180, sortable: true, align: "left"},
+                    {display: "Quantity", name: "iitd.actual_quantity", width: 180, sortable: true, align: "left"}
+                ],
+                sortname: "iitd.approved_by",
+                sortorder: "asc",
+                usepager: true,
+                singleSelect: true,
+                title: 'All Unapproved Item(s) For Inventory-Consumption',
+                useRp: true,
+                rp: 15,
+                rpOptions: [15, 20, 25],
+                showTableToggleBtn: false,
+                height: getGridHeight(),
+                afterAjax: function (XMLHttpRequest, textStatus) {
+                    afterAjaxError(XMLHttpRequest, textStatus);
+                    showLoadingSpinner(false);// Spinner hide after AJAX Call
+//                            checkGrid();
+                },
+                customPopulate: onLoadInventoryConsumptionListJSON
+            }
+    );
+
+
+    function approveInventoryConsumption(com, grid) {
+        var ids = $('.trSelected', grid);
+        if (executePreConditionForApprove(ids) == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var inventoryConsumptionDetailsId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'invInventoryTransactionDetails', action: 'approveInventoryConsumptionDetails')}?id=" + inventoryConsumptionDetailsId,
+            success: executePostConditionForApprove,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForApprove(ids) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return false;
+        }
+        if (!confirm('Do you want to approve the selected item?')) {
+            return false;
+        }
+
+        var approvedByPM = $(ids[ids.length - 1]).find('td').eq(4).find('div').text();
+        if (approvedByPM == "YES") {
+            showError("This transaction already approved.");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    function executePostConditionForApprove(data) {
+        if (data.isError == false) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            inventoryConsumptionDetailsListModel.total = parseInt(inventoryConsumptionDetailsListModel.total) - 1;
+            removeEntityFromGridRows(inventoryConsumptionDetailsGrid, selectedRow);
+            resetCreateForm(data);
+
+        } else {
+            showError(data.message);
+        }
+    }
+
+
+    function deleteInventoryConsumptionDetails(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var inventoryConsumptionDetailsId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'invInventoryTransactionDetails', action: 'deleteInventoryConsumptionDetails')}?id=" + inventoryConsumptionDetailsId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected item?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            inventoryConsumptionDetailsGrid.total = parseInt(inventoryConsumptionDetailsGrid.total) - 1;
+            removeEntityFromGridRows(inventoryConsumptionDetailsGrid, selectedRow);
+            resetCreateForm(data);
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flex1').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function checkGrid() {
+        var rows = $('table#flex1 > tbody > tr');
+        if (rows && rows.length < 1) {
+            showInfo('No Item found in the Inventory-Out Transaction');
+        }
+    }
+
+    function editInventoryConsumptionDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'currency') == false) {
+            return;
+        }
+        var inventoryConsumptionDetailsId = getSelectedIdFromGrid($('#flex1'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'invInventoryTransactionDetails', action: 'selectInventoryConsumptionDetails')}?id=" + inventoryConsumptionDetailsId,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            populateInventoryConsumptionDetails(data);
+        }
+    }
+
+    function populateInventoryConsumptionDetails(data) {
+        clearErrors($('#invConsumptionDetailsForm'));
+        var entity = data.entity;
+
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+
+        $('#itemId').attr('default_value', entity.itemId);
+        $('#itemId').attr('actual_quantity', entity.actualQuantity);
+        $('#itemId').reloadMe(disableDropDownAndShowQuantitySpan);
+
+        dropDownFixedAsset.enable(false);
+        dropDownFixedAssetDetails.enable(false);
+
+
+        if (data.isConsumedAgainstFixedAsset) {
+            dropDownFixedAsset.enable(true);
+            dropDownFixedAssetDetails.enable(true);
+            if (entity.fixedAssetId > 0) {
+                dropDownFixedAsset.setDataSource(data.lstFixedAssetItems);
+                dropDownFixedAsset.value(entity.fixedAssetId);
+            } else {
+                dropDownFixedAsset.setDataSource(data.lstFixedAssetItems);
+            }
+        }
+
+        if (entity.fixedAssetDetailsId > 0) {
+            dropDownFixedAssetDetails.setDataSource(data.lstFixedAssetDetailsItems);
+            dropDownFixedAssetDetails.value(entity.fixedAssetDetailsId);
+        }
+
+        actualQuantity.value(entity.actualQuantity);
+        $("#transactionDate").val(data.transactionDate);
+
+        updateItemDetails();
+        $('#comments').val(entity.comments);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    // disable item dropDown as well as show item actual quantity in the span
+    function disableDropDownAndShowQuantitySpan(){
+        onChangeItem();
+        dropDownItemId.enable(false);
+    }
+
+    function onLoadInventoryConsumptionListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            inventoryConsumptionDetailsGrid = getEmptyGridModel();
+        } else {
+            inventoryConsumptionDetailsGrid = data;
+        }
+        $("#flex1").flexAddData(inventoryConsumptionDetailsGrid);
+    }
+    function getInvoiceInventoryConsumption(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var consumptionId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'invReport', action: 'showInvoice')}?id=" + consumptionId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    //********* On Change Item *********************
+
+    function onChangeItem() {
+        clearErrors($('#invConsumptionDetailsForm'));
+        updateItemDetails(); // update/reset item quantity in span
+        var itemId = dropDownItemId.value();
+        dropDownFixedAsset.value('');
+        dropDownFixedAssetDetails.value('');
+        dropDownFixedAssetDetails.setDataSource(getKendoEmptyDataSource(dropDownFixedAssetDetails, null));
+        dropDownFixedAsset.enable(false);
+        dropDownFixedAssetDetails.enable(false);
+
+        if (itemId == '') {
+            return;
+        }
+        var isConsumedAgainstFixedAssetVar = dropDownItemId.dataItem().is_consumed_against_fixed_asset;
+
+        if (isConsumedAgainstFixedAssetVar) {
+            dropDownFixedAsset.enable(true);
+            dropDownFixedAssetDetails.enable(true);   // enable the controls
+            // check if fixed asset list already populated
+            if (dropDownFixedAsset.dataSource.data().length <= 1) {
+                var inventoryId = $('#inventoryId').val();
+                showLoadingSpinner(true);
+                $.ajax({
+                    url: "${createLink(controller: 'invInventoryTransactionDetails', action: 'listFixedAssetByInventoryId')}?inventoryId=" + inventoryId,
+                    success: executePostConditionForChangeItem,
+                    complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+                    dataType: 'json',
+                    type: 'post'
+                });
+            }
+            $('#fixedAssetId').focus();
+        } else {
+            $('#actualQuantity').focus();
+        }
+    }
+
+    function executePostConditionForChangeItem(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            populateFixedAsset(data);
+        }
+    }
+    function populateFixedAsset(data) {
+        clearErrors($('#invConsumptionDetailsForm'));
+        dropDownFixedAsset.setDataSource(data.lstFixedAssetItems);
+    }
+    //***********************************
+
+    //********* On Change Fixed Asset **************
+    function onChangeFixedAsset() {
+        var inventoryId = $('#inventoryId').val();
+        var itemId = dropDownFixedAsset.value();
+        if (itemId == '') {
+            dropDownFixedAssetDetails.setDataSource(getKendoEmptyDataSource(dropDownFixedAssetDetails));
+            return;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'invInventoryTransactionDetails', action: 'listFixedAssetByInventoryIdAndItemId')}?itemId=" + itemId + "&inventoryId=" + inventoryId,
+            success: executePostConditionForChangeFixedAsset,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+    function executePostConditionForChangeFixedAsset(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            clearErrors($('#invConsumptionDetailsForm'));
+            dropDownFixedAssetDetails.setDataSource(data.lstFixedAssetDetailsItems);
+            updateItemDetails();
+        }
+    }
+    //***********************************
+
+    <sec:access url="/invInventoryTransactionDetails/listUnApprovedInventoryConsumptionDetails">
+    var inventoryTransactionId = $('#inventoryTransactionId').val();
+    var strUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'listUnApprovedInventoryConsumptionDetails')}?inventoryTransactionId=" + inventoryTransactionId;
+    $("#flex1").flexOptions({url: strUrl});
+
+    if (inventoryConsumptionDetailsGrid) {
+        $("#flex1").flexAddData(inventoryConsumptionDetailsGrid);
+    }
+    </sec:access>
+
+
+
+</script>

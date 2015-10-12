@@ -1,0 +1,45 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open *Bank* in Edit Mode | |
+*ActionService:* | SelectBankActionService | *Auditable:* | No
+*Url:* | /bank/select | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Bank* link.
+* [Show Landing Page of "Bank"|guide:ShowBankActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open *Bank* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Bank" privilege.
+
+h4. Process:
+* Get *Bank* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Bank* information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

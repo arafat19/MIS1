@@ -1,0 +1,158 @@
+<script language="javascript">
+    var isError, invoiceId, isCurrent;
+    $(document).ready(function () {
+        isError = "${result.isError}";
+        invoiceId = "${result.invoiceMap?.invoiceNo}";
+        isCurrent = "${result.invoiceMap?.isCurrent}";
+        var message = "${result.message}";
+
+        if (isError == 'true') {
+            showError(message);
+            $('.download_icon_set').hide();
+            return false;
+        }
+        if (invoiceId > 0) {
+            $('#updateInvoiceDiv').show();
+            $('#divInvoice').show();
+            $('#hidInvoiceNo').val(invoiceId);
+            $('#invoiceNo').val(invoiceId);
+            $('.download_icon_set').show();
+        }
+    });
+</script>
+
+<div id="divInvoice" class="table-responsive" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="active">Inventory Chalan Report</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Trace No</td>
+                        <td>${result.invoiceMap?.invoiceNo}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="active">Inventory Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Inventory</td>
+                        <td style="width: 35%">${result.invoiceMap?.inventoryName}</td>
+                        <td class="active">Transaction Date</td>
+                        <td>${result.invoiceMap?.transactionDate}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Transaction Type</td>
+                        <td style="width: 35%">${result.invoiceMap?.transactionType}</td>
+                        <td class="active">${result.invoiceMap?.lblEntityName}</td>
+                        <td>${result.invoiceMap?.entityName}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="active">Item Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Item Name</td>
+                        <td style="width: 35%">${result.invoiceMap?.itemName}</td>
+                        <td class="active">Rate</td>
+                        <td>${result.invoiceMap?.itemRate}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Quantity</td>
+                        <td style="width: 35%">${result.invoiceMap?.itemQuantity}</td>
+                        <td class="active">Total</td>
+                        <td>${result.invoiceMap?.totalCost}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="active">Approval Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Approved By</td>
+                        <td style="width: 35%">${result.invoiceMap?.approvedBy}</td>
+                        <td class="active">Approved On</td>
+                        <td>${result.invoiceMap?.approvedOn}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="active">Adjustment Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Derived From</td>
+                        <td style="width: 35%">${result.invoiceMap?.adjustmentFrom}</td>
+                        <td class="active">Current Chalan</td>
+                        <td><span class='currentAdjustment'>${result.invoiceMap?.currentAdjustment}</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="active">Others</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Vehicle</td>
+                        <td style="width: 35%">${result.invoiceMap?.vehicleName}</td>
+                        <td class="active">Stack Measurement</td>
+                        <td>${result.invoiceMap?.stackMeasurement}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Vehicle No</td>
+                        <td style="width: 35%">${result.invoiceMap?.vehicleNo}</td>
+                        <td class="active">Budget Item</td>
+                        <td>${result.invoiceMap?.budgetItem}</td>
+                    </tr>
+                    <tr>
+                        <td class="active">Reference Chalan</td>
+                        <td style="width: 35%">${result.invoiceMap?.referenceChalan}</td>
+                        <td class="active">Comments</td>
+                        <td>${result.invoiceMap?.comments}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

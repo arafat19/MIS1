@@ -1,0 +1,64 @@
+
+{table}
+ *Access Type:* | Restricted  | Priority: | High
+ *Name:* | Show *Item* List of *Purchase Request* in Landing Page | |
+ *ActionService:* | ListPurchaseRequestDetailsActionService| *Auditable:* | No
+*Url*: | /procPurchaseRequestDetails/list | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show landing page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* Show *Item* List of *Purchase Request* in [Landing Page|guide:ShowPurchaseRequestDetailsActionService].
+
+h4. Pre-condition:
+* User must have "List Purchase Request Details of Material" privilege.
+
+h4. Process:
+* Get *Item* list of *Purchase Request* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Purchase Request Details No
+** Item Type
+** Item
+** Quantity
+** Estimated Rate
+** Total (Quantity * Estimated Cost)
+** Created On
+** Created By
+
+h4. Post-condition:
+
+* *Success:*
+** *Item* of *Purchase Request* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search Item of "Purchase Request" From Grid View|guide:SearchPurchaseRequestDetailsActionService].
+
+!procurement/PR_Items_List.png!

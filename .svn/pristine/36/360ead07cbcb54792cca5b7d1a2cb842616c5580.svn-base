@@ -1,0 +1,4 @@
+#Grails Metadata file
+#Tue Feb 18 13:47:19 BDT 2014
+app.grails.version=2.3.11
+app.name=projectTrack

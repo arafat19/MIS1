@@ -1,0 +1,53 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Show "Voucher Details List" | |
+ *ActionService:* | GetVoucherDetailsListActionService | *Auditable:* | No
+ *Url:* | /accReport/getAllVoucherDetailsList | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 2nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Voucher List" link.
+* [Show Landing Page of Voucher List Report|guide:ShowForVoucherListActionService].
+* User must insert valid input to search "Voucher List" Report.
+* Click "Search" button.
+* Select a *Voucher* from "Voucher List".
+* Right side of grid view will show "Voucher Details List".
+
+h4. Pre-condition: 
+* User must have "Show Voucher Details List Report" privilege.
+
+h4. Process:
+* Show "Voucher Details List" information.
+* Following columns should show in grid view:
+** Code
+** Head Name
+** Debit
+** Credit
+** Particulars
+
+h4. Post-condition:
+
+* *Success:*
+** Show the "Voucher Details List" in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+* [Refresh|common Usecases].

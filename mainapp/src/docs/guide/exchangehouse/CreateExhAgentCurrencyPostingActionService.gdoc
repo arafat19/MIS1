@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Agent Currency Posting* | |
+*ActionService:* | CreateExhAgentCurrencyPostingActionService | *Auditable:* | No
+*Url:* | /exhAgentCurrencyPosting/create | | 
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Agent" sub menu from left menu.
+* Click *Agent Currency Posting* link.
+* [Show Landing Page of "Agent Currency Posting"|guide:ShowExhAgentCurrencyPostingActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Agent Currency Posting*.
+
+h4. Pre-condition:
+* User must have "Create Agent Currency Posting" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Agent|guide:ExhAgentDropDownTagLib] | Drop Down List | Numeric | Required
+ Amount | Text Box | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* Create a new *Agent Currency Posting*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Agent Currency Posting* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Exh/Agent Currency Posting_Create.png!

@@ -1,0 +1,56 @@
+exchangehouseSARB:
+
+         title: Exchange House Plugin for SARB
+
+
+         _ShowSARBPlugin: Show "SARB" Plugin 
+
+
+         ExhShowPostalCodeActionService: Show Landing Page of "Postal Code"
+         ExhCreatePostalCodeActionService: Create "Postal Code"
+         ExhSelectPostalCodeActionService: Open "Postal Code" in Edit Mode
+         ExhUpdatePostalCodeActionService: Update "Postal Code"
+         ExhListPostalCodeActionService: List "Postal Code"
+         ExhSearchPostalCodeActionService: Search "Postal Code" From Grid View
+         ExhDeletePostalCodeActionService: Delete "Postal Code"
+
+
+
+
+         _ShowSarbTaskForSendToSarbActionService: Show Landing Page of "Send Task" To Sarb
+         SendSarbTaskToSarbActionService: Send "Task" to Sarb
+         ListSarbTaskForSendToSarbActionService: List "Send Task"
+
+
+         _ShowSarbTaskForRetrieveResponseActionService: Show Landing Page of "Task" For "Retrieve Response"
+         RetrieveSarbTaskResponseActionService: Get Response for "Retrieve Task"
+         ListSarbTaskForRetrieveResponseActionService: List "Task" For "Retrieve Response"
+
+
+         _ShowSarbTaskForShowStatusActionService: Show Landing Page of "Task Status Details"
+         _SearchSarbTaskForShowStatusActionService: Search "Task Status Details"
+         DetailsSarbTaskForShowStatusActionService: Show "Task Status Details" in Read Only Mode
+         RetrieveAgainSarbTaskResponseActionService: Again Get Response for "Retrieve Task"
+         ListSarbTaskForShowStatusActionService: List "Task Status Details"
+
+
+
+         ShowSarbProvinceActionService: Show Landing Page of "Province"
+         CreateSarbProvinceActionService: Create "Province"
+         SelectSarbProvinceActionService: Open "Province" in Edit Mode
+         UpdateSarbProvinceActionService: Update "Province"
+         ListSarbProvinceActionService: List "Province"
+         SearchSarbProvinceActionService: Search "Province" From Grid View
+         DeleteSarbProvinceActionService: Delete "Province"
+
+
+
+         _ExhShowCustomerForSarbActionService: Show Landing Page of "Customer"
+         _PopulateProvinceList: Populate *Province* in Drop Down list
+         ValidateSarbCustomerPhotoIdNoActionService: Validate "Photo Id No" to Create "Customer"
+         _ExhCreateCustomerForSarbActionService: Create "Customer"
+         _ExhSelectCustomerForSarbActionService: Open "Customer" in Edit Mode
+         _ExhUpdateCustomerForSarbActionService: Update "Customer"
+         _ExhListCustomerForSarbActionService: List "Customer"
+         _ExhSearchCustomerForSarbActionService: Search "Customer" From Empty Listed Grid View
+

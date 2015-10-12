@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subCOA_forT1" language="groovy" pageWidth="510" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="510" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="214c4f4a-424c-416d-9e0c-2b30270417f1">
+	<property name="ireport.zoom" value="1.0245201830476058"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="tier1_id" class="java.lang.Integer"/>
+	<parameter name="accSourceNone" class="java.lang.Integer"/>
+	<parameter name="tier1_name" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT acc_source.id acc_source_id, acc_source.key acc_source_name,
+ coa.description AS description , coa.code
+FROM acc_chart_of_account coa
+LEFT JOIN system_entity acc_source ON acc_source.id=coa.acc_source_id
+WHERE coa.tier1=$P{tier1_id}
+AND coa.tier2=0
+AND coa.tier3=0
+AND coa.tier4=0
+AND coa.tier5=0
+AND coa.is_active='true'
+AND coa.company_id=$P{companyId}]]>
+	</queryString>
+	<field name="acc_source_id" class="java.lang.Long"/>
+	<field name="acc_source_name" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="code" class="java.lang.String"/>
+	<group name="acc_source_forT1">
+		<groupExpression><![CDATA[$F{acc_source_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[($F{acc_source_id}==$P{accSourceNone}) ? Boolean.FALSE : Boolean.TRUE]]></printWhenExpression>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="bf69cd95-a2a0-492b-8281-6f71890de555" x="30" y="0" width="480" height="20"/>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{acc_source_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="20">
+			<printWhenExpression><![CDATA[($P{tier1_id}!=null && $P{tier1_id}>0)?  Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="3d4c1edc-e3f3-40b1-8512-5a58f7fdaf47" x="0" y="0" width="510" height="20"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tier1_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="23e179a1-070e-490b-bb47-cb4bac9657e4" stretchType="RelativeToBandHeight" x="30" y="0" width="430" height="14"/>
+				<box leftPadding="0">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineColor="#CCCCCC"/>
+					<leftPen lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+					<rightPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{acc_source_id}==$P{accSourceNone}) ? $F{description} : "   " + $F{description}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="23e179a1-070e-490b-bb47-cb4bac9657e4" stretchType="RelativeToBandHeight" x="460" y="0" width="50" height="14"/>
+				<box leftPadding="0">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineColor="#CCCCCC"/>
+					<leftPen lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+					<rightPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

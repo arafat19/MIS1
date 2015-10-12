@@ -1,0 +1,86 @@
+fixedAsset:
+
+         title: Fixed Asset Plugin
+
+         _ShowFixedAssetPlugin: Show Fixed Asset Plugin
+
+
+         FxdShowFxdMaintenanceTypeActionService: Show Landing Page of "Maintenance Type"
+         FxdCreateFxdMaintenanceTypeActionService: Create "Maintenance Type"
+         FxdSelectFxdMaintenanceTypeActionService: Open "Maintenance Type" in Edit Mode
+         FxdUpdateFxdMaintenanceTypeActionService: Update "Maintenance Type"
+         FxdListFxdMaintenanceTypeActionService: List "Maintenance Type"
+         FxdSearchFxdMaintenanceTypeActionService: Search "Maintenance Type" From Grid View
+         FxdDeleteFxdMaintenanceTypeActionService: Delete "Maintenance Type"
+
+         FxdShowCategoryMaintenanceTypeActionService: Show Landing Page of "Category-Maintenance Type Mapping"
+         _PopulateMaintenanceTypeList: Populate "Maintenance Type" List to Create "Category-Maintenance Type Mapping"
+         _PopulateCategoryList: Populate "Category" List to Create "Category-Maintenance Type Mapping"
+         FxdCreateCategoryMaintenanceTypeActionService: Create "Category-Maintenance Type Mapping"
+         FxdSelectCategoryMaintenanceTypeActionService: Open "Category-Maintenance Type Mapping" in Edit Mode
+         FxdUpdateCategoryMaintenanceTypeActionService: Update "Category-Maintenance Type Mapping"
+         FxdListCategoryMaintenanceTypeActionService: List "Category-Maintenance Type Mapping"
+         FxdSearchCategoryMaintenanceTypeActionService: Search "Category-Maintenance Type Mapping" From Grid View
+         FxdDeleteCategoryMaintenanceTypeActionService: Delete "Category-Maintenance Type Mapping"
+
+         ShowItemCategoryFixedAssetActionService: Show Landing Page of "Fixed Asset Item"
+         CreateItemCategoryFixedAssetActionService: Create "Fixed Asset Item"
+         _SelectItemCategoryFixedAssetActionService: Open "Fixed Asset Item" in Edit Mode
+         UpdateItemCategoryFixedAssetActionService: Update "Fixed Asset Item"
+         ListItemCategoryFixedAssetActionService: List "Fixed Asset Item"
+         SearchItemCategoryFixedAssetActionService: Search "Fixed Asset Item" From Grid View
+         DeleteItemCategoryFixedAssetActionService: Delete "Fixed Asset Item"
+
+
+
+
+         populatePOListtoCreateFixedAssetDetails: Populate PO list to create Fixed asset details
+         populateCategoryListBySelectPurchaseOrder: Populate Category list by select Purchase Order
+         populateInventoryListBySelectInventoryType: Populate Inventory list by select Inventory Type
+
+         showFixedAssetDetails: Show Landing Page of Fixed Asset Details
+         createFixedAssetDetails: Create Fixed Asset Details
+         openFixedAssetDetailsinEditMode: Open Fixed Asset Details in Edit Mode
+         updateFixedAssetDetails: Update Fixed Asset Details
+         listFixedAssetDetails: List Fixed Asset Details
+         searchFixedAssetDetails: Search Fixed Asset Details From Grid View
+         deleteFixedAssetDetails: Delete Fixed Asset Details
+
+         showMaintenancePageFromFixedAssetDetailsGridView: Show Maintenance Page From Fixed Asset Details Grid View
+
+         showFixedAssetMaintenance: Show Landing Page of Fixed Asset Maintenance
+         createFixedAssetMaintenance: Create Fixed Asset Maintenance
+         openFixedAssetMaintenanceinEditMode: Open Fixed Asset Maintenance in Edit Mode
+         updateFixedAssetMaintenance: Update Fixed Asset Maintenance
+         listFixedAssetMaintenance: List Fixed Asset Maintenance
+         searchFixedAssetMaintenance: Search Fixed Asset Maintenance From Grid View
+         deleteFixedAssetMaintenance: Delete Fixed Asset Maintenance
+
+         showMoveFixedAsset: Show Landing Page of Move Fixed Asset
+         moveFixedAsset: Move Fixed Asset
+         listMoveFixedAsset: List Move Fixed Asset
+         searchOnMoveFixedAsset: Search On Move Fixed Asset From Grid View
+
+
+         _showConsumptionAgainstAsset: Show Landing Page of Consumption Against Asset Summary Report
+         ListForConsumptionAgainstAssetActionService: Search Consumption Against Asset Summary Report
+         GetForConsumptionAgainstAssetDetailsActionService: List of Consumption Summary Details
+         DownloadForConsumptionAgainstAssetActionService: Download Consumption Against Asset Summary Report
+
+
+         ShowForConsumptionAgainstAssetDetailsActionService: Show Landing Page of Consumption Against Asset Details Report
+         ListForConsumptionAgainstAssetDetailsActionService: Search Consumption Against Asset Details Report
+         DownloadForConsumptionAgainstAssetDetailsActionService: Download Consumption Against Asset Details PDF Report
+         DownloadCSVForConsumptionAgainstAssetDetailsActionService: Download Consumption Against Asset Details CSV Report
+
+
+         _ShowPendingFixedAsset: Show Landing Page of "Pending Fixed Asset" Report
+         ListForPendingFixedAssetActionService: Generate "Pending Fixed Asset" Report in HTML Format
+         DownloadForPendingFixedAssetActionService: Download "Pending Fixed Asset" Report in PDF Format
+
+
+         ShowForCurrentFixedAssetActionService: Show Landing Page of Current Fixed Asset Report
+         ListForCurrentFixedAssetActionService: Search Current Fixed Asset Report
+         SearchForCurrentFixedAssetActionService: List Current Fixed Asset Report
+         DownloadForCurrentFixedAssetActionService: Download Current Fixed Asset PDF Report
+         DownloadForCurrentFixedAssetCsvActionService: Download Current Fixed Asset CSV Report

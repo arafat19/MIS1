@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Customer Name Verification | |
+*ActionService:* | ExhGetSanctionCountForCustomerActionService | *Auditable:* | No
+*Url:* | /exhSanction/sanctionCountFromCustomer  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent, Cashier.
+
+h4. Description:
+"Sanction List" in banking system is very important to security purpose. At *Beneficiary* Create time system checked with the list, if it get any matched then it will show total matched count number.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* Insert valid input in "Name" field.
+* If name matched with Sanction List then show number of matching in a link.
+* Customer Name Verification.
+
+h4. Pre-condition:
+* User must have "Count sanction from customer" privilege.
+* "mis.exchangehouse.verifyCustomerSanction" Key must contain value 1.
+* User must enter "Customer Name" to verify with "Sanction List".
+
+
+h4. Process:
+* Get Sanction list from server if *Customer* First name matched.
+* Get Sanction list from server if *Customer* First name,Middle name matched.
+* Get Sanction list from server if *Customer* First name,Middle name,Last name matched.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Show total number of matching sanction list.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Customer"|guide:ExhCreateCustomerActionService].
+* [Update "Customer"|guide:ExhUpdateCustomerActionService].
+

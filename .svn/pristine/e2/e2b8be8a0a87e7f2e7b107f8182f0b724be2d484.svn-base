@@ -1,0 +1,332 @@
+exchangehouse:
+
+         title: Exchange House Plugin
+
+         ExhShowRegistrationCustomerActionService: Show "User Registration" Page
+         _PopulateExchangeHouseList: Populate "Exchange House" List
+         _PopulateNationalityList: Populate "Nationality" List
+         _PopulatePhotoIdType: Populate "Photo Id Type" List
+         ExhSignupForCustomerUserActionService: Create "User Registration"
+         ExhActivateCustomerUserActionService: Active "User" by clicking link
+
+
+         _ShowExchangeHousePlugin: Show "Exchange House" Plugin
+         _WidgetofExchangeHouseOption: Widget of "Exchange House" Option
+
+         ListExhDistributionPointActionService: List "Distribution Point" in Widget Tab of "Exchange House" Option
+         ExhSearchDistributionPointActionService: Search on "Distribution Point" List in Widget Tab
+
+         ExhShowBankActionService: Show Landing Page of "Bank"
+         ExhListBankActionService: List "Bank"
+         ExhCreateBankActionService: Create "Bank"
+         ExhSelectBankActionService: Open "Bank" in Edit Mode
+         ExhUpdateBankActionService: Update "Bank"
+         ExhSearchBankActionService: Search "Bank" From Grid View
+         ExhDeleteBankActionService: Delete "Bank"
+
+         ExhShowBankBranchActionService: Show Landing Page of "Bank Branch"
+         _PopulateBankList: Populate Bank List
+         _PopulateDistrictList: Populate "District" List
+         ExhCreateBankBranchActionService: Create "Bank Branch"
+         ExhSelectBankBranchActionService: Open "Bank Branch" in Edit Mode
+         ExhUpdateBankBranchActionService: Update "Bank Branch"
+         ExhListBankBranchActionService: List "Bank Branch"
+         ExhSearchBankBranchActionService: Search "Bank Branch" From Grid View
+         ExhDeleteBankBranchActionService: Delete "Bank Branch"
+
+
+         ExhShowCurrencyConversionActionService: Show Landing Page of "Currency Conversion"
+         _PopulateFromCurrencyList: Populate "From Currency" List
+         _PopulateToCurrencyList: Populate "To Currency" List
+         ExhCreateCurrencyConversionActionService: Create "Currency Conversion"
+         ExhSelectCurrencyConversionActionService: Open "Currency Conversion" in Edit Mode
+         ExhUpdateCurrencyConversionActionService: Update "Currency Conversion"
+         ExhListCurrencyConversionActionService: List "Currency Conversion"
+         ExhSearchCurrencyConversionActionService: Search "Currency Conversion" From Grid View
+
+         ExhShowRemittancePurposeActionService: Show Landing Page of "Remittance Purpose"
+         ExhCreateRemittancePurposeActionService: Create "Remittance Purpose"
+         ExhSelectRemittancePurposeActionService: Open "Remittance Purpose" in Edit Mode
+         ExhUpdateRemittancePurposeActionService: Update "Remittance Purpose"
+         ExhListRemittancePurposeActionService: List "Remittance Purpose"
+         ExhSearchRemittancePurposeActionService: Search "Remittance Purpose" From Grid View
+         ExhDeleteRemittancePurposeActionService: Delete "Remittance Purpose"
+
+         ExhShowPhotoIdTypeActionService: Show Landing Page of "Photo Id Type"
+         ExhCreatePhotoIdTypeActionService: Create "Photo Id Type"
+         ExhSelectPhotoIdTypeActionService: Open "Photo Id Type" in Edit Mode
+         ExhUpdatePhotoIdTypeActionService: Update "Photo Id Type"
+         ExhListPhotoIdTypeActionService: List "Photo Id Type"
+         ExhSearchPhotoIdTypeActionService: Search "Photo Id Type" From Grid View
+         ExhDeletePhotoIdTypeActionService: Delete "Photo Id Type"
+
+         ExhShowDistrictActionService: Show Landing Page of "District"
+         ExhCreateDistrictActionService: Create "District"
+         ExhSelectDistrictActionService: Open "District" in Edit Mode
+         ExhUpdateDistrictActionService: Update "District"
+         ExhListDistrictActionService: List "District"
+         ExhSearchDistrictActionService: Search "District" From Grid View
+         ExhDeleteDistrictActionService: Delete "District"
+
+         ExhShowSanctionActionService: Show Landing Page of "Sanction Information"
+         _ShowViewDetailsofSanctionInformation: Show "Sanction Information" in Read Only mode
+         ExhListSanctionActionService: List "Sanction Information"
+         ExhSearchSanctionActionService: Search "Sanction Information" From Grid View
+
+         _ShowSanctionFileUploadPage: Show Landing Page of "Upload Sanction File"
+         ExhImportSanctionFileActionService: Upload "Sanction File"
+
+         ShowExhRegularFeeActionService: Show Landing Page of "Regular Fee"
+         CalculateExhRegularFeeActionService: Evaluate "Regular Fee"
+         UpdateExhRegularFeeActionService: Update "Regular Fee" Logic
+
+         ShowExhAgentActionService: Show Landing Page of "Agent"
+         CreateExhAgentActionService: Create "Agent"
+         SelectExhAgentActionService: Open "Agent" in Edit Mode
+         UpdateExhAgentActionService: Update "Agent"
+         ListExhAgentActionService: List "Agent"
+         SearchExhAgentActionService: Search "Agent" From Grid View
+         DeleteExhAgentActionService: Delete "Agent"
+
+         ShowExhAgentCurrencyPostingActionService: Show Landing Page of "Agent Currency Posting"
+         _PopulateAgentList: Populate "Agent" List
+         CreateExhAgentCurrencyPostingActionService: Create "Agent Currency Posting"
+         SelectExhAgentCurrencyPostingActionService: Open "Agent Currency Posting" in Edit Mode
+         UpdateExhAgentCurrencyPostingActionService: Update "Agent Currency Posting"
+         ListExhAgentCurrencyPostingActionService: List "Agent Currency Posting"
+         SearchExhAgentCurrencyPostingActionService: Search "Agent Currency Posting" From Grid View
+         DeleteExhAgentCurrencyPostingActionService: Delete "Agent Currency Posting"
+
+         ShowUserAgentActionService: Show Landing Page of "User-Agent Mapping"
+         CreateUserAgentActionService: Create "User-Agent Mapping"
+         SelectUserAgentActionService: Open "User-Agent Mapping" in Edit Mode
+         UpdateUserAgentActionService: Update "User-Agent Mapping"
+         ListUserAgentActionService: List "User-Agent Mapping"
+         SearchUserAgentActionService: Search "User-Agent Mapping" From Grid View
+         DeleteUserAgentActionService: Delete "User-Agent Mapping"
+
+         ExhShowInvoiceDetailsReportActionService: Show Landing Page of "Invoice" Report
+         ExhGetInvoiceDetailsReportActionService: Generate "Invoice" Report in HTML Format
+         ExhDownloadTaskInvoiceReportActionService: Download "Invoice" Report in PDF Format
+
+         ExhShowForCustomerRemittanceActionService: Show Landing Page of "Customer History" Report
+         ExhGetRemittanceDetailsByCustomerActionService: Generate "Customer History" Report in HTML Format
+         ExhListRemittanceDetailsByCustomerActionService: List "Customer History" Report
+         DownloadCustomerHistoryActionService: Download "Customer History" Report in PDF Format
+
+         ExhShowTransactionSummaryActionService: Show Landing Page of "Transaction Summary" Report
+         ExhListTransactionSummaryActionService: Generate "Transaction Summary" Report in HTML Format
+         ExhDownloadTransactionSummaryActionService: Download "Transaction Summary" Report in PDF Format
+
+         _ExhShowRemittanceSummaryReportActionService: Show Landing Page of "Daily Remittance Summary" Report
+         ExhRemittanceSummaryReportActionService: Generate "Daily Remittance Summary" Report in HTML Format
+
+         ExhShowCashierWiseReportAdminActionService: Show Landing Page of "Cashier Wise Task" Report
+         ExhListCashierWiseReportAdminActionService: Generate "Cashier Wise Task" Report in HTML Format
+         ExhDownloadForCashierWiseTaskReportActionService: Download "Cashier Wise Task" Report in PDF Format
+
+         ExhShowRemittanceSummaryReportAdminActionService: Show Landing Page of "Remittance Summary" Report
+         ExhListCashierWiseReportSummaryAdminActionService: Generate "Remittance Summary" Report in HTML Format
+         ExhDownloadForCashierWiseRemittanceSummaryReportActionService: Download "Remittance Summary" Report in PDF Format
+
+         ShowAgentWiseCommissionForAdminActionService: Show Landing Page of "Agent Wise Commission" Report For "Admin"
+         ListAgentWiseCommissionForAdminActionService: Generate "Agent Wise Commission" Report For "Admin" in HTML Format
+         DownloadAgentWiseCommissionForAdminActionService: Download "Agent Wise Commission" Report For "Admin" in PDF Format
+
+         ExhShowRemittanceTransactionActionService: Show Landing Page of "Remittance Transaction" Report
+         ExhListRemittanceTransactionActionService: Generate "Remittance Transaction" Report in HTML Format
+         ExhDownloadRemittanceTransactionActionService: Download "Remittance Transaction" Report in PDF Format
+         ExhDownloadRemittanceTransactionCsvActionService: Download "Remittance Transaction" Report in CSV Format
+
+         _ShowExhTaskForAdminActionService: Show Landing Page of "Task Status" Report For "Admin"
+         _SearchExhTaskForAdminActionService: Generate "Task Status" Report For "Admin" in HTML Format
+
+
+         ShowExhTaskForAdminActionService: Show Landing Page of "Manage Task" Related to "Exchange House"
+         GetDropDownSystemEntityTagLibActionService: Populate "Task Status" List
+         ExhListBanksForShowTaskAdminActionService: Populate "Bank" List For Exchange House's "Manage Task"
+         _SelectAllTask: Select "All Task" From Grid View
+         _DeselectAllTask: Deselect "All Task" From Grid View
+         ExhSendTaskToBankActionService: Send "Task" to "Bank" By "Admin"
+         ExhCancelTaskActionService: Cancel "Task" By "Admin"
+         _SearchExhTaskForAdminByBankActionService: Search "Task" By "Admin"
+         ListExhTaskForAdminActionService: List "Task" By "Admin"
+         SearchExhTaskForAdminActionService: Search "Task" From Grid View By "Admin"
+         ExhGetDetailsByRefOrPinActionService: Show "Task Status" By "Admin"
+
+
+         ShowExhTaskNoteActionService: Show Landing Page of "Task Note"
+         CreateExhTaskNoteActionService: Create "Task Note"
+         EditExhTaskNoteActionService: Open "Task Note" in Edit Mode
+         UpdateExhTaskNoteActionService: Update "Task Note"
+         ListExhTaskNoteActionService: List "Task Note"
+         DeleteExhTaskNoteActionService: Delete "Task Note"
+
+         ShowAgentTaskForAdminActionService: Show Landing Page of "Manage Task" Related to "Agent"
+         ExhListBanksForShowAgentTaskAdminActionService: Populate "Bank" List For Agent's "Manage Task"
+         _SearchAgentTaskForAdminActionService: Search "Agent Task" By "Admin"
+         ListAgentTaskForAdminActionService: List "Agent Task" By "Admin"
+         SearchAgentTaskForAdminActionService: Search "Agent Task" From Grid View By "Admin"
+
+         ShowCustomerTaskForAdminActionService: Show Landing Page of "Manage Task" Related to "Customer"
+         ExhListBanksForShowCustomerTaskAdminActionService: Populate "Bank" List For Customer's "Manage Task"
+         _SearchCustomerTaskForAdminActionService: Search "Customer Task" By "Admin"
+         ListCustomerTaskForAdminActionService: List "Customer Task" By "Admin"
+         SearchCustomerTaskForAdminActionService: Search "Customer Task" From Grid View By "Admin"
+
+
+         ExhShowCustomerForAdminActionService: Show Landing Page of "Customer" By "Admin"
+         ExhSearchCustomerActionService: Search "Customer"
+         ExhListCustomerActionService: List "Customer"
+         ExhSearchForCustomerUserActionService: Show "Customer Details" in Read Only Mode
+
+         ShowExhCustomerNoteActionService: Show Landing Page of "Customer Note"
+         CreateExhCustomerNoteActionService: Create "Customer Note"
+         EditExhCustomerNoteActionService: Open "Customer Note" in Edit Mode
+         UpdateExhCustomerNoteActionService: Update "Customer Note"
+         ListExhCustomerNoteActionService: List "Customer Note"
+         DeleteExhCustomerNoteActionService: Delete "Customer Note"
+
+         ShowExhCustomerContentActionService: Show Landing Page of "Customer Content"
+         GetContentCategoryListByContentTypeIdActionService: Populate "Content Category" List
+         CreateExhCustomerContentActionService: Create "Customer Content"
+         SelectExhCustomerContentActionService: Open "Customer Content" in Edit Mode
+         UpdateExhCustomerContentActionService: Update "Customer Content"
+         ListExhCustomerContentActionService: List "Customer Content"
+         SearchExhCustomerContentActionService: Search "Customer Content" From Grid View
+         DeleteExhCustomerContentActionService: Delete "Customer Content"
+         DownloadExhCustomerContentActionService: Download "Customer Content"
+
+
+         ExhShowCustomerForAgentActionService: Show Landing Page of "Customer" By "Agent"
+         ExhGetSanctionCountForCustomerActionService: Customer Name Verification
+         ExhCreateCustomerActionService: Create "Customer"
+         ExhSelectCustomerActionService: Open "Customer" in Edit Mode
+         ExhUpdateCustomerActionService: Update "Customer"
+         ExhListCustomerForAgentActionService: List "Customer" By "Agent"
+         ExhSearchCustomerForAgentActionService: Search "Customer" By "Agent" From Empty Listed Grid View
+         ExhShowSanctionFromCustomerActionService: Navigate to Landing Page of "Sanction"
+
+
+
+         ExhShowBeneficiaryActionService: Show Landing Page of "Beneficiary" For "Cashier" and "Agent"
+         ExhGetSanctionCountActionService: Beneficiary Name Verification
+         ExhListLinkedBeneficiaryActionService: Linked Beneficiary Verified
+         ExhCreateBeneficiaryActionService: Create "Beneficiary"
+         ExhSelectBeneficiaryActionService: Open "Beneficiary" in Edit Mode
+         ExhUpdateBeneficiaryActionService: Update "Beneficiary"
+         ExhListBeneficiaryActionService: List "Beneficiary"
+         ExhSearchBeneficiaryActionService: Search "Beneficiary" From Grid View
+
+
+
+         ExhShowTaskForAgentActionService: Show Landing Page of "Task" For "Agent"
+
+         _PopulateRemittancePurpose: Populate "Remittance Purpose"
+         GeneratePinNumber: Generate Pin Number
+         GenerateRefNo: Generate Reference Number
+         GenerateCustomerNo: Generate Customer Account Number
+         CustomerSummaryForTaskTagLibActionService: Show "Customer Transaction Summary Panel"
+         PopulatePaymentMethodList: Populate "Payment Method" List
+         ExhListBankByDistrictActionService: Populate "District" Wise "Bank" List
+         ExhListByBankAndDistrictActionService: Populate "Bank" and "District" Wise "Branch" List
+         _PopulateSupportedCurrency: Populate "Supported Currency"
+         PopulatePaidByList: Populate "Paid By" List
+         CalculateTaskAmount: Calculate "Task" Amount
+         ExhCreateTaskActionService: Create "Task" By "Agent"
+         ExhSelectTaskActionService: Open "Task" in Edit Mode By "Agent"
+         ExhUpdateTaskActionService: Update "Task" By "Agent"
+         ExhListTaskForAgentActionService: List "Task" By "Agent"
+         ExhSearchTaskForAgentActionService: Search "Task" From Grid View By "Agent"
+
+         ExhSendTaskToExchangeHouseActionService: Send "Agent's Task" to "Exchange House"
+
+
+         ExhShowForCustomerByNameCodeActionService: Show Landing Page of "Search Customer" For "Agent"
+         _PopulateSearchByList: Populate "Search By" List
+         ExhSearchForCustomerByNameCodeActionService: Show Search Result of "Search Customer" For "Agent" List in Grid View
+
+         ShowAgentWiseCommissionForAgentActionService: Show Landing Page of "Agent Wise Commission" Report For "Agent"
+         ListAgentWiseCommissionForAgentActionService: Generate "Agent Wise Commission" Report For "Agent" in HTML Format
+         DownloadAgentWiseCommissionForAgentActionService: Download "Agent Wise Commission" Report For "Agent" in PDF Format
+
+         ExhShowInvoiceDetailsReportForAgentActionService: Show Landing Page of "Invoice" Report For "Agent"(Grid View)
+
+         ShowForTaskSearchForAgent: Show Landing Page of "Task Status" report
+         ExhGetDetailsByRefOrPinForAgentActionService: Generate "Task Status" Report by PIN/Ref No By "Agent"
+
+         ExhShowNewBeneficiariesForCustomerActionService: Show Landing Page of "Beneficiary" By "Customer"
+         ExhCreateBeneficiaryForCustomerActionService: Create "Beneficiary" By "Customer"
+         ExhSelectBeneficiaryForCustomerActionService: Open "Beneficiary" in Edit Mode By "Customer"
+         ExhUpdateBeneficiaryForCustomerActionService: Update "Beneficiary" By "Customer"
+         ExhListsForCustomerActionService: List "Beneficiary" By "Customer"
+         ExhSearchForCustomerActionService: Search "Beneficiary" From Grid View By "Customer"
+
+         ExhApproveBeneficiaryForCashierActionService: Approve "Beneficiary"
+
+         ExhShowApprovedBeneficiariesForCustomerActionService: Show Landing Page of "Approved Beneficiary" For "Customer"
+
+         ExhShowTaskForCustomerActionService: Show Landing Page of "Task" By "Customer"
+         _ExhCreateTaskForCustomerActionService: Create "Task" By "Customer"
+         _ExhSelectTaskForCustomerActionService: Open "Task" in Edit Mode By "Customer"
+         _ExhUpdateTaskForCustomerActionService: Update "Task" By "Customer"
+         ExhListTaskForCustomerActionService: List "Task" By "Customer"
+         ExhSearchTaskForCustomerActionService: Search "Task" From Grid View By "Customer"
+
+         ExhSendTaskToExhForCustomerActionService: Send "Customer Task" to "Exchange House"
+
+         ExhShowUnApprovedTaskForCustomerActionService: Show Landing Page of "Un-Appeoved Task" For "Customer"
+         ExhListUnApprovedTaskForCustomerActionService: List "Un-Appeoved Task" For "Customer"
+
+         ExhShowApprovedTaskForCustomerActionService: Show Landing Page of "Appeoved Task" For "Customer"
+         ExhListApprovedTaskForCustomerActionService: List "Approved Task" For "Customer"
+
+         ExhShowDisbursedTaskForCustomerActionService: Show Landing Page of "Disbursed Task" For "Customer"
+         ExhListDisbursedTaskForCustomerActionService: List "Disbursed Task" For "Customer"
+
+         ExhShowInvoiceDetailsForCustomerActionService: Show Landing Page of "Invoice Details" Report For "Customer"
+         ExhInvoiceDetailsForCustomerActionService: Generate "Invoice Details" Report For "Customer" in HTML Format
+
+         ShowInvoiceForCustomer: Show Landing Page of "Invoice" Report for "Customer"
+         ExhDownloadTaskInvoiceForCustomerActionService: Download "Task Invoice" Report For "Customer" in PDF Format
+
+
+         ShowForTaskSearch: Show Landing Page of "Task Status" For "Customer"
+         ExhGetDetailsByRefOrPinForCustomerActionService: Generate "Task Status" Report by PIN/Ref No For "Customer"
+
+         ExhShowTasksForOtherBankUserActionService: Show Landing Page of "Task" By "Other Bank User"
+         ExhListBanksForShowTaskOtherBankUserActionService: Populate "Bank" List For "Other Bank User"
+         ExhSearchTaskForOtherBankUserActionService: Generate "Task" List By "Other Bank User"
+         ExhListTaskForOtherBankUserActionService: List of "Task" By "Other Bank User"
+         ExhResolveTaskOtherBankActionService: Resolve "Task" By "Other Bank User"
+         ExhDownloadCsvOtherBankActionService: Download "Other Bank Task" Report in CSV Format
+
+
+         ExhShowCustomerActionService: Show Landing Page of "Customer" By "Cashier"
+
+         ShowExhTaskForCashierActionService: Show Landing Page of "Create Task" By "Cashier"
+         _ExhCreateTaskForCashierActionService: Create "Task" By "Cashier"
+         _ExhSelectTaskForCashierActionService: Open "Task" in Edit Mode By "Cashier"
+         _ExhUpdateTaskForCashierActionService: Update "Task" By "Cashier"
+         ListExhTaskForCashierActionService: List "Task" By "Cashier"
+         SearchExhTaskForCashierActionService: Search "Task" From Grid View By "Cashier"
+
+         ShowAgentTaskForCashierActionService: Show Landing Page of "Agent Task" By "Cashier"
+         _ExhShowAgentTaskForCashierActionService: Show "Agent Task" in Read Only Mode By "Cashier"
+         ListAgentTaskForCashierActionService: List "Agent Task" By "Cashier"
+         SearchAgentTaskForCashierActionSerive: Search "Agent Task" From Grid View By "Cashier"
+
+         ShowCustomerTaskForCashierActionService: Show Landing Page of "Customer Task" By "Cashier"
+         _ExhSelectCustomerTaskForCashierActionService: Open "Customer Task" in Edit Mode By "Cashier"
+         _ExhUpdateCustomerTaskForCashierActionService: Update "Customer Task" By "Cashier"
+         ListCustomerTaskForCashierActionService: List "Customer Task" By "Cashier"
+         SearchCustomerTaskForCashierActionService: Search "Customer Task" From Grid View By "Cashier"
+
+         ExhApproveTaskForCashierActionService: Approve "Task" By "Cashier"
+
+
+         ExhShowCashierWiseReportCashierActionService: Show Landing Page of "Cashier Wise Task" Report For "Cashier"
+         ExhListCashierWiseReportCashierActionService: Generate "Cashier Wise Task" Report For "Cashier" in HTML Format
+
+         ExhShowForCustomerUserActionService: Show Landing Page of "Customer User Account"
+         ExhCreateForCustomerUserActionService: Create "Customer User Account"

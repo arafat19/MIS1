@@ -1,0 +1,147 @@
+<g:render template="/inventory/report/invoice/script"/>
+<g:render template="/inventory/report/invoice/search"/>
+
+
+<div id="inventoryInvoice" class="table-responsive" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="success">Inventory Chalan Report</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Trace No</td>
+                        <td><span class='lblInvoiceNo'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="success">Inventory Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Inventory</td>
+                        <td width="35%"><span class='inventoryName'></span></td>
+                        <td class="active">Transaction Date</td>
+                        <td width="35%"><span class='transactionDate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Transaction Type</td>
+                        <td width="35%"><span class='transactionType'></span></td>
+                        <td class="active"><span class='lblEntityName'></span></td>
+                        <td width="35%"><span class='entityName'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="success">Item Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Item Name</td>
+                        <td width="35%"><span class='itemName'></span></td>
+                        <td class="active">Rate</td>
+                        <td width="35%"><span class='itemRate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Quantity</td>
+                        <td width="35%"><span class='itemQuantity'></span></td>
+                        <td class="active">Total</td>
+                        <td width="35%"><span class='totalCost'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="success">Approval Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Approved By</td>
+                        <td width="35%"><span class='approvedBy'></span></td>
+                        <td class="active">Approved On</td>
+                        <td width="35%"><span class='approvedOn'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="success">Adjustment Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Derived From</td>
+                        <td width="35%"><span class='adjustmentFrom'></span></td>
+                        <td class="active">Current Chalan</td>
+                        <td width="35%"><span class='currentAdjustment'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="success">Others</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Vehicle</td>
+                        <td width="35%"><span class='vehicleName'></span></td>
+                        <td class="active">Stack Measurement</td>
+                        <td width="35%"><span class='stackMeasurement'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Vehicle No</td>
+                        <td width="35%"><span class='vehicleNo'></span></td>
+                        <td class="active">Budget Item</td>
+                        <td width="35%"><span class='budgetItem'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Reference Chalan</td>
+                        <td width="35%"><span class='referenceChalan'></span></td>
+                        <td class="active">Comments</td>
+                        <td width="35%"><span class='comments'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+

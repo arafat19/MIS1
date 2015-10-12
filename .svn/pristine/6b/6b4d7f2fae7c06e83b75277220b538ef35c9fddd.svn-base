@@ -1,0 +1,402 @@
+package com.athena.mis.exchangehouse.actions.customer
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.Country
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.application.utility.CompanyCacheUtility
+import com.athena.mis.application.utility.CountryCacheUtility
+import com.athena.mis.exchangehouse.config.ExhSysConfigurationCacheUtility
+import com.athena.mis.exchangehouse.config.ExhSysConfigurationIntf
+import com.athena.mis.exchangehouse.entity.ExhCustomer
+import com.athena.mis.exchangehouse.entity.ExhPhotoIdType
+import com.athena.mis.exchangehouse.entity.ExhPostalCode
+import com.athena.mis.exchangehouse.service.ExhCustomerService
+import com.athena.mis.exchangehouse.service.ExhCustomerTraceService
+import com.athena.mis.exchangehouse.service.ExhPostalCodeService
+import com.athena.mis.exchangehouse.utility.ExhPhotoIdTypeCacheUtility
+import com.athena.mis.exchangehouse.utility.ExhPostalCodeCacheUtility
+import com.athena.mis.exchangehouse.utility.ExhSessionUtil
+import com.athena.mis.exchangehouse.utility.ExhTaskStatusCacheUtility
+import com.athena.mis.integration.sarb.SarbPluginConnector
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+/**
+ *  Update customer object and grid data
+ *  For details go through Use-Case doc named 'ExhUpdateCustomerActionService'
+ */
+class ExhUpdateCustomerActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    // constants
+    private static
+    final String CUSTOMER_NOT_FOUND_ERROR_MESSAGE = "No customer found with this id or might have been deleted by someone!";
+    private static final String CUSTOMER_UPDATE_SUCCESS_MESSAGE = "Customer has been updated successfully"
+    private static final String CUSTOMER_UPDATE_FAILURE_MESSAGE = "Customer could not be updated"
+    private static final String INVALID_POSTAL_CODE = "Invalid Postal Code."
+    private static final String SARB_CUSTOMER_UPDATE_FAILURE_MESSAGE = "SarbCustomerDetails could not be updated"
+    private static final String SARB_CUSTOMER_TRACE_UPDATE_FAILURE_MESSAGE = "SarbCustomerDetailsTrace could not be updated"
+    private static final String CUSTOMER_OBJ = 'customerObj'
+    private static final String CUSTOMER_PREV_NAME = 'customerName'
+    private static final String ON = "on"
+    private static final String VALUE_1 = "1"
+    private static final String ERROR_PHOTO_ID_NO = "errorPhotoIdNo"
+    private static final Long FAKE_USER_ID = 0
+    private static final String BLOCKED_CUSTOMER_CAN_NOT_BE_UPDATED = "Blocked customer can not be updated"
+
+    ExhCustomerService exhCustomerService
+    ExhCustomerTraceService exhCustomerTraceService
+    @Autowired
+    CompanyCacheUtility companyCacheUtility
+    @Autowired
+    ExhPhotoIdTypeCacheUtility exhPhotoIdTypeCacheUtility
+    @Autowired
+    ExhSessionUtil exhSessionUtil
+    @Autowired(required = false)
+    SarbPluginConnector sarbImplService
+    @Autowired
+    ExhSysConfigurationCacheUtility exhSysConfigurationCacheUtility
+    @Autowired
+    ExhPostalCodeCacheUtility exhPostalCodeCacheUtility
+    @Autowired
+    ExhTaskStatusCacheUtility exhTaskStatusCacheUtility
+    @Autowired
+    CountryCacheUtility countryCacheUtility
+
+    /**
+     * Get parameters from UI and build customer object for update
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap paramsMap = (GrailsParameterMap) parameters
+
+            if (!paramsMap.id) {                         // check required parameters
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            long customerId = Long.parseLong(paramsMap.id)
+            ExhCustomer oldCustomerObj = exhCustomerService.read(customerId)
+
+            if (!oldCustomerObj) {                    // check whether selected customer object exists or not
+                result.put(Tools.MESSAGE, CUSTOMER_NOT_FOUND_ERROR_MESSAGE)
+                return result
+            }
+            String errMsg=checkIsCustomerBlock(oldCustomerObj)
+            if(errMsg){
+                result.put(Tools.MESSAGE,errMsg)
+                return result
+            }
+            String customerPrevName = oldCustomerObj.fullName
+            ExhCustomer newCustomerObj = buildCustomerObj(oldCustomerObj, paramsMap)
+            // // build customer object for update
+
+            if (!isValidPostalCode(newCustomerObj.postCode)) {
+                result.put(Tools.MESSAGE, INVALID_POSTAL_CODE)
+                return result
+            }
+            if (sarbImplService) {
+                ExhPhotoIdType customerPhotoType = (ExhPhotoIdType) exhPhotoIdTypeCacheUtility.read(newCustomerObj.photoIdTypeId.longValue())
+                Country country = (Country) countryCacheUtility.read(newCustomerObj.countryId)
+                String errorMsg = sarbImplService.validatePhotoIdNo(newCustomerObj.photoIdNo, customerPhotoType.code, country.code)
+                if(errorMsg) {
+                    result.put(ERROR_PHOTO_ID_NO, Boolean.TRUE)
+                    result.put(Tools.MESSAGE, errorMsg)
+                    return result
+                }
+            }
+
+            newCustomerObj.code = Tools.EMPTY_SPACE   // initially make it not null
+            newCustomerObj.userId = FAKE_USER_ID
+
+            result.put(CUSTOMER_OBJ, newCustomerObj)
+            result.put(CUSTOMER_PREV_NAME, customerPrevName)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, CUSTOMER_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+
+    }
+
+    /**
+     * 1. Update customer object in DB
+     * 2. If SARB plugin is installed update customerDetails sarbInfo in DB
+     * This function is in transactional boundary and will roll back in case of any exception
+     * @param parameters -N/A
+     * @param obj -map returned from executePreCondition method
+     * @return -a map containing all objects necessary for buildSuccessResultForUI
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            LinkedHashMap preResult = (LinkedHashMap) obj      // cast map returned from executePreCondition method
+            GrailsParameterMap parameterMap = (GrailsParameterMap) parameters
+            ExhCustomer customer = (ExhCustomer) preResult.get(CUSTOMER_OBJ)
+            String customerPrevName = (String) preResult.get(CUSTOMER_PREV_NAME)
+            customer.companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+            exhCustomerService.update(customer)
+            long customerTraceId = exhCustomerTraceService.create(customer, new Date(), Tools.ACTION_UPDATE)
+            //change in customerPrevName
+            if (!customerPrevName.equals(customer.fullName)) {
+                updateCustomerNameInTaskAndTaskTrace(customer.fullName, customer.id)
+            }
+            //if SARB plugin is installed
+            if (sarbImplService) {
+                boolean isError = sarbImplService.updateSarbCustomerDetails(parameterMap)
+                if (isError) {
+                    throw new RuntimeException(SARB_CUSTOMER_UPDATE_FAILURE_MESSAGE)
+                }
+                Map sarbCustomerDetailsTrace = (Map) buildSarbCustomerDetailsTrace(parameterMap, customerTraceId)
+                isError = sarbImplService.createSarbCustomerDetailsTrace(sarbCustomerDetailsTrace)
+                if (isError) {
+                    throw new RuntimeException(SARB_CUSTOMER_TRACE_UPDATE_FAILURE_MESSAGE)
+                }
+            }
+            result.put(CUSTOMER_OBJ, customer)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            //@todo:rollback
+            throw new RuntimeException(CUSTOMER_UPDATE_FAILURE_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, CUSTOMER_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Show updated customer object in grid
+     * Show success message
+     * @param obj -map returned from execute method
+     * @return -a map containing all objects necessary for grid view
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            LinkedHashMap executeResult = (LinkedHashMap) obj   // cast map returned from execute method
+            ExhCustomer customer = (ExhCustomer) executeResult.get(CUSTOMER_OBJ);
+            GridEntity object = new GridEntity();               // build grid
+            object.id = customer.id;
+            String dateOfBirth = DateUtility.getDateFormatAsString(customer.dateOfBirth)
+            customer.code = getCustomerCode(customer.id)
+            object.cell = [Tools.LABEL_NEW, customer.code, customer.fullName,
+                    dateOfBirth,
+                    customer.photoIdTypeId ? exhPhotoIdTypeCacheUtility.read(customer.photoIdTypeId).name : Tools.NONE,
+                    customer.photoIdNo ? customer.photoIdNo : Tools.NONE,
+                    customer.phone ? customer.phone : Tools.NONE
+            ]
+
+            result.put(Tools.ENTITY, object)
+            result.put(Tools.VERSION, customer.version)
+            result.put(Tools.MESSAGE, CUSTOMER_UPDATE_SUCCESS_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, CUSTOMER_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Get Customer Code with prefix company id ie 1001415
+     */
+    private String getCustomerCode(long customerId) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        return (companyId < 10 ? Tools.STR_ZERO : Tools.EMPTY_SPACE) + companyId.toString() + customerId.toString()
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                Map preResult = (Map) obj
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                if (preResult.get(ERROR_PHOTO_ID_NO)) {
+                    result.put(ERROR_PHOTO_ID_NO, Boolean.TRUE)
+                }
+            } else {
+                result.put(Tools.MESSAGE, CUSTOMER_UPDATE_FAILURE_MESSAGE)
+            }
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, CUSTOMER_UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build customer object for update
+     * @param params -serialized parameters from UI
+     * @param oldCustomer -old customer object
+     * @return -updated customer object
+     */
+    private ExhCustomer buildCustomerObj(ExhCustomer oldCustomer, GrailsParameterMap params) {
+        ExhCustomer newCustomer = new ExhCustomer(params)                               // initialize customer
+        oldCustomer.name = newCustomer.name
+        oldCustomer.surname = newCustomer.surname
+        oldCustomer.countryId = Long.parseLong(params.countryId)
+        oldCustomer.dateOfBirth = DateUtility.parseMaskedDate(params.customerDateOfBirth)
+        // format date i.e  'dd/MM/yyyy'
+        oldCustomer.postCode = newCustomer.postCode
+        oldCustomer.address = newCustomer.address
+        oldCustomer.phone = newCustomer.phone
+        oldCustomer.email = newCustomer.email
+        oldCustomer.genderId = newCustomer.genderId
+
+        if (params.visaExpireDate) {     // check required params
+            oldCustomer.visaExpireDate = DateUtility.parseMaskedDate(params.visaExpireDate)
+        } else {
+            oldCustomer.visaExpireDate = null
+        }
+        oldCustomer.sourceOfFund = newCustomer.sourceOfFund
+        oldCustomer.profession = newCustomer.profession
+        oldCustomer.declarationAmount = params.declarationAmount ? Double.parseDouble(params.declarationAmount) : 0.0d
+        oldCustomer.declarationStart = DateUtility.parseMaskedDate(params.declarationStart)
+        oldCustomer.declarationEnd = DateUtility.parseMaskedDate(params.declarationEnd)
+
+        oldCustomer.photoIdTypeId = Long.parseLong(params.photoIdTypeId)
+        oldCustomer.photoIdExpiryDate = DateUtility.parseMaskedDate(params.customerPhotoIdExpiryDate)
+        if (params.photoIdNo.toString().length() > 0) {
+            oldCustomer.photoIdNo = newCustomer.photoIdNo
+        } else {
+            oldCustomer.photoIdNo = null
+        }
+
+        if (params.isCorporate.toString().equals(ON)) {         // check required params   if exist
+            oldCustomer.companyRegNo = newCustomer.companyRegNo            // company registration no
+            oldCustomer.dateOfIncorporation = params.dateOfIncorporation      // date
+        } else {
+            oldCustomer.companyRegNo = null
+            oldCustomer.dateOfIncorporation = null
+        }
+
+        if (params.addressVerifiedBy) {               // check required params   if exist
+            oldCustomer.addressVerifiedStatus = Tools.CUSTOMER_ADDRESS_VERIFIED      //   set address verified value '1'
+        } else {
+            oldCustomer.addressVerifiedStatus = Tools.CUSTOMER_ADDRESS_NOT_VERIFIED       // or not set value '0'
+        }
+
+        if (params.smsSubscription.toString().equals(ON)) {
+            oldCustomer.smsSubscription = true
+        } else {
+            oldCustomer.smsSubscription = false
+        }
+
+        if (params.mailSubscription.toString().equals(ON)) {
+            oldCustomer.mailSubscription = true
+        } else {
+            oldCustomer.mailSubscription = false
+        }
+        if (params.isSanctionException.toString().equals(ON)) {
+            oldCustomer.isSanctionException = Boolean.TRUE
+        } else {
+            oldCustomer.isSanctionException = Boolean.FALSE
+        }
+
+        oldCustomer.companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        oldCustomer.agentId = Long.parseLong(params.agentId)
+
+        return oldCustomer
+    }
+
+    /**
+     * build SarbCustomerDetailsTrace in a Map
+     * @param params - serialize parameter from UI
+     * @param customerTraceId - ExhCustomerTrace.id
+     * @return
+     */
+    private Map buildSarbCustomerDetailsTrace(GrailsParameterMap params, long customerTraceId) {
+        Map parameterMap = new LinkedHashMap()
+        parameterMap.customerTraceId = customerTraceId
+        parameterMap.customerId = params.id
+        parameterMap.suburb = params.suburb
+        parameterMap.provinceId = params.provinceId
+        parameterMap.city = params.city
+        parameterMap.contactSurname = params.contactSurname
+        parameterMap.contactName = params.contactName
+        return parameterMap
+    }
+
+    private boolean isValidPostalCode(String code) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        SysConfiguration sysConfig = exhSysConfigurationCacheUtility.readByKeyAndCompanyId(ExhSysConfigurationIntf.EXH_POSTAL_CODE_VALIDATION, companyId)
+        boolean validation = false //default value
+        if (sysConfig) {
+            validation = sysConfig.value.equals(VALUE_1)
+        }
+        if (validation) {
+            ExhPostalCode exhPostalCode = exhPostalCodeCacheUtility.readByCodeAndCompanyId(code, companyId)
+            if (!exhPostalCode) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private void updateCustomerNameInTaskAndTaskTrace(String newName, long customerId) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        SystemEntity newTaskObj = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_NEW_TASK, companyId)
+        SystemEntity unApprovedTaskObj = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_UN_APPROVED, companyId)
+        SystemEntity pendingTaskObj = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_PENDING_TASK, companyId)
+        String strStatus = newTaskObj.id.toString() + Tools.COMA + unApprovedTaskObj.id.toString() + Tools.COMA + pendingTaskObj.id.toString()
+        String taskUpdateQuery = """
+		UPDATE exh_task set customer_name=:newName
+		WHERE current_status in (${strStatus}) AND customer_id=:customerId;
+		"""
+        String taskTraceUpdateQuery = """
+		UPDATE exh_task set customer_name=:newName
+		WHERE current_status in (${strStatus}) AND customer_id=:customerId;
+		"""
+        Map queryParam = [newName: newName, customerId: customerId]
+        executeUpdateSql(taskUpdateQuery, queryParam)
+        executeUpdateSql(taskTraceUpdateQuery, queryParam)
+    }
+
+    private String checkIsCustomerBlock(ExhCustomer exhCustomer){
+        boolean isBlockCustomer=exhCustomer.isBlocked
+        if(isBlockCustomer){
+            return BLOCKED_CUSTOMER_CAN_NOT_BE_UPDATED
+        }
+        return null
+    }
+}

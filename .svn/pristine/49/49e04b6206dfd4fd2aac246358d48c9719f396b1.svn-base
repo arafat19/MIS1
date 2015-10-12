@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open *Bug* in Edit Mode | |
+*ActionService:* | SelectPtBugActionService | *Auditable:* | No
+*Url:* | /ptBug/select | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+SQA.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "Active" link.
+* Show Landing Page of *Active Backlog*.
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Active Backlog"|guide:ListActiveBacklogActionService]. *Active Backlog* will be listed in grid view.
+* Select a Line-Item from grid view.
+* Click "Bug" button.
+* [Show landing page of Bug|guide:ShowPtBugActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open *Bug* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Project track Bug" privilege.
+
+h4. Process:
+* Get *Bug* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Bug* information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,284 @@
+package com.athena.mis.application.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.EntityContent
+import com.athena.mis.utility.DateUtility
+import groovy.sql.GroovyRowResult
+
+class EntityContentService extends BaseService {
+
+    static transactional = false
+
+    /**
+     * Get EntityContent object without content
+     * @param id -id of EntityContent
+     * @return -object of EntityContent
+     */
+    public EntityContent read(long id) {
+        EntityContent entityContent = buildObject(id)
+        return entityContent
+    }
+
+    /**
+     * Get EntityContent object with content
+     * @param id -id of EntityContent
+     * @return -object of EntityContent
+     */
+    public EntityContent readWithContent(long id) {
+        return EntityContent.read(id)
+    }
+
+    private static final String ENTITY_CONTENT_READ_QUERY = """
+             SELECT id, version, entity_id, entity_type_id, content_type_id, created_on,
+                       created_by, company_id, extension, caption, content_category_id, file_name, expiration_date
+                 FROM entity_content
+                     WHERE id=:id
+    """
+
+    /**
+     * Build object of EntityContent without content
+     * @param id -id of EntityContent
+     * @return -object of EntityContent
+     */
+    public EntityContent buildObject(long id) {
+        List<GroovyRowResult> entityContentResult = executeSelectSql(ENTITY_CONTENT_READ_QUERY, [id: id])
+        if (!entityContentResult || (entityContentResult.size() <= 0)) {
+            return null
+        }
+        GroovyRowResult eachRow = entityContentResult[0]
+        EntityContent content = new EntityContent()
+        content.id = eachRow.id
+        content.version = eachRow.version
+        content.entityId = eachRow.entity_id
+        content.entityTypeId = eachRow.entity_type_id
+        content.contentTypeId = eachRow.content_type_id
+        content.extension = eachRow.extension
+        content.caption = eachRow.caption
+        content.createdOn = eachRow.created_on
+        content.createdBy = eachRow.created_by
+        content.companyId = eachRow.company_id
+        content.contentCategoryId = eachRow.content_category_id
+        content.fileName = eachRow.file_name
+        content.expirationDate = eachRow.expiration_date
+        return content
+    }
+
+    private static final String INSERT_QUERY = """
+        INSERT INTO entity_content(id, version, caption, company_id, content, content_type_id, content_category_id,
+                created_by, created_on, entity_id, entity_type_id, extension, file_name, updated_by, updated_on, expiration_date)
+        VALUES (NEXTVAL('entity_content_id_seq'),:version,:caption,:companyId,:content,
+                :contentTypeId,:contentCategoryId,:createdBy,:createdOn,:entityId,:entityTypeId,:extension,:fileName,:updatedBy,null,:expirationDate)
+    """
+
+    /**
+     * Save EntityContent object into DB
+     * @param entityContent -object of EntityContent
+     * @return -saved EntityContent object
+     */
+    public EntityContent create(EntityContent entityContent) {
+        Map queryParams = [
+                version: entityContent.version,
+                caption: entityContent.caption,
+                companyId: entityContent.companyId,
+                content: entityContent.content,
+                contentTypeId: entityContent.contentTypeId,
+                createdBy: entityContent.createdBy,
+                createdOn: DateUtility.getSqlDateWithSeconds(entityContent.createdOn),
+                entityId: entityContent.entityId,
+                entityTypeId: entityContent.entityTypeId,
+                extension: entityContent.extension,
+                fileName: entityContent.fileName,
+                updatedBy: entityContent.updatedBy,
+                contentCategoryId: entityContent.contentCategoryId,
+                expirationDate: entityContent.expirationDate ? DateUtility.getSqlDate(entityContent.expirationDate) : null
+        ]
+
+        List result = executeInsertSql(INSERT_QUERY, queryParams)
+        if (result.size() <= 0) {
+            throw new RuntimeException('Error occurred while insert entity-content information')
+        }
+        int entityContentId = (int) result[0][0]
+        entityContent.id = entityContentId
+        return entityContent
+    }
+
+    private static final String UPDATE_WITH_CONTENT_QUERY = """
+                    UPDATE entity_content
+                        SET
+                          version=version+1,
+                          caption=:caption,
+                          content_type_id =:contentTypeId,
+                          extension=:extension,
+                          file_name=:fileName,
+                          entity_id=:entityId,
+                          entity_type_id=:entityTypeId,
+                          content=:content,
+                          updated_on=:updatedOn,
+                          updated_by=:updatedBy,
+                          expiration_date=:expirationDate
+                      WHERE
+                          id=:id AND
+                          version=:version
+    """
+
+    /**
+     * Update EntityContent object in DB with content
+     * @param entityContent -object of EntityContent
+     * @return -updated object of EntityContent
+     */
+    public EntityContent updateWithContent(EntityContent entityContent) {
+
+        Map queryParams = [
+                id: entityContent.id,
+                version: entityContent.version,
+                caption: entityContent.caption,
+                contentTypeId: entityContent.contentTypeId,
+                content: entityContent.content,
+                entityId: entityContent.entityId,
+                entityTypeId: entityContent.entityTypeId,
+                extension: entityContent.extension,
+                fileName: entityContent.fileName,
+                updatedOn: DateUtility.getSqlDateWithSeconds(entityContent.updatedOn),
+                updatedBy: entityContent.updatedBy,
+                expirationDate: entityContent.expirationDate ? DateUtility.getSqlDate(entityContent.expirationDate) : null
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_WITH_CONTENT_QUERY, queryParams);
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred at entity-content update')
+        }
+        entityContent.version = entityContent.version + 1
+        return entityContent
+    }
+
+    private static final String UPDATE_WITHOUT_CONTENT_QUERY = """
+                    UPDATE entity_content
+                        SET
+                          version=version+1,
+                          caption=:caption,
+                          content_type_id =:contentTypeId,
+                          entity_id=:entityId,
+                          updated_on=:updatedOn,
+                          updated_by=:updatedBy,
+                          expiration_date=:expirationDate
+                      WHERE
+                          id=:id AND
+                          version=:version
+    """
+
+    /**
+     * Update EntityContent object in DB without content
+     * @param entityContent -object of EntityContent
+     * @return -updated object of EntityContent
+     */
+    public EntityContent updateWithoutContent(EntityContent entityContent) {
+
+        Map queryParams = [
+                id: entityContent.id,
+                version: entityContent.version,
+                caption: entityContent.caption,
+                contentTypeId: entityContent.contentTypeId,
+                entityId: entityContent.entityId,
+                updatedOn: DateUtility.getSqlDateWithSeconds(entityContent.updatedOn),
+                updatedBy: entityContent.updatedBy,
+                expirationDate: entityContent.expirationDate ? DateUtility.getSqlDate(entityContent.expirationDate) : null
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_WITHOUT_CONTENT_QUERY, queryParams);
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred at entity-content update')
+        }
+        entityContent.version = entityContent.version + 1
+        return entityContent
+    }
+
+    private static final String DELETE_QUERY = """
+                    DELETE FROM entity_content
+                       WHERE
+                          id=:id
+    """
+
+    /**
+     * Delete entityContent object from DB
+     * @param id -id of entityContent object
+     * @return -an integer containing the value of count
+     */
+    public int delete(long id) {
+        Map queryParams = [
+                id: id
+        ]
+        int deleteCount = executeUpdateSql(DELETE_QUERY, queryParams)
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Failed to delete entity content')
+        }
+        return deleteCount
+    }
+
+    private static final String DELETE_BY_TYPE_QUERY = """
+                    DELETE FROM entity_content
+                      WHERE entity_id=:entityId AND
+                            entity_type_id=:entityTypeId
+    """
+
+    /**
+     * Delete EntityContent object from DB
+     * @param entityId -id of entity (AppUser.id, Company.id etc.)
+     * @param entityTypeId -id of entity type (SystemEntity.id --> CUSTOMER, APPUSER, COMPANY etc.)
+     * @return -boolean value true
+     */
+    public Boolean delete(long entityId, long entityTypeId) {
+
+        Map queryParams = [
+                entityId: entityId,
+                entityTypeId: entityTypeId
+        ]
+        int deleteCount = executeUpdateSql(DELETE_BY_TYPE_QUERY, queryParams)
+
+        return Boolean.TRUE
+    }
+
+    /**
+     * Get object of EntityContent by entityId, entityTypeId and contentCategoryId
+     * @param entityId -id of entity (AppUser.id, Company.id etc.)
+     * @param entityTypeId -id of entity type (SystemEntity.id --> CUSTOMER, APPUSER, COMPANY etc.)
+     * @param contentCategoryId -id of ContentCategory
+     * @return -object of EntityContent
+     */
+    public EntityContent findByEntityIdAndEntityTypeIdAndContentCategoryId(long entityId, long entityTypeId, long contentCategoryId) {
+        EntityContent entityContent = EntityContent.findByEntityIdAndEntityTypeIdAndContentCategoryId(entityId, entityTypeId, contentCategoryId, [readOnly: true])
+        return entityContent
+    }
+
+    /**
+     * Get object of EntityContent by entityTypeId, entityId and contentTypeId
+     * @param entityTypeId -id of entity type (SystemEntity.id --> CUSTOMER, APPUSER, COMPANY etc.)
+     * @param entityId -id of entity (AppUser.id, Company.id etc.)
+     * @param contentTypeId -id of content type (SystemEntity.id --> DOCUMENT, IMAGE)
+     * @return -object of EntityContent
+     */
+    public EntityContent findByEntityTypeIdAndEntityIdAndContentTypeId(long entityTypeId, long entityId, long contentTypeId) {
+        EntityContent entityContent = EntityContent.findByEntityTypeIdAndEntityIdAndContentTypeId(entityTypeId, entityId, contentTypeId, [readOnly: true])
+        return entityContent
+    }
+
+    /**
+     * Get count of EntityContent by contentCategoryId
+     * @param contentCategoryId -id of ContentCategory
+     * @return -an integer containing the value of count
+     */
+    public int countByContentCategoryId(long contentCategoryId) {
+        int count = EntityContent.countByContentCategoryId(contentCategoryId)
+        return count
+    }
+
+    /**
+     * Get count of EntityContent by entityTypeId and companyId
+     * @param entityTypeId -id of entity type (SystemEntity.id --> CUSTOMER, APPUSER, COMPANY etc.)
+     * @param companyId -id of company
+     * @return
+     */
+    public int countByEntityTypeIdAndCompanyId(long entityTypeId, long companyId) {
+        int count = EntityContent.countByEntityTypeIdAndCompanyId(entityTypeId, companyId)
+        return count
+    }
+}

@@ -1,0 +1,50 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Group of "Inventory Out" Landing Page | |
+ *ActionService:* | ShowForInventoryOutActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransaction/showInventoryOut | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 1st July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Inventory Operator, Inventory Auditor, Production Operator.
+
+h4. Description:
+This is the landing page of "Inventory Out" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks  [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "Out" link.
+* Show Group of "Inventory Out" Landing Page.
+
+h4. Pre-condition:
+* User must have "Show Inventory-Out" privilege.
+
+h4. Process:
+* [Get Group list of "Inventory Out"|guide:ListForInventoryOutActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create Group of "Inventory Out"|guide:CreateForInventoryOutActionService].
+** Show Group list of "Inventory Out" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Inventory Out" in Edit Mode|guide:SelectForInventoryOutActionService].
+* [Delete "Inventory Out"|guide:DeleteForInventoryOutActionService].
+* [Search "Inventory Out" From Grid View|guide:SearchForInventoryOutActionService].
+* [Show Landing Page of "Inventory Out" Details|guide:ShowForUnApprovedInventoryOutDetailsActionService].
+* [Show Landing Page of Approved "Inventory Out"|guide:ShowForApprovedInventoryOutDetailsActionService].
+
+!Inv/Inventory_Out_Show.png!

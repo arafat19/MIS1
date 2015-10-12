@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate Instrument Drop-Down List| |
+*ActionService:* | reloadInstrumentDropDown | *Auditable:* | No
+*Url:* | /rmsInstrument/reloadInstrumentDropDown | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date* | *Reason for Changes* | *Version*
+Nahida Sultana | 21th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Remittance User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click *Task Instrument Mapping* link.
+* [Show Landing Page of *Task Instrument Mapping*|guide:ShowForMapTaskActionService].
+* Select process from Drop-Down List.
+* Populate Instrument Drop-Down List.
+
+h4. Pre-condition:
+* User must have "Refresh Instrument dropdown" privilege.
+
+* Rules of Populate:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Process | | Drop-Down |  Numeric | Required
+{table}
+
+
+h4. Process:
+* Get list of "Instrument" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Instrument List Populate in drop-down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [|guide:].

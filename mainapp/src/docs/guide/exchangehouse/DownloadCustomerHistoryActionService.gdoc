@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Customer History" Report in PDF Format | |
+*ActionService:* | DownloadCustomerHistoryActionService | *Auditable:* | No
+*Url:* | /exhReport/downloadCustomerHistory | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 27th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Customer History" link.
+* [Show Landing Page of "Customer History" Report|guide:ExhShowForCustomerRemittanceActionService].
+* Enter valid input.
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Customer History" Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download Customer History" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ Customer A/C No | Text Box | Alpha Numeric | Required 
+ Start Date | Calender | Alpha Numeric | Required
+ End Date | Calender | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* Download the report as PDF format.
+* PDF report should show "Basic Information" in details.
+* PDF report should show "Attachments" details.
+* PDF report should show "Notes" details.
+* PDF report should show "Task Details".
+* PDF footer should show page no, print date.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+ "Download Customer History Report in PDF Format":Customer_History_Report.pdf

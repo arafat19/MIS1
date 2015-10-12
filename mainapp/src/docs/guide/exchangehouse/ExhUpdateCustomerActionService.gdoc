@@ -1,0 +1,84 @@
+
+{table}
+*Access Type:* | Restricted| Priority: | High
+*Name:* | Update *Customer* | |
+*ActionService:* | ExhUpdateCustomerActionService | *Auditable:* | No
+*Url*: | /exhCustomer/update | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 21st January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent, Cashier.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of *Customer*|guide:ExhShowCustomerActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button from tool bar.
+* [Open "Customer" in Edit Mode|guide:ExhSelectCustomerActionService]
+* User must insert valid input to update *Customer*.
+* Click "Update" button.
+* Update *Customer*.
+
+h4. Pre-condition:
+* User must have "Update customer" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Name | Text Box | Alpha Numeric | Required
+ Surname | Text Box | Alpha Numeric | Required (If "mis.exchangehouse.customerSurnameRequired" key value is 1)
+ [Nationality|guide:_PopulateNationalityList] | Drop Down List | Numeric | Required
+ Visa Expiry Date | Calender | Alpha Numeric | Required (If *Nationality* does not matched with Native Country )
+ [Gender|guide:PopulateGenderList] | Drop Down Box | Numeric | Required
+ Address | Text Area | Alpha Numeric | Required
+ Address Verified | Check Box | Boolean | Required (If "mis.exchangehouse.customerAddressVerificationRequired" key value is 1)
+ SMS Subscription | Check Box | Boolean | Optional(Default Value True)
+ Date of Birth | Calender | Alpha Numeric | Required
+ [Post Code|guide:ExhShowPostalCodeActionService] | Text Box | Numeric | Required
+ Phone | Text Box | Numeric | Required (Must be matched with Native Country's "Phone Pattern")
+ Email | Text Box | Alpha Numeric | Optional
+ [Sanction List Verification|guide:ExhGetSanctionCountForCustomerActionService] | Check Box | Boolean | Required(If "mis.exchangehouse.verifyCustomerSanction" key value is 1)
+ Mail Subscription | Check Box | Boolean | Optional(Default Value True)
+ Declaration Amount | Text Box | Numeric | Required (If "mis.exchangehouse.customerDeclarationAmountRequired" key value is 1)
+ Declaration start | Calender | Alpha Numeric | Required  (If "mis.exchangehouse.customerDeclarationAmountRequired" key value is 1)
+ Declaration End | Calender | Alpha Numeric | Required (If "mis.exchangehouse.customerDeclarationAmountRequired" key value is 1)
+ Profession | Text Box | Alpha Numeric | Required
+ Source of Fund | Text Box | Alpha Numeric | Required
+ [Photo Id Type|guide:ExhPhotoIdTypeDropDownTagLib] | Drop Down List | Numeric | Required
+ Photo Id Expiry Date | Calender | Alpha Numeric | Optional
+ Photo ID No | Text Box | Alpha Numeric | Required (If "mis.exchangehouse.photoIdNoRequired" key value is 1)
+ Corporate Customer | Check Box | Boolean | Optional(Default Value False)
+ Company Reg No | Text Box | Alpha Numeric | Required (If "Corporate Customer" is enabled)
+ Date of Incorporation | Calender | Alpha Numeric| Required (If "Corporate Customer" is enabled)
+{table}
+
+* Match expected version before updating a *Customer*.
+* "Date of Birth" must not be future date.
+* Declaration start date must not be future date.
+* Declaration start date must not be greater than declaration end date.
+* If "Declaration Start Date" exist "Declaration End" date must exist when "mis.exchangehouse.customerDeclarationAmountRequired" value is 0.
+* "Declaration Amount" should not considerable at task create event when "mis.exchangehouse.customerDeclarationAmountRequired" value is 0.
+
+h4. Process:
+* Update selected *Customer*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Customer* from grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

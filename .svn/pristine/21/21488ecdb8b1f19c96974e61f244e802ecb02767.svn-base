@@ -1,0 +1,91 @@
+<g:render template="/inventory/report/inventoryProduction/create"/>
+<g:render template="/inventory/report/inventoryProduction/script"/>
+
+
+<div id="transactionDetails" class="table-responsive" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="success">Production Information</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Production ID</td>
+                        <td><span id='lblTransactionId'></span></td>
+                        <td class="active">Production Date</td>
+                        <td><span id='lblTransactionDate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Inventory Name</td>
+                        <td><span id='lblInventoryName'></span></td>
+                        <td class="active">Production Line Item</td>
+                        <td><span id='lblProductionLineItem'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+
+        <tr id="tagRMList">
+            <td class="success">Raw Materials</td>
+        </tr>
+        <tr>
+            <td id="rawMaterial">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="active">
+                        <th>Trace No</th>
+                        <th>Item Name</th>
+                        <th class="align_right">Quantity</th>
+                        <th class="align_right">Rate</th>
+                        <th class="align_right">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tbodyMaterials">
+
+                    </tbody>
+                    <tr>
+                        <td colspan="3" rowspan="2"></td>
+                        <td class="alert-success align_right">Total Amount </td>
+                        <td class="align_right"><span id='lblTotalAmount'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="alert-success align_right">Rate Per Unit </td>
+                        <td class="align_right"><span id='lblRatePerUnit'></span></td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+        <tr id="tagFinishedProductList">
+            <td class="success">Finished Products</td>
+        </tr>
+        <tr>
+            <td id="finishedProduct">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="active">
+                        <th>Trace No</th>
+                        <th>Item Name</th>
+                        <th class="align_right">Quantity</th>
+                        <th class="align_right">Rate</th>
+                        <th class="align_right">Overhead Cost</th>
+                        <th class="align_right">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody id="trLabelsFinishedProduct">
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+

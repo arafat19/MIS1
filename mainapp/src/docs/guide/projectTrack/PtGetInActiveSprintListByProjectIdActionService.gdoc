@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *InActive Backlog Sprint* List in drop-down | |
+*ActionService:* | PtGetInActiveSprintListByProjectIdActionService | *Auditable:* | No
+*Url:* | /ptSprint/listInActiveSprintByProjectId | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "InActive" link.
+* Show Landing Page of *InActive Backlog*.
+* Populate *InActive Backlog Sprint* List in drop-down.
+
+h4. Pre-condition:
+* User must have "Get Inactive Sprint By Project ID" privilege.
+
+* Populate Criteria:
+{table}
+*Field*   | *Input Type* | *Data Type* | *Rules*
+[Project|guide:GetDropDownPtProjectTagLibActionService] | Drop Down Box |  Numeric | Required
+{table}
+
+h4. Process:
+* Get *InActive Backlog Sprint* list from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate list of *InActive Backlog Sprint* at drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [List of "InActive Backlog"|guide:ListInActiveBacklogActionService].

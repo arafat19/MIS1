@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Purchase Instrument Mapping* | |
+*ActionService:* | CreateRmsPurchaseInstrumentMappingActionService | *Auditable:* | No
+*Url:* | /rmsPurchaseInstrumentMapping/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Purchase Instrument Mapping* link.
+* [Show Landing Page of "Purchase Instrument Mapping"|guide:ShowRmsPurchaseInstrumentMappingActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Purchase Instrument Mapping*.
+
+h4. Pre-condition:
+* User must have "Create Purchase Instrument Mapping" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+[Bank|guide:_PopulateBankList] |  Drop Down list | Numeric | Required
+[District|guide:GetDropDownDistrictTagLibActionService] |  Drop Down list | Numeric | Required
+[Branch|guide:GetDropDownBankBranchTagLibActionService] |  Drop Down list | Numeric | Required
+Logic | Text Area | Alpha Numeric | Required
+Process | Auto Generated | Text | Read Only
+[Instrument|guide:PopulatePurchaseInstrumentTypeList] |  Drop Down list | Numeric | Required
+{table}
+
+
+h4. Process:
+* Create a new *Purchase Instrument Mapping*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Purchase Instrument Mapping* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

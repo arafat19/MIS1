@@ -1,0 +1,41 @@
+<script type="text/javascript">
+
+    var code, lstSubCategory, appUser;
+    $(document).ready(function () {
+        onLoadAcceptInvitation();
+    });
+
+    function onLoadAcceptInvitation() {
+        code = "${result ? result.code : ''}";
+        var lstSub = '${result.lstSubCategory}';
+        if (lstSub != '') {
+            lstSubCategory = eval('(' + lstSub + ')');
+        }
+        showSubCategory();
+        appUser = "${result ? result.appUser : ''}";
+        $('#appUserNameDiv').hide();
+        if (appUser) {
+            $('#appUserNameDiv').show();
+            $('#userNameDiv').remove();
+            $('#passwordDiv').remove();
+            $('#confirmPasswordDiv').remove();
+        }
+        initializeForm($('#acceptInvitationForm'));
+        $(document).attr('title', "DOC - Accept Invitation");
+    }
+    function resetForm() {
+        clearForm($('#acceptInvitationForm'));
+        $('#code').val(code);
+    }
+
+    function showSubCategory() {
+        if (!lstSubCategory || lstSubCategory.length == 0) {
+            $('#subCateContainer').remove();
+            return;
+        }
+        for (var i = 0; i < lstSubCategory.length; i++) {
+            $('#subCatDiv').append("<span><strong>Name: </strong></span>" + lstSubCategory[i].name + "</br>" + " <span><strong>Description: </strong></span>" + lstSubCategory[i].description + "</br></br>");
+        }
+    }
+
+</script>

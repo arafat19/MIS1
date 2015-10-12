@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Backlog Priority" List in drop-down | |
+*Action:* | GetDropDownSystemEntityTagLibActionService | *Auditable:* | No
+*Url:* | /ptBacklog/show  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Md. Shaheb Ali | 8th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 10706.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Backlog* link.
+* [Show Landing Page of "Backlog"|guide:ShowPtBacklogActionService].
+* Populate "Backlog Priority" List in drop-down 
+
+h4. Pre-condition:
+* Key must be Active to populate in drop-down.
+
+h4. Process:
+* Get list of "Backlog Priority" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Backlog Priority" List in Drop-Down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Create "Backlog"|guide:CreatePtBacklogActionService].
+* [Update "Backlog"|guide:UpdatePtBacklogActionService].
+
+
+

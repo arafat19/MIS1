@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="budgetFinancialSummary" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15" uuid="3641649e-c3f0-44e0-8911-836fc73a0da2">
+	<property name="ireport.zoom" value="1.2396694214876067"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toDate" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="projectId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="dbQuantityFormat" class="java.lang.String"/>
+	<parameter name="isGovtQs" class="java.lang.Boolean"/>
+	<queryString>
+		<![CDATA[SELECT  bdg.id,
+        bdg.budget_item, bdg.details AS budget_details,
+        to_char(bdg.budget_quantity,$P{dbQuantityFormat}) AS budget_quantity, system_entity.key AS unit_name,
+        to_char((bdg.contract_rate*COALESCE(SUM(qsm.quantity),0)),$P{dbCurrencyFormat}) AS gross_receivables,
+        to_char(((bdg.contract_rate * (1-0.05-0.055)) * COALESCE(SUM(qsm.quantity),0)),$P{dbCurrencyFormat}) AS net_receivables,
+
+        to_char((((COALESCE(SUM(qsm.quantity),0) / bdg.budget_quantity)*100) *
+        ((bdg.contract_rate * bdg.budget_quantity)/(SELECT coalesce(SUM(bdg1.contract_rate),1) FROM budg_budget bdg1
+        WHERE bdg1.project_id = $P{projectId} AND bdg1.billable = true)))/100,$P{dbCurrencyFormat}) AS wt_of_contract_completed
+
+        FROM budg_budget bdg
+        LEFT JOIN qs_measurement qsm ON bdg.id = qsm.budget_id AND qsm.is_govt_qs =$P{isGovtQs}
+        LEFT JOIN system_entity ON system_entity.id = bdg.unit_id
+        WHERE bdg.project_id =$P{projectId}
+        AND bdg.billable = true
+        AND (bdg.created_on BETWEEN $P{fromDate} AND $P{toDate})
+        GROUP BY bdg.id,bdg.budget_item,bdg.details,bdg.budget_quantity, system_entity.key,bdg.contract_rate
+        ORDER BY bdg.budget_item ASC]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="budget_item" class="java.lang.String"/>
+	<field name="budget_details" class="java.lang.String"/>
+	<field name="budget_quantity" class="java.lang.String"/>
+	<field name="unit_name" class="java.lang.String"/>
+	<field name="gross_receivables" class="java.lang.String"/>
+	<field name="net_receivables" class="java.lang.String"/>
+	<field name="wt_of_contract_completed" class="java.lang.String"/>
+	<title>
+		<band height="118">
+			<staticText>
+				<reportElement uuid="399f9492-1b0b-440d-a2eb-492eeb1b8253" x="0" y="0" width="555" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="false" pdfFontName="Helvetica-Bold" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[Budget Financial Summary]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6ad3611c-0d83-4c34-aaf4-6f0ee74617e5" x="0" y="34" width="60" height="14"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="c6783239-c819-4944-ad10-ec6058bc55b7" x="60" y="34" width="495" height="14"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f34038de-974d-4735-9756-c7a32f1b55c5" x="0" y="48" width="60" height="16"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="56c9a3a9-26da-4026-b47b-58939aa5bb1b" x="60" y="48" width="495" height="16"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="78" width="60" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="262b6395-8f55-4446-a439-b8700badde8e" x="60" y="78" width="495" height="20"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f2defd01-7001-4c42-83c5-8f81e21dffe3" stretchType="RelativeToTallestObject" x="0" y="98" width="60" height="20"/>
+				<box topPadding="0" bottomPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Budget Line Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a01db41e-0730-4197-b61d-37659045f4c3" stretchType="RelativeToTallestObject" x="60" y="98" width="150" height="20"/>
+				<box topPadding="0" bottomPadding="0"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Budget Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f58f2ba2-5848-4207-bd6f-936402bbfc4f" stretchType="RelativeToTallestObject" x="210" y="98" width="80" height="20"/>
+				<box topPadding="0" bottomPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Budget Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29136759-78ce-4c5d-9a30-f96698c8bf22" stretchType="RelativeToTallestObject" x="290" y="98" width="75" height="20"/>
+				<box topPadding="0" bottomPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Gross Receivable]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="29136759-78ce-4c5d-9a30-f96698c8bf22" stretchType="RelativeToTallestObject" x="365" y="98" width="75" height="20"/>
+				<box topPadding="0" bottomPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Net Receivable]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a01db41e-0730-4197-b61d-37659045f4c3" stretchType="RelativeToTallestObject" x="440" y="98" width="115" height="20"/>
+				<box topPadding="0" bottomPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[WT% of contract completed]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6ad3611c-0d83-4c34-aaf4-6f0ee74617e5" x="0" y="20" width="60" height="14"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="c6783239-c819-4944-ad10-ec6058bc55b7" x="60" y="20" width="495" height="14"/>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="262b6395-8f55-4446-a439-b8700badde8e" x="60" y="64" width="102" height="14"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{isGovtQs} ? 'Yes' : 'No']]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="64" width="60" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Govt. QS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="41">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="e710ac5a-f069-4e11-92e8-c30e53dfc1ba" stretchType="RelativeToTallestObject" x="210" y="0" width="80" height="40"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_quantity}+'  '+$F{unit_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a3f71b40-686b-4510-b956-0b278ddb30cb" stretchType="RelativeToTallestObject" x="0" y="0" width="60" height="40"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_item}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="cbe82306-e6a3-401c-9777-3295f47d8c14" stretchType="RelativeToTallestObject" x="440" y="0" width="115" height="40"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{wt_of_contract_completed}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="cbe82306-e6a3-401c-9777-3295f47d8c14" stretchType="RelativeToTallestObject" x="60" y="0" width="150" height="40"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_details}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a49a3ebf-ce21-4104-88d9-fa05be46f27e" stretchType="RelativeToTallestObject" x="365" y="0" width="75" height="40"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{net_receivables}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a49a3ebf-ce21-4104-88d9-fa05be46f27e" stretchType="RelativeToTallestObject" x="290" y="0" width="75" height="40"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="1" rightPadding="2">
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{gross_receivables}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

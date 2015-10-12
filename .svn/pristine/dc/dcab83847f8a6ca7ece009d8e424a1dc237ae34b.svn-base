@@ -1,0 +1,58 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search Approved "Inventory Consumption" From Grid View | |
+ *ActionService:* | SearchForApprovedInventoryConsumptionDetailsActionService | *Auditable:* | No
+ *Url:* | /invTransactionDetails/listApprovedInventoryConsumptionDetails | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase shows its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu of left menu should show as default.
+* Click "Consumption" link.
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+* Select a Line-Item from grid view.
+* Click "Approve" button.
+* [Show Landing Page of Approved "Inventory Consumption"|guide:ShowForApprovedInventoryConsumptionDetailsActionService].
+* Click the magnify icon from grid view.
+* Write about searching criteria.
+* Press "Enter" button.
+* Search Approved "Inventory Consumption" From Grid View.
+
+h4. Pre-condition:
+* User must have "List Approved Inv Consumption Details" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Search Type*
+ Find | Text Box | Chalan No
+ Find | Text Box | *Item*
+ Find | Text Box | Actual Quantity
+{table}
+
+h4. Process:
+* Get Approved "Inventory Consumption" (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all Approved "Inventory consumption".
+
+h4. Post-condition:
+
+* *Success:*
+** Approved "Inventory Consumption" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show List of Approved "Inventory Consumption"|guide:ListForApprovedInventoryConsumptionDetailsActionService].
+

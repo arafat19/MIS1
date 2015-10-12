@@ -1,0 +1,42 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show Landing Page of "Upload Bank Statement File" | |
+ *ActionService:* | ShowAccBankStatementActionService | *Auditable:* | No
+ *Url:* | /accBankStatement/show | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 9th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of *Bank Statement File* Upload with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click "Bank Statement" link.
+* Show Landing Page of "Upload Bank Statement File".
+
+h4. Pre-condition:
+* User must have "Show Bank Statement" privilege.
+
+h4. Process:
+* Show error list of file in grid view.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Upload Bank Statement File" landing page.
+** Show input form on top to [Upload "Bank Statement File"|guide:ImportAccBankStatementActionService].
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Acc/Upload_BankStatement_File_Show.png!

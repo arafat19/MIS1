@@ -1,0 +1,80 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate "Supplier Wise Payable" Report in HTML Format | |
+*ActionService:* | AccListForSupplierWisePayableActionService | *Auditable:* | No
+*Url:* | /accReport/listSupplierWisePayable | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 29th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Grid view result can be searchable with following fields.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Payable" link.
+* [Show Landing Page of Supplier Wise Payable Report|guide:AccShowForSupplierWisePayableActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Supplier Wise Payable" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List Supplier Wise Payable Report" privilege.
+
+* Rules of Searching:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules* 
+  From Date | Calender | Alpha Numeric | Required
+  To Date | Calender | Alpha Numeric | Required
+  [Populate Project List|application] | Drop Down List | Numeric | All(Default)
+{table}
+
+* Given Date must be in between *Financial Year*.
+
+h4. Process:
+* Show list of "Supplier Wise Payable" information, for the selected *Supplier*.
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Supplier
+** PO Amount
+** Received (Inventory)
+** Received (Fixed Asset)
+** Payable
+** Paid
+** Balance
+
+* Each *Supplier* show once time in grid view (Their SUM).
+* Show Approved inventory received amount (SUM of different item).
+* Show approved "PO amount" (SUM of different *PO*).
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Supplier Wise Payable" information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Show Landing Page of Supplier Wise Paid Report|guide:ShowForSupplierWisePaymentActionService].
+* [Show PO Details From Supplier Wise Payable Report Grid View|guide:_ShowForSupplierWisePOActionService].
+* [Show Landing Page of "Source Ledger" Report|guide:ShowForSourceLedgerActionService].
+
+!Acc/Supplier_Wise_Payable_Report_Generate.png!

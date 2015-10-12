@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Sprint's Backlog* | |
+*ActionService:* | DeleteBackLogForSprintActionService | *Auditable:* | No
+*Url:* | /ptBacklog/deleteBackLogForSprint | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Task" button from tool bar.
+* [Show Landing Page of "Sprint's Backlog"|guide:ShowBackLogForSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Remove" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Sprint's Backlog*.
+
+h4. Pre-condition:
+* User must have "Delete Backlog for sprint" privilege.
+* If *Sprint's Backlog* has dependency with following business entity then selected *Sprint's Backlog* will not be delete-able:
+** If backlog has Owner.
+
+ 
+h4. Process:
+* Delete a selected *Sprint's Backlog*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Sprint's Backlog* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

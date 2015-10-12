@@ -1,0 +1,34 @@
+
+{table}
+ Use Case ID: | MIS-Budget-35 | Priority: | High
+ *Name* | Discard Changes Project Budget Type | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /projectBudgetType/select | *Action Class:* | SelectProjectBudgetTypeActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System Admin.
+
+h4. Description:
+After clicking "Discard Changes" button all the changes for a particular project are discarded.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Project budget type changes discarded.
+
+h4. Post-condition:
+
+# *Success:*
+## Assigned project budget type is discarded.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

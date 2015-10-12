@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Cancel "New Task" | |
+*ActionService:* | ExhCancelTaskActionService | *Auditable:* | No 
+*Url:* | /exhTask/cancelSpecificTask | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Manage Task" Created By "Cashier"|guide:ListExhTaskForAdminActionService].
+* Show *Task* list in grid view.
+* Select a Line-Item from grid view.
+* Click "Cancel Task" button from tool bar.
+* System will show confirmation message.
+* Enter cancellation reason.
+* Click "Cancel Task" button.
+* Cancel "New Task".
+
+h4. Pre-condition:
+* User must have "Cancel task" privilege.
+* Newly crated task within date range must consider to cancel.
+
+h4. Process:
+* Cancel selected *Task*.
+* Remove *Task* from grid view.
+
+h4. Post-condition:
+
+* *Success:*
+** Cancel selected *Task*.
+** Show Success message.
+** Remove canceled *Task* from grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Disburse "Task" | |
+*Action:* | DisburseRmsTaskActionService | *Auditable:* | No
+*Url:* | /rmsTask/disburseRmsTask | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 23rd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Remittance User , Branch User.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click "PO" link.
+* [Show Landing Page of "Pay Order Transaction"|guide:showForIssuePo].
+* Enter Valid input.
+* Click "Search" button.
+* [Search Task|guide:SearchTaskForProcessInstrumentActionService] *Task* will be listed in grid view.
+* Select line item from grid view.
+* Click "Disburse" button from tool bar.
+* Disburse "Task".
+
+h4. Pre-condition:
+* User must have "Disburse RMS task" privilege.
+
+h4. Process:
+* Disbursed selected task.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Disbursed selected "Task" from grid view.
+** Show Success message.
+** Remove Disbursed "Task" from grid view.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

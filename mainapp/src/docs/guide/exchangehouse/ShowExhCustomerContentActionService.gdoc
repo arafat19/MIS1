@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Customer Attachment* | |
+*ActionService:* | ShowExhCustomerContentActionService | *Auditable:* | No
+*Url:* | /exhCustomer/showEntityContent | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier.
+
+h4. Description:
+This is the landing page of *Customer Attachment* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Show Customer" link.
+* [Show Landing Page of All "Customer"|guide:ExhShowCustomerForAdminActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click "Attachment" button from tool bar.
+* Show Landing Page of *Customer Attachment*.
+
+h4. Pre-condition:
+* User must have "Show Customer Attachment" privilege.
+
+h4. Process:
+* Show blank input form on top to [Create new "Customer Attachment"|guide:CreateExhCustomerContentActionService].
+* [List "Customer Attachment"|guide:ListExhCustomerContentActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Customer Attachment* information in grid view.
+** Reset input form on top to create new *Customer Attachment*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Customer Attachment" in Edit Mode|guide:SelectExhCustomerContentActionService].
+* [Delete "Customer Attachment"|guide:DeleteExhCustomerContentActionService].
+* [Search "Customer Attachment" From Grid View|guide:SearchExhCustomerContentActionService].
+* [Show Landing Page of Cashier's *Task*|guide:ShowExhTaskForCashierActionService].
+
+!Exh/Customer_Attachment_Show.png!

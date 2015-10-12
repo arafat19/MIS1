@@ -1,0 +1,65 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show *Item* List of *Purchase Order* in Landing page | |
+ *ActionService:* | ListPurchaseOrderDetailsActionService| *Auditable:* | No
+ *Url*: | /procPurchaseOrderDetails/list | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show landing page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Show list of *Purchase Order*.
+* Select a Line-Item from grid view.
+* Click *Items* button.
+* Show *Item* List of *Purchase Order* in [Landing Page|guide:ShowPurchaseOrderDetailsActionService].
+
+h4. Pre-condition:
+ * User must have "List Purchase Order Details" privilege.
+
+h4. Process:
+* Get *Item* list of *Purchase Order* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Item Type
+** Item
+** Quantity
+** Rate
+** Total (Rate * Quantity)
+** Created By
+** Created On
+
+h4. Post-condition:
+
+* *Success:*
+** *Item* of *Purchase Order* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search Item of "Purchase Order" From Grid View|guide:SearchPurchaseOrderDetailsActionService].
+
+!procurement/PO_Items_List.png!

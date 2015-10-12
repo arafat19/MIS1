@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Photo Id Type* | |
+*ActionService:* | ExhDeletePhotoIdTypeActionService | *Auditable:* | No
+*Url:* | /exhPhotoIdType/delete | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Photo Id Type* link.
+* [Show Landing Page of "Photo Id Type"|guide:ExhShowPhotoIdTypeActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Photo Id Type*.
+
+h4. Pre-condition:
+* User must have "Delete Photo-Id-Type" privilege.
+* If *Photo Id Type* has dependency with following business entity then selected *Photo Id Type* will not be delete-able:
+** *Task*
+** *Customer*
+
+h4. Process:
+* Delete selected *Photo Id Type*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Photo Id Type* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

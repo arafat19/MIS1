@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "List Wise Status" Report | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsReport/showForListWiseStatusReport | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+This is the landing page of "List Wise Status" Report with input form on top.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "List Wise Status" link.
+* Show Landing Page of "List Wise Status" Report.
+
+h4. Pre-condition:
+* User must have "Show for list wise status report" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+* [Show "Exchange House" list in drop-down|guide:PopulateExchangeHouseList].
+* [Show "Task List" list in drop-down|guide:_PopulateTaskListDropDownList].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "List Wise Status" report landing page.
+** Show input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "List Wise Status" Report in HTML Format|guide:ListForListWiseStatusReportActionService].
+
+!projecttrack/Show-Bug-Report.png!

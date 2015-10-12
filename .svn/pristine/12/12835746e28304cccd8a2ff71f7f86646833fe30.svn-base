@@ -1,0 +1,69 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Budget Details* | |
+*ActionService:* | UpdateBudgetDetailsActionService | *Auditable:* | No
+*Url:* | /budgBudgetDetails/update | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Production" link.
+* [Show Landing Page of "Production Budget"|guide:_ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Item(s)" button from tool bar.
+* [Show Landing Page of "Budget Details"|guide:ShowBudgetDetailsActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Budget Details" in Edit Mode|guide:SelectBudgetDetailsActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Budget Details*.
+
+h4. Pre-condition:
+* User must have "Update Budget Details" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Project Name | Read Only | Alpha Numeric | 
+Budget Scope | Read Only | Alpha Numeric | 
+Budget Item | Read Only | Alpha Numeric | 
+Details | Read Only | Alpha Numeric | 
+[Populate Item Type List|application] | Drop Down List | Numeric | Required
+[Item|guide:GetForItemListForBudgetDetailsActionService] | Drop Down List | Numeric | Required
+Quantity | Text Box | Numeric | Required
+Estimated Rate | Text Box | Numeric | Required
+Total Amount | Auto Generated | Alpha Numeric | 
+Use Against Asset | Check Box | Boolean | Optional (Default Value False)
+Comments | Text Area | Alpha Numeric | Optional
+{table}
+
+* Match expected version before updating a *Budget Details*.
+
+h4. Process:
+* Update selected *Budget Details*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Budget Details* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

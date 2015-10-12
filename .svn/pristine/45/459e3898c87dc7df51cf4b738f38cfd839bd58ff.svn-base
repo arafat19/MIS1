@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Pay Cheque" *Voucher* | |
+*ActionService:* | ShowAccVoucherPayBankActionService | *Auditable:* | No
+*Url:* | /accVoucher/showPayBank | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 2nd May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+This is the landing page of "Pay Cheque" *Voucher* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click "Pay Cheque" link.
+* Show Landing Page of "Pay Cheque" *Voucher*.
+
+h4. Pre-condition:
+* User must have "Show Pay Bank" privilege.
+
+h4. Process:
+* [Get List of all "Pay Cheque" Voucher from server|guide:ListAccVoucherPayBankActionService].
+* Show list of all *Chart of Account* in right panel to create *Voucher*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Pay Cheque" Voucher|guide:_CreateAccPBVoucherActionService].
+** Show list of all "Pay Cheque" Voucher in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Pay Cheque" Voucher in Edit Mode|guide:_SelectAccPBVoucherActionService].
+* [Cancel "Pay Cheque" Voucher|guide:_CancelAccVoucherPayBankActionService].
+* [Search "Pay Cheque" Voucher From Grid View|guide:SearchAccVoucherPayBankActionService].
+* [Post "Voucher"|guide:PostAccVoucherActionService].
+* [Un-Post "Voucher"|guide:UnPostAccVoucherActionService].
+* [Search "Chart of Account Code" Right Panel|guide:SearchChartOfAccountForVoucherActionService].
+* [Show List of "Chart of Account Code" Right Panel in Landing Page|guide:ListChartOfAccountForVoucherActionService].
+* [Show "Ledger" Report from Right Panel|guide:ShowForLedgerActionService].
+* [Show "Voucher" Report From Grid View|guide:ShowForVoucherActionService].
+
+!Acc/Pay_Cheque_Voucher_Show.png!

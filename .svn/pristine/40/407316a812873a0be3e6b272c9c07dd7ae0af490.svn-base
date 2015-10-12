@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Customer User Account" | |
+*ActionService:* | ExhShowForCustomerUserActionService | *Auditable:* | No
+*Url:* | /exhCustomer/showCustomerUser | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 1st February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+This is the landing page of "Customer User Account" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click "Create Customer Account" link.
+* Show Landing Page of "Customer User Account".
+
+h4. Pre-condition:
+* User must have "Show for customer-user" privilege.
+
+h4. Process:
+* Show blank input form on top to [Search "Customer" to create "Customer User"|guide:ExhSearchForCustomerUserActionService].
+* [Create "Customer User"|guide:ExhCreateForCustomerUserActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Customer User Account" grid view For "Cashier".
+** Reset input form on top to search *Customer* to Create "User Account".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use-case:
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+
+!Exh/Cashier_Customer Account_Show.png!

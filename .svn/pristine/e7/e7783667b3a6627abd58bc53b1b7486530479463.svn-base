@@ -1,0 +1,55 @@
+
+{table}
+ *Access Type:* | Restricted  | Priority: | High
+ *Name:* | Search *Item* of *Purchase Order* From Grid View | |
+ *ActionService:* | SearchPurchaseOrderDetailsActionService| *Auditable:* | No
+ *Url*: | /procPurchaseOrderDetails/list | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th October 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* Link.
+* [Show landing page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* [Show Item of PO Landing Page|guide:ShowPurchaseOrderDetailsActionService].
+* Click magnifying icon from grid view.
+* Write searching criteria.
+* Press "Enter" Button.
+* Search *Item* of *Purchase Order* From Grid View.
+
+h4. Pre-condition: 
+* User must have "List Purchase Order Details" privilege.
+* Follow the rules of searching:{table}
+ *Field* | *Input Type* | *Searching Option*
+ Find | Text Box | *Item*
+ Find | Text Box | Item Type 
+{table}
+
+h4. Process:
+* Get *Item* list of *Purchase Order* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show all *Item* list of *Purchase Order*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Item* of *Purchase Order* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+ * [Show Item List of *Purchase Order* in Landing Page|guide:ListPurchaseOrderDetailsActionService].

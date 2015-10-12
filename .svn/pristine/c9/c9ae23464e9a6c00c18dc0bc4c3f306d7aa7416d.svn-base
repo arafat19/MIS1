@@ -1,0 +1,142 @@
+<%@ page import="org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
+ <div class='pane_title'>
+    <div id="spinner" class="pull-left" style='margin-left:4px;display:none; margin-top: 1px'><img
+            src="${ConfigurationHolder.config.theme.application}/images/spinner.gif" alt="Spinner"/></div>
+
+    <div id="dockMenuContainer" class="pull-right">
+        <ul class="nav nav-pills">
+            <app:ifPlugin name="Budget">
+                <app:ifAnyUrl urls="/budgBudget/renderBudgetMenu,/budgBudget/show,/budgSprint/show,/budgReport/showProjectCosting,
+                            /budgReport/showBudgetRpt,/budgReport/showProjectStatus,/budgReport/showBudgetWisePOSummary,/budgReport/showConsumptionDeviation,
+                            /budgetScope/show,/projectBudgetScope/show,/budgReport/showBudgetSprint">
+                    <li id="dockMenuBudget"><a>Budget</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="Procurement">
+                <app:ifAnyUrl urls="/procurement/renderProcurementMenu,/procPurchaseRequest/show,/procPurchaseOrder/show,/procIndent/show,
+                     /procReport/showPurchaseRequestRpt,/procReport/showPurchaseOrderRpt,
+                     /procReport/showIndentRpt,/procReport/showBudgetWisePO,
+                     /procReport/showSupplierWisePO">
+                    <li id="dockMenuProc"><a>Procurement</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="Inventory">
+                <app:ifAnyUrl urls="/inventory/renderInventoryMenu,/invInventoryTransaction/showInventoryInFromSupplier,
+                      /invInventoryTransaction/showInventoryInFromInventory,
+                      /invInventoryTransaction/showInventoryOut,
+                      /invInventoryTransaction/showInvProductionWithConsumption,
+                      /invInventoryTransaction/showApprovedProdWithConsump,
+                      /invInventoryTransaction/showInventoryConsumption,
+                      /invReport/showInvoice,/invReport/showSupplierChalan,/invReport/inventoryStock,
+                      /invReport/showInventoryStatusWithValue,/invReport/showInventoryStatusWithQuantity,/invReport/showInventoryStatusWithQuantityAndValue,
+                      /invReport/showForItemReconciliation,/invReport/showInventorySummary,/invReport/showInventoryTransactionList,
+                      /invReport/showItemStock,/invReport/showInventoryValuation,/invReport/showConsumedItemList,
+                      /invReport/showItemReceivedStock,/invReport/showItemWiseBudgetSummary,/invReport/showInventoryProductionRpt,
+                      /invReport/showPoItemReceived,/invInventoryTransaction/showReCalculateValuation,/invUserInventory/show,
+                      /invProductionLineItem/show,/invInventoryTransactionDetails/showInvModifyOverheadCost,/invInventory/show">
+                    <li id="dockMenuInv"><a>Inventory</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="Accounting">
+                <app:ifAnyUrl urls="/accounting/renderAccountingMenu,/accVoucher/show,/accVoucher/showPayCash,/accIouSlip/show,/accVoucher/showPayBank,/accVoucher/showReceiveCash,/accVoucher/showReceiveBank,
+                    /accReport/showVoucher,/accReport/showLedger,/accReport/showVoucherList,/accReport/showForGroupLedgerRpt,/accReport/showSourceLedger,
+                    /accReport/showSupplierWisePayable,/accReport/showSupplierWisePayment,
+                    /accReport/showProjectWiseExpense,/accReport/showSourceWiseBalance,/accReport/showAccIouSlipRpt,
+                    /accReport/showCustomGroupBalance,/accReport/showBankReconciliationCheque,/accType/show,
+                    /accCustomGroup/show,/accChartOfAccount/show,/accGroup/show,/accTier2/show,/accTier1/show,/accTier3/show,
+                    /accVoucherTypeCoa/show,/accSubAccount/show,/accDivision/show,/accFinancialYear/show,/accBankStatement/show,
+                    /accReport/showTrialBalanceOfLevel2,/accReport/showTrialBalanceOfLevel3,/accReport/showTrialBalanceOfLevel4,/accReport/showTrialBalanceOfLevel5,
+                    /accReport/showIncomeStatementOfLevel4,/accReport/showIncomeStatementOfLevel5,
+                    /accReport/showFinancialStatementOfLevel2,/accReport/showFinancialStatementOfLevel3,/accReport/showFinancialStatementOfLevel4,/accReport/showFinancialStatementOfLevel5">
+                    <li id="dockMenuAcc"><a>Accounting</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="QS">
+                <app:ifAnyUrl urls="/qs/renderQsMenu,/qsMeasurement/show,/qsMeasurement/showGovt,/qsReport/showQsMeasurementRpt,/qsReport/showBudgetContractDetails,/qsReport/showBudgetFinancialSummary,
+                    /qsReport/showBudgetWiseQs,/qsReport/showCombinedQSM">
+                    <li id="dockMenuQs"><a>QS</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="FixedAsset">
+                <app:ifAnyUrl urls="/fixedAsset/renderFixedAssetMenu,/fxdFixedAssetDetails/show,/fxdFixedAssetTrace/show,/fxdMaintenance/show,
+                    /fixedAssetReport/showConsumptionAgainstAsset,/fixedAssetReport/showConsumptionAgainstAssetDetails,
+                    /fixedAssetReport/showPendingFixedAsset,/fixedAssetReport/showCurrentFixedAsset,
+                    /fxdMaintenanceType/show,/fxdCategoryMaintenanceType/show,/item/showFixedAssetItem">
+                    <li id="dockMenuFixedAsset"><a>Fixed Asset</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="ExchangeHouse">
+                <app:ifAnyUrl urls="/exhExchangeHouse/renderExchangeHouseMenu,/exhCustomer/show,/exhCustomer/showForAgent,
+                            /exhBeneficiary/show,/exhBeneficiary/showNewForCustomer,/exhBeneficiary/showApprovedForCustomer,/exhTask/showUnApprovedTaskForCustomer,/exhTask/showApprovedTaskForCustomer,/exhTask/showDisbursedTaskForCustomer,
+                            /exhTask/showForCustomer,/exhTask/showForAgent,/exhCustomer/showForAdmin,/exhTask/showExhTaskForAdmin,/exhTask/showAgentTaskForAdmin,/exhTask/showCustomerTaskForAdmin,
+                            /exhCustomer/showForCustomerByNameAndCode,/exhTask/showForOtherBankUser,/exhReport/showInvoice,/exhReport/showTransactionSummary,
+                            /exhReport/showCustomerHistory,/exhReport/showRemittanceSummary,/exhTask/showExhTaskForCashier,/exhTask/showAgentTaskForCashier,
+                            /exhReport/showCashierWiseReportForCashier,/exhTask/showForTaskSearch,/exhTask/showCustomerTaskForCashier,/exhReport/showCashierWiseReportForAdmin,
+                            /exhReport/showSummaryReportForAdmin,/exhCustomer/showCustomerUser,/exhReport/showAgentWiseCommissionForAdmin,
+                            /exhCurrencyConversion/show,/exhRemittancePurpose/show,/exhPhotoIdType/show,/exhReport/showAgentWiseCommissionForAgent,
+                            /exhSanction/show,/exhSanction/showSanctionUpload,/exhAgent/show,/exhAgentCurrencyPosting/show,/exhReport/showRemittanceTransaction,
+                            /exhTask/showForTaskSearchForAgent,/exhRegularFee/show">
+                    <li id="dockMenuExchangeHouse"><a>Exchange House</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="ProjectTrack">
+                <app:ifAnyUrl urls="/projectTrack/renderProjectTrackMenu,/ptBacklog/show,/ptSprint/show,/ptBacklog/showForActive,
+                    /ptBacklog/showForInActive,/ptBacklog/showMyBacklog,/ptReport/showForBacklogDetails,/ptReport/showReportSprint,
+                    /ptReport/showReportOpenBacklog,/ptReport/showReportBug,/ptProject/show,/ptModule/show">
+                    <li id="dockMenuProjectTrack"><a>Project Track</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="ARMS">
+                <app:ifAnyUrl urls="/arms/renderArmsMenu,/rmsExchangeHouse/show,/rmsExchangeHouseCurrencyPosting/show,
+                        /rmsProcessInstrumentMapping/show,/rmsTask/show">
+                    <li id="dockMenuArms"><a>ARMS</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="SARB">
+                <app:ifAnyUrl urls="/sarb/renderSarbMenu">
+                    <li id="dockMenuSarb"><a>SARB</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="Document">
+                <app:ifAnyUrl urls="/document/renderDocumentMenu">
+                    <li id="dockMenuDocument"><a>Document</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+            <app:ifPlugin name="Application">
+                <app:ifAnyUrl urls="/application/renderApplicationMenu,/appUser/showOnlineUser,/company/show,/vehicle/show,/project/show,/supplier/show,/employee/show,
+                            /customer/show,/itemType/show,/item/showInventoryItem,/item/showNonInventoryItem,/country/show,/designation/show,/currency/show,/contentCategory/show,
+                            /systemConfiguration/show,/systemEntity/show,/appUser/showForCompanyUser,/systemEntityType/show,/theme/showTheme,/appUser/show,/role/show,/appMail/show,
+                            /requestMap/show,/appGroup/show">
+                    <li id="dockMenuSettings"><a>Setting</a></li>
+                </app:ifAnyUrl>
+            </app:ifPlugin>
+
+
+            <li class="dropdown">
+                <a data-toggle="dropdown">
+                    <span class="fa fa-lg fa-user" style="color: #428BCA"></span>&nbsp;<span
+                        class="fa fa-caret-down"></span>
+                </a>
+                <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                    <li style="text-align: center"><app:sessionUser property='username'></app:sessionUser></li>
+                    <li class="divider"></li>
+                    <li><a href="#appUser/managePassword"><span class="fa fa-key"></span>&nbsp;Change Password</a>
+                    </li>
+                    <li><a href="<g:createLink controller="logout"/>"><span
+                            class="fa fa-sign-out"></span>&nbsp;Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>

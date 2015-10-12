@@ -1,0 +1,39 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show lading page of Manage "Task" | |
+*ActionService:* | GetRmsTaskDetailsTagLibActionService | *Auditable:* | No
+*Url:* |/rmsTask/showForManageTask | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 21th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page for *Manage Task* Search Panel on top.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click "Manage" link from left menu under task .
+* Show lading page of Manage "Task".
+
+h4. Pre-condition:
+* User must have "Show for manage task" privilege.
+
+h4. Process:
+* Get empty task details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show blank input form on top to search task details.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

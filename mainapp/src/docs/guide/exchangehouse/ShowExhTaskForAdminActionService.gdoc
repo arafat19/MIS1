@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Manage Task" Created By "Cashier" | |
+*ActionService:* | ShowExhTaskForAdminActionService | *Auditable:* | No
+*Url:* | /exhTask/showExhTaskForAdmin | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Manage Task" Created By "Cashier" with search panel on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* Show Landing Page of "Manage Task" Created By "Cashier".
+
+h4. Pre-condition:
+* User must have "Show Exh Task for Admin" privilege.
+
+h4. Process:
+* Show search panel on top to [Search "Manage Task" Created By "Cashier"|guide:ListExhTaskForAdminActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Manage Task" in grid view Created By "Cashier".
+** Reset search panel on top to search "Manage Task" Created By "Cashier".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Reload Bank List|guide:ReloadBankList].
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* [Cancel "Task"|guide:ExhCancelTaskActionService].
+* [Show Landing Page of "Invoice" Report|guide:ExhShowInvoiceDetailsReportActionService].
+* [Show Landing Page of "Task Note"|guide:ShowExhTaskNoteActionService].
+* [Search "Manage Task" From Grid View Created By "Cashier"|guide:SearchExhTaskForAdminActionService].
+
+!Exh/Manage Task_Cashier_Show.png!

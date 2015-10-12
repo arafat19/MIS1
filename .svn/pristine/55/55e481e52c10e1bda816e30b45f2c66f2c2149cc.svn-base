@@ -1,0 +1,58 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Create "User Inventory Mapping" | |
+ *ActionService:* | CreateInvUserInventoryActionService | *Auditable:* | No
+ *Url:* | /invUserInventory/create | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director,Project Manager,Production Operator,Inventory. Auditor,Inventory. Operator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Clicks "Settings" sub menu from left menu.
+* Click "User Inventory Mapping" link.
+* [Show Landing Page of "User Inventory Mapping"|guide:ShowInvUserInventoryActionService].
+* User must insert valid input.
+* Click "Create" Button.
+* Create "User Inventory Mapping".
+
+h4. Pre-condition:
+* User must have "Create user-inventory" privilege.
+* Follow the rules of validation:{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* | *Link*
+ [Populate User List|application] | Drop-Down List | Numeric | Required |
+ [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required |
+ [Populate Inventory Name List|guide:GetInventoryListByInventoryTypeActionService] | Drop-Down List |  Numeric | Required |
+{table}
+
+* Created "User Inventory Mapping" must be unique.
+
+
+h4. Process:
+Create a new "User Inventory Mapping".
+
+h4. Post-condition:
+
+* *Success:*
+** Add Newly Created "User Inventory Mapping" into grid view (should be 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Landing Page of "User Inventory Mapping"|guide:ShowInvUserInventoryActionService].
+
+!Inv/User_Inventory_Mapping_Create.png!

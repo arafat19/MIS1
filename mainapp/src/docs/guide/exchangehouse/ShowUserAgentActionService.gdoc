@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "User-Agent Mapping" | |
+*ActionService:* | ShowUserAgentActionService | *Auditable:* | No
+*Url:* | exhUserAgent/show | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "User-Agent Mapping" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of *Agent*|guide:ShowExhAgentActionService].
+* Select a Line-Item from grid view.
+* Click "User" button from tool bar.
+* Show Landing Page of "User-Agent Mapping".
+
+h4. Pre-condition:
+* User must have "Show User Agent" privilege.
+
+h4. Process:
+* Show blank input form on top to [Create new "User-Agent Mapping"|guide:CreateUserAgentActionService].
+* [List "User-Agent Mapping"|guide:ListUserAgentActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "User-Agent Mapping" information in grid view.
+** Reset input form on top to create new "User-Agent Mapping".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "User-Agent Mapping" in Edit Mode|guide:SelectUserAgentActionService].
+* [Delete "User-Agent Mapping"|guide:DeleteUserAgentActionService].
+* [Search "User-Agent Mapping" From Grid View|guide:SearchUserAgentActionService].
+
+!Exh/User Agent Mapping_Show.png!

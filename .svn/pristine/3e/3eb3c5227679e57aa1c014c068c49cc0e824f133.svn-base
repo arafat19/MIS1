@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Sprint* | |
+*ActionService:* | PtUpdateSprintActionService | *Auditable:* | No
+*Url:* | /ptSprint/update | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Sprint" in Edit Mode|guide:PtSelectSprintActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Sprint*.
+
+h4. Pre-condition:
+* User must have "Update Sprint of Project track" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+Name |  | Alpha Numeric | Auto Generated
+[Project|guide:GetDropDownPtProjectTagLibActionService] | Drop Down List | Text | Required
+[Status|guide:PopulateSprintStatusTypeList] | Drop Down List | Text | Required
+Start Date | Calender | Alpha Numeric | Required
+End Date | Calender | Alpha Numeric | Required
+Active | Check Box | Boolean | Optional
+{table}
+
+* Match expected version before updating a *Sprint*.
+
+h4. Process:
+* Update selected *Sprint*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Sprint* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

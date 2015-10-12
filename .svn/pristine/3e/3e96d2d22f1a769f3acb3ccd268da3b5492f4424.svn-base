@@ -1,0 +1,56 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Download "Inventory Summary" Report in PDF Format | |
+ *ActionService:* | DownloadForInventorySummaryActionService | *Auditable:* | No
+ *Url:* | /invReport/downloadInventorySummary | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Summary" link.
+* [Show Landing Page of "Inventory Summary" Report|guide:ShowForInventorySummaryActionService].
+* User must insert valid input.
+* Click "PDF" icon upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Inventory Summary" Report in PDF Format.
+
+h4. Pre-condition: 
+* User must have "Download Inventory Summary" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ Start Date | Calendar | Numeric | Default (To Date) 
+ End Date | Calendar | Numeric | Default (To Date) 
+ [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required
+ [Populate Inventory Name List|guide:GetInventoryListByInventoryTypeActionService] |Drop-Down List | Numeric | Required
+{table}
+
+
+h4. Process:
+* To get "Inventory Summary" Report in PDF Format "Click Here":Inventory_Summary_Report.pdf
+* Download Report as PDF Format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+ 
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

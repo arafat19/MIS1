@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate all "Material"(Raw,Finish) List in drop-down | |
+ *Action:* | ShowInvProductionDetailsActionService | *Auditable:* | No
+ *Url:* | /invProductionDetails/show | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of the usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Production Line Item* link.
+* [Show Landing Page of "Production Line Item"|guide:ShowInvProductionLineItemActionService].
+* Select a Line-Item from grid view.
+* Click "Materials" Button.
+* [Show Item of "Production Line Item" Landing Page|guide:ShowInvProductionDetailsActionService].
+* Select "Production Item type" from Drop-Down List.
+* Populate all "Material"(Raw,Finish) List in drop-down.
+
+h4. Pre-condition:
+* Populate drop-down criteria given below :
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Populate "Production Item Type" list in drop-down|guide:populateProductionItemTypeList] | drop-down | Numeric | Required
+{table}
+* Material which type is *Inventory* populate in Drop-Down List.
+
+h4. Process:
+* Get all *Inventory* Material list in drop-down from server. [Show *Item* of *Production Line Item* Landing Page|guide:ShowInvProductionDetailsActionService]
+
+h4. Post-condition:
+
+* *Success:*
+** Populate all Material list in drop-down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+

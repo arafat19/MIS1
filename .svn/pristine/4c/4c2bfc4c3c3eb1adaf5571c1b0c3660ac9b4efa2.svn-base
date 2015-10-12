@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Create Group of "Inventory In" from Supplier | |
+ *ActionService:* | CreateForInventoryInFromSupplierActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransaction/createInventoryInFromSupplier | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 30th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Create Group of "Inventory In" from Supplier by Name of To *Inventory*,*Supplier* and *Purchase Order*. So that user have better accessibility to items those are Received from Supplier.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Supplier" link.
+* [Show Group of "Inventory In" From Supplier Landing Page|guide:ShowForInventoryInFromSupplierActionService].
+* User must insert valid input.
+* Click "Create" Button.
+* Create Group of "Inventory In" from Supplier.
+
+h4. Pre-condition:
+* User must have "Create Inventory-In" privilege.
+* Follow the rules of validation:{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* |
+ [Populate Inventory Type List|application] | Drop-Down List | Numeric | Required |
+ [Populate Inventory Name List|guide:GetInventoryListByInventoryTypeActionService] | Drop-Down List | Numeric | Required |
+ [Populate All Supplier List|application] | Drop-Down List |  Numeric | Required |
+ [*Purchase Order*|guide:GetPurchaseOrderActionService] | Drop-Down List | Numeric | Required |
+ Comments | Text Area | Alpha Numeric | Optional | 
+{table}
+
+* Created Group of "Inventory In" must be unique.
+
+h4. Process:
+Create a new Group of "Inventory In" from Supplier.
+
+h4. Post-condition:
+
+* *Success:*
+** Add Newly Created Group of "Inventory In" from Supplier into grid view(should be 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Group of "Inventory In" from Supplier Landing Page|guide:ShowForInventoryInFromSupplierActionService].
+
+!Inv/From_Supplier_Create.png!

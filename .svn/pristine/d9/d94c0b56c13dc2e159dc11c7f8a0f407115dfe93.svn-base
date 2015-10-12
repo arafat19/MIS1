@@ -1,0 +1,136 @@
+<g:render template="/accounting/report/accIouSlip/script"/>
+
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Search IOU Slip
+        </div>
+    </div>
+
+    <form id="searchForm" name="searchForm" class="form-horizontal form-widgets" role="form">
+        <input type="hidden" name="hideAccIouSlipId" id="hideAccIouSlipId"/>
+
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-md-2 control-label label-required" for="accIouSlipId">Trace No:</label>
+
+                <div class="col-md-3">
+                    <input type="text" class="k-textbox" id="accIouSlipId" name="accIouSlipId"
+                           placeholder="Trace No..." required validationMessage="Required" autofocus/>
+                </div>
+
+                <div class="col-md-3 pull-left">
+                    <span class="k-invalid-msg" data-for="accIouSlipId"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button id="showIouSlip" name="showIouSlip" type="submit" data-role="button"
+                    class="k-button k-button-icontext" role="button"
+                    aria-disabled="false"><span class="k-icon k-i-search"></span>Search
+            </button>
+            <app:ifAllUrl urls="/accReport/downloadAccIouSlipRpt">
+                <span class="download_icon_set">
+                    <ul>
+                        <li>Save as :</li>
+                        <li><a href="javascript:void(0)" id="printIouSlip" class="pdf_icon"></a></li>
+                    </ul>
+                </span>
+            </app:ifAllUrl>
+        </div>
+    </form>
+</div>
+
+<div id="divIouSlip" class="table-responsive" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="success">PROJECT</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Name</td>
+                        <td><span id='lblProjectName'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="success">IOU Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Trace No</td>
+                        <td><span id='lblAccIouSlipId'></span></td>
+                        <td class="active">Created On</td>
+                        <td><span id='lblCreatedOn'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Employee Name</td>
+                        <td><span id='lblEmployeeName'></span></td>
+                        <td class="active">Designation</td>
+                        <td><span id='lblDesignation'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Total Amount</td>
+                        <td><span id='lblTotalAmount'></span></td>
+                        <td class="active">Approved By</td>
+                        <td><span id='lblApprovedBy'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="success">Indent Details</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Indent Trace No</td>
+                        <td><span id='lblIndentTrace'></span></td>
+                        <td class="active">Indent Date</td>
+                        <td><span id='lblIndentDate'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr id="tagPurposeList">
+            <td class="success">Purpose List</td>
+        </tr>
+        <tr>
+            <td id="budgetDetailsWithItem">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="active">
+                        <th>Serial</th>
+                        <th>Purpose</th>
+                        <th class="align_right">Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tblItems">
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+

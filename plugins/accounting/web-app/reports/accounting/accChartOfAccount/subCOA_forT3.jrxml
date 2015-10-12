@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subCOA_forT3" language="groovy" pageWidth="450" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="450" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2b82345c-7692-4e2e-be81-dcf8da7972e6">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="tier3_id" class="java.lang.Integer"/>
+	<parameter name="accSourceNone" class="java.lang.Integer"/>
+	<parameter name="tier3_name" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT acc_source.id acc_source_id, acc_source.key acc_source_name,
+ coa.description AS description, coa.code
+FROM acc_chart_of_account coa
+LEFT JOIN system_entity acc_source ON acc_source.id=coa.acc_source_id
+WHERE coa.tier1 > 0
+AND coa.tier2 > 0
+AND coa.tier3 = $P{tier3_id}
+AND coa.tier4=0
+AND coa.tier5=0
+AND coa.is_active='true'
+AND coa.company_id=$P{companyId}]]>
+	</queryString>
+	<field name="acc_source_id" class="java.lang.Long"/>
+	<field name="acc_source_name" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="code" class="java.lang.String"/>
+	<group name="acc_source_forT3">
+		<groupExpression><![CDATA[$F{acc_source_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<printWhenExpression><![CDATA[($F{acc_source_id}==$P{accSourceNone}) ? Boolean.FALSE : Boolean.TRUE]]></printWhenExpression>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="fdfb009e-b19d-4c45-96ba-73b1a4999782" x="30" y="0" width="420" height="20"/>
+					<textElement>
+						<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{acc_source_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="20">
+			<printWhenExpression><![CDATA[($P{tier3_id}!=null && $P{tier3_id}>0)?  Boolean.TRUE : Boolean.FALSE]]></printWhenExpression>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1c2227bd-df32-4465-a4e7-fa21f114187b" x="0" y="0" width="450" height="20"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tier3_name}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="889fe99e-12ea-48c1-b8b8-07d5756adf19" stretchType="RelativeToBandHeight" x="30" y="0" width="370" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{acc_source_id}==$P{accSourceNone}) ? $F{description} : "   " + $F{description}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="23e179a1-070e-490b-bb47-cb4bac9657e4" stretchType="RelativeToBandHeight" x="400" y="0" width="50" height="14"/>
+				<box>
+					<bottomPen lineWidth="0.5" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

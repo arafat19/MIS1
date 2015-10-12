@@ -1,0 +1,4 @@
+<g:render template='/projectTrack/ptBug/scriptBugForSprint'/>
+<g:render template='/projectTrack/ptBug/createBugForSprint'/>
+
+<table id="flex1" style="display:none"></table>

@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Project Module* From Grid View | |
+*ActionService:* | SearchPtProjectModuleActionService | *Auditable:* | No
+*Url:* | /ptProjectModule/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Project* link.
+* [Show Landing Page of "System Project"|guide:ShowPtProjectActionService].
+* Select a Line-item from grid view.
+* Click *Module* button from tool bar.
+* [Show Landing Page of "Project Module"|guide:ShowPtProjectModuleActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Project Module* From Grid View.
+
+h4. Pre-condition:
+* User must have "List all Project Module" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Searching Option*
+Find | Text Box | Alpha Numeric | Module Name
+{table}
+
+
+h4. Process:
+* Get list of *Project Module* (default: 15 at Max) matching with search criteria.
+* Searching with zero length string will list all *Project Module*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Project Module* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [List "Project Module"|guide:ListPtProjectModuleActionService].

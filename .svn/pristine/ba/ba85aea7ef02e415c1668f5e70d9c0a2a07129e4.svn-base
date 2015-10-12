@@ -1,0 +1,28 @@
+package com.athena.mis.document.taglib
+
+import com.athena.mis.document.actions.taglib.GetDocMySubCategoriesTagLibActionService
+import com.athena.mis.utility.Tools
+
+class DocMySubCategoriesTagLib {
+    static namespace = "doc"
+
+    GetDocMySubCategoriesTagLibActionService getDocMySubCategoriesTagLibActionService
+    /**
+     * Render lisView of sub categories
+     * example: <doc:mySubCategories name="listView"></doc:mySubCategories>
+     * @attr name REQUIRED - name & id of html component
+     * @attr categoryId REQUIRED - categoryId of html component
+     */
+
+    def mySubCategories = { attrs, body ->
+        Map preResult = (Map) getDocMySubCategoriesTagLibActionService.executePreCondition(attrs, null)
+        Boolean isError = preResult.isError
+        if (isError.booleanValue()) {
+            out << Tools.EMPTY_SPACE
+            return
+        }
+        String output = getDocMySubCategoriesTagLibActionService.execute(preResult, null)
+        out << output
+    }
+
+}

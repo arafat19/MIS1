@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Delete *Acceptance Criteria* | |
+ *ActionService:* | DeletePtAcceptanceCriteriaActionService| *Auditable:* | No
+ *Url*: | /ptAcceptanceCriteria/delete ||
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Backlog* link.
+* [Show Landing Page of "Backlog"|guide:ShowPtBacklogActionService].
+* Select a line-item from grid view.
+* Click "Acceptance Criteria" button.
+* [Show Landing Page of "Acceptance Criteria"|guide:ShowPtAcceptanceCriteriaActionService].
+* Select a line-item from grid view.
+* Click "Delete" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Backlog*.
+
+h4. Pre-condition:
+* User must have "Delete an acceptance criteria" privilege.
+
+h4. Process:
+Delete  selected *Acceptance Criteria*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Acceptance Criteria* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

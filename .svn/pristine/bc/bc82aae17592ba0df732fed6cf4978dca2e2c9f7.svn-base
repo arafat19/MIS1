@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Project Fund Flow" Report in PDF Format | |
+*ActionService:* | DownloadForProjectFundFlowActionService | *Auditable:* | No
+*Url:* | /accReport/downloadProjectFundFlowReport | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 18th June 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Project Fund Flow" link.
+* [Show Landing Page of "Project Fund Flow" Report|guide:_ShowForProjectFundFlowActionService].
+* Enter valid input.
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Project Fund Flow" Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download project fund flow report" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ From Date | Calender | Alpha Numeric | Required (Default before 1 month date)
+ To Date | Calender | Alpha Numeric | Required (Default current date)
+ [Populate Project List|application] | Drop Down List | Numeric | All(Default)
+{table}
+
+* Given Date must be in between *Financial Year*.
+
+h4. Process:
+* To get "Project Fund Flow" Report in PDF Format "Click Here":projectFundFlow.pdf
+* Download the report as PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+

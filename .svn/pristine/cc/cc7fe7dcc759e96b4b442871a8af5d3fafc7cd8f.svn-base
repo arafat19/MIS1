@@ -1,0 +1,59 @@
+<plugin name='procurement' version='0.1' grailsVersion='2.2.0 &gt; *'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>\
+Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/procurement</documentation>
+  <type>ProcurementGrailsPlugin</type>
+  <resources>
+    <resource>ProcDefaultDataBootStrap</resource>
+    <resource>ProcSchemaUpdateBootStrap</resource>
+    <resource>ProcurementBootStrap</resource>
+    <resource>ProcurementPluginConfig</resource>
+    <resource>com.athena.mis.procurement.controller.ProcMdfController</resource>
+    <resource>com.athena.mis.procurement.controller.ProcMdfDetailsController</resource>
+    <resource>com.athena.mis.procurement.controller.ProcReportController</resource>
+    <resource>com.athena.mis.procurement.controller.ProcTermsAndConditionController</resource>
+    <resource>com.athena.mis.procurement.controller.ProcurementController</resource>
+    <resource>com.athena.mis.procurement.controller.PurchaseOrderController</resource>
+    <resource>com.athena.mis.procurement.controller.PurchaseOrderDetailsController</resource>
+    <resource>com.athena.mis.procurement.controller.PurchaseRequestController</resource>
+    <resource>com.athena.mis.procurement.controller.PurchaseRequestDetailsController</resource>
+    <resource>com.athena.mis.procurement.controller.TransportCostController</resource>
+    <resource>com.athena.mis.procurement.entity.ProcMdf</resource>
+    <resource>com.athena.mis.procurement.entity.ProcMdfDetails</resource>
+    <resource>com.athena.mis.procurement.entity.ProcTermsAndCondition</resource>
+    <resource>com.athena.mis.procurement.entity.PurchaseOrder</resource>
+    <resource>com.athena.mis.procurement.entity.PurchaseOrderDetails</resource>
+    <resource>com.athena.mis.procurement.entity.PurchaseRequest</resource>
+    <resource>com.athena.mis.procurement.entity.PurchaseRequestDetails</resource>
+    <resource>com.athena.mis.procurement.entity.TransportCost</resource>
+    <resource>com.athena.mis.procurement.integration.ProcPluginConnectorService</resource>
+    <resource>com.athena.mis.procurement.service.ProcMdfDetailsService</resource>
+    <resource>com.athena.mis.procurement.service.ProcMdfService</resource>
+    <resource>com.athena.mis.procurement.service.ProcReportService</resource>
+    <resource>com.athena.mis.procurement.service.ProcTermsAndConditionService</resource>
+    <resource>com.athena.mis.procurement.service.ProcurementIndexGeneratorService</resource>
+    <resource>com.athena.mis.procurement.service.PurchaseOrderDetailsService</resource>
+    <resource>com.athena.mis.procurement.service.PurchaseOrderService</resource>
+    <resource>com.athena.mis.procurement.service.PurchaseRequestDetailsService</resource>
+    <resource>com.athena.mis.procurement.service.PurchaseRequestService</resource>
+    <resource>com.athena.mis.procurement.service.TransportCostService</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://download.java.net/maven/2/' url='http://download.java.net/maven/2/' />
+    <repository name='https://repository.jboss.org/nexus/' url='https://repository.jboss.org/nexus/' />
+  </repositories>
+  <dependencies />
+  <plugins>
+    <build>
+      <plugin group='org.grails.plugins' name='tomcat' version='2.2.0' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.0' />
+    </build>
+  </plugins>
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

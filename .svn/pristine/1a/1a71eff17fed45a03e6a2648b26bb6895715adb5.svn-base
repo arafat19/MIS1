@@ -1,0 +1,67 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate "Task List Plan" Report in HTML Format | |
+*ActionService:* | SearchTaskListPlanActionService | *Auditable:* | No
+*Url:* | /rmsReport/searchTaskListPlan | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Task List Plan" link.
+* [Show Landing Page of "Task List Plan" Report|guide:showTaskListPlan].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Task List Plan" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "Search Task List Plan" privilege.
+
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+[Exchange House|guide:PopulateExchangeHouseList] |  Drop Down list | Numeric | Required
+[Task List|guide:GetRmsTaskListDropDownTagLibActionService] |  Drop Down list | Numeric | Required
+{table}
+
+
+h4. Process:
+* Show list of "Task List Plan" information.
+* Following parts should show in grid view:
+** Purchase
+** Branch
+** Principle Branch
+** SME Unit
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Task List Plan" information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+

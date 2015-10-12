@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Consumption Deviation" Report in CSV Format | |
+*ActionService:* | DownloadForConsumptionDeviationCsvActionService | *Auditable:* | No
+*Url:* | /budgReport/downloadConsumptionDeviationCsv | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks  [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Consumption Deviation" link.
+* [Show Landing Page of "Consumption Deviation" Report|guide:showConsumptionDeviation].
+* Enter valid input.
+* Click "CSV" icon.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Consumption Deviation" Report in CSV Format.
+
+h4. Pre-condition:
+* User must have "Download Consumption Deviation Csv Report" privilege.
+
+* Rules of Download:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules*
+ [Populate Project List|application]| Drop-Down List | Alpha Numeric | Required
+ {table}
+
+h4. Process:
+* Get the report as CSV format.
+
+h4. Post-condition:
+
+* *Success:*
+** CSV Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

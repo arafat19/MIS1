@@ -1,0 +1,46 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Widget of "Procurement Option" | |
+ *Action:* | N/A | *Auditable:* | No
+ *Url:* | /renderProcurementMenu | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th December 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Click "Procurement" option bar from top side of the landing page.
+* Widget of "Procurement Option".
+
+h4. Pre-condition:
+* *Purchase Order*, *Purchase Request*, *Indent* must be un-approve.
+
+h4. Process:
+* [Show List of Un-Approved *Purchase Order* Widget tab of Procurement Option|guide:ListUnApprovedPurchaseOrderActionService].
+* [Show List of Un-Approved *Purchase Request* Widget tab of Procurement Option|guide:ListUnApprovedPurchaseRequestActionService].
+* [Show List of Un-Approved *Indent* Widget tab of Procurement Option|guide:ListUnApprovedIndentActionService].
+* ["Purchase Order Status" Widget tab of Procurement Option|guide:GetPOStatusForDashBoardActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show list of all Un-approve *Purchase Order*, *Purchase Request*, *Indent*.
+** Show "Purchase Order Status" of all projects.
+** Show Un-approve *Purchase Order* in first tab (by default).
+
+
+* *Failure:*
+** Show error message for details visit.[Error Handler|common Usecases].
+
+
+

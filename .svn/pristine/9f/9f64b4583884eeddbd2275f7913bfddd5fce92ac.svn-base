@@ -1,0 +1,45 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open *Purchase Order* in Edit Mode | |
+ *ActionService:* | SelectPurchaseOrderActionService| *Auditable:* | No
+ *Url*: | /procPurchaseOrder/select ||
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show landing page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* Open *Purchase Order* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Purchase Order" privilege.
+
+h4. Process:
+Get selected *Purchase Order* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Purchase Order* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Update "Purchase Order"|guide:UpdatePurchaseOrderActionService].

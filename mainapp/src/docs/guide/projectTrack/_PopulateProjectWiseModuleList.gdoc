@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *Project* Wise "Module" List in drop-down | |
+*Action:* | ShowOpenBacklogReportActionService | *Auditable:* | No
+*Url:* | /ptReport/showReportOpenBacklog | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Select a Line-Item from grid view.
+* Click "Task" button from tool bar.
+* [Show Landing Page of "Sprint's Backlog"|guide:ShowBackLogForSprintActionService].
+* Select a *Project* from drop-down list.
+* Populate *Project* wise "Module" List in drop-down.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get list of "Module" from server as per selection of *Project*.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Module" List in Drop-Down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+* [Create "Sprint's Backlog"|guide:CreateBackLogForSprintActionService].
+* [Generate "Open Backlog" Report in HTML Format|guide:ListOpenBacklogReportActionService].

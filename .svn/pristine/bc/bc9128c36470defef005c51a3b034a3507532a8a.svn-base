@@ -1,0 +1,44 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open *Module* in Edit Mode | |
+*ActionService:* | SelectPtModuleActionService | *Auditable:* | No
+*Url:* | /ptModule/select | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Module* link.
+* [Show Landing Page of "Module"|guide:ShowPtModuleActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open *Module* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select a Module" privilege.
+
+h4. Process:
+* Get *Module* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Module* information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

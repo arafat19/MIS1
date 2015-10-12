@@ -1,0 +1,45 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *Cashier* List in drop-down | |
+*ActionService:* | ExhCashierDropDownTagLib |*Auditable:* | No |
+*Url:* | /exhReport/showCashierWiseReportForAdmin | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier,Administrator.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Cashier Wise Task report" link.
+* [Show Landing Page of "Cashier Wise Task" Report|guide:ExhShowCashierWiseReportAdminActionService].
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get all *Cashier* list from server. 
+
+h4. Post-condition:
+
+* *Success:*
+** Populate list of *Cashier* at drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Landing Page of "Cashier Wise Task" Report|guide:ExhShowCashierWiseReportCashierActionService]
+* [Generate "Cashier Wise Task" Report in HTML Format|guide:ExhListCashierWiseReportAdminActionService].
+

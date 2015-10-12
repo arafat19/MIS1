@@ -1,0 +1,102 @@
+<script type="text/javascript">
+    var dropDownProject;
+
+    jQuery(function ($) {
+        $('#showProjectStatus').click(function () {
+            getProjectStatus();
+            return false;
+        });
+
+        $('#printProjectStatus').click(function () {
+            printProjectStatus();
+            return false;
+        });
+        onLoadProjectStatus();
+    });
+
+    function printProjectStatus() {
+        var projectId = $('#hideProjectId').val();
+        if (projectId.length <= 0) {
+            showError('First populate project status click print');
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?projectId=" + projectId;
+        if (confirm('Do you want to download the project status now?')) {
+            var url = "${createLink(controller:'budgReport', action: 'downloadProjectStatus')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function onLoadProjectStatus() {
+        initializeForm($("#searchForm"), getProjectStatus);
+
+        $('.download_icon_set').hide();
+        // update page title
+        $(document).attr('title', "MIS - Project Status");
+        loadNumberedMenu(MENU_ID_BUDGET, "#budgReport/showProjectStatus");
+    }
+
+    function getProjectStatus() {
+        if (!validateForm($("#searchForm"))) {
+            clearHtmlTable();
+            return false;
+        }
+        var projectId = parseInt(dropDownProject.value());
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller:'budgReport', action: 'searchProjectStatus')}?projectId=" + projectId,
+            success: executePostConditionForProjectStatus,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForProjectStatus(data) {
+        if (data.isError) {
+            showError(data.message);
+            $('#divProjectStatus').hide();
+            $('.download_icon_set').hide();
+            return;
+        }
+        populateProjectStatus(data.projectStatusMap);
+        return false;
+    }
+
+    function clearHtmlTable() {
+        $('.download_icon_set').hide();
+        $('#divProjectStatus').hide();
+    }
+
+    function clearProjectStatus() {
+        $('#hideProjectId').val('');
+        $('#lblProjectName').text('');
+        $('#lblProjectCode').text('');
+        $('#lblProjectCompleted').text('');
+        $('#lblInvTotalApprovedConsumption').text('');
+        $('#lblInvTotalMaterial').text('');
+        $('#lblQsTotalReceivableInternal').text('');
+        $('#lblInvTotalFixedAsset').text('');
+        $('#lblQsTotalReceivableApprovedByGov').text('');
+    }
+
+    function populateProjectStatus(result) {
+        clearProjectStatus();
+        $('.download_icon_set').show();
+        $('#divProjectStatus').show();
+        $('#hideProjectId').val(result.projectId);
+        $('#lblProjectName').text(result.projectName);
+        $('#lblProjectCode').text(result.projectCode);
+        $('#lblProjectCompleted').text(result.projectCompleted);
+        $('#lblInvTotalApprovedConsumption').text(result.invTotalApprovedConsumption);
+        $('#lblInvTotalMaterial').text(result.invTotalMaterial);
+        $('#lblQsTotalReceivableInternal').text(result.qsTotalReceivableInternal);
+        $('#lblInvTotalFixedAsset').text(result.invTotalFixedAsset);
+        $('#lblQsTotalReceivableApprovedByGov').text(result.qsTotalReceivableApprovedByGov);
+    }
+
+</script>

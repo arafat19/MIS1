@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Beneficiary Name Verification | |
+*ActionServices:* | ExhGetSanctionCountActionService | *Auditable:* | No
+*Url:* | /exhSanction/sanctionCountFromBeneficiary | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+"Sanction List" in banking system is very important to security purpose. At *Beneficiary* Create time system checked with the Sanction list, if it get any matched then it will show total matched count number.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Insert valid input in "Name" field.
+* If name matched with Sanction List then show number of matching in a link.
+* Beneficiary Name Verification.
+
+h4. Pre-condition:
+* User must have "Count sanction from beneficiary" privilege.
+* "mis.exchangehouse.verifyBeneficiarySanction" Key must contain value 1.
+* User must enter "Beneficiary Name" to verify with "Sanction List".
+
+
+h4. Process:
+* Get Sanction list from server if *Beneficiary* First Name and Middle Name matched.
+* Get Sanction list from server if *Beneficiary* Middle Name and Last Name matched.
+* Get Sanction list from server if *Beneficiary* Last Name and First Name matched.
+
+h4. Post-condition:
+
+* *Success:*
+** Show total number of matching sanction list.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Beneficiary"|guide:ExhCreateBeneficiaryActionService].
+* [Update "Beneficiary"|guide:ExhUpdateBeneficiaryActionService].

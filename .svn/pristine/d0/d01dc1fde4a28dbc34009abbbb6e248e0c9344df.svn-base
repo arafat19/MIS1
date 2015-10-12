@@ -1,0 +1,62 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Group list of "Inventory In" From Another Inventory in landing page | |
+ *ActionService:* | ListForInventoryInFromInventoryActionService |*Auditable:* | No
+ *Url:* | /invInventorytransaction/listInventoryInFrmInventory | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Inventory" link.
+* Show Group list of "Inventory In" From Another Inventory in [landing page|guide:ShowForInventoryInFromInventoryActionService].
+
+h4. Pre-condition:
+* User must have "List Inventory-In From Inventory" privilege.
+
+h4. Process:
+* Get list of "Inventory In" From another Inventory Group from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Transaction ID
+** Transfer Date
+** Receive Date
+** To Inventory
+** From Inventory
+** Item Count
+** Approved
+** Created By
+** Updated By
+** Transfer ID
+
+h4. Post-condition:
+
+* *Success:*
+** "Inventory In" From another Inventory Group will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search Group of "Inventory In" From another Inventory From Grid View|guide:SearchForInventoryInFromInventoryActionService].
+
+!Inv/Inventory_In_From_Inventory_Out_List.png!

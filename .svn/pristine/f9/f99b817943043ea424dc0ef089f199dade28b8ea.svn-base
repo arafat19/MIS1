@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show *Item* of *Purchase Request* Landing Page | |
+ *ActionService:* | ShowPurchaseRequestDetailsActionService  | *Auditable:* | No
+ *Url*: | /procPurchaseRequestDetails/show | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager.
+
+h4. Description:
+This is landing page of "Purchase Request Details" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show landing page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Select a Line-Item from grid view.
+* Click "Items" button.
+* Show *Item* of *Purchase Request* Landing Page.
+
+h4. Pre-condition:
+* User must have "Show Purchase Request Details of Material" privilege.
+
+h4. Process:
+* [Get List Item of "Purchase Request" from server|guide:ListPurchaseRequestDetailsActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create Item of "Purchase Request"|guide:CreatePurchaseRequestDetailsActionService].
+** Show list of all Item of "Purchase Request" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [populate Item list to Create Item in "Purchase Request"|guide:getItemListForPRDetailsActionService].
+* [Open "Item" of "Purchase Request" in Edit Mode|guide:SelectPurchaseRequestDetailsActionService].
+* [Delete "Item" of "Purchase Request"|guide:DeletePurchaseRequestDetailsActionService].
+
+!procurement/PR_Items_Show.png!

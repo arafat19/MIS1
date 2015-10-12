@@ -1,0 +1,193 @@
+package com.athena.mis.application.utility
+
+import com.athena.mis.application.entity.*
+import com.athena.mis.application.service.AppUserEntityService
+import com.athena.mis.application.service.ApplicationSessionService
+import com.athena.mis.application.service.UserRoleService
+import com.athena.mis.integration.arms.ArmsPluginConnector
+import com.athena.mis.integration.exchangehouse.ExchangeHousePluginConnector
+import com.athena.mis.integration.inventory.InventoryPluginConnector
+import com.athena.mis.utility.Tools
+import net.sf.uadetector.ReadableUserAgent
+import net.sf.uadetector.UserAgentStringParser
+import net.sf.uadetector.service.UADetectorServiceFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.annotation.Scope
+import org.springframework.context.annotation.ScopedProxyMode
+import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
+
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpSession
+
+@Component("appSessionUtil")
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS, value = "session")
+class AppSessionUtil implements Serializable {
+
+    @Autowired
+    UserRoleService userRoleService
+    @Autowired
+    AppUserEntityService appUserEntityService
+    @Autowired
+    ApplicationSessionService applicationSessionService
+    @Autowired
+    UserProjectCacheUtility userProjectCacheUtility
+    @Autowired
+    UserGroupCacheUtility userGroupCacheUtility
+    @Autowired
+    AppUserEntityTypeCacheUtility appUserEntityTypeCacheUtility
+    @Autowired
+    BankBranchCacheUtility bankBranchCacheUtility
+    @Autowired(required = false)
+    InventoryPluginConnector inventoryImplService
+    @Autowired
+    UserBankBranchCacheUtility userBankBranchCacheUtility
+    @Autowired(required = false)
+    ArmsPluginConnector armsImplService
+    @Autowired(required = false)
+    ExchangeHousePluginConnector exchangeHouseImplService
+
+    private AppUser appUser = null
+
+    private List<Long> lstRoleIds = null        // List of role ids that is mapped with loggedIn user
+    private List<Long> lstProjectIds = null     // List of project ids that is mapped with loggedIn user
+    private List<Long> lstGroupIds = null       // List of group ids that is mapped with loggedIn user
+
+    private List<Role> lstRoles = null          // List of roles that is mapped with loggedIn user
+    private List<Project> lstProjects = null    // List of projects that is mapped with loggedIn user
+    private List<AppGroup> lstGroups = null     // List of groups that is mapped with loggedIn user
+
+    private List<BankBranch> lstBankBranches = []       // List of BankBranches that is mapped with loggedIn user
+    private List<Long> lstBankBranchIds = []            // List of BankBranch Ids that is mapped with loggedIn user
+    private BankBranch userBankBranch = null            // Object of BankBranch that is mapped with loggedIn user
+    private Long userBankBranchId = null                // id of BankBranch that is mapped with loggedIn user
+
+    private Map customSessionObj = null                          // Holds all necessary user-agent objects & httpSession
+
+    private static final String SESSION = "session"
+    private static final String APP_USER = "appUser"
+
+    // Initialize the values
+    @Transactional(readOnly = true)
+    public void init(AppUser user, HttpServletRequest request, HttpSession session) {
+        appUser = user
+
+        lstRoles = userRoleService.getRolesByUser(user.id)
+        lstRoleIds = Tools.getIds(lstRoles)
+
+        lstProjects = userProjectCacheUtility.listUserProjects(user.id)
+        lstProjectIds = Tools.getIds(lstProjects)
+
+        lstGroups = userGroupCacheUtility.listUserGroups(user.id)
+        lstGroupIds = Tools.getIds(lstGroups)
+
+        lstBankBranches = userBankBranchCacheUtility.listUserBankBranches(user.id)
+        lstBankBranchIds = Tools.getIds(lstBankBranches)
+
+        if (inventoryImplService) inventoryImplService.initSession()
+        if (armsImplService) armsImplService.initSession()
+        if (exchangeHouseImplService) exchangeHouseImplService.initSession()
+        populateRequestObjects(request)
+        customSessionObj.put(SESSION, session)
+        customSessionObj.put(APP_USER, appUser)
+        applicationSessionService.add(customSessionObj)       // add session Map in application scoped service
+    }
+
+    private static final String USER_AGENT = "user-agent"
+
+    private void populateRequestObjects(HttpServletRequest request) {
+        String strUserAgent = request.getHeader(USER_AGENT)
+        UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
+        ReadableUserAgent agent = parser.parse(strUserAgent);
+        String clientBrowser = agent.name + Tools.PARENTHESIS_START + agent.versionNumber.major + Tools.SINGLE_DOT + agent.versionNumber.minor + Tools.PARENTHESIS_END
+        String clientIP = request.getRemoteAddr()
+        String clientOS = agent.operatingSystem.name
+        customSessionObj = [clientBrowser: clientBrowser, clientIP: clientIP, clientOS: clientOS]
+    }
+
+    // get list of role ids mapped with user
+    public List<Long> getUserRoleIds() {
+        return lstRoleIds
+    }
+
+    // get list of roles mapped with user
+    public List<Role> getUserRoles() {
+        return lstRoles
+    }
+
+    // get app user
+    public AppUser getAppUser() {
+        return appUser
+    }
+
+    // get company id
+    public long getCompanyId() {
+        return appUser?.companyId
+    }
+
+    // check user role
+    public boolean hasRole(long roleTypeId) {
+        for (int i = 0; i < lstRoles.size(); i++) {
+            Role role = (Role) lstRoles[i]
+            if (role.roleTypeId == roleTypeId) {
+                return true
+            }
+        }
+        return false
+    }
+
+    // get list of project ids mapped with user
+    public List<Long> getUserProjectIds() {
+        return lstProjectIds
+    }
+
+    // get list of projects mapped with user
+    public List<Project> getUserProjects() {
+        return lstProjects
+    }
+
+    // get list of group ids mapped with user
+    public List<Long> getUserGroupIds() {
+        return lstGroupIds
+    }
+
+    // get list of groups mapped with user
+    public List<AppGroup> getUserGroups() {
+        return lstGroups
+    }
+
+    //get list of bankBranches mapped with user
+    public List<BankBranch> getUserBankBranches() {
+        return lstBankBranches
+    }
+
+    // get list of bank branch ids mapped with user
+    public List<Long> getUserBankBranchIds() {
+        return lstBankBranchIds
+    }
+
+    // get object of bank branch mapped with user
+    public BankBranch getUserBankBranch() {
+        if (userBankBranch) return userBankBranch
+        userBankBranch = null
+        if (lstBankBranches.size() > 0) {
+            userBankBranch = lstBankBranches[0]
+        }
+        return userBankBranch
+    }
+
+    // Retrieve the bankBranch ID which is associated with user
+    public long getUserBankBranchId() {
+        if (userBankBranchId) return userBankBranchId.longValue()
+        userBankBranchId = new Long(0L)
+        if (lstBankBranches.size() > 0) {
+            userBankBranchId = lstBankBranchIds[0]
+        }
+        return userBankBranchId.longValue()
+    }
+
+    // public getter method of customSessionObj
+    public Map getCustomSessionObj() {
+        return customSessionObj
+    }
+}

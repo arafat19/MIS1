@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show "Bug Details" From "Bug Details Report" | |
+*ActionService:* | ShowPtBugDetailsActionService | *Auditable:* | No
+*Url:* | /ptBug/showBugDetails | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Bug" link.
+* [Show Landing Page of "Bug Details" Report|guide:ShowPtBugDetailsReportActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Select a *Bug* from "Bug Details List" Report.
+* Show "Bug Details" From "Bug Details Report".
+
+h4. Pre-condition: 
+* User must have "Show bug details" privilege.
+
+h4. Process:
+* Show "Bug Details" of the selected "Bug" with the following information:
+** Project
+** Sprint
+** Created On
+** Status
+** Use Case ID
+** Task
+** Title
+** Step To Reproduce
+** Note
+** Module
+** Type
+** Created By
+** Severity
+** Updated By
+
+h4. Post-condition:
+
+* *Success:*
+** Show the "Voucher Details List" in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!projecttrack/Show-Bug-Details.png!

@@ -1,0 +1,698 @@
+package com.athena.mis.projecttrack.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.projecttrack.entity.PtBacklog
+import com.athena.mis.projecttrack.utility.PtBacklogStatusCacheUtility
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * PtBacklogService is used to handle only CRUD related object manipulation (e.g. list, read,search, create, delete etc.)
+ */
+class PtBacklogService extends BaseService {
+
+    @Autowired
+    PtSessionUtil ptSessionUtil
+    @Autowired
+    PtBacklogStatusCacheUtility backlogStatusCacheUtility
+
+    /**
+     * Get count of PtBacklog by moduleId
+     * @param moduleId
+     * @return -int count
+     */
+    public int countByModuleId(long moduleId) {
+        int count = PtBacklog.countByModuleId(moduleId)
+        return count
+    }
+
+    /**
+     * return all list of ptBacklog object  by company id
+     */
+    public List list(long companyId) {
+        List lstPtBacklog = PtBacklog.findAllByCompanyId(companyId, [reaOnly: true])
+        return lstPtBacklog
+    }
+    /**
+     * read single ptBacklog object and return the object
+     * @param id - PtBacklog id
+     * @return PtBacklog object
+     */
+    public PtBacklog read(long id) {
+        PtBacklog ptBacklog = PtBacklog.read(id)
+        return ptBacklog
+    }
+
+    /**
+     * @param backlog -backlog object
+     * @return -return 0 if backlog status doesn't matched with given status.
+     */
+    public int checkStatus(PtBacklog backlog) {
+        int count = 0
+        SystemEntity statusInProgress = (SystemEntity) backlogStatusCacheUtility.readByReservedAndCompany(backlogStatusCacheUtility.IN_PROGRESS_RESERVED_ID, backlog.companyId)
+        SystemEntity statusAccepted = (SystemEntity) backlogStatusCacheUtility.readByReservedAndCompany(backlogStatusCacheUtility.ACCEPTED_RESERVED_ID, backlog.companyId)
+        SystemEntity statusCompleted = (SystemEntity) backlogStatusCacheUtility.readByReservedAndCompany(backlogStatusCacheUtility.COMPLETED_RESERVED_ID, backlog.companyId)
+
+        if (backlog.statusId == statusInProgress.id || backlog.statusId == statusCompleted.id
+                || backlog.statusId == statusAccepted.id) {
+            count++
+        }
+        return count
+    }
+
+    /**
+     * Get count of backlog object by sprintId and companyId
+     * @param sprintId -id of sprint object
+     * @param companyId -id of company
+     * @return -an integer containing the value of count
+     */
+    public int countBySprintIdAndCompanyId(long sprintId, long companyId) {
+        int count = PtBacklog.countBySprintIdAndCompanyId(sprintId, companyId)
+        return count
+    }
+
+    private static final String INSERT_QUERY = """
+        INSERT INTO pt_backlog(id, version, idea, actor, purpose, benefit, priority_id, status_id, hours, owner_id,
+            module_id, sprint_id, company_id, created_by, created_on, updated_by, updated_on, accepted_by,
+            accepted_on, use_case_id, url)
+        VALUES (NEXTVAL('pt_backlog_id_seq'), :version, :idea, :actor, :purpose, :benefit, :priorityId, :statusId,
+            :hours, :ownerId, :moduleId, :sprintId, :companyId, :createdBy, :createdOn, :updatedBy, :updatedOn,
+            :acceptedBy, :acceptedOn, :useCaseId, :url);
+	"""
+
+    /**
+     * Save PtBacklog object into DB
+     * @param ptBacklog - PtBacklog object
+     * @return - saved ptBacklog object
+     */
+    public PtBacklog create(PtBacklog ptBacklog) {
+        Map queryParams = [
+                version: ptBacklog.version,
+                companyId: ptBacklog.companyId,
+                idea: ptBacklog.idea,
+                actor: ptBacklog.actor,
+                purpose: ptBacklog.purpose,
+                benefit: ptBacklog.benefit,
+                priorityId: ptBacklog.priorityId,
+                statusId: ptBacklog.statusId,
+                hours: ptBacklog.hours,
+                ownerId: ptBacklog.ownerId,
+                moduleId: ptBacklog.moduleId,
+                sprintId: ptBacklog.sprintId,
+                createdBy: ptBacklog.createdBy,
+                createdOn: DateUtility.getSqlDateWithSeconds(ptBacklog.createdOn),
+                updatedBy: ptBacklog.updatedBy,
+                acceptedBy: ptBacklog.acceptedBy,
+                updatedOn: ptBacklog.updatedOn,
+                acceptedOn: ptBacklog.acceptedOn,
+                useCaseId: ptBacklog.useCaseId,
+                url: ptBacklog.url
+        ]
+
+        List result = executeInsertSql(INSERT_QUERY, queryParams)
+
+        if (result.size() <= 0) {
+            throw new RuntimeException('Error occurred while insert backlog information')
+        }
+
+        int ptBacklogId = (int) result[0][0]
+        ptBacklog.id = ptBacklogId
+        return ptBacklog
+    }
+
+    private static final String UPDATE_QUERY =
+            """
+			UPDATE pt_backlog SET
+				  version=:newVersion,
+				  idea=:idea,
+				  actor=:actor,
+				  purpose=:purpose,
+				  benefit=:benefit,
+				  priority_id=:priorityId,
+				  status_id=:statusId,
+				  module_id=:moduleId,
+				  updated_on=:updatedOn,
+				  updated_by=:updatedBy,
+				  use_case_id=:useCaseId,
+				  url=:url
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+
+    /**
+     * update ptBacklog object in DB
+     * @param ptBacklog - PtBacklog Object
+     * @return - int containing no of update count
+     */
+    public int update(PtBacklog ptBacklog) {
+
+        Map queryParams = [
+                id: ptBacklog.id,
+                newVersion: ptBacklog.version + 1,
+                version: ptBacklog.version,
+                idea: ptBacklog.idea,
+                actor: ptBacklog.actor,
+                purpose: ptBacklog.purpose,
+                benefit: ptBacklog.benefit,
+                statusId: ptBacklog.statusId,
+                priorityId: ptBacklog.priorityId,
+                moduleId: ptBacklog.moduleId,
+                updatedBy: ptBacklog.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.updatedOn),
+                useCaseId: ptBacklog.useCaseId,
+                url: ptBacklog.url
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        ptBacklog.version = ptBacklog.version + 1
+        return updateCount
+    }
+
+    //Update ptBackLog for Sprint
+    private static final String UPDATE_QUERY_BACKLOG_FOR_SPRINT =
+            """
+			UPDATE pt_backlog SET
+				  version=:newVersion,
+				  sprint_id=:sprintId,
+				  updated_on=:updatedOn,
+				  updated_by=:updatedBy
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+
+    public int updateBackLogForSprint(PtBacklog ptBacklog) {
+
+        Map queryParams = [
+                id: ptBacklog.id,
+                newVersion: ptBacklog.version + 1,
+                version: ptBacklog.version,
+                sprintId: ptBacklog.sprintId,
+                updatedBy: ptBacklog.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.updatedOn)
+        ]
+
+        int updateCount = executeUpdateSql(UPDATE_QUERY_BACKLOG_FOR_SPRINT, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        ptBacklog.version = ptBacklog.version + 1
+        return updateCount;
+    }
+
+
+    private static final String DELETE_QUERY =
+            """
+			DELETE FROM pt_backlog
+			   WHERE
+				  id=:id
+    """
+
+    /**
+     * Delete ptBacklog object from DB
+     * @param id -id of ptBacklog object
+     * @return -an integer containing the value of delete count
+     */
+    public int delete(long id) {
+
+        Map queryParams = [
+                id: id
+        ]
+
+        int deleteCount = executeUpdateSql(DELETE_QUERY, queryParams)
+
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Error occurred while delete backlog information')
+        }
+        return deleteCount;
+    }
+    // delete backlog for sprint
+    private static final String DELETE_QUERY_BACKLOG_FOR_SPRINT =
+            """
+			UPDATE pt_backlog SET
+				  version=:newVersion,
+				  sprint_id=0,
+				  updated_on=:updatedOn,
+				  updated_by=:updatedBy
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+
+    public int deleteBackLogForSprint(PtBacklog ptBacklog) {
+
+        Map queryParams = [
+                id: ptBacklog.id,
+                newVersion: ptBacklog.version + 1,
+                version: ptBacklog.version,
+                updatedBy: ptBacklog.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.updatedOn)
+        ]
+
+        int updateCount = executeUpdateSql(DELETE_QUERY_BACKLOG_FOR_SPRINT, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while delete backlog for sprint')
+        }
+        ptBacklog.version = ptBacklog.version + 1
+        return updateCount;
+    }
+
+    /**
+     * return List of PtBacklog by company id based on baseService pagination criteria
+     * @param baseService - BaseService object
+     * @param companyId - Company.id
+     * @return - list of PtBacklog
+     */
+    public List<PtBacklog> findAllByCompanyId(BaseService baseService, long companyId) {
+        List<PtBacklog> lstBacklog = PtBacklog.findAllByCompanyId(companyId, [max: baseService.resultPerPage, offset: baseService.start, sort: baseService.sortColumn, order: baseService.sortOrder, readOnly: true])
+        return lstBacklog
+    }
+    /**
+     * count PtBacklog by companyId
+     * @param companyId
+     * @return - int count
+     */
+    public int countByCompanyId(long companyId) {
+        int count = PtBacklog.countByCompanyId(companyId)
+        return count
+    }
+
+    /**
+     * Search Sub list of ptBacklog objects based on baseService pagination & search criteria
+     * @param baseService - BaseService object
+     * @return a map containing [lstPtBacklog - List of PtBacklog objects , count: Integer count of PtBacklog objects]
+     */
+    public Map search(BaseService baseService, long sprintId) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List<PtBacklog> lstBacklog = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            eq('sprintId', sprintId)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        }
+        List counts = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('sprintId', sprintId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            projections { rowCount() }
+        }
+        int total = counts[0]
+        return [lstBacklog: lstBacklog, count: total.toInteger()]
+    }
+
+    //search sub list of backlog for sprint
+    public Map searchBackLogForSprint(BaseService baseService, long sprintId) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List<PtBacklog> lstPtBacklog = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            eq('sprintId', sprintId)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        }
+        List counts = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('sprintId', sprintId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            projections { rowCount() }
+        }
+        int total = counts[0]
+        return [lstPtBacklog: lstPtBacklog, count: total.toInteger()]
+    }
+
+
+    public Map listMyPtBacklog(BaseService baseService) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        long appUserId = ptSessionUtil.appSessionUtil.getAppUser().id
+        List<PtBacklog> lstBacklog = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('ownerId', appUserId)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        }
+        List counts = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('ownerId', appUserId)
+            projections { rowCount() }
+        }
+        int total = counts[0]
+        return [lstBacklog: lstBacklog, count: total.toInteger()]
+
+    }
+
+    public Map searchMyPtBacklog(BaseService baseService) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        long appUserId = ptSessionUtil.appSessionUtil.getAppUser().id
+        List<PtBacklog> lstBacklog = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('ownerId', appUserId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        }
+        List counts = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('ownerId', appUserId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            projections { rowCount() }
+        }
+        int total = counts[0]
+        return [lstBacklog: lstBacklog, count: total.toInteger()]
+
+    }
+
+
+    private static final String MY_BACKLOG_UPDATE_QUERY =
+            """
+			UPDATE pt_backlog SET
+				  version=:newVersion,
+				  hours=:hours,
+				  status_id=:statusId,
+                  owner_id =:ownerId,
+                  use_case_id =:useCaseId,
+				  updated_on=:updatedOn,
+				  completed_on=:completedOn,
+				  updated_by=:updatedBy,
+				  accepted_by=:acceptedBy,
+				  url=:url
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+
+    /**
+     * update ptBacklog object in DB
+     * @param ptBacklog - PtBacklog Object
+     * @return - int containing no of update count
+     */
+    public int updateMyBacklog(PtBacklog ptBacklog) {
+
+        Map queryParams = [
+                id: ptBacklog.id,
+                newVersion: ptBacklog.version + 1,
+                version: ptBacklog.version,
+                hours: ptBacklog.hours,
+                statusId: ptBacklog.statusId,
+                ownerId: ptBacklog.ownerId,
+                useCaseId: ptBacklog.useCaseId,
+                updatedBy: ptBacklog.updatedBy,
+                acceptedBy: ptBacklog.acceptedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.updatedOn),
+                completedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.completedOn),
+                url: ptBacklog.url
+        ]
+
+        int updateCount = executeUpdateSql(MY_BACKLOG_UPDATE_QUERY, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        ptBacklog.version = ptBacklog.version + 1
+        return updateCount
+    }
+
+
+
+    /**
+     * update ptBacklog object ownerId in DB
+     * @param backlogIds - list of backlog ids
+     * @return - int containing no. of update count
+     */
+    public int addToMyBacklog(List<Long> backlogIds) {
+        String strIds = Tools.buildCommaSeparatedStringOfIds(backlogIds)
+        String owner_update_query = """
+			UPDATE pt_backlog SET
+				  owner_id=:ownerId
+			WHERE id IN (${strIds})
+
+	    """
+
+        Map queryParams = [
+                ownerId: ptSessionUtil.appSessionUtil.appUser.id
+        ]
+
+        int updateCount = executeUpdateSql(owner_update_query, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        return updateCount
+    }
+
+    private static final String STATUS_UPDATE_QUERY =
+            """
+			UPDATE pt_backlog
+			SET
+			      version = :newVersion,
+				  status_id = :statusId,
+				  accepted_on = :acceptedOn,
+				  updated_on = :updatedOn,
+                  accepted_by = :acceptedBy,
+                  updated_by = :updatedBy
+			WHERE
+				  id = :id AND
+				  version = :version
+
+			"""
+    /**
+     * update ptBacklog object status in DB
+     * @param ptBacklog - PtBacklog Object
+     * @return - int containing no. of update count
+     */
+    // only to Accept Backlog
+    public int updateBacklogStatus(PtBacklog ptBacklog) {
+        Map queryParams = [
+                id: ptBacklog.id,
+                version: ptBacklog.version,
+                newVersion: ptBacklog.version + 1,
+                statusId: ptBacklog.statusId,
+                updatedBy: ptBacklog.updatedBy,
+                acceptedBy: ptBacklog.acceptedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.updatedOn),
+                acceptedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.acceptedOn)
+        ]
+
+        int updateCount = executeUpdateSql(STATUS_UPDATE_QUERY, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        return updateCount
+    }
+
+    private static final String STATUS_UPDATE_DEFINED_QUERY =
+            """
+			UPDATE pt_backlog
+			SET
+			      version = :newVersion,
+				  status_id = :statusId,
+				  accepted_on = :acceptedOn,
+				  updated_on = :updatedOn,
+                  accepted_by = :acceptedBy,
+                  updated_by = :updatedBy,
+                  completed_on =:completedOn
+			WHERE
+				  id = :id AND
+				  version = :version
+
+			"""
+    /**
+     * update ptBacklog object status Defined in DB
+     * @param ptBacklog - backlog object
+     * @return - int containing no. of update count
+     */
+    public int updateBacklogStatusDefined(PtBacklog ptBacklog) {
+        Map queryParams = [
+                id: ptBacklog.id,
+                version: ptBacklog.version,
+                newVersion: ptBacklog.version + 1,
+                statusId: ptBacklog.statusId,
+                updatedBy: ptBacklog.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.updatedOn),
+                completedOn: null,
+                acceptedBy: 0,
+                acceptedOn: null
+        ]
+        int updateCount = executeUpdateSql(STATUS_UPDATE_DEFINED_QUERY, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        return updateCount
+    }
+
+    private static final String STATUS_UPDATE_QUERY_RE_OPEN =
+            """
+			UPDATE pt_backlog
+			SET
+			      version = :newVersion,
+				  status_id = :statusId,
+				  updated_on = :updatedOn,
+                  updated_by = :updatedBy,
+                  completed_on=:completedOn,
+                  accepted_on=:acceptedOn,
+                  accepted_by=:acceptedBy
+			WHERE
+				  id = :id AND
+				  version = :version
+
+			"""
+    /**
+     * update ptBacklog object status in DB
+     * @param ptBacklog - PtBacklog Object
+     * @return - int containing no. of update count
+     */
+    public int updateBacklogStatusForReOpen(PtBacklog ptBacklog) {
+        Map queryParams = [
+                id: ptBacklog.id,
+                version: ptBacklog.version,
+                newVersion: ptBacklog.version + 1,
+                statusId: ptBacklog.statusId,
+                updatedBy: ptBacklog.updatedBy,
+                updatedOn: DateUtility.getSqlDateWithSeconds(ptBacklog.updatedOn),
+                completedOn: null,
+                acceptedOn: null,
+                acceptedBy: 0
+        ]
+
+        int updateCount = executeUpdateSql(STATUS_UPDATE_QUERY_RE_OPEN, queryParams);
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update backlog information')
+        }
+        return updateCount
+    }
+
+
+    private static final String MY_BACKLOG_REMOVE_QUERY =
+            """
+        UPDATE pt_backlog
+            SET
+              owner_id=0
+            WHERE
+              id=:id
+    """
+    /**
+     * Delete ptBacklog object from DB
+     * @param id -id of ptBacklog object
+     * @return -an integer containing the value of delete count
+     */
+    public int removeMyBacklog(long id) {
+        Map queryParams = [
+                id: id
+        ]
+        int deleteCount = executeUpdateSql(MY_BACKLOG_REMOVE_QUERY, queryParams)
+
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Error occurred while delete backlog information')
+        }
+        return deleteCount;
+    }
+
+    /**
+     * show the list of all open backlog(sprintId=0) regardless of any module
+     * @param baseService
+     * @return - map containing lstPtBacklog & count
+     */
+    public Map showAllOpenBacklog(BaseService baseService) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List<PtBacklog> lstBacklog = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('sprintId', 0L)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        }
+        List counts = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('sprintId', 0L)
+            projections { rowCount() }
+        }
+        int total = counts[0]
+        return [lstOpenBacklog: lstBacklog, count: total.toInteger()]
+    }
+
+    public Map showOpenBacklogByModuleId(BaseService baseService, long moduleId) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List lstPtBacklog = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('moduleId', moduleId)
+            eq('sprintId', 0L)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        } as List
+
+        List counts = PtBacklog.withCriteria {
+            eq('companyId', companyId)
+            eq('moduleId', moduleId)
+            eq('sprintId', 0L)
+            projections { rowCount() }
+        } as List
+
+        int total = counts[0]
+        return [lstOpenBacklog: lstPtBacklog, count: total.toInteger()]
+    }
+
+
+    public List<PtBacklog> findAllByCompanyIdAndSprintId(BaseService baseService, long companyId, long sprintId) {
+        List<PtBacklog> lstBacklog = PtBacklog.findAllByCompanyIdAndSprintId(companyId, sprintId,
+                [readOnly: true, offset: baseService.start, max: baseService.resultPerPage,order: baseService.sortOrder, sort: baseService.sortColumn])
+        return lstBacklog
+    }
+
+    public int countByCompanyIdAndSprintId(long companyId, long sprintId) {
+        int count = PtBacklog.countByCompanyIdAndSprintId(companyId, sprintId)
+        return count
+    }
+
+    public List<PtBacklog> findAllByModuleIdAndSprintIdAndCompanyId(long moduleId, long sprintId, long companyId) {
+        List<PtBacklog> lstBackLogs = PtBacklog.findAllByModuleIdAndSprintIdAndCompanyId(moduleId, sprintId, companyId)
+        return lstBackLogs
+    }
+
+    public int countBySprintIdAndBacklogIdAndCompanyId(long sprintId, long backlogId, long companyId) {
+        int count = PtBacklog.countBySprintIdAndStatusIdAndCompanyId(sprintId, backlogId, companyId)
+        return count
+    }
+
+    public PtBacklog findByUseCaseIdIlike(String useCaseId) {
+        PtBacklog backlog = PtBacklog.findByUseCaseIdIlike(useCaseId)
+        return backlog
+    }
+
+    public PtBacklog findByUrlIlike(String url) {
+        PtBacklog backlog = PtBacklog.findByUrlIlike(url)
+        return backlog
+    }
+
+    public void createDefaultDataForPtBacklog(long companyId) {
+//		new PtBacklog(version: 0, idea: '', actor: '', purpose: '', benefit: '', flow: '', statusId: 0, priorityId: 0, moduleId: 0, sprintId: 0, hours: 0, createdOn: new Date(), createdBy: 0, updatedOn: new Date(), updatedBy: 0, companyId: companyId, ownerId: 0, completedBy: 0).save()
+//		new PtBacklog(version: 0, idea: '', actor: '', purpose: '', benefit: '', flow: '', statusId: 0, priorityId: 0, moduleId: 0, sprintId: 0, hours: 0, createdOn: new Date(), createdBy: 0, updatedOn: new Date(), updatedBy: 0, companyId: companyId, ownerId: 0, completedBy: 0).save()
+//		new PtBacklog(version: 0, idea: '', actor: '', purpose: '', benefit: '', flow: '', statusId: 0, priorityId: 0, moduleId: 0, sprintId: 0, hours: 0, createdOn: new Date(), createdBy: 0, updatedOn: new Date(), updatedBy: 0, companyId: companyId, ownerId: 0, completedBy: 0).save()
+//		new PtBacklog(version: 0, idea: '', actor: '', purpose: '', benefit: '', flow: '', statusId: 0, priorityId: 0, moduleId: 0, sprintId: 0, hours: 0, createdOn: new Date(), createdBy: 0, updatedOn: new Date(), updatedBy: 0, companyId: companyId, ownerId: 0, completedBy: 0).save()
+//		new PtBacklog(version: 0, idea: '', actor: '', purpose: '', benefit: '', flow: '', statusId: 0, priorityId: 0, moduleId: 0, sprintId: 0, hours: 0, createdOn: new Date(), createdBy: 0, updatedOn: new Date(), updatedBy: 0, companyId: companyId, ownerId: 0, completedBy: 0).save()
+    }
+
+}

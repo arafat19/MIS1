@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of Customer's "Approved Task" | |
+*ActionService:* | ExhShowApprovedTaskForCustomerActionService | *Auditable:* | No
+*Url:* | /exhTask/showApprovedTaskForCustomer | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 30th January 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+This is the landing page of "Approved Task" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Approved" link.
+* Show Landing Page of Customer's "Approved Task".
+
+h4. Pre-condition:
+* User must have "Show Approved Customer Task" privilege.
+
+h4. Process:
+* [Get list of "Approved Task"|guide:ExhListApprovedTaskForCustomerActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show list of "Approved Task" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [List of Customer's "Approved Task"|guide:ExhListApprovedTaskForCustomerActionService].
+* [Show Landing Page of "Invoice" Report For "Customer"|guide:ShowInvoiceForCustomer].
+
+!Exh/Customer's_Approved Task_Show.png!

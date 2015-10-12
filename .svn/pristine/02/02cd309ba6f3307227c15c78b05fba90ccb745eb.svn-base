@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="consumptionDeviationCsv" language="groovy" pageWidth="840" pageHeight="595" orientation="Landscape" columnWidth="760" leftMargin="40" rightMargin="40" topMargin="30" bottomMargin="20" uuid="703f9980-2d94-4d6a-998e-bb64af52c838">
+	<property name="ireport.zoom" value="1.3286707500000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="projectId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="transactionTypeConsumption" class="java.lang.Long"/>
+	<parameter name="entityTypeNone" class="java.lang.Long"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="dbQuantityFormat" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT item.id AS item_id, item.name AS item_name,
+                TO_CHAR(COALESCE(budget_quantity,0),$P{dbQuantityFormat}) || ' ' || item.unit AS budget_quantity,
+                COALESCE(budget_amount,0) AS budget_amount,
+                TO_CHAR(COALESCE(cosume_quantity,0),$P{dbQuantityFormat}) || ' ' || item.unit AS cosume_quantity,
+                COALESCE(consume_amount,0) AS consume_amount,
+(COALESCE(budget_amount,0) - COALESCE(consume_amount,0)) AS deviation_amount
+                FROM item
+                FULL OUTER JOIN
+                    (
+                           SELECT  item_id, SUM(quantity) AS budget_quantity,
+                            SUM(quantity*rate) AS budget_amount
+                        FROM budg_budget_details
+                        WHERE project_id = $P{projectId}
+                        GROUP BY item_id
+                    ) bbd
+                ON bbd.item_id = item.id
+
+                FULL OUTER JOIN
+                    (
+                           SELECT  item_id, SUM(inv_inventory_transaction_details.actual_quantity) AS cosume_quantity,
+                            SUM(inv_inventory_transaction_details.actual_quantity*inv_inventory_transaction_details.rate) AS consume_amount
+                        FROM inv_inventory_transaction_details
+                        LEFT JOIN inv_inventory_transaction ON inv_inventory_transaction.id = inv_inventory_transaction_details.inventory_transaction_id
+                        WHERE inv_inventory_transaction.project_id = $P{projectId}
+                        AND inv_inventory_transaction.transaction_type_id = $P{transactionTypeConsumption}
+                        AND inv_inventory_transaction.transaction_entity_type_id = $P{entityTypeNone}
+                        AND inv_inventory_transaction_details.is_current = true
+                        AND inv_inventory_transaction_details.approved_by > 0
+		   AND inv_inventory_transaction.inv_production_line_item_id = 0
+                        AND inv_inventory_transaction.budget_id > 0
+                        GROUP BY item_id
+                    ) iitd
+                ON iitd.item_id = item.id
+                WHERE item.company_id = $P{companyId}
+                GROUP BY item.id, item.name, item.unit,budget_quantity,budget_amount,
+                cosume_quantity,consume_amount
+                HAVING budget_quantity>0
+                ORDER BY item.name]]>
+	</queryString>
+	<field name="item_id" class="java.lang.Long"/>
+	<field name="item_name" class="java.lang.String"/>
+	<field name="budget_quantity" class="java.lang.String"/>
+	<field name="budget_amount" class="java.math.BigDecimal"/>
+	<field name="cosume_quantity" class="java.lang.String"/>
+	<field name="consume_amount" class="java.math.BigDecimal"/>
+	<field name="deviation_amount" class="java.math.BigDecimal"/>
+	<title>
+		<band height="81">
+			<staticText>
+				<reportElement uuid="a5e30d52-4979-47a1-a6cf-c87a76b304fa" x="0" y="0" width="280" height="25"/>
+				<box>
+					<pen lineStyle="Dashed"/>
+					<topPen lineStyle="Dashed"/>
+					<leftPen lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.0" lineStyle="Dashed" lineColor="#CCCCCC"/>
+					<rightPen lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Consumption Deviation Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="0" y="43" width="280" height="18"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Project Name :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="fdae0380-ef47-4b93-bca9-ec2a6134a0c0" x="280" y="43" width="480" height="18"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" x="280" y="61" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Budget Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" x="375" y="61" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Budget Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" x="470" y="61" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Consumed Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" x="565" y="61" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Consumed Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c6f15f9f-3026-40c8-8006-ebd0eec4cc3a" x="0" y="61" width="280" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement>
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7a928b4a-814d-4456-9c78-c7758a8620e9" x="660" y="61" width="100" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Deviation Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="61ea2eba-c630-4c81-a259-3afc082e69cd" x="0" y="25" width="280" height="18"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Printed On :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="fdae0380-ef47-4b93-bca9-ec2a6134a0c0" x="280" y="25" width="480" height="18"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="ac11a540-f7a4-495a-bafd-40ccc235bf41" stretchType="RelativeToTallestObject" x="280" y="0" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_quantity}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement uuid="3bd877de-4ddb-40b5-9aba-03cb8364f52e" stretchType="RelativeToTallestObject" x="375" y="0" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6686827e-ef4e-4217-afdf-f799c17690d8" stretchType="RelativeToTallestObject" x="470" y="0" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cosume_quantity}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement uuid="a6d89ef8-0096-4784-8bca-91c3f2abc1fc" stretchType="RelativeToTallestObject" x="565" y="0" width="95" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{consume_amount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="26cb5cce-6d9a-4c3e-ac0c-977eb552b810" stretchType="RelativeToTallestObject" x="0" y="0" width="280" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{item_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement uuid="6a8e51ce-08ce-41c3-9882-27c1849634d5" x="660" y="0" width="100" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{deviation_amount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,69 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Task Note* | |
+*ActionService:* | UpdateExhTaskNoteActionService | *Auditable:* | No
+*Url:* | /exhTask/updateEntityNoteForTask | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Manage Task" Created By "Cashier"|guide:ListExhTaskForAdminActionService].
+* Select a Line-Item from grid view.
+* Click "Note" button from tool bar.
+* [Show Landing Page of "Task Note"|guide:ShowExhTaskNoteActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Task Note" in Edit Mode|guide:EditExhTaskNoteActionService].
+* User must enter valid input to update.
+* Click "Update" button.
+* Update *Task Note*.
+
+h4. Pre-condition:
+* User must have "Update Customer Content" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Customer Code | Read Only | Alpha Numeric | System Generated
+Name | Read Only | Alpha Numeric |
+Beneficiary Name | Read Only | Alpha Numeric |
+Ref No. | Read Only | Alpha Numeric | System Generated
+Amount | Read Only | Alpha Numeric |
+Payment Type | Read Only | Alpha Numeric |
+Note | Text Area | Alpha Numeric | Required
+{table}
+
+* Match expected version before updating a *Task Note*.
+
+h4. Process:
+* Update selected *Task Note*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Task Note* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

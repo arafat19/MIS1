@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subTier3" language="groovy" pageWidth="460" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="460" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="2b82345c-7692-4e2e-be81-dcf8da7972e6">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="tier3_id" class="java.lang.Integer"/>
+	<parameter name="tier3_name" class="java.lang.String"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="projectIdList" class="java.util.Collection"/>
+	<parameter name="dbCurrencyFormat" class="java.lang.String"/>
+	<parameter name="accTypeAssetId" class="java.lang.Long"/>
+	<parameter name="accTypeLiabilitiesId" class="java.lang.Long"/>
+	<parameter name="lstDivisionIds" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[SELECT
+CASE WHEN (coa.acc_type_id = $P{accTypeAssetId}) then to_char(SUM(avd.amount_dr-avd.amount_cr),$P{dbCurrencyFormat})
+            ELSE '0.00'
+            END dr_balance,
+            CASE
+            WHEN (coa.acc_type_id = $P{accTypeLiabilitiesId}) then to_char(SUM(avd.amount_cr-avd.amount_dr),$P{dbCurrencyFormat})
+            ELSE '0.00'
+           END cr_balance
+FROM acc_voucher_details avd
+LEFT JOIN acc_chart_of_account coa ON coa.id = avd.coa_id
+LEFT JOIN acc_voucher v ON v.id = avd.voucher_id
+WHERE coa.tier3 = $P{tier3_id}
+AND v.voucher_date >= $P{fromDate}
+AND v.voucher_date <= $P{toDate}
+AND ($X{IN,avd.project_id,projectIdList})
+AND ($X{IN,avd.division_id,lstDivisionIds})
+AND v.posted_by > $P{postedByParam}
+AND coa.company_id = $P{companyId}
+GROUP BY coa.acc_type_id, coa.tier3;]]>
+	</queryString>
+	<field name="dr_balance" class="java.lang.String"/>
+	<field name="cr_balance" class="java.lang.String"/>
+	<detail>
+		<band height="20">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="1c2227bd-df32-4465-a4e7-fa21f114187b" stretchType="RelativeToTallestObject" x="0" y="0" width="240" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tier3_name}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="28f06826-ee96-47e8-a441-eaaa2a13386c" stretchType="RelativeToTallestObject" x="350" y="0" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cr_balance}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="bad22e62-407b-4fe0-a70a-f4595df2b3b9" stretchType="RelativeToTallestObject" x="240" y="0" width="110" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dr_balance}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

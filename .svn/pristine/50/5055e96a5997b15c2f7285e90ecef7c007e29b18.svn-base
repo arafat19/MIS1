@@ -1,0 +1,162 @@
+package com.athena.mis.projecttrack.actions.taglib
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.projecttrack.entity.PtFlow
+import com.athena.mis.projecttrack.service.PtFlowService
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import com.athena.mis.utility.Tools
+import grails.converters.JSON
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * build html of flow
+ * for details go through use-case "GetFlowActionService"
+ */
+class GetFlowActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+
+    PtFlowService ptFlowService
+    @Autowired
+    PtSessionUtil ptSessionUtil
+
+    private static final String ID = "id"
+    private static final String BACKLOG_ID = "backlog_id"
+    private static final String TEMPLATE = "template"
+    private static final String DEFAULT_TEMPLATE = "<tr>" +
+            "<td width='5%'>#:sl#</td>" +
+            "<td width='95%'>#:flow#</td>" +
+            "</tr>"
+    /**
+     * Check required parameters
+     * @param parameters -attr of tag
+     * @param obj -N/A
+     * @return -Map containing attr of tag
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map attrMap = new LinkedHashMap()
+        try {
+            Map attrs = (Map) parameters
+            attrMap.put(Tools.IS_ERROR, Boolean.TRUE)
+            String strId = attrs.get(ID)
+            Long backlogId = attrs.get(BACKLOG_ID) ? Long.valueOf(attrs.get(BACKLOG_ID).toString()) : null
+            String template = attrs.get(TEMPLATE)
+            if (!strId || !backlogId) {
+                return attrMap
+            }
+            attrMap.put(ID, strId)
+            attrMap.put(BACKLOG_ID, backlogId)
+            template ? attrMap.put(TEMPLATE, template) : attrMap.put(TEMPLATE, DEFAULT_TEMPLATE)
+            attrMap.put(Tools.IS_ERROR, Boolean.FALSE)
+            return attrMap
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            attrMap.put(Tools.IS_ERROR, Boolean.TRUE)
+            return attrMap
+        }
+    }
+
+    /**
+     * Build flow html
+     * @param parameters -N/A
+     * @param obj -custom map returned from preCondition
+     * @return -html for flow
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object parameters, Object obj) {
+        try {
+            Map preResult = (Map) obj
+            String flowHtml = buildFlowHtml(preResult)
+            return flowHtml
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            return Boolean.FALSE
+        }
+    }
+
+    /**
+     * Do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Do nothing for build success result
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * Do nothing for build failure result
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * Build acceptance criteria html
+     * @return -html
+     */
+    private String buildFlowHtml(Map attrs) {
+        String strId = attrs.get(ID)
+        long backlogId = Tools.parseLongInput(attrs.get(BACKLOG_ID).toString())
+        String template = attrs.get(TEMPLATE)
+
+        List<Map> lstFlow = buildFlowList(backlogId.longValue())
+        if (lstFlow.size() <= 0) {
+            return Tools.EMPTY_SPACE
+        }
+        String dataSource = lstFlow as JSON
+
+        String flowHtml = """
+            <div class="panel panel-default">
+                <div class="panel-heading">Flow</div>
+
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <tbody id="${strId}">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        """
+
+        String flowScript = """
+        <script type='text/javascript'>
+            \$(document).ready(function() {
+                \$("#${strId}").kendoListView({
+                    dataSource: ${dataSource},
+                    template: "${template}"
+                });
+            });
+        </script>
+        """
+
+        return flowHtml + flowScript
+    }
+
+    /**
+     * build flow map for list view
+     * @param backlogId -id of backlog
+     * @return -list of map for list view
+     */
+    private List<Map> buildFlowList(long backlogId) {
+        List<Map> result = []
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        this.sortOrder = 'asc'
+        List<PtFlow> lstFlow = ptFlowService.findAllByCompanyIdAndBacklogId(this,companyId, backlogId)
+        for (int i = 0; i < lstFlow.size(); i++) {
+            Map obj = [
+                    sl: i + 1,
+                    flow: lstFlow[i].flow
+            ]
+            result << obj
+        }
+        return result
+    }
+}

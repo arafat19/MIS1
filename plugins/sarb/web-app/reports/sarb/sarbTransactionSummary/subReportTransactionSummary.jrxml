@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rpt" language="groovy" pageWidth="523" pageHeight="60" whenNoDataType="AllSectionsNoDetail" columnWidth="523" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="54a1f0bc-1bfb-4765-b436-ec8b9f9fe932">
+	<property name="ireport.zoom" value="2.0000000000000018"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="created_on" class="java.sql.Date"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="lstTaskStatus" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[select ref_no,customer_name,beneficiary_name,amount_in_local_currency,
+amount_in_foreign_currency,
+case when is_submitted_to_sarb='t' then 'YES' else 'NO' end as submitted,
+case when is_submitted_to_sarb='t' and is_accepted_by_sarb=true then 'YES'
+when is_submitted_to_sarb='f' then 'N/A'
+else 'NO'
+end as accepted
+from vw_sarb_task_model task
+where date(created_on) = $P{created_on} and  company_id=$P{companyId} and $X{IN,task.current_status, lstTaskStatus}]]>
+	</queryString>
+	<field name="ref_no" class="java.lang.String"/>
+	<field name="customer_name" class="java.lang.String"/>
+	<field name="beneficiary_name" class="java.lang.String"/>
+	<field name="amount_in_local_currency" class="java.math.BigDecimal"/>
+	<field name="amount_in_foreign_currency" class="java.math.BigDecimal"/>
+	<field name="submitted" class="java.lang.String"/>
+	<field name="accepted" class="java.lang.String"/>
+	<columnHeader>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="d9e1d4a2-4bcd-4b53-a61b-02e899904db4" mode="Opaque" x="430" y="0" width="45" height="20" backcolor="#CCCCCC"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Submitted]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="df7b6c09-6502-4646-9aa2-f9bf3098ea7b" mode="Opaque" x="369" y="0" width="61" height="20" backcolor="#CCCCCC"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Amount(BDT)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fc04b4a2-a5f0-4325-93f6-6db145ed1604" mode="Opaque" x="309" y="0" width="60" height="20" backcolor="#CCCCCC"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Amount(ZAR)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7b7d55f6-4ca2-4615-89ae-fca9366882ce" mode="Opaque" x="52" y="0" width="131" height="20" backcolor="#CCCCCC"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8e0620d5-4197-4297-9504-f121e99431f2" mode="Opaque" x="475" y="0" width="48" height="20" backcolor="#CCCCCC"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Accepted]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fff0d3f5-89d5-4ccf-b237-3915c19e63c3" mode="Opaque" x="0" y="0" width="52" height="20" backcolor="#CCCCCC"/>
+				<box leftPadding="2">
+					<leftPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Ref. no]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="979d296a-5b6a-4260-ba7a-f422965f5b96" mode="Opaque" x="183" y="0" width="126" height="20" backcolor="#CCCCCC"/>
+				<box leftPadding="2"/>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<text><![CDATA[Beneficiary Name]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="96a728f6-f4cc-4482-a05a-ef5ff5943264" stretchType="RelativeToTallestObject" x="52" y="0" width="131" height="20"/>
+				<box leftPadding="2">
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{customer_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0221b314-128d-438e-8291-5b19c6a9b6e0" stretchType="RelativeToTallestObject" x="0" y="0" width="52" height="20"/>
+				<box leftPadding="2">
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ref_no}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#.00" isBlankWhenNull="true">
+				<reportElement uuid="c9db38c2-4f9c-493f-a24e-bfa1006fa067" stretchType="RelativeToTallestObject" x="369" y="0" width="61" height="20"/>
+				<box rightPadding="2">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineColor="#CCCCCC"/>
+					<leftPen lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount_in_foreign_currency}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#.00" isBlankWhenNull="true">
+				<reportElement uuid="8c100502-cef0-4ffb-95b1-16ac3ab7fe29" stretchType="RelativeToTallestObject" x="309" y="0" width="60" height="20"/>
+				<box rightPadding="2">
+					<pen lineColor="#CCCCCC"/>
+					<topPen lineColor="#CCCCCC"/>
+					<leftPen lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount_in_local_currency}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6215ccf3-0942-4de1-a047-75306a9b4ada" stretchType="RelativeToTallestObject" x="183" y="0" width="126" height="20"/>
+				<box leftPadding="2">
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{beneficiary_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9e3c9346-4be8-4fc4-be41-e7121b97ba0a" stretchType="RelativeToTallestObject" x="475" y="0" width="48" height="20"/>
+				<box rightPadding="2">
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{accepted}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="755efa24-10fd-4f42-992c-21c7cf3ee814" stretchType="RelativeToTallestObject" x="430" y="0" width="45" height="20"/>
+				<box rightPadding="2">
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{submitted}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

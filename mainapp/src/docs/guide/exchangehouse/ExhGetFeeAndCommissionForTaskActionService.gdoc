@@ -1,0 +1,57 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Calculate "Task Amount" | |
+*ActionService:* | ExhGetFeeAndCommissionForTaskActionService | *Auditable:* | No
+*Url:* | /exhTask/calculateFeesAndCommission  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent, Cashier, Customer.
+
+h4. Description:
+ Name of the use case represents its functionality.
+
+h4. Flow:
+ * Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+ * Click *Customer* link.
+ * [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+ * [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+ * Select a Line-Item from grid view.
+ * [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+ * Select a Line-Item from grid view.
+ * Click "Create Task" button from tool bar.
+ * [Show Landing Page of Cashier's *Task*|guide:ShowExhTaskForCashierActionService].
+ * Click "Fees and Charges" tab of Task Create.
+ * Insert valid Source amount.
+ * Click "Calculate" button.
+ * Calculate "Task Amount".
+
+h4. Pre-condition:
+* User must have "Create Task" privilege.
+* Valid Source amount must be required.
+* Regular fee generate local/foreign currency depend on System Configuration.
+
+h4. Process:
+* Calculate BDT Amount for Source Amount.
+* Calculate Grand Total for Source Amount.
+
+h4. Post-condition:
+
+* *Success:*
+** Calculated amount show in input panel.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Create Cashier's "Task"|guide:_ExhCreateTaskForCashierActionService].
+* [Create Agent's "Task"|guide:ExhCreateTaskActionService].
+* [Create Customer's "Task"|guide:_ExhCreateTaskForCustomerActionService].
+

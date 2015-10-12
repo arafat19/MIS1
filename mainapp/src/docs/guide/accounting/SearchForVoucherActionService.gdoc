@@ -1,0 +1,74 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Generate *Voucher* Report in HTML Format | |
+ *ActionService:* | SearchForVoucherActionService | *Auditable:* | No
+ *Url:* | /accReport/searchVoucher | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 29th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Voucher* link.
+* [Show Landing Page of Voucher Report|guide:ShowForVoucherActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate *Voucher* Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "Search Voucher Report" privilege.
+* Rules of Searching:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules*
+  Trace No | Text box | Alpha Numeric | Required
+  Cancelled | Check Box | Boolean | Default Value False
+ {table}
+
+
+h4. Process:
+* Show *Voucher* report for the given "Trace No" and "Cancelled Status".
+* Show *Voucher* Report with following details:
+** Voucher Name
+** Voucher Details
+*** Trace No
+*** *Project*
+*** Cheque No
+*** Instrument Type
+*** Voucher Date
+*** Created By
+*** Posted By
+*** Instrument No
+*** Cancelled By (If Cancelled field is true)
+*** Cancelled Reason (If Cancelled field is true)
+*** Cancelled On (If Cancelled field is true)
+*** Account Name
+*** Account Payable
+** Transaction Details
+*** Code
+*** Head Name & Particulars
+*** *Source*
+*** Debit
+*** Credit
+
+h4. Post-condition:
+
+* *Success:*
+** Show entering *Voucher* report in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Acc/Voucher_Report_General.png!

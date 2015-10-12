@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Source Ledger* Report | |
+*ActionService:* | ShowForSourceLedgerActionService | *Auditable:* | No
+*Url:* | /accReport/showSourceLedger | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 29th April 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+This is the landing page of *Source Ledger* Report with input form on top.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Source Ledger* link.
+* Show Landing Page of *Source Ledger* Report.
+
+h4. Pre-condition:
+* User must have "Show Source Ledger Report" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+* Show *Project* list in drop-down. [Populate Project List|application]
+* [Show "Source Type" list in drop-down|guide:PopulateSourceTypeList].
+* As per selecting of *Source Type* show ["Source Category" list in drop-down|guide:GetSourceCategoryByAccSourceIdActionService].
+* As per selecting of *Source Category* show ["Source" list in drop-down|guide:GetSourceListBySourceCategoryAndAccSourceIdActionService].
+* Show From Date (Default One month previous Start Date) with calender.
+* Show To Date (Default Current Date) with calender.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Source Ledger* report landing page.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show "Voucher Details"|guide:_showVoucherDetails].
+* [Generate "Source Ledger" Report|guide:ListForSourceLedgerActionService].
+* [Generate "Supplier Wise Payable" Report in HTML Format|guide:AccListForSupplierWisePayableActionService].
+
+!Acc/Source_Ledger_Report_Show.png!

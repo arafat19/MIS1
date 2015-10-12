@@ -1,0 +1,6 @@
+#Grails Metadata file
+#Sun Jun 29 18:05:15 BDT 2014
+app.grails.version=2.3.11
+app.name=mis
+app.servlet.version=3.0
+app.version=0.1

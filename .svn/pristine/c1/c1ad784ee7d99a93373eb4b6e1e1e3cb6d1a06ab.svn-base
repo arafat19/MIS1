@@ -1,0 +1,56 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of "Chart of Account Code" in Right Panel of Landing Page | |
+ *ActionService:* | ListChartOfAccountForVoucherActionService | *Auditable:* | No
+ *Url:* | /accChartOfAccount/listForVoucher | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd May 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click "Pay Cash" link.
+* Click "Right Panel" of the landing page.
+* Show List of "Chart of Account Code" in Right Panel of landing page.
+
+h4. Pre-condition:
+* User must have "List For Voucher" privilege.
+
+h4. Process:
+* Get list of *Chart of Account* Code from server (default: 20 at Max).
+* Following columns should show in grid view:
+** ID (Default: Invisible)
+** Code
+** Head Name
+** Source Id (Default: Invisible)
+
+h4. Post-condition:
+
+* *Success:*
+** *Chart of Account* Code with details will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search of Chart of Account Code Right Panel|guide:SearchChartOfAccountForVoucherActionService].
+
+!Acc/ChartOfAccount_InRightPanel.png!

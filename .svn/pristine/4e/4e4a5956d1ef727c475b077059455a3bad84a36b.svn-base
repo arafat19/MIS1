@@ -1,0 +1,50 @@
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Open *Transport Cost* in Edit Mode | |
+ *ActionService:* | SelectTransportCostActionService| *Auditable:* | No
+ *Url*: | /procTransportCost/edit | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 6th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Order* link.
+* [Show landing page of "Purchase Order"|guide:ShowPurchaseOrderActionService].
+* Select a Line-Item from grid view.
+* Click *Transport Cost* button.
+* [Show Landing Page of "Transport Cost"|guide:ShowTransportCostActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* Open *Transport Cost* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Transport Cost" privilege.
+
+
+h4. Process:
+Get selected *Transport Cost* from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Transport Cost* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Update "Transport Cost"|guide:UpdateTransportCostActionService].

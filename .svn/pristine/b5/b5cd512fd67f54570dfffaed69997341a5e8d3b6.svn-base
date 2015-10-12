@@ -1,0 +1,188 @@
+package com.athena.mis.projecttrack.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.projecttrack.entity.PtAcceptanceCriteria
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ * AcceptanceCriteriaService is used to handle only CRUD related object manipulation (e.g. list, read,search, create, delete etc.)
+ */
+
+class PtAcceptanceCriteriaService extends BaseService {
+
+    @Autowired
+    PtSessionUtil ptSessionUtil
+
+    /**
+     * return all list of acceptanceCriteria object
+     */
+    public List list() {
+        List lstAcceptanceCriteria = PtAcceptanceCriteria.list(readOnly: true)
+        return lstAcceptanceCriteria
+    }
+
+    /**
+     * read single acceptanceCriteria object and return the object
+     * @param id - AcceptanceCriteria id
+     * @return AcceptanceCriteria object
+     */
+    public PtAcceptanceCriteria read(long id) {
+        PtAcceptanceCriteria acceptanceCriteria = PtAcceptanceCriteria.read(id)
+        return acceptanceCriteria
+    }
+
+    private static final String INSERT_QUERY =
+            """
+            INSERT INTO pt_acceptance_criteria(id, version, criteria, status_id, type,
+                    completed_on, backlog_id, company_id, created_by, created_on)
+            VALUES ( NEXTVAL('pt_acceptance_criteria_id_seq'), :version, :criteria, :statusId, :type,
+            		:competedOn, :backlogId, :companyId, :createdBy, :createdOn);
+	"""
+
+    /**
+     * Save AcceptanceCriteria object into DB
+     * @param acceptanceCriteria - AcceptanceCriteria object
+     * @return - saved AcceptanceCriteria object
+     */
+    public PtAcceptanceCriteria create(PtAcceptanceCriteria acceptanceCriteria) {
+        Map queryParams = [
+                version: acceptanceCriteria.version,
+                criteria: acceptanceCriteria.criteria,
+                statusId: acceptanceCriteria.statusId,
+                type: acceptanceCriteria.type,
+                completedOn: DateUtility.getSqlDateWithSeconds(acceptanceCriteria.completedOn),
+                createdOn: DateUtility.getSqlDateWithSeconds(acceptanceCriteria.createdOn),
+                createdBy: acceptanceCriteria.createdBy,
+                backlogId: acceptanceCriteria.backlogId,
+                companyId: acceptanceCriteria.companyId
+        ]
+
+        List result = executeInsertSql(INSERT_QUERY, queryParams)
+
+        if (result.size() <= 0) {
+            throw new RuntimeException('Error occurred while insert acceptance criteria information')
+        }
+
+        int ptAcceptanceCriteriaId = (int) result[0][0]
+        acceptanceCriteria.id = ptAcceptanceCriteriaId
+        return acceptanceCriteria
+    }
+
+    private static final String UPDATE_QUERY =
+            """
+			UPDATE pt_acceptance_criteria SET
+				  version=:newVersion,
+				  criteria=:criteria,
+				  status_id=:statusId,
+				  type=:type,
+				  completed_on=:completedOn
+			WHERE
+				  id=:id AND
+				  version=:version
+	"""
+
+    /**
+     * update AcceptanceCriteria object in DB
+     * @param acceptanceCriteria - acceptanceCriteria Object
+     * @return - int containing no of update count
+     */
+    public int update(PtAcceptanceCriteria acceptanceCriteria) {
+        Map queryParams = [
+                id: acceptanceCriteria.id,
+                newVersion: acceptanceCriteria.version + 1,
+                version: acceptanceCriteria.version,
+                criteria: acceptanceCriteria.criteria,
+                statusId: acceptanceCriteria.statusId,
+                type: acceptanceCriteria.type,
+                completedOn: DateUtility.getSqlDateWithSeconds(acceptanceCriteria.completedOn)
+        ]
+        int updateCount = executeUpdateSql(UPDATE_QUERY, queryParams)
+
+        if (updateCount <= 0) {
+            throw new RuntimeException('Error occurred while update acceptance criteria information')
+        }
+        acceptanceCriteria.version = acceptanceCriteria.version + 1
+        return updateCount;
+    }
+
+    private static final String DELETE_QUERY =
+            """
+        DELETE FROM pt_acceptance_criteria
+        WHERE
+            id=:id
+    """
+
+    /**
+     * Delete acceptanceCriteria object from DB
+     * @param id -id of acceptanceCriteria object
+     * @return -an integer containing the value of delete count
+     */
+    public int delete(long id) {
+        Map queryParams = [
+                id: id
+        ]
+
+        int deleteCount = executeUpdateSql(DELETE_QUERY, queryParams)
+
+        if (deleteCount <= 0) {
+            throw new RuntimeException('Error occurred while delete acceptance criteria information')
+        }
+        return deleteCount;
+    }
+
+    public List<PtAcceptanceCriteria> findAllByCompanyIdAndBacklogId(BaseService baseService, long companyId, long backlogId) {
+        List<PtAcceptanceCriteria> lstAcceptanceCriteria = PtAcceptanceCriteria.findAllByCompanyIdAndBacklogId(companyId, backlogId, [max: baseService.resultPerPage, offset: baseService.start, sort: baseService.sortColumn, order: baseService.sortOrder, readOnly: true])
+        return lstAcceptanceCriteria
+    }
+
+    public List<PtAcceptanceCriteria> findAllByCompanyIdAndBacklogIdAndType(long companyId, long backlogId, long typeId) {
+        List<PtAcceptanceCriteria> lstAcceptanceCriteria = PtAcceptanceCriteria.findAllByCompanyIdAndBacklogIdAndType(companyId, backlogId, typeId, [sort: 'statusId', order: 'asc', readOnly: true])
+        return lstAcceptanceCriteria
+    }
+
+    public int countByCompanyIdAndBacklogId(long companyId, long backlogId) {
+        int count = PtAcceptanceCriteria.countByCompanyIdAndBacklogId(companyId, backlogId)
+        return count
+    }
+
+    /**
+     * Segmented/Sub list of acceptanceCriteria objects based on baseService pagination & search criteria
+     * @param baseService - BaseService object
+     * @param backlogId - PtBacklog.id
+     * @return a map containing [lstPtAcceptanceCriteria - List of PtAcceptanceCriteria objects , count: int count of PtAcceptanceCriteria objects]
+     */
+    public Map search(BaseService baseService, long backlogId) {
+        long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+        List<PtAcceptanceCriteria> lstPtAcceptanceCriteria = PtAcceptanceCriteria.withCriteria {
+            eq('companyId', companyId)
+            eq('backlogId', backlogId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            setReadOnly(true)
+            maxResults(baseService.resultPerPage)
+            firstResult(baseService.start)
+            order(baseService.sortColumn, baseService.sortOrder)
+        }
+
+        List counts = PtAcceptanceCriteria.withCriteria {
+            eq('companyId', companyId)
+            eq('backlogId', backlogId)
+            ilike(baseService.queryType, Tools.PERCENTAGE + baseService.query + Tools.PERCENTAGE)
+            projections { rowCount() }
+        }
+
+        int total = counts[0]
+        return [lstPtAcceptanceCriteria: lstPtAcceptanceCriteria, count: total.toInteger()]
+
+    }
+
+    public void createDefaultDataForPtAcceptanceCriteria(long companyId) {
+//		new PtAcceptanceCriteria(version: 0, criteria: '', statusId: 0, type: 21073, completedOn: new Date(), backlogId: 0, companyId: companyId).save()
+//		new PtAcceptanceCriteria(version: 0, criteria: '', statusId: 0, type: 21073, completedOn: new Date(), backlogId: 0, companyId: companyId).save()
+//		new PtAcceptanceCriteria(version: 0, criteria: '', statusId: 0, type: 21073, completedOn: new Date(), backlogId: 0, companyId: companyId).save()
+//		new PtAcceptanceCriteria(version: 0, criteria: '', statusId: 0, type: 21073, completedOn: new Date(), backlogId: 0, companyId: companyId).save()
+//		new PtAcceptanceCriteria(version: 0, criteria: '', statusId: 0, type: 21073, completedOn: new Date(), backlogId: 0, companyId: companyId).save()
+    }
+}

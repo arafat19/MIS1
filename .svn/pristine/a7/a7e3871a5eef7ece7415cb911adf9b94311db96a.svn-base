@@ -1,0 +1,38 @@
+
+{table}
+ Use Case ID: | MIS-Budget-36 | Priority: | High
+ *Name* | Add Budget Type to Assign Budget Type | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | N/A | *Action Class:* | N/A
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System Admin.
+
+h4. Description:
+Name of use case reprensents its functionality.
+
+h4. Flow:
+# Select a budget type from available budget type.
+# Click ">" sign.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Shift each budget type from available to assign budget type.
+
+h4. Post-condition:
+
+# *Success:*
+## Show budget type in assign budget type.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

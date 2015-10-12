@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="qsMeasurementCsv" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15" uuid="3641649e-c3f0-44e0-8911-836fc73a0da2">
+	<property name="ireport.zoom" value="1.239669421487611"/>
+	<property name="ireport.x" value="8"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toDate" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="projectId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="isGovtQs" class="java.lang.Boolean"/>
+	<parameter name="projectName" class="java.lang.String"/>
+	<parameter name="dbQuantityFormat" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+        b.id,
+        b.budget_item AS budget_item,
+        b.details AS details,
+        to_char(b.budget_quantity,$P{dbQuantityFormat}) ||' '||un.key AS budget_quantity,
+        to_char(COALESCE(SUM(qsm.quantity),0),$P{dbQuantityFormat}) ||' '||un.key AS work_completed,
+        to_char(b.budget_quantity-COALESCE(SUM(qsm.quantity),0),$P{dbQuantityFormat}) ||' '||un.key AS work_remaining,
+        (
+            to_char(
+                    (COALESCE(SUM(qsm.quantity),0)/b.budget_quantity)*100,'FM99,99,999,99,99,990.00'
+                )
+        ) as work_achieved_in_percent,
+        (
+        to_char(
+            trunc(
+                (
+                    (b.budget_quantity-COALESCE(SUM(qsm.quantity),0))/b.budget_quantity)*100,2
+                ),$P{dbQuantityFormat}
+            )
+        ) as work_remaining_in_percent
+        FROM budg_budget b
+        LEFT JOIN system_entity un ON un.id = b.unit_id
+        LEFT JOIN qs_measurement qsm ON b.id = qsm.budget_id
+        WHERE qsm.project_id = $P{projectId}
+        AND (qsm.qs_measurement_date BETWEEN $P{fromDate} AND $P{toDate})
+        AND qsm.is_govt_qs = $P{isGovtQs}
+        AND b.billable = true
+        GROUP BY b.id,b.budget_item,b.details,b.budget_quantity,un.key]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="budget_item" class="java.lang.String"/>
+	<field name="details" class="java.lang.String"/>
+	<field name="budget_quantity" class="java.lang.String"/>
+	<field name="work_completed" class="java.lang.String"/>
+	<field name="work_remaining" class="java.lang.String"/>
+	<field name="work_achieved_in_percent" class="java.lang.String"/>
+	<field name="work_remaining_in_percent" class="java.lang.String"/>
+	<title>
+		<band height="116">
+			<staticText>
+				<reportElement uuid="f2defd01-7001-4c42-83c5-8f81e21dffe3" x="53" y="96" width="73" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Budget Line Item]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="399f9492-1b0b-440d-a2eb-492eeb1b8253" x="0" y="0" width="198" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineStyle="Dashed" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[QS MEASUREMENT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6ad3611c-0d83-4c34-aaf4-6f0ee74617e5" x="0" y="35" width="53" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="c6783239-c819-4944-ad10-ec6058bc55b7" x="53" y="35" width="145" height="15"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f34038de-974d-4735-9756-c7a32f1b55c5" x="0" y="51" width="53" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="56c9a3a9-26da-4026-b47b-58939aa5bb1b" x="53" y="51" width="145" height="15"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="29136759-78ce-4c5d-9a30-f96698c8bf22" x="280" y="96" width="91" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Work Remaining]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2b281397-adc9-4a74-a182-845526d1835c" x="0" y="96" width="53" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="81" width="53" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Project]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="262b6395-8f55-4446-a439-b8700badde8e" x="53" y="81" width="502" height="15"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{projectName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f58f2ba2-5848-4207-bd6f-936402bbfc4f" x="126" y="96" width="82" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Budget Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6dbb11ab-5e14-4b37-bcb2-80070cc165a7" x="208" y="96" width="72" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Work Certified ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d5f441bd-5c68-4bd8-a793-30f278c9ba64" x="371" y="96" width="90" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Work Achieved(%)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d5f441bd-5c68-4bd8-a793-30f278c9ba64" x="461" y="96" width="94" height="20"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Work Remaining(%)]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6ad3611c-0d83-4c34-aaf4-6f0ee74617e5" x="0" y="20" width="53" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="c6783239-c819-4944-ad10-ec6058bc55b7" x="53" y="20" width="145" height="15"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="4a2b9cc0-cf5e-4cd0-8d06-8262dab83930" x="0" y="66" width="53" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Top">
+					<font size="10" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Govt. QS]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="262b6395-8f55-4446-a439-b8700badde8e" x="53" y="66" width="145" height="15"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[$P{isGovtQs} ? 'Yes' : 'No']]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="17">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="cf4f419f-c64e-4835-9de6-287126351955" x="0" y="0" width="53" height="17"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="e710ac5a-f069-4e11-92e8-c30e53dfc1ba" x="126" y="0" width="82" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_quantity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a49a3ebf-ce21-4104-88d9-fa05be46f27e" x="371" y="0" width="90" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{work_achieved_in_percent}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="abf7d431-a041-4fb0-824f-da48434a6f2f" x="280" y="0" width="91" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{work_remaining}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a3f71b40-686b-4510-b956-0b278ddb30cb" x="53" y="0" width="73" height="17"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{budget_item}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="a49a3ebf-ce21-4104-88d9-fa05be46f27e" x="461" y="0" width="94" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{work_remaining_in_percent}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="10976b9d-e4eb-4c40-bfa1-ff34915d60e5" x="208" y="0" width="72" height="17"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{work_completed}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

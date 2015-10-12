@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | List Un-approve "Inventory Out" Widget Tab of Inventory Option | |
+ *ActionService:* | ListUnApprovedInventoryOutActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransaction/listOfunApprovedInventoryOut | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 12th October 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Pending Inventory Out" tab of Inventory widget.
+* Show list of Un-approve "Inventory Out".
+
+h4. Pre-condition:
+* User must have "List For All Unapproved Inventory Out To Show On Dash Board" privilege.
+* Inventory Out Item must be Un-approved.
+
+h4. Process:
+* Show list of all Pending Inventory Out Items from server (default: 10 at Max).
+* Following columns should show in grid view:
+** Transaction ID
+** Inventory Name
+** Item Count
+** Pending
+
+h4. Post-condition:
+
+* *Success:*
+** Pending Inventory Out Items will be listed in corresponding widget tab.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Show Landing Page of un-approve "Inventory Out"|guide:ShowForUnApprovedInventoryOutDetailsActionService].

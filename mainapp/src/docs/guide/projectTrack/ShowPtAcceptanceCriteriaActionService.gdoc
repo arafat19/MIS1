@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Acceptance Criteria* | |
+*ActionService:* | ShowPtAcceptanceCriteriaActionService | *Auditable:* | No
+*Url:* | /ptAcceptanceCriteria/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+This is the landing page of *Acceptance Criteria* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Backlog* link.
+* [Show Landing Page of "Backlog"|guide:ShowPtBacklogActionService].
+* Select a line-item from grid view.
+* Click "Acceptance Criteria" button.
+* Show Landing Page of "Acceptance Criteria".
+
+h4. Pre-condition:
+* User must have "Show all acceptance criteria" privilege.
+
+h4. Process:
+* Get [List of all "Acceptance Criteria" from server|guide:ListPtAcceptanceCriteriaActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Acceptance Criteria* information in grid view.
+** Reset input form on top to create new *Acceptance Criteria*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Acceptance Criteria" in Edit Mode|guide:SelectPtAcceptanceCriteriaActionService].
+* [Delete "Acceptance Criteria"|guide:DeletePtAcceptanceCriteriaActionService].
+
+!projecttrack/Show-Acceptance-Criteria.png!

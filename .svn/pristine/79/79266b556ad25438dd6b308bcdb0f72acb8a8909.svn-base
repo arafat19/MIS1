@@ -1,0 +1,294 @@
+<script type="text/javascript">
+    var dropDownUser, entityTypeId, title, entityId;
+
+    var userEntityListModel = false;
+    $(document).ready(function () {
+        onLoadUserEntityPage();
+    });
+
+    function onLoadUserEntityPage() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#appUserEntityForm"), onSubmitUserEntity);
+
+        var output =${output ? output : ''};
+        if (output.isError) {
+            showError(output.message);
+        } else {
+            userEntityListModel = output.lstAppUserEntity;
+        }
+
+        entityTypeId = output.entityTypeId;
+        entityId = output.entityId;
+        $('#entityId').val(entityId);
+        $('#entityTypeId').val(entityTypeId);
+        var appUserEntityMap = output.appUserEntityMap;
+        title = appUserEntityMap.entityTypeName;
+        $("#lblFormTitle").text('Create User ' + appUserEntityMap.entityTypeName + ' Mapping');
+        $("#lblEntityTypeName").text(appUserEntityMap.entityTypeName + ':');
+        $("#lblEntityName").text(appUserEntityMap.entityName);
+        var pluginId = appUserEntityMap.pluginId;
+        var leftMenu = appUserEntityMap.leftMenu;
+
+        // update page title
+        $(document).attr('title', "MIS - User " + title + " Mapping");
+        loadMenu(pluginId, leftMenu);
+        initFlexGrid();
+        populateFlexGridForUserEntity();
+    }
+
+    function onSubmitUserEntity() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller:'appUserEntity', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller:'appUserEntity', action: 'update')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#appUserEntityForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#appUserEntityForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+            showLoadingSpinner(false);
+        } else {
+            try {
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(userEntityListModel.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (userEntityListModel.rows.length > 0) {
+                        firstSerial = userEntityListModel.rows[0].cell[0];
+                        regenerateSerial($(userEntityListModel.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+                    userEntityListModel.rows.splice(0, 0, result.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        userEntityListModel.rows.pop();
+                    }
+
+                    userEntityListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(userEntityListModel);
+                    resetCreateForm();
+                }
+                else if (result.entity != null) { // updated existing
+                    updateListModel(userEntityListModel, result.entity, 0);
+                    $("#flex1").flexAddData(userEntityListModel);
+                    resetCreateForm();
+                }
+                showSuccess(result.message);
+            }
+            catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#appUserEntityForm"), dropDownUser);
+        $('#entityId').val(entityId); // re-assign hidden field value
+        $('#entityTypeId').val(entityTypeId); // re-assign hidden field value
+        $('#appUserId').attr('default_value', '');
+        $('#appUserId').reloadMe();
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+
+    function resetCreateForm() {
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#id').val('');
+        $('#appUserId').attr('default_value', '');
+        $('#appUserId').reloadMe();
+    }
+
+    function initFlexGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 5, sortable: false, hide: true},
+                        {display: "User Name", name: "username", width: 180, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        {name: 'Edit', bclass: 'edit', onpress: editUserEntity},
+                        {name: 'Delete', bclass: 'delete', onpress: deleteUserEntity},
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "User Name", name: "username", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All User-' + title + ' Mappings',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 50,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                    },
+                    customPopulate: customPopulateGrid
+                }
+        );
+    }
+
+    function customPopulateGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            userEntityListModel = getEmptyGridModel();
+        } else {
+            userEntityListModel = data;
+        }
+        $("#flex1").flexAddData(userEntityListModel);
+        return false;
+    }
+
+    function editUserEntity(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'user-project mapping') == false) {
+            return;
+        }
+        dropDownUser.value('');
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'appUserEntity', action: 'select')}?id=" + id,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    // execute post condition for edit
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showUserEntity(data);
+        }
+    }
+
+    // show property of user object on UI
+    function showUserEntity(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#appUserId').attr('default_value', entity.appUserId);
+        $('#appUserId').reloadMe();
+        $("#create").html("<span class='k-icon k-i-plus'></span>Update");   // change create button text to update
+    }
+
+    function deleteUserEntity(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true); // Spinner Show on AJAX Call
+        var userEntityMappingId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'appUserEntity', action: 'delete')}?id=" + userEntityMappingId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'user-entity mapping') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure to delete the selected user-entity mapping?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.isError == false) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetForm();
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            userEntityListModel.total = parseInt(userEntityListModel.total) - 1;
+            removeEntityFromGridRows(userEntityListModel, selectedRow);
+        } else {
+            // show delete error
+            showError(data.message);
+        }
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    function populateFlexGridForUserEntity() {
+        var strUrl = "${createLink(controller:'appUserEntity', action: 'list')}?entityTypeId=" + entityTypeId + "&entityId=" + entityId;
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (userEntityListModel) {
+            $("#flex1").flexAddData(userEntityListModel);
+        }
+    }
+
+    function loadMenu(pluginId, leftMenu) {
+        var menuId;
+        switch (pluginId) {
+            case 1:
+                menuId = MENU_ID_APPLICATION;
+                break;
+            case 4:
+                menuId = MENU_ID_INVENTORY;
+                break;
+            case 10:
+                menuId = MENU_ID_PROJECT_TRACK;
+                break;
+            default:
+                menuId = MENU_ID_APPLICATION;
+        }
+        loadNumberedMenu(menuId, leftMenu);
+    }
+
+</script>

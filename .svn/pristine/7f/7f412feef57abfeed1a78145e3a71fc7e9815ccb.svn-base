@@ -1,0 +1,140 @@
+<%@ page import="com.athena.mis.PluginConnector; com.athena.mis.document.config.DocSysConfigurationCacheUtility" %>
+<script type="text/javascript">
+
+    var outstandingInvitationList, output;
+
+    $(document).ready(function () {
+        onLoadJoinRequestPage();
+    });
+
+    function onLoadJoinRequestPage() {
+        initializeForm($('#joinRequestForm'), onSearchJoinRequest);
+
+        initFlexGrid();
+        $(document).attr('title', "DOC - Show Join Request(s)");
+        loadNumberedMenu(MENU_ID_DOCUMENT, "#docMemberJoinRequest/show");
+    }
+
+    function executePreCondition() {
+        if (!customValidateDate($("#fromDate"), 'from date', $("#toDate"), 'to date')) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSearchJoinRequest() {
+
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+        showLoadingSpinner(true);
+
+        var fromDate = $("#fromDate").val();
+        var toDate = $("#toDate").val();
+        var params = "?fromDate=" + fromDate + "&toDate=" + toDate;
+        var strUrl = "${createLink(controller: 'docMemberJoinRequest', action: 'searchRequestedMembers')}" + params;
+        $("#flexJoinRequest").flexOptions({url: strUrl}).flexReload();
+        setButtonDisabled($('#create'), false);
+
+    }
+
+
+    function resetForm() {
+        clearForm($("#joinRequestForm"), $('#fromDate'));
+        setButtonDisabled($('.save'), false);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Search");   // reset create button text
+    }
+
+    function initFlexGrid() {
+        $("#flexJoinRequest").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Email", name: "email", width: 200, sortable: false, align: "left"},
+                        {display: "User Name", name: "username", width: 150, sortable: false, align: "left"},
+                        {display: "<app:showSysConfig pluginId="${PluginConnector.DOCUMENT_ID}"
+                                  key="${DocSysConfigurationCacheUtility.DOC_CATEGORY_LABEL}"></app:showSysConfig>", name: "categoryName", width: 150, sortable: false, align: "left"},
+                        {display: "Approved On", name: "requestApproved", width: 150, sortable: false, align: "left"},
+                        {display: "Expired After", name: "expiredOn", width: 120, sortable: true, align: "left"}
+                    ],
+                    buttons: [
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        <app:ifAllUrl urls="/docMemberJoinRequest/approvedForMembership">
+                        {name: 'Approve', bclass: 'approve', onpress: approveRequest},
+                        </app:ifAllUrl>
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Email", name: "email", width: 180, sortable: false, align: "left"},
+                        {display: "<app:showSysConfig pluginId="${PluginConnector.DOCUMENT_ID}"
+                                  key="${DocSysConfigurationCacheUtility.DOC_CATEGORY_LABEL}"></app:showSysConfig>", name: "dc.name", width: 180, sortable: false, align: "left"}
+
+                    ],
+                    sortname: "email",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Join Request List',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: customPopulateGrid
+                }
+        );
+    }
+
+    function customPopulateGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            $("#flexJoinRequest").flexAddData(getEmptyGridModel());
+        } else {
+            $("#flexJoinRequest").flexAddData(data.gridObj);
+        }
+    }
+
+
+    <%-- reloading grid data --%>
+    function reloadGrid(com, grid) {
+        $('#flexJoinRequest').flexOptions({query: ''}).flexReload();
+    }
+
+    function approveRequest() {
+        if (executeCommonPreConditionForSelect($('#flexJoinRequest'), 'Join Request') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flexJoinRequest'))
+
+        $.ajax({
+            url: "${createLink(controller: 'docMemberJoinRequest', action: 'approvedForMembership')}?id=" + id,
+            success: executePostConditionForApproveRequest,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForApproveRequest(data) {
+        if (data.isError == true) {
+            showError(data.message);
+            return;
+        } else {
+            $('#flexJoinRequest').flexOptions({query: ''}).flexReload();
+            showSuccess(data.message);
+        }
+    }
+
+</script>

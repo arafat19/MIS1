@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Agent Wise Commission" Report For A "Specific Agent" | |
+*ActionServices:* | ShowAgentWiseCommissionForAgentActionService | *Auditable:* | No
+*Url:* | /exhReport/showAgentWiseCommissionForAgent | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 28th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent.
+
+h4. Description:
+This is the landing page of "Agent Wise Commission" Report For "Agent" with search panel on top.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Agent Wise Commission" link.
+* Show Landing Page of "Agent Wise Commission" Report For A "Specific Agent".
+
+h4. Pre-condition:
+* User must have "Show Agent Commission" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Agent Wise Commission" report For *Agent*.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Agent Wise Commission" Report in HTML Format For A "Specific Agent"|guide:ListAgentWiseCommissionForAgentActionService].
+
+!Exh/Agent_Commission_Report_Show.png!

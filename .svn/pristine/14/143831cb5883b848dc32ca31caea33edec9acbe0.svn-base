@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Approve *Purchase Request*  | |
+ *ActionService:* | ApprovepurchaseRequestActionService  | *Auditable:* | No
+  *Url*: | /procPurchaseRequest/approve ||
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director,Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show landing page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Select a Line-Item from grid view.
+* Click "Approve" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Approve *Purchase Request*.
+
+h4. Pre-condition:
+* User must have  "Approve Purchase Request" privilege.
+* Only unapproved *Purchase Request* is approve-able.
+* Approve *Purchase Request* must not approve-able.
+* *Purchase Request* must have at least one item to approve it.
+
+h4. Process:
+Approve Selected *Purchase Request*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show newly approved purchase request into grid-view with status.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit. [Error Handler|common Usecases]

@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Postal Code* | |
+*ActionService:* | ExhDeletePostalCodeActionService | *Auditable:* | No
+*Url:* | /exhPostalCode/delete | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 4th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Postal Code* link.
+* [Show Landing Page of "Postal Code"|guide:ExhShowPostalCodeActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Postal Code*.
+
+h4. Pre-condition:
+* User must have "Delete Postal Code" privilege.
+
+h4. Process:
+* Delete selected *Postal Code*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Postal Code* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

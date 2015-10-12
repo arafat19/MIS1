@@ -1,0 +1,63 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Company* | |
+*ActionService:* | UpdateCompanyActionService | *Auditable:* | No
+*Url:* | /company/update | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 18th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click *Company* link.
+* [Show Landing Page of Company|guide:ShowCompanyActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Company in Edit Mode|guide:SelectCompanyActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Company*.
+
+h4. Pre-condition:
+* User must have "Update Company" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Country|guide:GetDropDownCountryTagLibActionService] | Drop Down List | Numeric | Required
+Name | Text Box | Alpha Numeric | Required & Unique
+Code | Text Box | Alpha Numeric | Required & Unique
+Web URL | Text Box | Alpha Numeric | Required & Unique
+Logo | Image Upload Input Box | Alpha Numeric | Optional
+Email | Text Box | Alpha Numeric | Optional & Unique
+Address 1 | Text Area | Alpha Numeric | Required
+Address 2 | Text Area | Alpha Numeric | Optional
+{table}
+
+* Match expected version before updating a *Company*.
+
+h4. Process:
+* Update selected *Company*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Company* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

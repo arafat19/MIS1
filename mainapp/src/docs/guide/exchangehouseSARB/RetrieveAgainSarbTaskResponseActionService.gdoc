@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Again Get Response For "Sending Task to SARB" | |
+*ActionService:* | RetrieveAgainSarbTaskResponseActionService | *Auditable:* | No 
+*Url:* | /sarbTaskModel/retrieveResponseAgain | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [SARB|guide:_ShowSARBPlugin] option from top menu bar.
+* "SARB" sub menu of left menu should show as default.
+* Click "Task Status Details" link.
+* [Show Landing Page of "Task Status Details"|guide:_ShowSarbTaskForShowStatusActionService].
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Task Status Details"|guide:_SearchSarbTaskForShowStatusActionService].
+* Select a Line-Item from grid view.
+* Click "Get Response" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Ok" button.
+* Again Get Response For "Sending Task to SARB".
+
+h4. Pre-condition:
+* User must have "Retrieve SARB task response again" privilege.
+
+h4. Process:
+* Again Get Response for selected *Task*.
+
+h4. Post-condition:
+
+* *Success:*
+** Again Get Response for selected *Task* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

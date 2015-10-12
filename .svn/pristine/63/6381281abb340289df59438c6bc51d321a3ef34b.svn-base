@@ -1,0 +1,45 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show *Sanction Information* in Read Only Mode | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | N/A | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Cashier,Agent.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Sanction Info* link.
+* [Show Landing Page of "Sanction Information"|guide:ExhShowSanctionActionService].
+* Select a Line-Item from grid view.
+* Click "View Details" button from tool bar.
+* Show *Sanction Information* in Read Only Mode.
+
+h4. Pre-condition:
+* User must have "Show Sanction" privilege.
+
+h4. Process:
+* Get *Sanction Information* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Sanction Information* details in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

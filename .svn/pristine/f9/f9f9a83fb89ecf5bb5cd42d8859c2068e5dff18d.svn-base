@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sarbTransactionSummaryReport" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="60a1657a-8dec-40d5-bc59-023c34f20339">
+	<property name="ireport.zoom" value="1.2100000000000017"/>
+	<property name="ireport.x" value="1"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="companyName" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.sql.Timestamp"/>
+	<parameter name="toDate" class="java.sql.Timestamp"/>
+	<parameter name="companyCode" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="currencySymbol" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="companyId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="lstTaskStatus" class="java.util.Collection">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="lstTaskExcludingStatus" class="java.util.Collection"/>
+	<queryString>
+		<![CDATA[select created_on, sum(task_secl) tot_secl, sum(amount_secl) as tot_amount_secl,
+sum(task_accepted) as tot_accepted, sum(amount_accepted) as tot_amount_accepted,
+sum(task_rejected) as tot_rejected, sum(amount_rejected) as tot_amount_rejected
+FROM(
+select date(created_on) as created_on,
+case when ($X{IN,current_status,lstTaskStatus}) then 1 else 0 end AS task_secl,
+case when ($X{IN,current_status,lstTaskStatus}) then amount_in_local_currency else 0 end AS amount_secl,
+case when enabled='true' AND is_accepted_by_sarb = true AND is_cancelled = false then 1 else 0 end AS task_accepted,
+case when enabled='true' AND is_accepted_by_sarb = true AND is_cancelled = false then amount_in_local_currency else 0 end AS amount_accepted,
+case when enabled='true' AND is_accepted_by_sarb = false AND is_submitted_to_sarb = true then 1 else 0 end AS task_rejected,
+case when enabled='true' AND is_accepted_by_sarb = false AND is_submitted_to_sarb = true then amount_in_local_currency else 0 end AS amount_rejected
+from vw_sarb_task_model
+where created_on between $P{fromDate} and $P{toDate}
+and company_id=$P{companyId} and ($X{NOTIN,current_status,lstTaskExcludingStatus})
+) task
+GROUP BY task.created_on]]>
+	</queryString>
+	<field name="created_on" class="java.sql.Date"/>
+	<field name="tot_secl" class="java.lang.Long"/>
+	<field name="tot_amount_secl" class="java.math.BigDecimal"/>
+	<field name="tot_accepted" class="java.lang.Long"/>
+	<field name="tot_amount_accepted" class="java.math.BigDecimal"/>
+	<field name="tot_rejected" class="java.lang.Long"/>
+	<field name="tot_amount_rejected" class="java.math.BigDecimal"/>
+	<variable name="createdOn" class="java.lang.String"/>
+	<variable name="grandTotalCountSecl" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_secl}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalAmountSecl" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_amount_secl}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalCountAccepted" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_accepted}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalAmountAccepted" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_amount_accepted}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalCountRejected" class="java.lang.Long" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_rejected}]]></variableExpression>
+	</variable>
+	<variable name="grandTotalAmountRejected" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{tot_amount_rejected}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="827d5f1d-1416-4dc0-af5c-4b05fc5e3438" x="0" y="0" width="289" height="22"/>
+				<textElement>
+					<font size="16" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SARB Transaction Summary Report]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="db33818e-d090-447b-af42-36517319eefb" x="0" y="22" width="555" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="ae12d924-4e3c-4bcf-b88a-66a88f7e97f2" x="432" y="0" width="55" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[From Date]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="c20efd97-e1d4-4fe0-8869-004887149898" x="491" y="14" width="64" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="00f9e9c0-5a02-4316-9d42-2ea3f43f2975" x="487" y="0" width="5" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="181ed287-1af6-41b1-8b87-911d6c1bf0eb" x="491" y="0" width="64" height="14"/>
+				<box leftPadding="2"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cfd25887-55c0-4985-8aff-994c8a09db4d" x="487" y="14" width="5" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="030e68db-181f-440c-a605-6d51015a4f74" x="432" y="14" width="55" height="14"/>
+				<textElement>
+					<font size="9" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[To Date]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="23dffb95-7c0d-4a23-8daa-cb8d22015ea0" x="0" y="0" width="60" height="20"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="144c186c-a67f-4634-b651-86e392680245" x="60" y="0" width="65" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SECL Count]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="144c186c-a67f-4634-b651-86e392680245" x="125" y="0" width="65" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SECL Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="144c186c-a67f-4634-b651-86e392680245" x="190" y="0" width="93" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Accepted Count]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="144c186c-a67f-4634-b651-86e392680245" x="283" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Accepted Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="144c186c-a67f-4634-b651-86e392680245" x="372" y="0" width="94" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Rejected Count]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="144c186c-a67f-4634-b651-86e392680245" x="466" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Rejected Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="60" splitType="Stretch">
+			<textField pattern="dd-MMM-yy">
+				<reportElement uuid="9c44db74-bacf-4d48-b306-39616b2f1703" x="0" y="0" width="60" height="20"/>
+				<box leftPadding="2" rightPadding="0">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{created_on}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="edc24119-ad2d-4e0c-be28-187ce72b2594" x="60" y="0" width="65" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tot_secl}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement uuid="6395975a-a996-4a36-a90f-c217c202505e" x="125" y="0" width="65" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tot_amount_secl}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="4268efb2-a48f-4f54-b309-ed9217dd373c" x="190" y="0" width="93" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tot_accepted}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement uuid="c4b79591-4770-460b-afa4-dfce274adb29" x="283" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tot_amount_accepted}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="085ca3ba-e9bc-4760-8903-b63d94eae9db" x="372" y="0" width="94" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tot_rejected}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement uuid="faed7f78-8909-4391-982e-fc6807af075a" x="466" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.25" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.25" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{tot_amount_rejected}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="9d930f95-ed7f-40bf-967d-ecf5acf010ee" x="32" y="20" width="523" height="40"/>
+				<subreportParameter name="created_on">
+					<subreportParameterExpression><![CDATA[$F{created_on}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="companyId">
+					<subreportParameterExpression><![CDATA[$P{companyId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="lstTaskStatus">
+					<subreportParameterExpression><![CDATA[$P{lstTaskStatus}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "subReportTransactionSummary.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<summary>
+		<band height="20">
+			<staticText>
+				<reportElement uuid="6a6d37c2-ace5-4c9c-82ad-853937f88348" x="0" y="0" width="60" height="20"/>
+				<box leftPadding="2">
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField evaluationTime="Report" isBlankWhenNull="true">
+				<reportElement uuid="67de574b-766d-48a1-949b-cd1e30bf7922" x="60" y="0" width="65" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalCountSecl}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00" isBlankWhenNull="true">
+				<reportElement uuid="016d584e-b22c-4e94-a2d0-1a2762ffe47b" x="125" y="0" width="65" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalAmountSecl}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="beaf6ea8-ee4d-497e-8568-b8a0a2540363" x="190" y="0" width="98" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalCountAccepted}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00" isBlankWhenNull="true">
+				<reportElement uuid="44923ed9-f9e7-4ed5-932b-8ef2aff99af7" x="288" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalAmountAccepted}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="c755b731-9dd9-40c8-9cf1-a865d2cea64a" x="377" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalCountRejected}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00" isBlankWhenNull="true">
+				<reportElement uuid="c5ed71a1-da64-4171-a6e3-f95c9e373360" x="466" y="0" width="89" height="20"/>
+				<box rightPadding="2">
+					<topPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotalAmountRejected}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

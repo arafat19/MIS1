@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Download *Purchase Request* Report in PDF Format | |
+ *ActionService:* | DownloadForPurchaseRequestActionService| *Auditable:* | No
+ *Url*: | /procReport/downloadPurchaseRequestRpt | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 9th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Purchase Request" link.
+* [Show Landing Page of Purchase Request Report|guide:ShowForPurchaseRequestActionService].
+* User must insert valid input.
+* Click "PDF" icon upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download *Purchase Request* Report in PDF Format.
+
+h4. Pre-condition: 
+* User must have "Download Purchase Request Report" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+  PR Trace Number | Text Box  | Required
+{table}
+
+h4. Process:
+* To get "Purchase Request" Report in PDF Format "Click Here":purchaseRequest.pdf
+* Download report as a PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

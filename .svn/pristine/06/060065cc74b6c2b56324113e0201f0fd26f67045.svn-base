@@ -1,0 +1,64 @@
+<plugin name='inventory' version='0.1' grailsVersion='2.2.0 &gt; *'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>\
+Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/inventory</documentation>
+  <type>InventoryGrailsPlugin</type>
+  <resources>
+    <resource>InvDefaultDataBootStrap</resource>
+    <resource>InvSchemaUpdateBootStrap</resource>
+    <resource>InventoryBootStrap</resource>
+    <resource>InventoryPluginConfig</resource>
+    <resource>com.athena.mis.inventory.controller.InvInventoryController</resource>
+    <resource>com.athena.mis.inventory.controller.InvInventoryTransactionController</resource>
+    <resource>com.athena.mis.inventory.controller.InvInventoryTransactionDetailsController</resource>
+    <resource>com.athena.mis.inventory.controller.InvInventoryTransactionSummaryController</resource>
+    <resource>com.athena.mis.inventory.controller.InvProductionDetailsController</resource>
+    <resource>com.athena.mis.inventory.controller.InvProductionLineItemController</resource>
+    <resource>com.athena.mis.inventory.controller.InvReportController</resource>
+    <resource>com.athena.mis.inventory.controller.InvSupplierController</resource>
+    <resource>com.athena.mis.inventory.controller.InvSupplierItemController</resource>
+    <resource>com.athena.mis.inventory.controller.InvUserInventoryController</resource>
+    <resource>com.athena.mis.inventory.controller.InventoryController</resource>
+    <resource>com.athena.mis.inventory.controller.VehicleController</resource>
+    <resource>com.athena.mis.inventory.entity.InvInventory</resource>
+    <resource>com.athena.mis.inventory.entity.InvInventoryTransaction</resource>
+    <resource>com.athena.mis.inventory.entity.InvInventoryTransactionDetails</resource>
+    <resource>com.athena.mis.inventory.entity.InvProductionDetails</resource>
+    <resource>com.athena.mis.inventory.entity.InvProductionLineItem</resource>
+    <resource>com.athena.mis.inventory.entity.InvSupplier</resource>
+    <resource>com.athena.mis.inventory.entity.InvSupplierItem</resource>
+    <resource>com.athena.mis.inventory.entity.InvUserInventory</resource>
+    <resource>com.athena.mis.inventory.entity.Vehicle</resource>
+    <resource>com.athena.mis.inventory.integration.InvPluginConnectorService</resource>
+    <resource>com.athena.mis.inventory.service.InvInventoryIndexGeneratorService</resource>
+    <resource>com.athena.mis.inventory.service.InvInventoryService</resource>
+    <resource>com.athena.mis.inventory.service.InvInventoryTransactionDetailsService</resource>
+    <resource>com.athena.mis.inventory.service.InvInventoryTransactionService</resource>
+    <resource>com.athena.mis.inventory.service.InvInventoryTransactionSummaryService</resource>
+    <resource>com.athena.mis.inventory.service.InvProductionDetailsService</resource>
+    <resource>com.athena.mis.inventory.service.InvProductionLineItemService</resource>
+    <resource>com.athena.mis.inventory.service.InvReportService</resource>
+    <resource>com.athena.mis.inventory.service.InvSupplierItemService</resource>
+    <resource>com.athena.mis.inventory.service.InvSupplierService</resource>
+    <resource>com.athena.mis.inventory.service.InvUserInventoryService</resource>
+    <resource>com.athena.mis.inventory.service.VehicleService</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://grails.org/plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://download.java.net/maven/2/' url='http://download.java.net/maven/2/' />
+    <repository name='https://repository.jboss.org/nexus/' url='https://repository.jboss.org/nexus/' />
+  </repositories>
+  <dependencies />
+  <plugins>
+    <build>
+      <plugin group='org.grails.plugins' name='tomcat' version='2.2.0' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.2.0' />
+    </build>
+  </plugins>
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>

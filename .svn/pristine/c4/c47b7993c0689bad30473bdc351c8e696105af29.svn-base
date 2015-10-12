@@ -1,0 +1,46 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open "Transaction Day" | |
+*ActionService:* | OpenRmsTransactionDayActionService | *Auditable:* | No
+*Url:* | /rmsTransactionDay/openTransactionDay | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date* | *Reason for Changes* | *Version*
+Md. Shaheb Ali | 22th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Transaction Day* link.
+* [Show Landing Page of "Transaction Day"|guide:_ShowTransactionDay].
+* Click on *Open Tr. Day* button from tool bar.
+* Open "Transaction Day".
+
+h4. Pre-condition:
+* User must have "Open transcation day" privilege.
+* Previous "Transaction Day" must be closed.
+* If "Transaction Day" exist in same day, will not open new one again.
+
+h4. Process:
+* Open "Transaction Day".
+
+h4. Post-condition:
+
+* *Success:*
+** *Transaction Day* will be listed in grid view at first row.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

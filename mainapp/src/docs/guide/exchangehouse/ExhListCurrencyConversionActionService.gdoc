@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Currency Conversion* in Landing Page | |
+*ActionService:* | ExhListCurrencyConversionActionService | *Auditable:* | No
+*Url:* | /exhCurrencyConversion/list | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Currency Conversion* link.
+* Show List of *Currency Conversion* in [Landing Page|guide:ExhShowCurrencyConversionActionService].
+
+h4. Pre-condition:
+* User must have "List currency conversion" privilege.
+
+h4. Process:
+* Get list of *Currency Conversion* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** From Currency
+** To Currency
+** Buy Rate
+** Sell Rate
+** Modified On
+
+h4. Post-condition:
+
+* *Success:*
+** *Currency Conversion* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search *Currency Conversion* From Grid View|guide:ExhSearchCurrencyConversionActionService].
+
+!Exh/Currency Conversion_List.png!

@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search Un-approve "Inventory Consumption" From Grid View | |
+ *ActionService:* | SearchForUnApprovedInventoryConsumptionDetailsActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/listUnApprovedInventoryConsumptionDetails | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu of left menu should show as default.
+* Click "Consumption" link.
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+* Select a Line-Item from grid view.
+* Click "New" button.
+* [Show Landing Page of Un-Approved "Inventory Consumption"|guide:ShowForUnApprovedInventoryConsumptionDetailsActionService].
+* Click the magnify icon from grid view.
+* Write about searching criteria.
+* Press "Enter" button.
+* Search Un-approve "Inventory Consumption" From Grid View.
+
+h4. Pre-condition:
+* User must have "List Un Approved Consumption Details" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*	
+ Find | Text Box | Numeric | Chalan No
+ Find | Text Box | Alpha Numeric | *Item*
+ Find | Text Box | Numeric | Quantity
+{table}
+
+h4. Process:
+* Get Un-approve "Inventory Consumption" list (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all Un-approve "Inventory Consumption".
+
+h4. Post-condition:
+
+* *Success:*
+** Un-approve "Inventory Consumption" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of Un-approve "Inventory Consumption" in landing page|guide:ListForUnApprovedInventoryConsumptionDetailsActionService].
+* [Show Group list of "Inventory Consumption" in landing page|guide:ListForInventoryConsumptionActionService].
+

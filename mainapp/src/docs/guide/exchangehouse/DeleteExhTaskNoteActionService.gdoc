@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Task Note* | |
+*ActionService:* | DeleteExhTaskNoteActionService | *Auditable:* | No
+*Url:* | /exhTask/deleteEntityNoteForTask | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Enter Valid input.
+* [Search "Manage Task" Created By "Cashier"|guide:ListExhTaskForAdminActionService].
+* Select a Line-Item from grid view.
+* Click "Note" button from tool bar.
+* [Show Landing Page of "Task Note"|guide:ShowExhTaskNoteActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Task Note*.
+
+h4. Pre-condition:
+* User must have "Delete Customer Content" privilege.
+
+h4. Process:
+* Delete a selected *Task Note*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Task Note* from grid view.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

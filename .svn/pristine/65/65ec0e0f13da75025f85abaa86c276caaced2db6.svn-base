@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Task* For "Other Bank User" in Landing Page | |
+*ActionService:* | ExhListTaskForOtherBankUserActionService | *Auditable:* | No
+*Url:* | /exhTask/listForOtherBankUser | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Other Bank User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Other Bank Task" link.
+* Show List of *Task* For "Other Bank User" in [Landing Page|guide:ExhShowTasksForOtherBankUserActionService].
+
+h4. Pre-condition:
+* User must have "List task for other bank user" privilege.
+
+h4. Process:
+* Get list of *Task* For "Other Bank User" from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Ref No
+** Amount(BDT)
+** Amount (GBP/AUD)
+** Total Due
+** Customer Name
+** Beneficiary Name
+** Payment Method
+** Regular Fee
+** Discount
+
+h4. Post-condition:
+
+* *Success:*
+** *Task* For "Other Bank User" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Generate "Task" List For "Other Bank User"|guide:ExhSearchTaskForOtherBankUserActionService].

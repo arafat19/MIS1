@@ -1,0 +1,42 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Task" *Status* List in drop-down | |
+*ActionService:* | GetDropDownSystemEntityTagLibActionService | *Auditable:* | No
+*Url:* | /rmsTaskList/showForManageTaskList | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 21th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 11716.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click *Manage* link under task list.
+* [Show Landing Page of Manage "Task" list|guide:_ShowManageTaskList].
+* Populate "Task" *Status* List in drop-down.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get "Task" status list from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Task" status list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

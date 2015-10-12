@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of "Item Stock" Report | |
+ *ActionService:* | ShowForItemStockListActionService |*Auditable:* | No
+ *Url:* | /InvReport/showItemStock | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of "Item Stock" Report with *Item* details.
+
+h4. Flow:
+* Actor clicks  [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Item Stock" link.
+* Show Landing Page of "Item Stock" Report.
+
+h4. Pre-condition:
+* User must have "Show Item Stock List" privilege.
+
+h4. Process:
+* [Show "Item Stock" list with searching option|guide:SearchForItemStockListActionService].
+* [Show "Item Stock Details" list in grid view|guide:GetForStockDetailsListByItemIdActionService].
+* User will see all "Inventory Stock Details" Report within the system under following columns:
+** Serial
+** Type
+** "Inventory Name"
+** Stock Quantity
+** Unapproved(+)(Unapproved Inventory In)
+** Unapproved(-)(Unapproved Inventory Out)
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Inventory Item Stock" and its details report.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Inv/Item_Stock_List_Report_Show.png!

@@ -1,0 +1,105 @@
+<%@ page import="com.athena.mis.document.entity.DocInvitedMembersCategory; com.athena.mis.document.config.DocSysConfigurationCacheUtility; com.athena.mis.PluginConnector" %>
+<div id="application_top_panel" class="panel panel-primary" xmlns="http://www.w3.org/1999/html">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Send Invitation
+        </div>
+    </div>
+
+    <form id='sendInvitationForm' name='sendInvitationForm' class="form-horizontal form-widgets" role="form"
+          method="post">
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="col-md-1 control-label label-required" for="categoryId"><app:showSysConfig
+                        pluginId="${PluginConnector.DOCUMENT_ID}"
+                        key="${DocSysConfigurationCacheUtility.DOC_CATEGORY_LABEL}"></app:showSysConfig>:</label>
+
+                <div class="col-md-3">
+                    <doc:dropDownCategory
+                            dataModelName="dropDownCategory"
+                            name="categoryId"
+                            defaultValue="${output.categoryId}"
+                            required="true"
+                            validationmessage="Required"
+                            onchange="onChangeCategory()"
+                            tabindex="1">
+                    </doc:dropDownCategory>
+                </div>
+
+                <div class="col-md-2 pull-left">
+                    <span class="k-invalid-msg" data-for="categoryId"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label" for="subCategoryId"><app:showSysConfig
+                        pluginId="${PluginConnector.DOCUMENT_ID}"
+                        key="${DocSysConfigurationCacheUtility.DOC_SUB_CATEGORY_LABEL}"></app:showSysConfig>:</label>
+
+                <div class="col-md-11" id="containerSubCategory">
+                    <doc:dropDownSubCategory
+                            data_model_name="dropDownSubCategory"
+                            id="subCategoryId"
+                            name="subCategoryId"
+                            category_id="${output.categoryId}"
+                            default_value="${output.lstDocSubCategory}"
+                            url="${createLink(controller: 'docSubCategory', action: 'dropDownSubCategoryReload')}"
+                            validation_message="Required"
+                            multiple="multiple"
+                            show_hints="false"
+                            tabindex="2">
+                    </doc:dropDownSubCategory>
+                    <span class="k-invalid-msg" data-for="subCategoryId"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-1 control-label label-required" for="recipients">Recipients:</label>
+
+                <div class="col-md-11">
+                    <input type="text" class="k-textbox" id="recipients" name="recipients" tabindex="3"
+                           placeholder="Comma separated valid emails (Max:10)" required
+                           value="${output.docInvitedMemberEmail ? output.docInvitedMemberEmail : ''}"
+                           validationMessage="Required"/>
+                    <span class="k-invalid-msg" data-for="recipients"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+
+                <label class="col-md-1 control-label label-required" for="message">Message:</label>
+
+                <div class="col-md-11">
+                    <textarea class="k-textbox" id="message" name="message" tabindex="4"
+                              rows="3" placeholder="Custom message for the recipients" required
+                              validationMessage="Required">${output.docInvitedMemberMessage ? output.docInvitedMemberMessage : ''}</textarea>
+                    <span class="k-invalid-msg" data-for="message"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button name="send" id="send" type="submit" data-role="button"
+                    class="k-button k-button-icontext"
+                    role="button" tabindex="5"
+                    aria-disabled="false"><span class="k-icon k-i-plus"></span>Send
+            </button>
+
+            <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
+                    class="k-button k-button-icontext" role="button" tabindex="6"
+                    aria-disabled="false" onclick='resetForm();'><span class="k-icon k-i-close"></span>Cancel
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="panel-danger" id="lstRejectedMailDiv">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Already Member / Invitation Sent
+        </div>
+    </div>
+
+    <div id="lstFailureMail" class="panel panel-danger"></div>
+</div>
+

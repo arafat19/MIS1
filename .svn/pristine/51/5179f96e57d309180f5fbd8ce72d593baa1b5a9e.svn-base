@@ -1,0 +1,60 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show "Forwarded Unpaid Tasks Details" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsReport/listTaskDetailsForForwardedUnpaidTasks | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Forwarded Unpaid Tasks" link.
+* [Show Landing Page of "Forwarded Unpaid Tasks" Report|guide:showForForwardUnpaidTask].
+* User must insert valid input.
+* Click "Search" button.
+* [Generate "Forwarded Unpaid Tasks" Report in HTML Format|guide:ListTaskForForwardUnpaidTaskActionService].
+* Select a *Task* from "Tasks Summary" list.
+* Click "View Details" button from tool bar.
+* Right side of grid view will show "Forwarded Unpaid Tasks Details".
+
+h4. Pre-condition: 
+* User must have "" privilege.
+
+h4. Process:
+* Show "Forwarded Unpaid Tasks Details" information.
+* Following columns should show in grid view:
+** Serial
+** Ref No
+** Amount
+** Beneficiary Name
+** Instrument
+** Payment Method
+
+h4. Post-condition:
+
+* *Success:*
+** Show the "Forwarded Unpaid Tasks Details" in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].

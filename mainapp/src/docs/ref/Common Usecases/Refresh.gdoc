@@ -1,0 +1,36 @@
+
+h2.	Purpose
+System will show up-to-date data in grid-view by refresh.
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Refresh | | 
+ *Action Class:* | ListAnyDomainActionService | *Auditable:* | No
+ *Url:* | /anyDomain/list | | 
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+User.
+
+h4. Description:
+Name of use case shows its functionality.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Reload objects in grid view with criteria. 
+
+h4. Post-condition:
+
+* *Success:*
+** Refresh the grid.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

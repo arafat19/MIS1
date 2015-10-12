@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Landing Page of *Tier-1* | |
+*ActionService:* | ShowAccTier1ActionService | *Auditable:* | No
+*Url:* | /accTier1/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of *Tier-1* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Tier-1* link.
+* Show Landing Page of *Tier-1*.
+
+h4. Pre-condition:
+* User must have "Show Tier 1" privilege.
+
+h4. Process:
+* [Get List of all "Tier-1" from server|guide:ListAccTier1ActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Tier-1"|guide:CreateAccTier1ActionService].
+** Show list of all *Tier-1* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Tier-1" in Edit Mode|guide:SelectAccTier1ActionService].
+* [Delete "Tier-1"|guide:DeleteAccTier1ActionService].
+* [Search "Tier-1" From Grid View|guide:SearchAccTier1ActionService].
+
+!Acc/Tier_1_Show.png!

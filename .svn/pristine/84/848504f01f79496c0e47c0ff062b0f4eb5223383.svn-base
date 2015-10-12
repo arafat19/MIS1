@@ -1,0 +1,50 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Acknowledged Approved "Supplier Chalan" | |
+ *ActionService:* | AcknowledgeInvoiceFromSupplierActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/acknowledgeInvoiceFromSupplier | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director,Inventory Auditor,Chief Financial Officer,Production Operator,Project Manager.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click Report sub menu of Inventory option.
+* Click "Supplier Chalan" link.
+* [Show Landing Page of "Supplier Chalan" Report|guide:InvShowForSupplierChalanActionService].
+* Select a Line-Item from grid view.
+* Click "Acknowledge" Button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Acknowledged Approved "Supplier Chalan".
+
+
+h4. Pre-condition:
+* User must have "Acknowledge Chalan" privilege.
+* "Supplier Chalan" must be approved before acknowledged.
+
+h4. Process:
+Acknowledged approved "Supplier Chalan".
+
+h4. Post-condition:
+
+* *Success:*
+** Show Acknowledged "Supplier Chalan" in grid view with status.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show "Supplier Chalan" Report|guide:InvShowForSupplierChalanActionService].

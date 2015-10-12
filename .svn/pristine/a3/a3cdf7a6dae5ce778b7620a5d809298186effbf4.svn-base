@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of "Supplier Wise PO" Report | |
+ *ActionService:* | ShowForSupplierWisePOActionService| *Auditable:* | No
+ *Url*: | /procReport/showSupplierWisePO | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th January 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+ Director, Project Director.
+
+h4. Description:
+This is the landing page of "Supplier wise Purchase Order" Report with input form on top.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Supplier Wise PO" link.
+* Show landing page of "Supplier Wise Purchase Order" Report.
+
+h4. Pre-condition:
+* User must have "Show Supplier Wise Purchase Order Report" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+* Show All ["Supplier" list in grid view with searching Option|guide:GetSupplierListActionService].
+* Show From Date(Selected Projects Create Date) with calender.
+* Show To Date(Default Current Date) with calender.
+* Show *Project* list in drop down. [Populate Project List|application]
+* Show "Item Type" list in drop down. [Populate Item Type List|application]
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Supplier Wise Purchase Order" Report.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Supplier Wise PO" Report|guide:ListForSupplierWisePOActionService].
+* [Generate "Purchase Order" Report|guide:SearchForPurchaseOrderActionService].
+
+!procurement/Supplier_Wise_PO_Report_Show.png!

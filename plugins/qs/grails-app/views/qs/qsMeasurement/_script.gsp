@@ -1,0 +1,400 @@
+<script type="text/javascript">
+    var qsMeasurementListModel =${output ? output : ''};
+    var gridObjQs = false;
+    var middleLayout, outerLayout;
+    var qsMeasurementDate;
+    var validatorQsMeasurement, dropDownSite, quantity;
+
+    $(document).ready(function () {
+        onLoadQsMeasurement();
+    });
+
+    function onLoadQsMeasurement() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#qsMeasurementForm"), onSubmitQsMeasurement);
+
+        $('#quantity').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.99,
+            format: "#.##"
+
+        });
+        quantity = $("#quantity").data("kendoNumericTextBox");
+
+        var isError = qsMeasurementListModel.isError;
+        if (isError == 'true') {
+            var message = qsMeasurementListModel.message;
+            showError(message);
+            return;
+        }
+
+        initQsGrid();
+        initFlexBudget();
+
+        gridObjQs = qsMeasurementListModel.gridObjQs;
+
+        populateQSGrid();
+        populateBudgetGrid();
+
+
+        qsMeasurementDate = $("#qsMeasurementDate").val();
+
+        // update page title
+        $(document).attr('title', "MIS - Quantity Survey Measurement");
+        loadNumberedMenu(MENU_ID_QS, "#qsMeasurement/show");
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#qsMeasurementForm"))) {
+            return false;
+        }
+
+        if (checkCustomDate($('#qsMeasurementDate'), 'QS Measurement') == false) {
+            return false;
+        }
+
+        if ($("#budgetId").val() == "") {
+            showError("Please select a budget");
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitQsMeasurement() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+
+        var data = jQuery("#qsMeasurementForm").serialize();
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller: 'qsMeasurement', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller: 'qsMeasurement', action: 'update')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: data,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            try {
+
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(gridObjQs.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (gridObjQs.rows.length > 0) {
+                        firstSerial = gridObjQs.rows[0].cell[0];
+                        regenerateSerial($(gridObjQs.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+                    gridObjQs.rows.splice(0, 0, result.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        gridObjQs.rows.pop();
+                    }
+
+                    gridObjQs.total = ++previousTotal;
+                    $("#flex1").flexAddData(gridObjQs);
+
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(gridObjQs, result.entity, 0);
+                    $("#flex1").flexAddData(gridObjQs);
+                }
+                resetCreateForm(result);
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetCreateForm(result) {
+        clearForm($("#qsMeasurementForm"), dropDownSite);
+        dropDownSite.value('');
+        $("#qsMeasurementDate").val(qsMeasurementDate);
+        $('#lblProjectName').text('');
+        $('#lblBudgetItem').text('');
+        $('#lblUnit').text('');
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+
+    //-------------
+    function initQsGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 20, sortable: false, align: "right", hide: true},
+                        {display: "Budget Item", name: "budget_item", width: 120, sortable: false, align: "left"},
+                        {display: "Site", name: "site", width: 180, sortable: false, align: "left"},
+                        {display: "Quantity", name: "quantity", width: 100, sortable: false, align: "right"},
+                        {display: "QS Measurement Date", name: "qsMeasurementDate", width: 120, sortable: false, align: "right"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/qsMeasurement/select,/qsMeasurement/update">
+                        {name: 'Edit', bclass: 'edit', onpress: editQsMeasurement},
+                        </app:ifAllUrl>
+                        <sec:access url="/qsMeasurement/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteQsMeasurement},
+                        </sec:access>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Budget Item", name: "budgetItem", width: 180, sortable: true, align: "left"},
+                        {display: "Site", name: "siteName", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Quantity Survey Measurement',
+                    useRp: true,
+                    rp: 20,
+                    rpOptions: [15, 20, 25],
+                    showTableToggleBtn: false,
+                    height: getFullGridHeight() - 320,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);// Spinner hide after AJAX Call
+                        checkGrid();
+                    },
+
+                    customPopulate: onLoadQsMeasurementListJSON
+                }
+        );
+    }
+
+    function initFlexBudget() {
+        $("#flexBudget").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "ID", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Line Item", name: "budget_item", width: 90, sortable: true, align: "left"},
+                        {display: "Details", name: "details", width: 220, sortable: false, align: "left"},
+                        {display: "Project Id", name: "projectId", width: 30, sortable: false, align: "left", hide: true},
+                        {display: "Project Name", name: "projectName", width: 50, sortable: false, align: "left", hide: true},
+                        {display: "Budget Quantity", name: "budgetQuantity", width: 50, sortable: false, align: "left", hide: true},
+                        {display: "Unit", name: "unitName", width: 50, sortable: false, align: "left", hide: true}
+                    ],
+                    buttons: [
+                        {name: 'Add', bclass: 'addItem', onpress: addBudget},
+
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadBudgetGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "ALL", name: "budget_item", width: 150, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'Search Budget',
+                    useRp: false,
+                    rp: 20,
+                    showTableToggleBtn: false,
+                    height: getFullGridHeight() - 40,
+                    resizable: false,
+                    isSearchOpen: true,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    }
+                }
+        );
+    }
+
+    function addBudget(com, grid) {
+        var ids = $('.trSelected', grid);
+       
+        if (executeCommonPreConditionForSelect($('#flexBudget'), 'budget') == false) {
+            return;
+        }
+        var budgetId = $(ids[0]).attr('id').replace('row', '');
+        var budgetLineItem = $(ids[0]).find('td').eq(1).find('div').text();
+        var projectId = $(ids[0]).find('td').eq(3).find('div').text();
+        var projectName = $(ids[0]).find('td').eq(4).find('div').text();
+        var unitName = $(ids[0]).find('td').eq(6).find('div').text();
+
+        $('#projectId').val(projectId);
+        $('#budgetId').val(budgetId);
+        $('#lblProjectName').text(projectName);
+        $('#lblBudgetItem').text(budgetLineItem);
+        $('#lblUnit').text(unitName);
+        outerLayout.close('east');
+    }
+    function reloadBudgetGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flexBudget').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function deleteQsMeasurement(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var qsMeasurementId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'qsMeasurement', action: 'delete')}?id=" + qsMeasurementId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'QS Measurement') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected QS Measurement?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            gridObjQs.total = parseInt(gridObjQs.total) - 1;
+            removeEntityFromGridRows(gridObjQs, selectedRow);
+            resetCreateForm(data);
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function reloadGrid(com, grid) {
+        if (com == 'Clear Results') {
+            $('#flex1').flexOptions({query: ''}).flexReload();
+        }
+    }
+
+    function checkGrid() {
+        var rows = $('table#flex1 > tbody > tr');
+        if (rows && rows.length < 1) {
+            showInfo('No QS Measurement found');
+        }
+    }
+
+    function editQsMeasurement(com, grid) {
+        resetCreateForm();
+        if (executeCommonPreConditionForSelect($('#flex1'), 'QS Measurement') == false) {
+            return;
+        }
+
+        var qsMeasurementId = getSelectedIdFromGrid($('#flex1'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'qsMeasurement', action: 'select')}?id=" + qsMeasurementId,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            populateQsMeasurementDetails(data);
+        }
+    }
+
+    function populateQsMeasurementDetails(data) {
+        resetCreateForm(data);
+
+        var entity = data.entity;
+        var qsMeasurementMap = data.qsMeasurementMap;
+
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+//        $('#siteId').val(entity.siteId);
+        dropDownSite.value(entity.siteId);
+        $('#quantity').val(entity.quantity);
+        $('#comments').val(entity.comments);
+        $('#qsMeasurementDate').val(qsMeasurementMap.qsMeasurementDate);
+
+        $('#budgetId').val(entity.budgetId);
+        $('#projectId').val(qsMeasurementMap.projectId);
+        $('#lblProjectName').text(qsMeasurementMap.projectName);
+        $('#lblBudgetItem').text(qsMeasurementMap.budgetLineItem);
+        $('#lblUnit').text(qsMeasurementMap.unitName);
+
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    function onLoadQsMeasurementListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            gridObjQs = getEmptyGridModel();
+        } else {
+            gridObjQs = data;
+        }
+        $("#flex1").flexAddData(gridObjQs);
+    }
+
+    function populateQSGrid() {
+        var isGovtQs = $('#isGovtQs').val();
+        var strUrl = "${createLink(controller: 'qsMeasurement', action: 'list')}?isGovtQs=" + isGovtQs;
+        $("#flex1").flexOptions({url: strUrl});
+        if (gridObjQs) {
+            $("#flex1").flexAddData(gridObjQs);
+        }
+    }
+
+    function populateBudgetGrid() {
+        var strUrl = "${createLink(controller: 'budgBudget', action: 'getBudgetListForQs')}";
+        $("#flexBudget").flexOptions({url: strUrl});
+        $("#flexBudget").flexReload();
+    }
+
+    function onChangeSite() {
+        if ($('#siteId').val() != -1) {
+            $('#quantity').focus();
+        }
+    }
+
+</script>

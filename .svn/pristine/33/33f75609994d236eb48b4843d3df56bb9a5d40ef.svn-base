@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subBalanceForT2" language="groovy" pageWidth="450" pageHeight="842" whenNoDataType="BlankPage" columnWidth="450" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="a78c69f7-617e-49c8-b563-83f57afd8631">
+	<property name="ireport.zoom" value="1.2396694214876038"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="companyId" class="java.lang.Long"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<parameter name="projectIdList" class="java.lang.Object"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<parameter name="accTypeAssetId" class="java.lang.Long"/>
+	<parameter name="accTypeExpensesId" class="java.lang.Long"/>
+	<parameter name="accTypeLiabilitiesId" class="java.lang.Long"/>
+	<parameter name="accTypeIncomeId" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="t1_id" class="java.lang.Integer"/>
+	<parameter name="divisionIdList" class="java.lang.Object"/>
+	<queryString>
+		<![CDATA[SELECT coa.tier2 t2_id,t2.name t2_name,
+	    CASE
+            WHEN (coa.acc_type_id=$P{accTypeAssetId} OR coa.acc_type_id=$P{accTypeExpensesId}) THEN COALESCE(SUM(vw_voucher_details.dr_balance),0)
+            ELSE 0
+            END dr_balance,
+            CASE
+            WHEN (coa.acc_type_id=$P{accTypeLiabilitiesId} OR coa.acc_type_id=$P{accTypeIncomeId}) THEN COALESCE(SUM(vw_voucher_details.cr_balance),0)
+            ELSE 0
+            END cr_balance
+            FROM vw_acc_voucher_with_details vw_voucher_details
+            LEFT JOIN acc_chart_of_account coa ON coa.id = vw_voucher_details.coa_id
+            LEFT JOIN acc_tier2 t2 ON t2.id = coa.tier2
+            WHERE vw_voucher_details.voucher_date >= $P{fromDate}
+	  AND vw_voucher_details.voucher_date <= $P{toDate}
+	  AND vw_voucher_details.posted_by > $P{postedByParam}
+	  AND ($X{IN,vw_voucher_details.project_id,projectIdList})
+	  AND ($X{IN,vw_voucher_details.division_id,divisionIdList})
+	  AND vw_voucher_details.company_id = $P{companyId}
+            AND coa.tier1 = $P{t1_id}
+            AND coa.tier2 > 0
+            GROUP BY coa.acc_type_id,coa.tier2,t2.name]]>
+	</queryString>
+	<field name="t2_id" class="java.lang.Integer"/>
+	<field name="t2_name" class="java.lang.String"/>
+	<field name="dr_balance" class="java.math.BigDecimal"/>
+	<field name="cr_balance" class="java.math.BigDecimal"/>
+	<detail>
+		<band height="17">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="c775aee1-c34c-4096-abed-30d644366d44" x="0" y="0" width="250" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{t2_name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="false">
+				<reportElement uuid="116b01f9-9845-4155-a22c-9642baf67169" x="350" y="0" width="100" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cr_balance}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00" isBlankWhenNull="true">
+				<reportElement uuid="116b01f9-9845-4155-a22c-9642baf67169" x="250" y="0" width="100" height="17"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.0" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dr_balance}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

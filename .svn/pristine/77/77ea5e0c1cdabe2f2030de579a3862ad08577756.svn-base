@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Task Report for Purchase Instrument" in CSV Format | |
+*ActionService:* | DownloadTaskReportForPurchaseInstrumentActionService | *Auditable:* | No
+*Url:* |/rmsInstrument/downloadTaskReportForPurchaseInstrument | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Nahida Sultana  | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+ Remittance User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Instrument" sub menu from left menu.
+* Click "Instrument Purchase " link.
+* [Show Landing Page of "Instrument Purchase"|guide:showForInstrumentPurchase].
+* Enter valid input.
+* Click "CSV" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Task Report for Instrument Purchase" in CSV Format.
+
+h4. Pre-condition:
+* User must have "Download csv task report for instrument purchase" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Status|guide:]| Drop-Down | Numeric | Required
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+[Exchange House|guide:_PopulateExchangeHouseList] | Drop Down Box | Numeric | Required
+[Task List|guide:_PopulateTaskListDropDownList] | Drop Down Box | Numeric | Required
+[Bank List|guide:] | Drop-Down Box | Numeric | Required
+{table}
+
+h4. Process:
+* Download the report as CSV format.
+
+h4. Post-condition:
+
+* *Success:*
+** CSV Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+*
+

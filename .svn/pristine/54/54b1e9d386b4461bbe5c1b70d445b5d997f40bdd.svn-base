@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Inventory* | |
+*ActionService:* | CreateInvInventoryActionService | *Auditable:* | No
+*Url:* | /invInventory/create | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 9th January 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Inventory* link.
+* [Show Landing Page of Inventory|guide:ShowInvInventoryActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Inventory*.
+
+h4. Pre-condition:
+* User must have "Create inventory" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Populate Project List|application] | Drop-Down List | Numeric | Required
+Name | Text Box | Alpha Numeric | Required & Unique
+[Populate Inventory Type List|application] | Drop-Down List | Numeric | Required
+Is Factory | Check Box	| Boolean | Default Value False
+Description | Text Area | Alpha Numeric | Optional
+{table}
+
+* If *Inventory* "Is Factory" field is enable, created *Inventory* can do *Production*.
+
+h4. Process:
+* Create a new *Inventory*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Inventory* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Inv/InvInventory_Create.png!

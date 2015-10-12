@@ -1,0 +1,221 @@
+package com.athena.mis.projecttrack.actions.ptbug
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.SystemEntity
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.projecttrack.entity.PtBug
+import com.athena.mis.projecttrack.service.PtAcceptanceCriteriaService
+import com.athena.mis.projecttrack.service.PtBacklogService
+import com.athena.mis.projecttrack.service.PtBugService
+import com.athena.mis.projecttrack.utility.PtBacklogStatusCacheUtility
+import com.athena.mis.projecttrack.utility.PtBugStatusCacheUtility
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+/**
+ *  Update ownerId of PtBug for add to my task and update grid data
+ *  For details go through Use-Case doc named 'AddMyPtBugActionService'
+ */
+class AddMyPtBugActionService extends BaseService implements ActionIntf {
+
+    PtBacklogService ptBacklogService
+    PtAcceptanceCriteriaService ptAcceptanceCriteriaService
+    PtBugService ptBugService
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+    @Autowired
+    PtSessionUtil ptSessionUtil
+    @Autowired
+    PtBacklogStatusCacheUtility ptBacklogStatusCacheUtility
+    @Autowired
+    PtBugStatusCacheUtility ptBugStatusCacheUtility
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    private static final String BUG_ADD_FAILURE_MESSAGE = "Bug(s) could not be added"
+    private static final String BUG_ADD_SUCCESS_MESSAGE = "Bug(s) has been added successfully"
+    private static final String OBJ_NOT_FOUND = "Selected bug(s) not found"
+    private static final String NOT_ADDED_IN_SPRINT = "Selected bug(s) is not added to any sprint"
+    private static final String BUG_OBJ = "bug"
+    private static final String BUG_IDS = "bugIds"
+    private static final String BUG = "Bug"
+
+    /**
+     * Get parameters from UI and build ptBug object for update
+     * 1. check if id exists in parameterMap
+     * 2. check if old ptBug object exists
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap parameterMap = (GrailsParameterMap) params
+            List bugIds = (List<String>) parameterMap.ids.split(Tools.UNDERSCORE)
+            // check required parameter
+            if (bugIds.size() == 0) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            LinkedHashMap chkBugMap = checkBug(bugIds)
+            Boolean isError = (Boolean) chkBugMap.get(Tools.IS_ERROR)
+            if (isError.booleanValue()) {
+                result.put(Tools.MESSAGE, chkBugMap.get(Tools.MESSAGE))
+                return result
+            }
+            result.put(BUG_OBJ, chkBugMap.get(BUG_OBJ))
+            result.put(BUG_IDS, (List<Long>) bugIds)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BUG_ADD_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Update ptBug object ownerId by AppUser.id in DB
+     * This function is in transactional block and will roll back in case of any exception
+     * @param parameters -N/A
+     * @param obj -map returned from executePreCondition method
+     * @return -a map containing all objects necessary for buildSuccessResultForUI
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional
+    public Object execute(Object params, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj   // cast map returned from executePreCondition method
+            List<Long> bugIds = (List<Long>) preResult.get(BUG_IDS)
+            ptBugService.addToMyBug(bugIds)  // update backlog object in DB
+            result.put(BUG_OBJ, preResult.get(BUG_OBJ))
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            throw new RuntimeException(BUG_ADD_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for post condition
+     */
+    public Object executePostCondition(Object params, Object obj) {
+        return null
+    }
+
+    /**
+     * Show updated ptBug object in grid
+     * Show success message
+     * @param obj -map returned from execute method
+     * @return -a map containing all objects necessary for grid view
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        List<GridEntity> entity = []
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap executeResult = (LinkedHashMap) obj   // cast map returned from execute method
+            List<PtBug> lstBug = (List<PtBug>) executeResult.get(BUG_OBJ)
+            for (int i = 0; i < lstBug.size(); i++) {
+                PtBug bug = lstBug[i]
+                AppUser appUser = (AppUser) appUserCacheUtility.read(bug.ownerId)
+                SystemEntity status = (SystemEntity) ptBugStatusCacheUtility.read(bug.status)
+                GridEntity object = new GridEntity()    // build grid entity object
+                object.id = lstBug[i].id
+                object.cell = [
+                        Tools.LABEL_NEW,
+                        BUG,
+                        lstBug[i].title,
+                        status.key,
+                        appUser ? appUser.username : Tools.EMPTY_SPACE,
+                        Tools.EMPTY_SPACE,
+                        Tools.EMPTY_SPACE,
+                        Tools.EMPTY_SPACE
+                ]
+                entity << object
+            }
+
+            result.put(Tools.MESSAGE, BUG_ADD_SUCCESS_MESSAGE)
+            result.put(Tools.ENTITY, entity)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BUG_ADD_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                LinkedHashMap preResult = (LinkedHashMap) obj   // cast map returned from previous method
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, BUG_ADD_FAILURE_MESSAGE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, BUG_ADD_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Check bug existence and sprint id
+     * @param bugIds -list of ids of different bugs
+     * @return -list of bug(s)
+     */
+    private LinkedHashMap checkBug(List bugIds) {
+        LinkedHashMap result = new LinkedHashMap()
+        result.put(Tools.IS_ERROR, Boolean.TRUE)
+        List<PtBug> lstBug = []
+        for (int i = 0; i < bugIds.size(); i++) {
+            long bugId = Long.parseLong(bugIds[i].toString())
+            PtBug bug = ptBugService.read(bugId)
+            if (!bug) {
+                result.put(Tools.MESSAGE, OBJ_NOT_FOUND)
+                return result
+            }
+            if (bug.sprintId == 0) {
+                result.put(Tools.MESSAGE, NOT_ADDED_IN_SPRINT)
+                return result
+            }
+            bug.ownerId = ptSessionUtil.appSessionUtil.getAppUser().id  // change the owner_id by AppUser.id
+            lstBug << bug
+        }
+        result.put(BUG_OBJ, lstBug)
+        result.put(Tools.IS_ERROR, Boolean.FALSE)
+        return result
+    }
+}

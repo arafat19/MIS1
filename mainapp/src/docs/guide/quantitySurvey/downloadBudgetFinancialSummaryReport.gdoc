@@ -1,0 +1,39 @@
+
+{table}
+ *Use Case ID:* | MIS-QS_Measurement-39 | Priority: | High
+ *Name* | Download Budget Financial Summary Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url:* | N/A | *Action Class:* | DownloadForBudgetFinancialSummaryActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 24th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Click "PDF" icon upper right side of the page.
+# System will show conformation message of download.
+# Actor clicks "Ok" button.
+
+h4. Pre-condition:
+# Downloded PDF report show same as grid view report.
+
+h4. Process:
+Create a printable report of the Budget Financial Summary for the selecting project.
+
+h4. Post-condition:
+
+# *Success:*
+## PDF format Report will successfully download to user's computer.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

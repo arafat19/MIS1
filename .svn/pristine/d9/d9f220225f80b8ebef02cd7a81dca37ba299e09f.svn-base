@@ -1,0 +1,475 @@
+<script language="javascript">
+    var inventoryInDetailsListModel, dropDownItemId, dropDownVehicle,
+            actualQuantity, suppliedQuantity;
+
+    $(document).ready(function () {
+        $('#inventoryInDetailsForm').submit(function (e) {
+            var reverse = $('#reverse').val();
+            if (reverse == 'true') {
+                onSubmitReverseAdjustment();
+            } else {
+                onSubmitAdjustment();
+            }
+            return false;
+        });
+        initFlexGrid();
+        onLoadApprovedTransaction();
+    });
+
+    function onLoadApprovedTransaction() {
+        var output =${output ?output : ''};
+        initializeForm($("#inventoryInDetailsForm"), doNothing);
+        dropDownItemId = initKendoDropdown($('#itemId'), null, null, null);
+
+        $('#actualQuantity').kendoNumericTextBox({
+            min: 0,
+            decimals: 4,
+            format: "#.####"
+
+        });
+        actualQuantity = $("#actualQuantity").data("kendoNumericTextBox");
+
+        $('#suppliedQuantity').kendoNumericTextBox({
+            min: 0,
+            decimals: 4,
+            format: "#.####"
+
+        });
+        suppliedQuantity = $("#suppliedQuantity").data("kendoNumericTextBox");
+
+        if (output.isError) {
+            showError(output.message);
+            return
+        }
+
+        inventoryInDetailsListModel = output.gridObj;
+        populateInventoryIn(output.inventoryInMap);
+        $('#chalanNo').html('');
+        $('#create').hide();
+
+        populateFlexGrid();
+
+        dropDownVehicle.enable(false);
+        dropDownItemId.enable(false);
+
+        $('#actualQuantity').attr('disabled', true);
+        $('#adjComments').attr('disabled', true);
+
+        // update page title
+        $(document).attr('title', "MIS - Inventory-In from Supplier");
+        loadNumberedMenu(MENU_ID_INVENTORY, "#invInventoryTransaction/showInventoryInFromSupplier");
+    }
+
+    function doNothing() {
+        // do nothing
+    }
+
+    function populateInventoryIn(inventoryInMap) {
+        if (!inventoryInMap) {
+            return false;
+        }
+        $('#inventoryTransactionId').val(inventoryInMap.inventoryTransactionId);
+        $('#purchaseOrderLabel').html(inventoryInMap.purchaseOrderId);
+        $('#purchaseOrderId').val(inventoryInMap.purchaseOrderId);
+        $('#inventoryId').val(inventoryInMap.inventoryId);
+        $('#inventoryName').html(inventoryInMap.inventoryName);
+        $('#supplierName').html(inventoryInMap.supplierName);
+        $('#transactionEntityId').val(inventoryInMap.transactionEntityId);
+
+        return true;
+    }
+
+    function updatePODQuantity() {
+        if (dropDownItemId.value() == '') {
+            $('#unit').text('');
+            return false;
+        }
+        var unit = dropDownItemId.dataItem().unit;
+        var purchaseOrderDetailsId = dropDownItemId.dataItem().purchase_request_details_id;
+        $('#unit').text(unit);
+        $('#purchaseOrderDetailsId').val(purchaseOrderDetailsId);
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#inventoryInDetailsForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitAdjustment() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+
+        var data = jQuery("#inventoryInDetailsForm").serialize();
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'adjustInvInFromSupplier')}";
+
+        jQuery.ajax({
+            type: 'post',
+            data: data,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            try {
+                $(inventoryInDetailsListModel.rows).each(function (e) {
+                    if (this.id == result.adjustmentParentId) {
+                        copyEntityProperties(this, result.entity, 0);
+                        this.id = result.entity.id;
+                    }
+                });
+
+                $("#flex1").flexAddData(inventoryInDetailsListModel);
+                resetForm();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function executePreConditionForReverse() {
+        var adjustComments = $.trim($('#adjComments').val());
+        if (adjustComments.length == 0) {
+            showError('Comments not found');
+            return false;
+        }
+
+        if (!validateForm($("#inventoryInDetailsForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitReverseAdjustment() {
+        if (executePreConditionForReverse() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+
+        var data = jQuery("#inventoryInDetailsForm").serialize();
+        showLoadingSpinner(true);
+        var actionUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'reverseAdjustInvInFromSupplier')}";
+
+        jQuery.ajax({
+            type: 'post',
+            data: data,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostConditionForReverse(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePostConditionForReverse(data) {
+        if (data.reversed == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            inventoryInDetailsListModel.total = parseInt(inventoryInDetailsListModel.total) - 1;
+            removeEntityFromGridRows(inventoryInDetailsListModel, selectedRow);
+            resetForm();
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#inventoryInDetailsForm"), $('#adjComments'));
+        $('#create').hide();
+        $('#chalanNo').html('');
+        $('#comments').html('');
+        $('#unit').text('');
+        $('#reverse').val(false);
+        $('#adjComments').attr('disabled', true);
+        dropDownItemId.enable(false);
+        dropDownVehicle.enable(false);
+        suppliedQuantity.enable(false);
+    }
+
+    //-------------
+
+    function initFlexGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Chalan", name: "id", width: 40, sortable: false, align: "right"},
+                        {display: "Item", name: "itemId", width: 100, sortable: false, align: "left"},
+                        {display: "Supplied Quantity", name: "actualQuantity", width: 100, sortable: false, align: "right"},
+                        {display: "Actual Quantity", name: "actualQuantity", width: 100, sortable: false, align: "right"},
+                        {display: "Shrinkage", name: "shrinkage", width: 100, sortable: false, align: "right"},
+                        {display: "Transaction Date", name: "transaction_date", width: 90, sortable: false, align: "left"},
+                        {display: "Approved Date", name: "approved_on", width: 85, sortable: false, align: "left"} ,
+                        {display: "Supplier Chalan", name: "supplier_chalan", width: 80, sortable: false, align: "left"} ,
+                        {display: "Vehicle", name: "vehicle_name", width: 80, sortable: false, align: "left"} ,
+                        {display: "Approved By", name: "approved_by", width: 100, sortable: false, align: "left"},
+                        {display: "Created By", name: "createdBy", width: 100, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/invInventoryTransactionDetails/selectInventoryInDetailsFromSupplier">
+                        {name: 'Details', bclass: 'details', onpress: selectInventoryIn},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/invInventoryTransactionDetails/adjustInvInFromSupplier">
+                        {name: 'Adjustment', bclass: 'adjustment', onpress: selectInventoryInForAdjustment},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/invInventoryTransactionDetails/reverseAdjustInvInFromSupplier">
+                        {name: 'Reverse', bclass: 'reverse', onpress: selectInventoryInForReverseAdjustment},
+                        </app:ifAllUrl>
+                        {name: 'Report', bclass: 'addDoc', onpress: getInvoiceInventoryIn},
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Chalan", name: "iitd.id", width: 180, sortable: true, align: "left"},
+                        {display: "Item", name: "item.name", width: 180, sortable: true, align: "left"},
+                        {display: "Actual Quantity", name: "iitd.actual_quantity", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Approved Item(s) From Supplier',
+                    useRp: true,
+                    rp: 15,
+                    rpOptions: [15, 20, 25],
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 55,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);// Spinner hide after AJAX Call
+//                            checkGrid();
+                    },
+                    customPopulate: onLoadInventoryInListJSON
+                }
+        );
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    function checkGrid() {
+        var rows = $('table#flex1 > tbody > tr');
+        if (rows && rows.length < 1) {
+            showInfo('No approved inventory-in data found');
+        }
+    }
+
+    function selectInventoryIn(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return;
+        }
+        var inventoryInId = getSelectedIdFromGrid($('#flex1'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'invInventoryTransactionDetails', action: 'selectInventoryInDetailsFromSupplier')}?id=" + inventoryInId,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function selectInventoryInForAdjustment(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return;
+        }
+        $('#reverse').val(false);
+        $('#buttonAdjust').show();
+        var inventoryInId = getSelectedIdFromGrid($('#flex1'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'invInventoryTransactionDetails', action: 'selectInventoryInDetailsFromSupplier')}?id=" + inventoryInId,
+            success: executePostConditionForAdjustment,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function selectInventoryInForReverseAdjustment(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return;
+        }
+        $('#reverse').val(true);
+        $('#buttonReverse').show();
+        var inventoryInId = getSelectedIdFromGrid($('#flex1'));
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller: 'invInventoryTransactionDetails', action: 'selectInventoryInDetailsFromSupplier')}?id=" + inventoryInId,
+            success: executePostConditionForAdjustment,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            populateInventoryInDetails(data);
+            $('#create').hide();
+        }
+    }
+
+    function executePostConditionForAdjustment(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            populateInventoryInDetailsForAdjustment(data);
+            $('#create').show();
+        }
+    }
+
+    function populateInventoryInDetails(data) {
+        clearErrors($("#inventoryInDetailsForm"));
+        var entity = data.entity;
+
+        $('#id').val(entity.id);
+        $('#chalanNo').text(entity.id);
+        $('#version').val(data.version);
+
+        $('#vehicleNumber').val(entity.vehicleNumber);
+
+        $('#stackMeasurement').val(entity.stackMeasurement);
+        suppliedQuantity.value(entity.suppliedQuantity);
+        actualQuantity.value(entity.actualQuantity);
+        actualQuantity.enable(false);
+        suppliedQuantity.enable(false);
+
+        $('#comments').html(entity.comments);
+        $('#adjComments').val('');
+        $('#adjComments').attr('disabled', true);
+
+        $('#supplierChalan').val(entity.supplierChalan);
+
+        dropDownItemId.setDataSource(data.lstItem);
+        dropDownItemId.value(entity.itemId);
+
+        $('#transactionDate').val(data.transactionDate);
+
+        dropDownVehicle.value(entity.vehicleId);
+
+        updatePODQuantity();
+    }
+
+    function populateInventoryInDetailsForAdjustment(data) {
+        clearErrors($("#inventoryInDetailsForm"));
+        var entity = data.entity;
+
+        $('#id').val(entity.id);
+        $('#chalanNo').text(entity.id);
+        $('#version').val(data.version);
+
+        $('#vehicleNumber').val(entity.vehicleNumber);
+
+        $('#stackMeasurement').val(entity.stackMeasurement);
+        suppliedQuantity.value(entity.suppliedQuantity);
+        actualQuantity.value(entity.actualQuantity);
+        suppliedQuantity.enable(false);
+
+        var reverse = $('#reverse').val();
+        if (reverse == 'true') {
+            actualQuantity.enable(false);
+            $('#buttonAdjust').hide();
+        } else {
+            actualQuantity.enable(true);
+            $('#buttonReverse').hide();
+        }
+
+        $('#comments').html(entity.comments);
+        $('#adjComments').val('');
+        $('#adjComments').removeAttr('disabled');
+
+        $('#supplierChalan').val(entity.supplierChalan);
+
+        dropDownItemId.setDataSource(data.lstItem);
+        dropDownItemId.value(entity.itemId);
+
+        $('#transactionDate').val(data.transactionDate);
+
+        dropDownVehicle.value(entity.vehicleId);
+
+        updatePODQuantity();
+    }
+
+    function updateMaterial() {
+        if (dropDownItemId.value() == '') {
+            $('#unit').text('');
+        }
+
+        var unit = dropDownItemId.dataItem().unit;
+        var quantity = dropDownItemId.dataItem().quantity;
+        var budgetDetailsId = dropDownItemId.dataItem().budget_details_id;
+        $('#unit').text('of ' + quantity + ' ' + unit);
+    }
+
+    function onLoadInventoryInListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            inventoryInDetailsListModel = getEmptyGridModel();
+        } else {
+            inventoryInDetailsListModel = data;
+        }
+        $("#flex1").flexAddData(inventoryInDetailsListModel);
+    }
+
+    function getInvoiceInventoryIn(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var inventoryInId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'invReport', action: 'showInvoice')}?id=" + inventoryInId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    function populateFlexGrid() {
+        var inventoryInId = $('#inventoryTransactionId').val();
+        var strUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'listApprovedInvInFromSupplier')}?inventoryTransactionId=" + inventoryInId;
+        $("#flex1").flexOptions({url: strUrl});
+        if (inventoryInDetailsListModel) {
+            $("#flex1").flexAddData(inventoryInDetailsListModel);
+        }
+    }
+
+</script>

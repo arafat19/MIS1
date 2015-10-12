@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Task List" in drop-down | |
+*Action:* | GetRmsTaskListDropDownTagLibActionService | *Auditable:* | No
+*Url:* | /rmsTask/showForApproveTask  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Md. Shaheb Ali | 20th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Exchange House User.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click *Approve* link.
+* [Show Landing Page for "Approve Task"|guide:_ShowForApproveTask].
+* [Select "Exchange House"|guide:_PopulateFilterExchangeHouseList].
+* Populate "Task List" in drop-down.
+
+h4. Pre-condition:
+* Decision must be taken for specific "Exchange House" "Task"
+* "Exchange House" dropdown list must be selected
+
+h4. Process:
+* Get specific "Exchange House" list from server whos task is decision taken.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Exchange House" list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Create "Task"|guide:CreateRmsTaskActionService].
+* [Update "Task"|guide:UpdateRmsTaskActionService].

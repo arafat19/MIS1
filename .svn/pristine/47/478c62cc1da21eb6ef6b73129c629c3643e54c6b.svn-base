@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Task List Plan" Report | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsReport/showTaskListPlan | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+This is the landing page of "Task List Plan" Report with input form on top.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Task List Plan" link.
+* Show Landing Page of "Task List Plan" Report.
+
+h4. Pre-condition:
+* User must have "Show Task List Plan" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+* [Show "Exchange House" list in drop-down|guide:_PopulateExchangeHouseList].
+* [Show "Task List" list in drop-down|guide:_PopulateTaskListDropDownList].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Task List Plan" report landing page.
+** Show input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Task List Plan" Report in HTML Format|guide:SearchTaskListPlanActionService].
+
+!projecttrack/Show-Bug-Report.png!

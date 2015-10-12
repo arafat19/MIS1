@@ -1,0 +1,49 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Landing Page of *Scope of Work* | |
+*ActionService:* | ShowBudgetScopeActionService | *Auditable:* | No
+*Url:* | /budgetScope/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of *Scope of Work* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Scope of Work* link.
+* Show Landing Page of *Scope of Work*.
+
+h4. Pre-condition:
+* User must have "Show Budget Scope" privilege.
+
+h4. Process:
+* [Get List of all *Scope of Work* from server|guide:ListBudgetScopeActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create *Scope of Work*|guide:CreateBudgetActionService].
+** Show list of *Scope of Work* in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open *Scope of Work* in Edit Mode|guide:SelectBudgetScopeActionService].
+* [Delete *Scope of Work*|guide:DeleteBudgetScopeActionService].
+* [Search *Scope of Work* From Grid View|guide:SearchBudgetScopeActionService].
+
+

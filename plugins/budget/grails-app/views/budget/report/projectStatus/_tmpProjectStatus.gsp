@@ -1,0 +1,105 @@
+<script language="javascript">
+    var isError, projectId;
+    $(document).ready(function () {
+        projectId = "${result?.projectMap?.projectId}";
+        $('#hideProjectId').val(projectId);
+
+        if (projectId > 0) {
+            $('#updateProjectStatusDiv').show();
+        }else{
+            $('#updateProjectStatusDiv').hide();
+        }
+    });
+</script>
+
+<div id="divProject" class="panel panel-default">
+    <div class="panel-heading">Project</div>
+
+    <div class="panel-body">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td class="active">Project</td>
+                <td>${result?.projectMap?.projectName}</td>
+                <td class="active">Code</td>
+                <td>${result?.projectMap?.projectCode}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="divProjectStatus" class="panel panel-default">
+    <div class="panel-heading">Status Details</div>
+
+    <div class="panel-body">
+        <table class="table table-bordered">
+            <tbody>
+            <tr>
+                <td>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <td class="active" colspan="2">Current Status of Project</td>
+                        </tr>
+                        <tr>
+                            <td>Project Completed</td>
+                            <td>${result?.projectMap?.projectCompleted}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <td class="active" colspan="2">Consumption</td>
+                        </tr>
+                        <tr>
+                            <td>Approved</td>
+                            <td>${result?.projectMap?.invTotalApprovedConsumption}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <td class="active" colspan="2">Inventory</td>
+                        </tr>
+                        <tr>
+                            <td>Material</td>
+                            <td>${result?.projectMap?.invTotalMaterial}</td>
+                        </tr>
+                        <tr>
+                            <td>Fixed Asset</td>
+                            <td>${result?.projectMap?.invTotalFixedAsset}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>
+                            <td class="active" colspan="2">Quantity Survey</td>
+                        </tr>
+                        <tr>
+                            <td>Receivable(Internal)</td>
+                            <td>${result?.projectMap?.qsTotalReceivableInternal}</td>
+                        </tr>
+                        <tr>
+                            <td>Approved By Government</td>
+                            <td>${result?.projectMap?.qsTotalReceivableApprovedByGov}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

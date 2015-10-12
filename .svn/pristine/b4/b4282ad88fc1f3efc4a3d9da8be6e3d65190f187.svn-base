@@ -1,0 +1,140 @@
+<g:render template="/procurement/report/purchaseRequest/script"/>
+
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+
+        <div class="panel-title">
+            Search Purchase Request
+        </div>
+
+    </div>
+    <form id="searchForm" name="searchForm" class="form-horizontal form-widgets" role="form">
+        <div class="panel-body">
+            <g:hiddenField name="hidPurchaseRequestId" value=""/>
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label label-required" for="purchaseRequestId">PR No:</label>
+
+                        <div class="col-md-5">
+                            <input type="text"
+                                   tabindex="1"
+                                   class="k-textbox"
+                                   pattern="^(0|[1-9][0-9]*)$"
+                                   placeholder="PR No"
+                                   required validationMessage="Invalid PR No"
+                                   id="purchaseRequestId"
+                                   name="purchaseRequestId"
+                                   autofocus/>
+                        </div>
+
+                        <div class="col-md-4 pull-left">
+                            <span class="k-invalid-msg" data-for="purchaseRequestId"></span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button id="showReport" name="showReport" type="submit" data-role="button"
+                    class="k-button k-button-icontext" role="button" tabindex="2"
+                    aria-disabled="false"><span class="k-icon k-i-search"></span>Search
+            </button>
+        %{--<input name="showReport" id="showReport" class="ui-icon-search search bu" type='button' value='Search'/>--}%
+            <app:ifAllUrl urls="/procReport/downloadPurchaseRequestRpt">
+                <span class="download_icon_set">
+                    <ul>
+                        <li>Save as :</li>
+                        <li><a href="javascript:void(0)" id="printPurchaseRequestReport" class="pdf_icon"></a></li>
+                    </ul>
+                </span>
+            </app:ifAllUrl>
+
+        </div>
+    </form>
+</div>
+
+<div id="divPurchaseRequest" class="table-responsive" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="success">Purchase Request Information</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">PR Trace No</td>
+                        <td><span id='lblPurchaseRequestNo'></span></td>
+                        <td class="active">Created On</td>
+                        <td><span id='lblPurchaseRequestDate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Project Name</td>
+                        <td><span id='lblProjectName'></span></td>
+                        <td class="active">Project Description</td>
+                        <td><span id='lblProjectDescription'></span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="active">Number of Item(s)</td>
+                        <td><span id='lblNumberOfItem'></span></td>
+                        <td class="active">Grand Total of Item(s)</td>
+                        <td><span id='lblGrandTotalOfItem'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr id="tagValueOfMaterial">
+            <td class="success">Item List</td>
+        </tr>
+        <tr>
+            <td id="valueOfMaterial">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Serial</th>
+                        <th>Item Type</th>
+                        <th>Item Name</th>
+                        <th>Code</th>
+                        <th>Quantity</th>
+                        <th>Estimated Rate</th>
+                        <th>Total Cost</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tblItems">
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr id="approvalTag">
+            <td class="success">Approval</td>
+        </tr>
+        <tr id="approvalContentList">
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Director</td>
+                        <td><span id='lblApprovedByDirector'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Project Director</td>
+                        <td><span id='lblApprovedByProjectDirector'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+

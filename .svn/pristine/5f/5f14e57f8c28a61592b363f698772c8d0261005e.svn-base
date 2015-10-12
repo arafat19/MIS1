@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show Landing Page of *Task* For Approve | |
+ *ActionService:* | N/A | *Auditable:* | No
+ *Url:* | /rmsTask/showForApproveTask | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Exchange House User.
+
+h4. Description:
+This is the landing page for "Approve Task" with search panel on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Task Approve" link.
+* Show Landing Page of *Task* For Approve.
+
+h4. Pre-condition:
+* User must have "Show for approve Task" privilege.
+
+h4. Process:
+* Show search panel on top.
+* [Get "Exchange House" list in drop down|guide:PopulateFilterExchangeHouseList].
+
+h4. Post-condition:
+
+* *Success:*
+** Show search panel on top to [Search "Approve Task"|guide:ListTaskForApproveTaskActionService].
+** Show blank list of "Approve Task" in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Select "All Task"|guide:_SelectAllTask].
+* [Deselect "All Task"|guide:_DeselectAllTask].
+* [Approve "Task"|guide:ApproveRmsTaskActionService].
+* [Revise "Task"|guide:ReviseTaskActionService].
+* [Search "Approve Task" From Grid View|guide:SearchTaskForApproveTaskActionService].

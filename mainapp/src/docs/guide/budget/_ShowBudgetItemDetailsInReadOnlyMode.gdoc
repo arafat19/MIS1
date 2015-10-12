@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show "Budget Item Details" in Read Only Mode | |
+*ActionService:* | SelectBudgetDetailsActionService | *Auditable:* | No
+*Url:* | /budgBudgetDetails/select | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 7th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* [Show Landing Page of "Procurement Budget"|guide:ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Item(s)" button from tool bar.
+* [Show Landing Page of "Budget Details"|guide:ShowBudgetDetailsActionService].
+* Select a Line-Item from grid view.
+* Click "Details" button from tool bar.
+* Show "Budget Item Details" in Read Only Mode.
+
+h4. Pre-condition:
+* User must have "Select Budget Details" privilege.
+
+h4. Process:
+* Get "Budget Item Details" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected "Budget Item Details" information in read only mode.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

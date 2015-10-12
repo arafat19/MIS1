@@ -1,0 +1,56 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of Un-approved *Indent* Widget tab of "Procurement Option" | |
+ *ActionService:* |ListUnApprovedIndentActionService | *Auditable:* | No
+ *Url:* |/procIndent/listOfUnApprovedIndent | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* Clicks *Indent* tab of "Procurement" widget.
+* Show List of Un-approved *Indent* Widget tab of "Procurement Option".
+
+h4. Pre-condition:
+* User must have "List Of Unapproved Indent for Dash Board" privilege.
+* *Indent* must be Un-approved.
+
+h4. Process:
+* Get list of all un-approved *Indent* from server (default: 10 at Max).
+* Following columns should show in grid view:
+** Serial
+** Trace Number
+** Created By
+** Item Count
+** Created On
+
+h4. Post-condition:
+
+* *Success:*
+** Un-approved *Indent* will be listed corresponding widget tab.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Approve *Purchase Order* from Dashboard|guide:ApprovePOForDashBoardActionService].
+* [Show Landing Page of *Indent* Report from Dashboard|guide:ShowForIndentActionService].
+
+!procurement/List_Un-Approved_Indent_Widget.png!

@@ -1,0 +1,63 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of *My Task* in landing page| |
+ *ActionService:* | ListMyPtBacklogActionService | *Auditable:* | No
+ *Url*: | /ptBacklog/listMyBacklog | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *My Task* link.
+* Show List of *My Task* in [landing page|guide:ShowMyPtBacklogActionService]
+
+h4. Pre-condition:
+* User must have "List all my backlog" privilege.
+
+h4. Process:
+* Get list of *My Task* from server (default: 15 at Max).
+
+* Following columns should show in grid view:
+** Serial(Default:Invisible)
+** As A
+** I Want to
+** So That
+** Priority
+** Status
+** Hours
+** A.C Count
+** Bug Count
+** Unresolved
+
+h4. Post-condition:
+
+* *Success:*
+** *My Task* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search "My Task" From Grid View|guide:SearchMyPtBacklogActionService].
+
+!projecttrack/List-update-my-task.png!

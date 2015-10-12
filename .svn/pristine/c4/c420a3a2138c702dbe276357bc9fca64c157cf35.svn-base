@@ -1,0 +1,645 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SubTaskInvoice" language="groovy" pageWidth="535" pageHeight="570" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="3a1ea334-7733-4bfd-8926-8ff6e6427ddf">
+	<property name="ireport.zoom" value="1.2100000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="taskId" class="java.lang.Long"/>
+	<parameter name="REPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="sessionUserName" class="java.lang.String"/>
+	<parameter name="remittancePurpose" class="java.lang.String"/>
+	<parameter name="paymentMethodName" class="java.lang.String"/>
+	<parameter name="paidBy" class="java.lang.String"/>
+	<parameter name="paymentMethodId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[0]]></defaultValueExpression>
+	</parameter>
+	<parameter name="collectionPoint" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="invoiceCopyLabel" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[""]]></defaultValueExpression>
+	</parameter>
+	<parameter name="exchangeHouseName" class="java.lang.String"/>
+	<parameter name="payMethodBankDepositId" class="java.lang.Long"/>
+	<parameter name="payMethodCashCollectionId" class="java.lang.Long"/>
+	<parameter name="companyLogo" class="java.io.InputStream"/>
+	<parameter name="localCurrencyName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT t.ref_no, t.created_on, c.code cust_acc_no, t.pin_no,
+t.customer_name cust_name, replace(c.address,'\n',' ') cust_address,
+c.post_code cust_post_code, c.phone as cust_phone, c.email as cust_email,
+b.first_name, b.middle_name, b.last_name, b.account_no ben_acc_no, b.thana,b.bank,b.bank_branch, b.district, b.phone ben_phone, b.photo_id_type,
+t.amount_in_foreign_currency, t.conversion_rate,t.amount_in_local_currency,
+t.regular_fee, t.discount,
+company.address1 as company_address1,
+company.address2 as company_address2
+FROM exh_task t
+LEFT JOIN exh_customer c ON c.id = t.customer_id
+LEFT JOIN exh_beneficiary b ON b.id = t.beneficiary_id
+LEFT JOIN company ON company.id = t.company_id
+WHERE t.id=$P{taskId}]]>
+	</queryString>
+	<field name="ref_no" class="java.lang.String"/>
+	<field name="created_on" class="java.sql.Timestamp"/>
+	<field name="cust_acc_no" class="java.lang.String"/>
+	<field name="pin_no" class="java.lang.String"/>
+	<field name="cust_name" class="java.lang.String"/>
+	<field name="cust_address" class="java.lang.String"/>
+	<field name="cust_post_code" class="java.lang.String"/>
+	<field name="cust_phone" class="java.lang.String"/>
+	<field name="cust_email" class="java.lang.String"/>
+	<field name="first_name" class="java.lang.String"/>
+	<field name="middle_name" class="java.lang.String"/>
+	<field name="last_name" class="java.lang.String"/>
+	<field name="ben_acc_no" class="java.lang.String"/>
+	<field name="thana" class="java.lang.String"/>
+	<field name="bank" class="java.lang.String"/>
+	<field name="bank_branch" class="java.lang.String"/>
+	<field name="district" class="java.lang.String"/>
+	<field name="ben_phone" class="java.lang.String"/>
+	<field name="photo_id_type" class="java.lang.String"/>
+	<field name="amount_in_foreign_currency" class="java.lang.Double"/>
+	<field name="conversion_rate" class="java.lang.Double"/>
+	<field name="amount_in_local_currency" class="java.lang.Double"/>
+	<field name="regular_fee" class="java.lang.Double"/>
+	<field name="discount" class="java.lang.Double"/>
+	<field name="company_address1" class="java.lang.String"/>
+	<field name="company_address2" class="java.lang.String"/>
+	<variable name="totalForeignAmount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_in_local_currency}+$F{regular_fee}]]></variableExpression>
+	</variable>
+	<variable name="grandTotal" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($F{amount_in_local_currency}+$F{regular_fee})-$F{discount}]]></variableExpression>
+	</variable>
+	<title>
+		<band height="370" splitType="Stretch">
+			<textField>
+				<reportElement x="431" y="227" width="100" height="14" uuid="cbc20d0b-1f16-4c78-a79e-889f9f36defe"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paidBy}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="431" y="66" width="100" height="14" uuid="9ff49e52-d971-487e-92dc-48782c56c280"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sessionUserName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="139" width="77" height="14" uuid="1464e8a9-536d-4f1e-80df-ed202c6e54fc"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Post Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="181" width="96" height="15" uuid="ad23e7cd-3fcb-4a23-8ede-5fa0f68b5425"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Beneficiary Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="227" width="2" height="14" uuid="49d3314d-48ef-4c6c-8323-1bd48361e85e"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="323" width="535" height="1" uuid="9a5690e1-7635-4f38-a595-f7944161dec4"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="368" width="535" height="1" uuid="2f19a8ea-a094-482c-89d6-459d83f0e367"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="328" y="100" width="77" height="14" uuid="dca1be9e-461a-4645-8bfc-8d807d3f8b73"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Remittance Purpose]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="285" width="225" height="14" uuid="a3a3419f-ea0d-4f3a-9a98-6e766a631544"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($P{paymentMethodId}==$P{payMethodCashCollectionId}?($F{photo_id_type}?$F{photo_id_type}:"None"):"N/A")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="85" width="96" height="15" uuid="92dab7ec-c2f3-4792-90fe-f1eac4540181"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Customer Details]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="535" height="1" uuid="0cafe70f-e861-4c8e-acc7-d027dcbce21f"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="431" y="100" width="100" height="14" uuid="db7e4dbe-86cd-453a-b1af-9d1b8ea2e088"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{remittancePurpose}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="431" y="142" width="100" height="14" uuid="3518a46c-b446-4fb4-a4a2-b9b3ab7bc9ed"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount_in_foreign_currency}/$F{amount_in_local_currency}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="305" width="529" height="17" uuid="f742b17a-4e91-4ee9-ac6b-8f7707b5a863"/>
+				<textElement markup="styled">
+					<font size="6"/>
+				</textElement>
+				<text><![CDATA[<style isBold="true" pdfFontName="Helvetica-Bold">Terms and Conditions: </style>I hereby declare that the amount paid to you was or is not derived or obtained through any illegal means or transactions, and I accept the terms and conditions as set out in the framework contract which is available at the premises and on the website.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="114" width="2" height="14" uuid="4a446315-e105-44ad-a5eb-0bd4cf89a4c3"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="54" width="77" height="14" uuid="13972bfc-eb51-452a-a189-2028a7939fff"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Reference No.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="49" y="19" width="336" height="13" forecolor="#660099" uuid="e38d756d-d051-44c9-8667-107ec4c2bfc5"/>
+				<box leftPadding="1"/>
+				<textElement>
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Fixed" lineSpacingSize="3.5"/>
+				</textElement>
+				<text><![CDATA[Subsidiary of Southeast Bank Limited, Bangladesh]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" isUsingCache="true" onErrorType="Blank">
+				<reportElement isPrintRepeatedValues="false" x="0" y="3" width="49" height="29" uuid="4f455b33-fcc6-420e-8056-96a287dd0a7e"/>
+				<imageExpression><![CDATA[$P{companyLogo}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="429" y="170" width="2" height="14" uuid="51825e04-f162-466c-a3eb-70efa14e61f8"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="255" width="225" height="14" uuid="a11b6d3e-7320-4ecd-b74e-756c125a5210"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($P{paymentMethodId}==$P{payMethodBankDepositId}?($F{thana}?$F{thana}:""):"N/A")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="79" y="100" width="225" height="14" uuid="dfc5d24f-aca3-4d3e-a1f2-3d0f966d1e14"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ $F{cust_name}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="100" width="77" height="14" uuid="7d55455e-dd6c-43f8-b240-30a311a964d6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="54" width="2" height="14" uuid="a109df0a-37b4-430f-b8e7-96b8a7d7d073"/>
+				<textElement verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="79" y="240" width="225" height="14" uuid="3806b2dc-f603-4623-b087-df792dc7e1af"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ $P{collectionPoint}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="429" y="185" width="2" height="14" uuid="e30ff8a0-051a-489a-b8ea-5536feb80031"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="142" width="2" height="14" uuid="1864e2de-5905-45ee-9507-342f84a33887"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="66" width="77" height="14" uuid="2fd5e1ae-1118-42ab-9504-beee5bdcfe5b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cust. A/C No.]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="302" width="535" height="1" uuid="3b64ab2d-4dad-495e-ac1b-4345d7177242"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="270" width="225" height="14" uuid="4c643704-19be-450d-9248-a979dd0c354f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " + ($F{ben_phone}?$F{ben_phone}:"")]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="431" y="156" width="100" height="14" uuid="9a18c89b-699e-4b39-a568-c333afe8fd97"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount_in_local_currency}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="240" width="77" height="14" uuid="dbeb5150-bd53-4bca-a08b-85aeb1f851a3"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Collection Point]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="52" width="535" height="1" uuid="017f277e-5b05-4a90-b2f2-50e469e12ffe"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField isStretchWithOverflow="true" pattern="dd-MMM-yyyy [hh:mm a]" isBlankWhenNull="true">
+				<reportElement positionType="Float" stretchType="RelativeToBandHeight" x="431" y="54" width="100" height="14" uuid="35267785-8dda-488e-b92f-74bfde93942f"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{created_on}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="210" width="225" height="14" uuid="dc0973a7-06a5-4903-a0ec-50b4354956ce"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($P{paymentMethodId}==$P{payMethodBankDepositId}?$F{ben_acc_no}:"N/A")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="113" width="77" height="14" uuid="9774351b-80ec-42c2-aedc-11212459d502"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Phone]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="195" width="225" height="14" uuid="c89a426f-218d-45f9-82d6-0f2e62d13286"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$F{first_name} + ($F{middle_name}?" "+ $F{middle_name}:"") + ($F{last_name}?" "+ $F{last_name}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="431" y="114" width="100" height="14" uuid="db9a574a-197b-4a63-b732-49930b4fdc3f"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{paymentMethodName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="431" y="170" width="100" height="14" uuid="6064dc36-45f6-491e-a977-85fa7b904822"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{regular_fee}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="255" width="77" height="14" uuid="93e008ef-b76a-4fe7-a7f5-898f3d24a788"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Thana]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="104" y="85" width="200" height="15" uuid="2e6fd607-8e5c-49d8-945d-da485a0364fe"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PIN: "+ ($P{paymentMethodId}==$P{payMethodCashCollectionId}?$F{pin_no}:"N/A")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="79" y="152" width="225" height="29" uuid="986044cc-4da8-4a6b-b9cd-263e4dfa6cec"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": " + ($F{cust_address}?$F{cust_address}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="79" y="139" width="225" height="14" uuid="28c51d6e-a0bc-4543-9781-269315663b91"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($F{cust_post_code}? $F{cust_post_code} : '')]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="431" y="213" width="100" height="14" uuid="9c1c31d7-ade5-4808-842b-7a5df3a80700"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{grandTotal}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="2" y="36" width="533" height="8" uuid="c95474fe-c7d1-40cd-a5fe-0080d8fa519f"/>
+				<textElement textAlignment="Left" verticalAlignment="Bottom" markup="none">
+					<font size="6"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_address1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="328" y="213" width="77" height="14" uuid="7fa17dfb-b87f-4283-81d0-53421e75cb82"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Grand Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="156" width="2" height="14" uuid="cfd249e2-8eb1-423c-84aa-bd6b4760b8f6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="49" y="3" width="352" height="18" uuid="c28822b0-5ad5-47da-b9f3-7aa5ca3bceea"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{exchangeHouseName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="328" y="199" width="77" height="14" uuid="f3b5049e-f999-4338-8bcb-924ad99a12f1"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Discount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="100" width="2" height="14" uuid="0f91b57c-6e02-4f12-a04d-9a5d4dc14ca6"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField pattern="###0.00">
+				<reportElement x="431" y="199" width="100" height="14" uuid="4aaeb70d-b5b4-4b4e-b396-6e7cb00e6f67"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{discount}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="328" y="142" width="77" height="14" uuid="e69eb1ca-bbc3-4760-9fcb-f736d875738c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Rate (BDT)]]></text>
+			</staticText>
+			<textField pattern="###0.00">
+				<reportElement x="431" y="128" width="100" height="14" uuid="a7f6acf4-9a7b-41bf-b80d-1c85308f6f05"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount_in_foreign_currency}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="79" y="66" width="113" height="14" uuid="0766d962-0250-4468-9645-366a60baf54f"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ $F{cust_acc_no}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="270" width="77" height="14" uuid="9090f461-7005-47cf-bf1f-179191aca898"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Phone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="213" width="2" height="14" uuid="effb5755-22e2-4fe2-ac60-47ae7f9d185a"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="79" y="54" width="113" height="14" uuid="67acae9b-383a-4005-b9c0-85274d30e01b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+$F{ref_no}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="152" width="77" height="14" uuid="45a08352-1b20-46fe-a219-f6ba0434d486"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="66" width="2" height="14" uuid="9ce764ef-4903-4c83-9a63-ce9984e3c51d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="###0.00" isBlankWhenNull="true">
+				<reportElement x="431" y="185" width="100" height="14" uuid="cb58eb4a-e452-4c12-9e0c-a61cbe868b90"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalForeignAmount}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="401" y="3" width="130" height="13" uuid="cbaa41e3-41d1-424a-a14c-cc56675075a7"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Invoice: " + $P{invoiceCopyLabel}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="328" y="54" width="77" height="14" uuid="476d3238-1e03-467d-8967-aaf4f97e8e8b"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Order Created On]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="114" width="77" height="14" uuid="0abd1e0d-c5bd-4d1a-b545-049e62683fd7"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="285" width="77" height="14" uuid="f378e314-0aed-46fd-91c7-0f82ff3d5ee8"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Photo ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="199" width="2" height="14" uuid="c7c82ea4-b7a9-4d8c-a29a-50609bba1545"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="128" width="77" height="14" uuid="709bee8e-e4c8-40bf-b9d4-2404d052bac3"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="227" width="77" height="14" uuid="73c62c62-3342-42c3-8841-0025b86fc6f4"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Paid By]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="195" width="77" height="14" uuid="c01edc0e-f260-4d95-b611-e5a734277a76"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Beneficiary Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="210" width="77" height="14" uuid="6281b3b9-cd22-4a37-bf99-0062b51c002c"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Account No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="429" y="128" width="2" height="14" uuid="fabe55ae-eca3-4869-94e2-19593562c49d"/>
+				<textElement>
+					<font size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="66" width="77" height="14" uuid="b8c13624-63e6-486f-a0be-7f6e6a86eb15"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cashier Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="421" y="352" width="77" height="15" uuid="496302b3-11db-4267-ab64-d9352b3053c7"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Cashier Signature]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="81" width="535" height="1" uuid="18fda7ab-07b8-4a4f-94e0-365face90b88"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="36" y="352" width="77" height="15" uuid="6b4c5120-1554-4530-9061-4171b58e2610"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Customer Signature]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="170" width="77" height="14" uuid="f09d39fc-6c98-4c18-851d-47e42f908d83"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Fee]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="328" y="185" width="77" height="14" uuid="6d15123f-58ac-4d6a-ad5d-1dcc3379ab19"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="79" y="225" width="225" height="14" uuid="e7947b61-42dc-47ad-b105-4209b3b4dbba"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($P{paymentMethodId}==$P{payMethodBankDepositId}? $F{bank}+" , "+$F{bank_branch}+" , "+ $F{district}: "N/A")]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="225" width="77" height="14" uuid="bf246c6c-7d54-4ab0-a852-95b4ae806f6d"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Bank]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="79" y="113" width="225" height="14" uuid="01ab61b3-22e9-4a47-929c-ecbed588742e"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($F{cust_phone}? $F{cust_phone} : '')]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="2" y="44" width="533" height="8" uuid="c95474fe-c7d1-40cd-a5fe-0080d8fa519f"/>
+				<textElement textAlignment="Left" markup="none">
+					<font size="6"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{company_address2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="79" y="126" width="225" height="14" uuid="01ab61b3-22e9-4a47-929c-ecbed588742e"/>
+				<textElement>
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[": "+ ($F{cust_email}? $F{cust_email} : '')]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="2" y="126" width="77" height="14" uuid="9774351b-80ec-42c2-aedc-11212459d502"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Email]]></text>
+			</staticText>
+			<textField pattern="">
+				<reportElement x="328" y="156" width="77" height="14" uuid="9a18c89b-699e-4b39-a568-c333afe8fd97"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Equivalent " +$P{localCurrencyName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

@@ -1,0 +1,73 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Chart Of Account* | |
+*ActionService:* | CreateAccChartOfAccountActionService | *Auditable:* | No 
+*Url:* | /accChartOfAccount/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Chart Of Account* link.
+* [Show Landing Page of Chart of Account|guide:ShowAccChartOfAccountActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Chart Of Account*.
+
+h4. Pre-condition:
+* User must have "Create Chart of Account" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Account Type|guide:GetDropDownAccTypeTagLibActionService] | Drop Down List | Numeric | Required
+ [Populate Tier1 List|guide:GetTier1ListByAccTypeIdActionService] | Drop Down List | Numeric | Required
+ [Populate Tier2 List|guide:GetTier2ListByAccTier1IdActionService] | Drop Down List | Numeric | Optional
+ [Populate Tier3 List|guide:GetTier3ListByAccTier2IdActionService] | Drop Down List | Numeric | Optional
+ [Group|guide:GetDropDownAccGroupTagLibActionService] | Drop Down List | Numeric | Optional
+ Is Active | Check Box | Boolean | Default Value False
+ [Populate Source Type List|guide:PopulateSourceTypeList] | Drop Down List | Numeric | Required
+ [Populate Source Category List|guide:GetSourceCategoryByAccSourceIdActionService] | Drop Down List | Numeric | Optional
+ [Custom Group|guide:GetDropDownAccCustomGroupTagLibActionService] | Drop Down List | Numeric | Optional
+ Head Name | Text Area | Alpha Numeric | Required
+ [Code|guide:SystemGeneratedCOACode] |  | Auto Generated | Alpha Numeric
+{table}
+
+* *Chart of Account* "Head Name" must be unique.
+
+h4. Process:
+* Create a new *Chart Of Account*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Chart Of Account* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Pay Cash" Voucher|guide:_CreateAccPCVoucherActionService].
+* [Create "Pay Cheque" Voucher|guide:_CreateAccPBVoucherActionService].
+* [Create "Receive Cash" Voucher|guide:_CreateAccRCVoucherActionService].
+* [Create "Receive Cheque" Voucher|guide:_CreateAccRBVoucherActionService].
+* [Create Journal Voucher|guide:_CreateAccJRVoucherActionService].
+
+!Acc/ChartOfAccount_Create.png!

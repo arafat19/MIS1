@@ -1,0 +1,55 @@
+
+{table}
+ Use Case ID: | MIS-Budget-18 | Priority: | High
+ *Name* | Add Items in Budget Line Item | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | budgetDetails/create | *Action Class:* | CreateBudgetDetailsActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 20th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case reprensents its responsibility.
+
+h4. Pre-condition:
+# Follow rules of validation:{table}
+ *Fields* | *Input Type* | *Rules*
+ Project name | Read Only | Required
+ Budget Type | Read Only | Required
+ Budget Item | Read Only | Required
+ Details | Read Only | Required
+ Item Type: | Drop down | Required
+ Item: | Drop down | Required
+ Quantity: | Input Box | Required
+ Estimated Rate: | Input Box | Required
+ Total Amount(quantity*estimated cost): | Read Only | Required and auto generate
+ Use Against Asset | Check Box | Optional
+ Comments | Text area | Optional
+{table}
+# If Use against Asset is true, this item is used for fixed asset.
+# Create Item must be unique.
+
+h4. Process:
+Create a new item which is added with this budget line item.
+
+h4. Post-condition:
+
+# *Success:*
+## Add newly created material into grid-view (should be 1st row of grid).
+## Show success message.
+## Reset the field for next inputs.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].
+
+Related usecase :
+# [Populate Item list to create Budget Details|guide:GetForItemListForBudgetDetailsActionService]
+

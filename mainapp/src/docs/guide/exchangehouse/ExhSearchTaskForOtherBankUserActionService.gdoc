@@ -1,0 +1,56 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate *Task* list By "Other Bank User" | |
+*ActionService:* | ExhSearchTaskForOtherBankUserActionService | *Auditable:* | No
+*Url*: | /exhTask/listForOtherBankUser | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 1st February 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Other User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Other Bank Task" link.
+* [Show Landing Page of *Task* For "Other Bank User"|guide:ExhShowTasksForOtherBankUserActionService].
+* User must insert valid input.
+* Click "Search" Button.
+* Generate *Task* list By "Other Bank User".
+
+h4. Pre-condition:
+* User must have "List task for other bank user" privilege.
+* Rules of Searching:
+{table}
+*Field*   | *Input Type* | *Rules*
+Start Date | Calender |Required
+End Date | Calender | Required
+[Task Status|guide:GetDropDownSystemEntityTagLibActionService] |  Drop Down List | Required
+[Populate Bank List for "Other Bank User"|guide:ExhListBanksForShowTaskOtherBankUserActionService] | Drop Down List | Required
+{table}
+
+
+h4. Process:
+* Get *Task* list By "Other Bank User" (Default: 15 at Max) matching with search criteria.
+
+h4. Post-condition:
+
+* *Success:*
+** *Task* For "Other Bank User" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show List of *Task* For "Other Bank User" in Landing Page|guide:ExhListTaskForOtherBankUserActionService].
+
+!OtherBankTask_List.png!

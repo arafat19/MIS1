@@ -1,0 +1,302 @@
+package com.athena.mis.document.controller
+
+import com.athena.mis.document.actions.category.AcceptInvitationDocInvitedMemberActionService
+import com.athena.mis.document.actions.category.CreateDocCategoryActionService
+import com.athena.mis.document.actions.category.DeleteDocCategoryActionService
+import com.athena.mis.document.actions.category.ListDocCategoryActionService
+import com.athena.mis.document.actions.category.SearchDocCategoryActionService
+import com.athena.mis.document.actions.category.SelectDocCategoryActionService
+import com.athena.mis.document.actions.category.ShowAcceptInvitationDocInvitedMemberActionService
+import com.athena.mis.document.actions.category.ShowDocCategoryActionService
+import com.athena.mis.document.actions.category.ShowDocCategoryForAllUserActionService
+import com.athena.mis.document.actions.category.ViewDocMyCategoryDetailsActionService
+import com.athena.mis.document.actions.category.UpdateDocCategoryActionService
+import grails.converters.JSON
+
+class DocCategoryController {
+
+    static allowedMethods = [show: "post", create: "post", update: "post", delete: "post", list: "post", select: "post",
+            showMyCategories: "post", viewMyCategoryDetails: "post",
+            showCategory: 'get', showAcceptInvitation: "get", acceptInvitation: "post"]
+
+    ShowDocCategoryActionService showDocCategoryActionService
+    CreateDocCategoryActionService createDocCategoryActionService
+    UpdateDocCategoryActionService updateDocCategoryActionService
+    DeleteDocCategoryActionService deleteDocCategoryActionService
+    ListDocCategoryActionService listDocCategoryActionService
+    SearchDocCategoryActionService searchDocCategoryActionService
+    SelectDocCategoryActionService selectDocCategoryActionService
+
+    ViewDocMyCategoryDetailsActionService viewDocMyCategoryDetailsActionService
+
+    ShowDocCategoryForAllUserActionService showDocCategoryForAllUserActionService
+
+    ShowAcceptInvitationDocInvitedMemberActionService showAcceptInvitationDocInvitedMemberActionService
+    AcceptInvitationDocInvitedMemberActionService acceptInvitationDocInvitedMemberActionService
+
+    /*
+    * Show Category List
+    * */
+
+    def show() {
+        Map executeResult, result
+        Boolean isError
+
+        executeResult = (Map) showDocCategoryActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) showDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) showDocCategoryActionService.buildFailureResultForUI(executeResult)
+        }
+        render(view: '/document/docCategory/show', model: [modelJson: result as JSON])
+    }
+
+    /*
+    * Create A New Category
+    * */
+
+    def create() {
+        Map preResult, executeResult, result
+        Boolean isError
+        String output
+
+        preResult = (Map) createDocCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) createDocCategoryActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render(output)
+            return
+        }
+
+        executeResult = (Map) createDocCategoryActionService.execute(params, preResult)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) createDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) createDocCategoryActionService.buildFailureResultForUI(executeResult)
+        }
+
+        output = result as JSON
+        render output
+    }
+
+    /*
+    * Update a category
+    * */
+
+    def update() {
+        Map preResult, executeResult, result
+        Boolean isError
+        String output
+
+        preResult = (Map) updateDocCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateDocCategoryActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        executeResult = (Map) updateDocCategoryActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) updateDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) updateDocCategoryActionService.buildFailureResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /*
+    * Delete a category
+    * */
+
+    def delete() {
+        Map preResult, executeResult, result
+        Boolean isError
+        String output
+
+        preResult = (Map) deleteDocCategoryActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deleteDocCategoryActionService.buildFailureResultForUI(preResult)
+            output = result as JSON
+            render output
+            return
+        }
+        executeResult = (Map) deleteDocCategoryActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) deleteDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) deleteDocCategoryActionService.buildFailureResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /*
+    * List/Search Category
+    * */
+
+    def list() {
+        Map executeResult, result
+        String output
+        Boolean isError
+        if (params.query) {
+            executeResult = (Map) searchDocCategoryActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) searchDocCategoryActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) searchDocCategoryActionService.buildSuccessResultForUI(executeResult)
+            }
+        } else {
+            executeResult = (Map) listDocCategoryActionService.execute(params, null);
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) listDocCategoryActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) listDocCategoryActionService.buildSuccessResultForUI(executeResult)
+            }
+        }
+        output = result as JSON
+        render output
+    }
+    /*
+    * Select a Category from grid
+    * */
+
+    def select() {
+        Map executeResult, result
+        Boolean isError
+        String output
+
+        executeResult = (Map) selectDocCategoryActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) selectDocCategoryActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) selectDocCategoryActionService.buildFailureResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    /*
+    * Show My Categories for ListView
+    * */
+
+    def showMyCategories() {
+        render(view: '/document/docMyCategory/show')
+    }
+    /*
+    * View My Category details
+    * */
+
+    def viewMyCategoryDetails() {
+        render(template: '/document/docMyCategory/showMyCategoryDetails')
+
+       /* Map executeResult, result
+        Boolean isError
+
+        executeResult = (Map) viewDocMyCategoryDetailsActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) viewDocMyCategoryDetailsActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) viewDocMyCategoryDetailsActionService.buildFailureResultForUI(executeResult)
+        }
+        render(template: '/document/docMyCategory/myCategoryDetails', model: [categoryDetails: result.categoryDetails])*/
+    }
+
+    /*
+    * Show category For All Generic Users
+    * */
+
+    def showCategory() {
+        Map executeResult, result
+        Boolean isError
+        String output
+        flash.message = null
+
+        executeResult = (Map) showDocCategoryForAllUserActionService.execute(params, request)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) showDocCategoryForAllUserActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) showDocCategoryForAllUserActionService.buildFailureResultForUI(executeResult)
+        }
+        output = result as JSON
+        render(view: '/document/docCategory/showForGenericUser', model: [modelJson: output])
+    }
+
+    /*
+    * Show page for Accept Invitation
+    * */
+
+    def showAcceptInvitation() {
+        Map preResult, executeResult, result
+        Boolean isError
+        flash.message = null
+
+        preResult = (Map) showAcceptInvitationDocInvitedMemberActionService.executePreCondition(params, request)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showAcceptInvitationDocInvitedMemberActionService.buildFailureResultForUI(preResult)
+            flash.success = false
+            flash.message = result.message
+            render(view: '/document/docCategory/showForAcceptInvitation', model: [result: result])
+            return
+        }
+
+        executeResult = (Map) showAcceptInvitationDocInvitedMemberActionService.execute(params, preResult)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) showAcceptInvitationDocInvitedMemberActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) showAcceptInvitationDocInvitedMemberActionService.buildFailureResultForUI(executeResult)
+            flash.success = false
+            flash.message = result.message
+            render(view: '/document/docCategory/showForAcceptInvitation', model: [result: result])
+        }
+        flash.success = (!isError.booleanValue())
+        flash.message = executeResult.message
+        render(view: '/document/docCategory/showForAcceptInvitation', model: [result: result])
+    }
+
+
+    def acceptInvitation() {
+        Map preResult, executeResult, result
+        Boolean isError
+        flash.message = null
+
+        preResult = (Map) acceptInvitationDocInvitedMemberActionService.executePreCondition(params, request)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) acceptInvitationDocInvitedMemberActionService.buildFailureResultForUI(preResult)
+            flash.success = false
+            flash.message = result.message
+            render(view: '/document/docCategory/showForAcceptInvitation', model: [result: result])
+            return
+        }
+
+        executeResult = (Map) acceptInvitationDocInvitedMemberActionService.execute(params, preResult)
+        isError = (Boolean) executeResult.isError
+        if (!isError.booleanValue()) {
+            result = (Map) acceptInvitationDocInvitedMemberActionService.buildSuccessResultForUI(executeResult)
+        } else {
+            result = (Map) acceptInvitationDocInvitedMemberActionService.buildFailureResultForUI(executeResult)
+            flash.success = false
+            flash.message = result.message
+            render(view: '/document/docCategory/showForAcceptInvitation', model: [result: result])
+        }
+        flash.success = (!isError.booleanValue())
+        flash.message = result.message
+        render(view: '/application/login/auth')
+    }
+
+}

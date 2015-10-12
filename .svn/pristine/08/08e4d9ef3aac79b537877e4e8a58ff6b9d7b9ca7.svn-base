@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Send Agent's *Task* to "Exchange House" | |
+ *ActionService:* | ExhSendTaskToExchangeHouseActionService | *Auditable:* | No
+*Url*: | /exhTask/sendToExchangeHouse | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 23th January 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Task" link.
+* [Show Landing Page of Agent's *Task*|guide:ExhShowTaskForAgentActionService].
+* Select a Line-Item from grid view.
+* Click "Send to Exchange House" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Send Agent's *Task* to "Exchange House".
+
+h4. Pre-condition:
+* User must have "Send task to exchange house" privilege.
+* Sum of Balance Amount and Credit Amount must not exceed total "Task amount" for corresponding *Agent*.
+* Newly created *Task* will be listed in grid view.
+* *Task* list of corresponding *Agent* will be display in grid view.
+* Select a newly created *Task* from grid view.
+* Only newly created *Task* is send-able.
+
+h4. Process:
+* Send Agent's *Task* to "Exchange House".
+
+h4. Post-condition:
+
+* *Success:*
+** Send Agent's *Task* to exchange house.
+** Remove sended *Task* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

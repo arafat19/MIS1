@@ -1,0 +1,44 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open *Supplier* in Edit Mode | |
+*ActionService:* | SelectSupplierActionService | *Auditable:* | No
+*Url:* | /supplier/select | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 24th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Supplier* link.
+* [Show Landing Page of Supplier|guide:ShowSupplierActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open *Supplier* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select supplier" privilege.
+
+h4. Process:
+* Get *Supplier* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Supplier* information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

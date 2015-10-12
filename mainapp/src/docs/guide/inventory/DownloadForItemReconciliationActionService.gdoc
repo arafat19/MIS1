@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Download "Item Reconciliation" Report in PDF Format | |
+ *ActionService:* | DownloadForItemReconciliationActionService | *Auditable:* | No
+ *Url:* | /invReport/downloadForItemReconciliation | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 18th August 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Item Reconciliation" link.
+* [Show Landing Page of "Item Reconciliation" Report|guide:ShowForItemReconciliationActionService].
+* User must insert valid input.
+* Click "PDF" icon upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Item Reconciliation" Report in PDF Format.
+
+h4. Pre-condition: 
+* User must have "Download Item Reconciliation Report" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ [Populate Project List|application] | Drop-Down List | Numeric | Default(All)
+{table}
+
+
+h4. Process:
+* To get "Item Reconciliation" Report in PDF Format "Click Here":Item_Reconciliation_Report.pdf
+* Download Report as PDF Format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

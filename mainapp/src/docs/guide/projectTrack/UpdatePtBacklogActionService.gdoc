@@ -1,0 +1,60 @@
+
+{table}
+*Access Type:* | Restricted| Priority: | High
+ *Name:* | Update *Backlog* | |
+ *ActionService:* | UpdatePtBacklogActionService| *Auditable:* | No
+ *Url*: | /ptBacklog/update | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Backlog* link.
+* [Show Landing Page of "Backlog"|guide:ShowPtBacklogActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" Button.
+* [Open "Backlog" in Edit Mode|guide:SelectPtBacklogActionService]
+* User must insert valid input to update *Backlog*.
+* Click "Update" button.
+* Update *Backlog*.
+
+h4. Pre-condition:
+* User must have "Update a backlog" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Idea | Read Only | Alpha Numeric |
+[Module|guide:GetDropDownPtModuleTagLibActionService] | Drop-Down | Alpha Numeric | Required
+[Priority|guide:PopulateBacklogPriorityList] | Drop-Down | Alpha Numeric | Required
+Flow | Text Area | Alpha Numeric | Optional
+As a | Text Box | Alpha Numeric | Required
+I Want to | Text Area | Alpha Numeric | Required
+So that | Text Area | Alpha Numeric | Required
+{table}
+* Match expected version before updating an *Backlog*.
+
+h4. Process:
+Update selected *Backlog*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Backlog* from grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

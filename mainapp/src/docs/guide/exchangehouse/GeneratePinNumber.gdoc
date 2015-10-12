@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate PIN Number | |
+*ActionService:* | ExhCreateTaskActionService | *Auditable:* | No
+*Url:* | /exhTask/create | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*    | *Reason for Changes*    | *Version*
+Nahida Sultana | 19th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+System.
+
+h4. Description:
+Name of use case represents its functionality. System will auto generate 15 digits PIN number and will return to caller user-case.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Generate 15 digits Pin Number with following logic:
+
+** 1st 4 digits Represents Company Code.
+** Next 2 digits Represents day.
+** Next 2 digits Represents Month.
+** Next 2 digits represents Hour.
+** Next 2 digits represents Second.
+** Next 3 digits represents Milli-second.
+
+h4. Post-condition:
+
+* *Success:*
+** Send 15 digits PIN number to caller usercase.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create Cashier's "Task"|guide:_ExhCreateTaskForCashierActionService].
+* [Create Customer's "Task"|guide:_ExhCreateTaskForCustomerActionService].
+* [Create Agent's "Task"|guide:ExhCreateTaskActionService].

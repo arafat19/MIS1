@@ -1,0 +1,64 @@
+budget:
+         title: Budget Plugin
+
+
+         ShowBudgetActionService: Show Landing Page of Budget Line Item
+         CreateBudgetActionService: Create Budget Line Item
+         SelectBudgetActionService: Open Budget Line Item In Edit Mode
+         UpdateBudgetActionService: Update Budget Line Item
+         ListBudgetActionService: List Budget Line Item
+         SearchBudgetActionService: Search Budget Line Item From Grid View
+         DeleteBudgetActionService: Delete Budget Line Item
+
+         showPurchaseRequestFromBudgetLineItemGridView: Show Purchase Request From Budget Line Item Grid View
+         showBudgetReportFromBudgetGridView: Show Budget report from Budget Grid View
+         GetForItemListForBudgetDetailsActionService: Populate Item List to Create Budget details
+
+         ShowBudgetDetailsActionService: Show Landing Page of Budget Line Item Details
+         addItemsInBudgetLineItem: Add Items in Budget Line Item
+         openBudgetLineItemDetailsInEditMode: Open Budget Line Item Details in Edit Mode
+         updateBudgetLineItemDetails: Update Budget Line Item Details
+         listBudgetLineItemDetails: List Budget Line Item Details
+         searchBudgetLineItemDetails: Search Budget Line Item Details From Grid View
+         deleteBudgetLineItemDetails: Delete Budget Line Item Details
+
+         showBudgetType: Show Landing Page of Budget Type
+         createBudgetType: Create Budget Type
+         openBudgetTypeInEditMode: Open Budget Type in Edit Mode
+         updateBudgetType: Update Budget Type
+         listBudgetType: List Budget Type
+         searchBudgetType: Search Budget Type From Grid View
+         deleteBudgetType: Delete Budget Type
+
+         showProjectBudgetType: Show Landing Page of Project Budget Type
+         searchProjectBudgetType: Search Project Budget Type
+         saveProjectBudgetType: Save Project Budget Type
+         discardChangesProjectBudgetType: Discard Changes Project Budget Type
+         addBudgetTypeToAssignBudgetType: Add Budget Type to Assign Budget Type
+         removeBudgetTypeToAvailableBudgetType: Remove Budget Type to Available Budget Type
+         addAllBudgetTypeFromAvailableBudgetTypeToAssignBudgetType: Add All Budget Type From Available Budget Type to Assign Budget Type
+         removeAllBudgetTypeFromAssignBudgetTypeToAvailableBudgetType: Remove All Budget Type From Assign Budget Type to Available Budget Type
+
+         showBudgetLineItemReport: Show Landing Page of Budget Line Item Report
+         searchBudgetLineItemReport: Search Budget Line Item Report
+         downloadBudgetLineItemReport: Download Budget Line Item Report
+
+         showBudgetWisePOSummaryReport: Show Landing Page of Budget Wise PO Summary Report
+         searchBudgetWisePOSummaryReport: Search Budget Wise PO Summary Report
+         listBudgetWisePOSummaryReport: List Budget Wise PO Summary Report
+         downloadBudgetWisePOSummaryReport: Download Budget Wise PO Summary Report
+         downloadBudgetWisePOSummaryCSVReport: Download Budget Wise PO Summary CSV Report
+
+
+         showProjectStatusReport: Show Landing Page of Project Status Report
+         searchProjectStatusReport: Search Project Status Report
+         downloadProjectStatusReport: Download Project Status Report
+
+         showConsumptionDeviationReport: Show Landing Page of Consumption Deviation Report
+         searchConsumptionDeviationReport: Search Consumption Deviation Report
+         listConsumptionDeviationReport: List Consumption Deviation Report
+         downloadConsumptionDeviationReport: Download Consumption Deviation Report
+         downloadConsumptionDeviationCSVReport: Download Consumption Deviation CSV Report
+
+         showBudgetDashboard: Show Budget Status Dashboard
+         listBudgetDashboard: List Budget Status Dashboard

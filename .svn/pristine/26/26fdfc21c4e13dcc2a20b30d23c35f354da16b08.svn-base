@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Division* | |
+*ActionService:* | DeleteAccDivisionActionService | *Auditable:* | No
+*Url:* | /accDivision/delete | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Division* link.
+* [Show Landing Page of Division|guide:ShowAccDivisionActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Division*.
+
+h4. Pre-condition:
+* User must have "Delete Division" privilege.
+* If *Division* has dependency with following business entity then *Division* will not be delete-able:
+** *Voucher*
+
+h4. Process:
+* Delete a selected *Division*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Division* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

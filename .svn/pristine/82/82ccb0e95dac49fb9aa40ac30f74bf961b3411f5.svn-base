@@ -1,0 +1,96 @@
+package com.athena.mis.sarb.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.sarb.entity.SarbTaskDetails
+
+class SarbTaskDetailsService extends BaseService {
+
+    public SarbTaskDetails create(SarbTaskDetails sarbTaskDetails) {
+        SarbTaskDetails newSarbTaskDetails = sarbTaskDetails.save(false)
+        return newSarbTaskDetails
+    }
+
+
+    public SarbTaskDetails findByTaskIdAndEnabled(long taskId) {
+        SarbTaskDetails sarbTaskDetails = SarbTaskDetails.findByTaskIdAndEnabled(taskId,true,[readOnly:true])
+        return sarbTaskDetails
+    }
+
+    public int updateForRetrieveResponse(SarbTaskDetails taskDetails) {
+        String query = """
+                          UPDATE sarb_task_details SET
+                            version=version+1,
+                            response_of_retrieve_reference=:responseOfRetrieveReference,
+                            sarb_ref_no=:sarbRefNo,
+                            response_of_reference=:responseOfReference,
+                            is_accepted_by_sarb=:isAcceptedBySarb
+                        WHERE
+                            id=:id AND
+                            version=:version
+                """
+
+        Map queryParams= [responseOfRetrieveReference:taskDetails.responseOfRetrieveReference,sarbRefNo:taskDetails.sarbRefNo,
+                responseOfReference:taskDetails.responseOfReference,isAcceptedBySarb:taskDetails.isAcceptedBySarb,
+                id:taskDetails.id,version:taskDetails.version]
+        int updateCount = executeUpdateSql(query,queryParams)
+        if (updateCount <= 0) {
+            throw new RuntimeException("Failed to update SarbTaskDetails")
+        }
+        taskDetails.version = taskDetails.version + 1
+        return updateCount
+    }
+
+    private static final String UPDATE_FOR_MOVE_RESEND="""
+        UPDATE sarb_task_details SET
+            version = version+1,
+            enabled = false
+        WHERE
+            id= :id AND
+            version=:version
+    """
+    public int updateForMoveForResend(SarbTaskDetails sarbTaskDetails){
+
+        Map queryParams=[
+                id:sarbTaskDetails.id,
+                version: sarbTaskDetails.version
+        ]
+        int updateCount = executeUpdateSql(UPDATE_FOR_MOVE_RESEND,queryParams)
+        if(updateCount<=0){
+            throw new RuntimeException("Failed to update SarbTaskDetails")
+        }
+        sarbTaskDetails.version = sarbTaskDetails.version + 1
+        return updateCount
+    }
+
+    private static final String UPDATE_MOVE_FOR_CANCEL="""
+        UPDATE sarb_task_details SET
+            version = version+1,
+            revise_status = :reviseStatus
+            enabled = false
+        WHERE
+            id= :id AND
+            version=:version
+    """
+    public int updateForMoveForCancel(SarbTaskDetails sarbTaskDetails, long movedForCancelId){
+
+        Map queryParams=[
+                id:sarbTaskDetails.id,
+                version: sarbTaskDetails.version,
+                reviseStatus: movedForCancelId
+        ]
+        int updateCount = executeUpdateSql(UPDATE_MOVE_FOR_CANCEL,queryParams)
+        if(updateCount<=0){
+            throw new RuntimeException("Failed to update SarbTaskDetails")
+        }
+        sarbTaskDetails.version = sarbTaskDetails.version + 1
+        return updateCount
+    }
+
+    public int updateForMoveForReplace(){
+
+    }
+
+    public int updateForMoveForRefund(){
+
+    }
+}

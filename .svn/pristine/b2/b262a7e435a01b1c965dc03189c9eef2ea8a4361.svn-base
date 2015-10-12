@@ -1,0 +1,291 @@
+<script type="text/javascript">
+
+    var articleList, output;
+
+    $(document).ready(function () {
+        onLoadArticle();
+    });
+
+    function onLoadArticle() {
+        output = ${modelJson ? modelJson : ''};
+
+        initializeForm($('#articleForm'), onSubmitArticle);
+
+        if (output.isError) {
+            showError(output.message);                   // show error message in case of error
+        } else {
+            articleList = output.gridObj;               // set data in a global variable to populate
+        }
+
+        initFlexGrid();
+        $('#details').css('height',$('#articleGridContainer').height()-160);
+//        loadFlexGrid();
+        $(document).attr('title', "DOC - Add Article");
+        loadNumberedMenu(MENU_ID_DOCUMENT, "#docArticle/show");
+    }
+
+    function executePreCondition() {
+        // trim field vales before process.
+        if (!validateForm($("#articleForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitArticle() {
+
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller: 'docArticle', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller: 'docArticle', action: 'update')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#articleForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                // Spinner Hide on AJAX Call
+                onCompleteAjaxCall();
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+
+    function executePostCondition(result) {
+
+        if (result.isError) {
+            showError(result.message);
+            var errors = $(result.errors);
+            errors.each(function (i) {
+                var err = $(this);
+                var errStr = 'Error(s) occurred in some inputs';
+                try {
+                    if (err.length == 2) {
+                        if ($("label[for='" + err[0] + "']").html() != null) {
+                            errStr = $("label[for='" + err[0] + "']").html() + ' ' + err[1];
+                        }
+                    } else if (err.length == 1) {
+                        errStr = err[0]
+                    }
+                } catch (e) { /** ignored */
+                }
+                showError(errStr);
+            });
+
+            showLoadingSpinner(false);
+        } else {
+            // @todo-Azam to load grid without round trip
+            try {
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(articleList.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (articleList.rows.length > 0) {
+                        firstSerial = articleList.rows[0].cell[0];
+                        regenerateSerial($(articleList.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+
+                    articleList.rows.splice(0, 0, result.entity);
+
+                    if ($('#flexArticle').countEqualsResultPerPage(previousTotal)) {
+                        articleList.rows.pop();
+                    }
+
+                    articleList.total = ++previousTotal;
+                    $("#flexArticle").flexAddData(articleList);
+
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(articleList, result.entity, 0);
+                    $("#flexArticle").flexAddData(articleList);
+                }
+
+                resetForm();
+                showSuccess(result.message);
+
+            } catch (e) {
+            }
+        }
+    }
+
+    function resetForm() {
+        clearForm($("#articleForm"), $('#title'));
+        setButtonDisabled($('.save'), false);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Save");   // reset create button text
+    }
+
+    function initFlexGrid() {
+        $("#flexArticle").flexigrid
+        (
+                {
+                    url: "${createLink(controller: 'docArticle', action: 'list')}",
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Title", name: "title", width: 200, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/docArticle/show">
+                        {name: 'Preview', bclass: 'preview', onpress: previewArticle},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/docArticle/select,/docArticle/update">
+                        {name: 'Edit', bclass: 'edit', onpress: editArticle},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/docArticle/movedToTrash">
+                        {name: 'Moved to Trash', bclass: 'trash', onpress: movedToTrashArticle},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+
+                    sortname: "id",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All My Article List',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() + 200,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: customPopulateGrid
+                }
+        );
+    }
+
+    function customPopulateGrid(data) {
+        if (data.isError) {
+            showError(data.message);
+            articleList = getEmptyGridModel();
+        } else {
+            articleList = data.gridObj;
+        }
+        $("#flexArticle").flexAddData(articleList);
+    }
+
+
+    <%-- reloading grid data --%>
+    function reloadGrid(com, grid) {
+        $('#flexArticle').flexOptions({query: ''}).flexReload();
+    }
+
+    function previewArticle() {
+
+    }
+
+    <%-- Start : Delete operation of Category --%>
+    function movedToTrashArticle(com, grid) {
+        if (executePreConditionForMovedToTrashArticle() == false) {
+            return;
+        }
+
+        showLoadingSpinner(true); // Spinner Show on AJAX Call
+
+        var id = getSelectedIdFromGrid($('#flexArticle'));
+
+        $.ajax({
+            url: "${createLink(controller: 'docArticle', action: 'movedToTrash')}?id=" + id,
+            success: executePostConditionForMovedToTrashArticle,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForMovedToTrashArticle() {
+        if (executeCommonPreConditionForSelect($('#flexArticle'), 'Article') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to moved the selected Article to trash?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForMovedToTrashArticle(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flexArticle')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetForm();
+            $('#flexArticle').decreaseCount(1);
+            showSuccess(data.message);
+            // @todo-Azam managing grid to minimize round-trip
+            articleList.total = parseInt(articleList.total) - 1;
+            removeEntityFromGridRows(articleList, selectedRow);
+
+        } else {
+            // show delete error
+            showError(data.message);
+        }
+    }
+
+    function editArticle(com, grid) {
+        //clear form before putting edited value
+        clearForm($("#articleForm"));
+
+        if (executeCommonPreConditionForSelect($('#flexArticle'), 'Article') == false) {
+            return;
+        }
+        showLoadingSpinner(true);	// Spinner Show on AJAX Call
+        var id = getSelectedIdFromGrid($('#flexArticle'));
+        $.ajax({
+            url: "${createLink(controller: 'docArticle', action: 'select')}?id=" + id,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall,    // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+
+    function executePostConditionForEdit(data) {
+        if (data.entity == null) {
+            showError(result.message);
+        } else {
+            showArticle(data);
+        }
+    }
+
+    function showArticle(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        $('#title').val(entity.title);
+        $('#details').val(entity.details);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Save Changes");
+    }
+
+    function loadFlexGrid() {
+       /* var strUrl = "${createLink(controller: 'docArticle', action: 'list')}";
+        $("#flexArticle").flexOptions({url: strUrl});
+        if (articleList) {
+            $("#flexArticle").flexAddData(articleList);
+        }*/
+    }
+
+</script>

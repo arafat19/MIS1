@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Budget Schema* | |
+*ActionService:* | DeleteBudgSchemaActionService | *Auditable:* | No
+*Url:* | /budgSchema/delete | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Procurement" link.
+* [Show Landing Page of "Procurement Budget"|guide:ShowBudgetActionService].
+* Select a Line-Item from grid view.
+* Click "Schema" button from tool bar.
+* [Show Landing Page of "Budget Schema"|guide:ShowBudgSchemaActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Budget Schema*.
+
+h4. Pre-condition:
+* User must have "Delete budget schema" privilege.
+* If *Budget Schema* has dependency with following business entity then *Budget Schema* will not be delete-able:
+** Purchase Request
+** Purchase Order
+
+h4. Process:
+* Delete a selected *Budget Schema*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Budget Schema* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

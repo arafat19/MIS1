@@ -1,0 +1,50 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Search *Project* wise "Budget Scope" | |
+ *ActionService:* | SelectProjectBudgetScopeActionService | *Auditable:* | No
+ *Url:* | /projectBudgetScope/select | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 6th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click "Project Scope Mapping" link.
+* [Show Landing Page of "Project Scope Mapping"|guide:_showProjectBudgetScope].
+* Enter valid input.
+* Click "Search" button.
+* Search *Project* wise "Budget Scope".
+
+h4. Pre-condition:
+* User must have "Select Project Budget Scope" privilege.
+
+* Rules of Searching:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules*
+  [Populate Project List|application] | Drop-Down List |  Numeric | Required
+ {table}
+
+h4. Process:
+* Get *Project* wise "Budget Scope" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Project* wise "Budget Scope" in landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

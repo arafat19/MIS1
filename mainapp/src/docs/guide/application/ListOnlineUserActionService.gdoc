@@ -1,0 +1,60 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Online User* in Landing Page | |
+*ActionService:* | ListOnlineUserActionService | *Auditable:* | No
+*Url:* | /appUser/listOnlineUser | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 18th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* Click "Development" sub menu from left menu.
+* Click "Who's Online" link.
+* Show List of *Online User* in [Landing Page|guide:_ShowOnlineUserActionService].
+
+h4. Pre-condition:
+* User must have "List Online User" privilege.
+
+h4. Process:
+* Get list of *Online User* from server (default: 25 at Max).
+* Following columns should show in grid view:
+** Serial
+** User ID (Default: Invisible)
+** User Name
+** Login ID
+** Login Time
+** IP Address
+** Browser
+** Operating System
+** Last Activity
+
+h4. Post-condition:
+
+* *Success:*
+** *Online User* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+
+!application/Who'sOnline_List.png!

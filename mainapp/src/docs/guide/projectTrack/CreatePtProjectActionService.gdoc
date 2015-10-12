@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *System Project* | |
+*ActionService:* | CreatePtProjectActionService | *Auditable:* | No
+*Url:* | /ptProject/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 2nd July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Project* link.
+* [Show Landing Page of "System Project"|guide:ShowPtProjectActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *System Project*.
+
+h4. Pre-condition:
+* User must have "Create Project of Project track" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+Name | Text Box | Text | Required & Unique
+Code | Text Box | Text | Required & Unique
+{table}
+
+
+h4. Process:
+* Create a new *System Project*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *System Project* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+!projecttrack/Create-Project.png!
+

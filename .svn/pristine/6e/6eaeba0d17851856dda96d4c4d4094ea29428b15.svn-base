@@ -1,0 +1,108 @@
+<%@ page import="com.athena.mis.application.utility.ContentEntityTypeCacheUtility; com.athena.mis.application.utility.SystemEntityTypeCacheUtility" %>
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Customer Details
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <label class="col-md-2 control-label label-optional" for="name">Name:</label>
+
+            <div class="col-md-4">
+                <span id="name"></span>
+            </div>
+            <label class="col-md-2 control-label label-optional"
+                   for="addressVerifiedBy">Address Verified:</label>
+
+            <div class="col-md-4">
+                <input type="checkbox" id="addressVerifiedBy" name="addressVerifiedBy" disabled="true"/>
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="col-md-2 control-label label-optional" for="countryId">Nationality:</label>
+
+            <div class="col-md-4">
+                <span id="countryId"></span>
+            </div>
+            <label class="col-md-2 control-label label-optional" for="phone">Phone:</label>
+
+            <div class="col-md-4">
+                <span id="phone"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="col-md-2 control-label label-optional" for="customerDateOfBirth">Date Of Birth:</label>
+
+            <div class="col-md-4">
+                <span  id="customerDateOfBirth"></span>
+            </div>
+            <label class="col-md-2 control-label label-optional" for="email">Email:</label>
+
+            <div class="col-md-4">
+                <span id="email"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="col-md-2 control-label label-optional" for="postCode">Post Code:</label>
+
+            <div class="col-md-4">
+                <span  id="postCode"></span>
+            </div>
+            <label class="col-md-2 control-label label-optional" for="photoIdTypeId">Photo ID Type:</label>
+
+            <div class="col-md-4">
+                <span id="photoIdTypeId"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="col-md-2 control-label label-optional" for="sourceOfFund">Source of Fund:</label>
+
+            <div class="col-md-4">
+                <span  id="sourceOfFund"></span>
+            </div>
+            <label class="col-md-2 control-label label-optional" for="customerPhotoIdExpiryDate">Photo ID Expiry Date:</label>
+
+            <div class="col-md-4">
+                <span id="customerPhotoIdExpiryDate"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <label class="col-md-2 control-label label-optional" for="address">Address:</label>
+
+            <div class="col-md-4">
+                <span  id="address"></span>
+            </div>
+            <label class="col-md-2 control-label label-optional" for="photoIdNo">Photo ID No:</label>
+
+            <div class="col-md-4">
+                <span id="photoIdNo"></span>
+            </div>
+        </div>
+    </div>
+    <sec:access url="/exhReport/downloadCustomerCSV">
+        <span class="download_icon_set">
+            <ul>
+                <li>Save as :</li>
+                <li><a href="javascript:void(0)" id="printCsvBtn" class="csv_icon"></a></li>
+            </ul>
+        </span>
+        <div class="buttons">
+
+        </div>
+    </sec:access>
+    <app:systemEntityByReserved
+            name="entityTypeId"
+            typeId="${SystemEntityTypeCacheUtility.TYPE_CONTENT_ENTITY}"
+            reservedId="${ContentEntityTypeCacheUtility.CONTENT_ENTITY_TYPE_EXH_CUSTOMER}">
+    </app:systemEntityByReserved>
+</div>
+
+<table id="flex1" style="display:none"></table>
+<g:render template='/exchangehouse/exhCustomer/scriptForAdmin'/>

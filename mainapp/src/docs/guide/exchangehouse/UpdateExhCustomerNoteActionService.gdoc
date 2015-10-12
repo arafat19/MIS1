@@ -1,0 +1,68 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Customer Note* | |
+*ActionService:* | UpdateExhCustomerNoteActionService | *Auditable:* | No
+*Url:* | /exhCustomer/updateEntityNote | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 29th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Show Customer" link.
+* [Show Landing Page of All "Customer"|guide:ExhShowCustomerForAdminActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click "Note" button from tool bar.
+* [Show Landing Page of "Customer Note"|guide:ShowExhCustomerNoteActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open "Customer Note" in Edit Mode|guide:EditExhCustomerNoteActionService].
+* Click "Update" button.
+* Update *Customer Note*.
+
+h4. Pre-condition:
+* User must have "Update Customer Entity Note" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Customer Code | Read Only | Alpha Numeric | System Generated
+Name | Read Only | Alpha Numeric |
+Nationality | Read Only | Alpha Numeric |
+Phone | Read Only | Alpha Numeric  |
+Photo Id Type | Read Only | Alpha Numeric |
+Email | Read Only | Alpha Numeric  |
+Address | Read Only | Alpha Numeric|
+Source of Fund | Read Only | Alpha Numeric |
+Note | Text Area | Alpha Numeric | Required
+{table}
+
+* Match expected version before updating a *Customer Note*.
+
+h4. Process:
+* Update selected *Customer Note*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Customer Note* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

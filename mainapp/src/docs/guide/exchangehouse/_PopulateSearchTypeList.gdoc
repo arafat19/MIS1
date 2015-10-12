@@ -1,0 +1,43 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Search Type" List in drop-down | |
+*Action:* | ExhShowForCustomerByNameCodeActionService | *Auditable:* | No
+*Url:* | /exhCustomer/showForCustomerByNameAndCode  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent, Cashier.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursment" sub menu of left menu should show as default.
+* Click "Search Customer" link.
+* [Show Landing Page of "Search Customer"|guide:ExhShowForCustomerByNameCodeActionService].
+* Populate "Search Type" list in drop-down.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get list of "Search Type" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Search Type" in drop down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show "Customer" List in Grid View|guide:ExhSearchForCustomerByNameCodeActionService].

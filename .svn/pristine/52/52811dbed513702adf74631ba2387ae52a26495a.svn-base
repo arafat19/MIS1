@@ -1,0 +1,45 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Entity Content" | |
+*ActionService:* | ShowEntityContentActionService | *Auditable:* | No
+*Url:* | /entityContent/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 11th June 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Entity Content" with input form on top and grid view at the bottom.
+
+h4. Pre-condition:
+* User must have "Show entity content" privilege.
+
+h4. Process:
+* Show blank input form to [Create Entity Content|application].
+* [List Entity Content|application].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Entity Content" information in grid view.
+** Reset input form on top to create new "Entity Content".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Select Entity Content|application].
+* [Delete Entity Content|application].
+* [Search Entity Content|application].
+
+!application/Entity-Content_Show.png!

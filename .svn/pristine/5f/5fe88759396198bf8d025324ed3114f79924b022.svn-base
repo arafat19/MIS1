@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accGroupLedger" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15" uuid="045a512d-3e03-4140-abe6-b21278555768">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="152"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="groupId" class="java.lang.Long"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="fromDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="toDate" class="java.util.Date">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="previousBalance" class="java.math.BigDecimal"/>
+	<parameter name="isPositive" class="java.lang.Boolean"/>
+	<parameter name="projectIds" class="java.lang.Object"/>
+	<parameter name="groupName" class="java.lang.String"/>
+	<parameter name="postedByParam" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT avd.id, av.trace_no AS traceNo,acca.code, avd.particulars, av.voucher_date AS voucherDate,
+av.cheque_no AS chequeNo,
+avd.amount_dr AS amount_debit
+,avd.amount_cr AS amount_credit
+        FROM acc_voucher_details avd
+        LEFT JOIN acc_voucher av ON av.id = avd.voucher_id
+        LEFT JOIN acc_chart_of_account acca ON acca.id = avd.coa_id
+        WHERE avd.group_id = $P{groupId}
+	AND (av.voucher_date BETWEEN $P{fromDate} AND  $P{toDate})
+ AND av.posted_by > $P{postedByParam}
+	AND ($X{IN,avd.project_id,projectIds} OR avd.project_id=0)
+ORDER BY av.voucher_date,av.trace_no]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="traceno" class="java.lang.String"/>
+	<field name="code" class="java.lang.String"/>
+	<field name="particulars" class="java.lang.String"/>
+	<field name="voucherdate" class="java.sql.Date"/>
+	<field name="chequeno" class="java.lang.String"/>
+	<field name="amount_debit" class="java.math.BigDecimal"/>
+	<field name="amount_credit" class="java.math.BigDecimal"/>
+	<variable name="totalDebit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_debit}]]></variableExpression>
+	</variable>
+	<variable name="totalCredit" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{amount_credit}]]></variableExpression>
+	</variable>
+	<variable name="previousBalanceDr" class="java.math.BigDecimal" incrementType="Report">
+		<variableExpression><![CDATA[$P{isPositive}.booleanValue()==true?$P{previousBalance}:0.0]]></variableExpression>
+	</variable>
+	<variable name="previousBalanceCr" class="java.math.BigDecimal" incrementType="Report">
+		<variableExpression><![CDATA[$P{isPositive}.booleanValue()==false?$P{previousBalance}:0.0]]></variableExpression>
+	</variable>
+	<title>
+		<band height="100">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="64cf0921-f958-48bf-bf6b-937bb7ac7d7e" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" x="55" y="65" width="62" height="15"/>
+				<box leftPadding="0"/>
+				<textElement verticalAlignment="Top">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{groupName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="04f4e56a-744b-4bc7-ba17-f5b251743f3a" x="0" y="65" width="55" height="15"/>
+				<box leftPadding="2"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Group Name :]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="aeedb314-57f3-4eaa-9259-ab8b2f0be246" isPrintRepeatedValues="false" x="55" y="50" width="62" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="2e76867e-ac43-4899-b29f-3d7713a773cc" isPrintRepeatedValues="false" x="55" y="35" width="62" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3698dce6-e9bf-4007-b3c3-fa4a162444fa" x="0" y="50" width="55" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[To Date :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aa45b1d6-74c3-41ec-85c9-d57aa12456ea" x="0" y="35" width="55" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[From Date :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e8ece35a-e8e9-41b4-87e1-22eefbaf372d" x="0" y="80" width="55" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0524f38a-2880-4ffe-b537-aa4d2b95d68a" x="480" y="80" width="100" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Debit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c2346ca0-5141-467a-be5e-ab62c3ea0871" x="218" y="80" width="262" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Particulars]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="06a78a86-502f-49af-91a1-711af1a0353d" x="680" y="80" width="122" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Balance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b41fc0ba-ee08-4cf7-b441-6c5e28d09b0d" x="55" y="80" width="62" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Trace No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8b7e050-461f-4727-b1ae-a6ae998dac1b" x="117" y="80" width="58" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Cheque No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b1c28a7a-2738-4dc5-ba3c-70bd42125b4e" x="175" y="80" width="43" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="06a78a86-502f-49af-91a1-711af1a0353d" x="580" y="80" width="100" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Credit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="4b4fc319-83d7-4f44-9b9d-4b03a280ea74" x="0" y="0" width="117" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="12" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Group Ledger]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aa45b1d6-74c3-41ec-85c9-d57aa12456ea" x="0" y="20" width="55" height="15"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Printed On :]]></text>
+			</staticText>
+			<textField pattern="dd-MMM-yyyy">
+				<reportElement uuid="2e76867e-ac43-4899-b29f-3d7713a773cc" isPrintRepeatedValues="false" x="55" y="20" width="62" height="15"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="20">
+			<printWhenExpression><![CDATA[($V{PAGE_NUMBER}!=1) ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+			<staticText>
+				<reportElement uuid="9dc7510f-3945-4759-8d26-6385d08c392e" x="0" y="0" width="480" height="20" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}!=1) ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Previous Balance]]></text>
+			</staticText>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="30b5117d-a629-4b15-be3b-05d3459a1ef5" x="480" y="0" width="100" height="20" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}!=1) ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{previousBalanceDr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="f0b2ca5f-25b2-4d50-a0a1-003d3eee9b23" x="680" y="0" width="122" height="20" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}!=1) ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{previousBalance}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="0461da3d-d5d5-4a02-8a52-5e488119b5b9" x="580" y="0" width="100" height="20" isRemoveLineWhenBlank="true">
+					<printWhenExpression><![CDATA[($V{REPORT_COUNT}!=1) ?Boolean.FALSE:Boolean.TRUE]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{previousBalanceCr}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="20">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="bca2b8cb-ec4c-4049-846b-31447f4ed593" stretchType="RelativeToTallestObject" x="218" y="0" width="262" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{particulars}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00">
+				<reportElement uuid="ecfda7c5-1f0b-4725-a9a6-32ed26713368" stretchType="RelativeToTallestObject" x="580" y="0" width="100" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount_credit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement uuid="937b4114-309f-4669-bf87-5032c0020faf" stretchType="RelativeToTallestObject" x="480" y="0" width="100" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount_debit}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd-MMM-yy">
+				<reportElement uuid="6218b20a-f8f8-4256-9ea0-20ac9983f70d" stretchType="RelativeToTallestObject" x="0" y="0" width="55" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{voucherdate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="fd3d9405-0181-485e-8ce3-ceaaba44dcbf" stretchType="RelativeToTallestObject" x="55" y="0" width="62" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{traceno}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="f0ce2df3-4a4a-49ee-b7ee-2c4456ecfb59" stretchType="RelativeToTallestObject" x="117" y="0" width="58" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{chequeno}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#0.00" isBlankWhenNull="true">
+				<reportElement uuid="0318a31b-3a4f-4aff-830e-d3f4ebc3826c" stretchType="RelativeToTallestObject" x="680" y="0" width="122" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{previousBalance}+$V{totalDebit}-$V{totalCredit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement uuid="2f015d24-f7a3-470f-89dd-daa7384d7f32" stretchType="RelativeToTallestObject" x="175" y="0" width="43" height="20"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

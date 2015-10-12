@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Project Costing" Report in PDF Format | |
+*ActionService:* | DownloadForProjectCostingActionService | *Auditable:* | No
+*Url:* | /budgReport/downloadProjectCosting | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks  [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Project Costing" link.
+* [Show Landing Page of "Project Costing" Report|guide:showProjectCosting].
+* Enter valid input.
+* Click "PDF" icon.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Project Costing" Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "Download Project Costing" privilege.
+
+* Rules of Download:
+{table}
+ *Field*   | *Input Type* | *Data Type* | *Rules*
+ [Populate Project List|application]| Drop-Down List | Alpha Numeric | Required
+ {table}
+
+h4. Process:
+* To get "Project Costing" Report in PDF Format "Click Here":.pdf
+* Get the report as PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

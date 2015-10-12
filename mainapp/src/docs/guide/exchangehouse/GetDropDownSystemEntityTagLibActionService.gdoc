@@ -1,0 +1,47 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Task Status" List in drop-down | |
+*ActionService:* | GetDropDownSystemEntityTagLibActionService | *Auditable:* | No
+*Url:* | /exhTask/showExhTaskForAdmin  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 2003.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Exchange House" link.
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* Populate "Task Status" List in drop down.
+
+h4. Pre-condition:
+* Active "Task Status" must show in drop-down.
+
+h4. Process:
+* Get list of active "Task Status" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate active "Task Status" list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show Landing Page of "Manage Task" Created By "Cashier"|guide:ShowExhTaskForAdminActionService].
+* [Show Landing Page of "Manage Task" Created By "Agent"|guide:ShowAgentTaskForAdminActionService].
+* [Show Landing Page of "Manage Task" Created By "Customer"|guide:ShowCustomerTaskForAdminActionService].

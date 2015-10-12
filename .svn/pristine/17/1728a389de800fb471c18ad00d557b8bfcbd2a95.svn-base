@@ -1,0 +1,394 @@
+package com.athena.mis.sarb.controller
+
+import com.athena.mis.application.entity.Currency
+import com.athena.mis.application.utility.CurrencyCacheUtility
+import com.athena.mis.sarb.actions.taskmodel.*
+import grails.converters.JSON
+import org.springframework.beans.factory.annotation.Autowired
+
+class SarbTaskModelController {
+
+    static allowedMethods = [
+            showForSendTaskToSarb: "POST",
+            listForSendTaskToSarb: "POST",
+            showTaskStatus: "POST",
+            listTaskStatus: "POST",
+            sendTaskToSarb: "POST",
+            showTaskStatusDetails: "POST",
+            showTaskForRetrieveResponse: "POST",
+            retrieveResponse: "POST",
+            listSarbTaskForRetrieveResponse: "POST",
+            retrieveResponseAgain: "POST",
+            moveForResend: "POST",
+            moveForCancel: "POST",
+            sendCancelTaskToSarb: "POST",
+            listForCancelTask: "POST",
+            showForReplaceTask: "POST",
+            listForReplaceTask: "POST",
+            showForRefundTask: "POST",
+            listForRefundTask: "POST",
+            showDetailsForReplaceTask: "POST",
+            createSarbTaskForReplaceTask: "POST"
+    ]
+
+    ListNewTaskForSendToSarbActionService listNewTaskForSendToSarbActionService
+    SendNewTaskToSarbActionService sendNewTaskToSarbActionService
+    ListSarbTaskForShowStatusActionService listSarbTaskForShowStatusActionService
+    ShowSarbTaskDetailsActionService showSarbTaskDetailsActionService
+    RetrieveSarbTaskResponseActionService retrieveSarbTaskResponseActionService
+    ListSarbTaskForRetrieveResponseActionService listSarbTaskForRetrieveResponseActionService
+    RetrieveAgainSarbTaskResponseActionService retrieveAgainSarbTaskResponseActionService
+    MoveForResendSarbTaskActionService moveForResendSarbTaskActionService
+    MoveSarbTaskForCancelActionService moveSarbTaskForCancelActionService
+    SendCancelTaskToSarbActionService sendCancelTaskToSarbActionService
+    ListCancelTaskForSendToSarbActionService listCancelTaskForSendToSarbActionService
+    ShowSarbTaskDetailsForRefundTaskActionService showSarbTaskDetailsForRefundTaskActionService
+    ListReplaceTaskForSendToSarbActionService listReplaceTaskForSendToSarbActionService
+    ListRefundTaskForSendToSarbActionService listRefundTaskForSendToSarbActionService
+    ShowDetailsForReplaceTaskActionService showDetailsForReplaceTaskActionService
+
+    @Autowired
+    CurrencyCacheUtility currencyCacheUtility
+
+
+    def showForSendTaskToSarb() {
+        Currency currency = currencyCacheUtility.getLocalCurrency()
+        render(view: "/sarb/taskModel/showForSendNewTask", model: [localCurrency: currency.symbol])
+    }
+
+    def listForSendTaskToSarb() {
+        Map result
+        Boolean isError
+        String output
+
+        Map executeResult = (Map) listNewTaskForSendToSarbActionService.execute(params, null)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            output = executeResult as JSON
+            render output
+            return
+        } else {
+            result = (Map) listNewTaskForSendToSarbActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def sendTaskToSarb() {
+        Map result
+        Boolean isError
+        String output
+        Map executePreResult = (Map) sendNewTaskToSarbActionService.executePreCondition(params, null)
+        isError = executePreResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) sendNewTaskToSarbActionService.buildFailureResultForUI(executePreResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) sendNewTaskToSarbActionService.execute(null, executePreResult)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) sendNewTaskToSarbActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render output
+            return
+        }
+        result = (Map) sendNewTaskToSarbActionService.buildSuccessResultForUI(null)
+        output = result as JSON
+        render output
+    }
+
+    def showTaskStatus() {
+        render(view: '/sarb/taskModel/showForTaskStatusDetails', model: [modelJson: null])
+    }
+
+    def listTaskStatus() {
+        Map result
+        Map executeResult
+        Boolean isError
+        String output
+
+        executeResult = (Map) listSarbTaskForShowStatusActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) listSarbTaskForShowStatusActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) listSarbTaskForShowStatusActionService.buildSuccessResultForUI(executeResult)
+        }
+
+        output = result as JSON
+        render output
+    }
+
+    def showTaskStatusDetails() {
+        Map result
+        Map executeResult = (Map) showSarbTaskDetailsActionService.execute(params, null)
+        Boolean isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showSarbTaskDetailsActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showSarbTaskDetailsActionService.buildSuccessResultForUI(executeResult)
+        }
+        String output = result as JSON
+        render output
+    }
+
+
+    def showTaskForRetrieveResponse() {
+        Currency currency = currencyCacheUtility.getLocalCurrency()
+        render(view: '/sarb/taskModel/showTaskDetailsForRetrieveResponse', model: [localCurrency: currency.symbol])
+    }
+
+
+    def retrieveResponse() {
+
+        Map result
+        Boolean isError
+        String output
+        Map executePreResult = (Map) retrieveSarbTaskResponseActionService.executePreCondition(params, null)
+        isError = executePreResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) retrieveSarbTaskResponseActionService.buildFailureResultForUI(executePreResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) retrieveSarbTaskResponseActionService.execute(null, executePreResult)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) retrieveSarbTaskResponseActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render output
+            return
+        }
+        result = (Map) retrieveSarbTaskResponseActionService.buildSuccessResultForUI(null)
+        output = result as JSON
+        render output
+    }
+
+    def listSarbTaskForRetrieveResponse() {
+        Map result
+        Map executeResult
+        Boolean isError
+        String output
+
+        executeResult = (Map) listSarbTaskForRetrieveResponseActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) listSarbTaskForRetrieveResponseActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) listSarbTaskForRetrieveResponseActionService.buildSuccessResultForUI(executeResult)
+        }
+
+        output = result as JSON
+        render output
+    }
+
+    def retrieveResponseAgain() {
+        Map result
+        Boolean isError
+        String output
+        Map executePreResult = (Map) retrieveAgainSarbTaskResponseActionService.executePreCondition(params, null)
+        isError = executePreResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) retrieveAgainSarbTaskResponseActionService.buildFailureResultForUI(executePreResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) retrieveAgainSarbTaskResponseActionService.execute(null, executePreResult)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) retrieveAgainSarbTaskResponseActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render output
+            return
+        }
+        result = (Map) retrieveAgainSarbTaskResponseActionService.buildSuccessResultForUI(executeResult)
+        output = result as JSON
+        render output
+    }
+
+    def moveForResend() {
+
+        Boolean isError
+        Map result
+        String output
+        Map executePreResult = (Map) moveForResendSarbTaskActionService.executePreCondition(params, null)
+        isError = executePreResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) moveForResendSarbTaskActionService.buildFailureResultForUI(executePreResult)
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map executeResult = (Map) moveForResendSarbTaskActionService.execute(null, executePreResult)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) moveForResendSarbTaskActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render output
+            return
+        }
+        result = (Map) moveForResendSarbTaskActionService.buildSuccessResultForUI(null)
+        output = result as JSON
+        render output
+    }
+
+    def moveForCancel() {
+        Boolean isError
+        Map result
+        String output
+        Map executePreResult = (Map) moveSarbTaskForCancelActionService.executePreCondition(params, null)
+        isError = executePreResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) moveSarbTaskForCancelActionService.buildFailureResultForUI(executePreResult)
+            output = result as JSON
+            render output
+            return
+        }
+
+        Map executeResult = (Map) moveSarbTaskForCancelActionService.execute(null, executePreResult)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) moveSarbTaskForCancelActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render output
+            return
+        }
+        result = (Map) moveSarbTaskForCancelActionService.buildSuccessResultForUI(null)
+        output = result as JSON
+        render output
+    }
+
+    def sendCancelTaskToSarb() {
+        Map result
+        Boolean isError
+        String output
+        Map executePreResult = (Map) sendCancelTaskToSarbActionService.executePreCondition(params, null)
+        isError = executePreResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) sendCancelTaskToSarbActionService.buildFailureResultForUI(executePreResult)
+            output = result as JSON
+            render output
+            return
+        }
+        Map executeResult = (Map) sendCancelTaskToSarbActionService.execute(null, executePreResult)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) sendCancelTaskToSarbActionService.buildFailureResultForUI(executeResult)
+            output = result as JSON
+            render output
+            return
+        }
+        result = (Map) sendCancelTaskToSarbActionService.buildSuccessResultForUI(null)
+        output = result as JSON
+        render output
+    }
+
+    def showTaskForCancel() {
+        Currency currency = currencyCacheUtility.getLocalCurrency()
+        render(view: '/sarb/taskModel/showForSendCancelTask', model: [localCurrency: currency.symbol])
+    }
+
+    def listForCancelTask() {
+        Map result
+        Boolean isError
+        String output
+
+        Map executeResult = (Map) listCancelTaskForSendToSarbActionService.execute(params, null)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            output = executeResult as JSON
+            render output
+            return
+        } else {
+            result = (Map) listCancelTaskForSendToSarbActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def showDetailsForRefundTask() {
+        Map result
+        Boolean isError
+        Map executeResult = (Map) showSarbTaskDetailsForRefundTaskActionService.execute(params, null)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showSarbTaskDetailsForRefundTaskActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showSarbTaskDetailsForRefundTaskActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(view: '/sarb/taskModel/showDetailsForRefundTask', model: [modelJson: result as JSON])
+    }
+
+    def createSarbTaskForRefundTask() {
+
+    }
+
+    def showForReplaceTask() {
+        Currency currency = currencyCacheUtility.getLocalCurrency()
+        render(view: "/sarb/taskModel/showForSendReplaceTask", model: [localCurrency: currency.symbol])
+    }
+
+    def listForReplaceTask() {
+        Map result
+        Boolean isError
+        String output
+
+        Map executeResult = (Map) listReplaceTaskForSendToSarbActionService.execute(params, null)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            output = executeResult as JSON
+            render output
+            return
+        } else {
+            result = (Map) listReplaceTaskForSendToSarbActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def showForRefundTask() {
+        Currency currency = currencyCacheUtility.getLocalCurrency()
+        render(view: "/sarb/taskModel/showForSendRefundTask", model: [localCurrency: currency.symbol])
+    }
+
+    def listForRefundTask() {
+        Map result
+        Boolean isError
+        String output
+
+        Map executeResult = (Map) listRefundTaskForSendToSarbActionService.execute(params, null)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            output = executeResult as JSON
+            render output
+            return
+        } else {
+            result = (Map) listRefundTaskForSendToSarbActionService.buildSuccessResultForUI(executeResult)
+        }
+        output = result as JSON
+        render output
+    }
+
+    def showDetailsForReplaceTask() {
+        Map result
+        Map executeResult
+        Boolean isError
+
+        executeResult = (Map) showDetailsForReplaceTaskActionService.execute(params, null)
+        isError = executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) showDetailsForReplaceTaskActionService.buildFailureResultForUI(executeResult)
+        } else {
+            result = (Map) showDetailsForReplaceTaskActionService.buildSuccessResultForUI(executeResult)
+        }
+        render(view: "/sarb/taskModel/showDetailsForReplaceTask", model: [modelJson: result as JSON])
+    }
+
+    def createSarbTaskForReplaceTask() {
+    }
+}

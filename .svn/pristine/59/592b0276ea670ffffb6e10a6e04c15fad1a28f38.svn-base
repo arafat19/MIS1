@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Landing Page of "Production Budget" | |
+*ActionService:* | ShowBudgetActionService | *Auditable:* | No
+*Url:* | /budgBudget/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of "Production Budget" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Production" link.
+* Show Landing Page of "Production Budget".
+
+h4. Pre-condition:
+* User must have "Show Budget" privilege.
+
+h4. Process:
+* [Get List of all "Production Budget" from server|guide:_ListBudgetActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Production Budget"|guide:_CreateBudgetActionService].
+** Show list of all "Production Budget" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Production Budget" in Edit Mode|guide:_SelectBudgetActionService].
+* [Delete "Production Budget"|guide:_DeleteBudgetActionService].
+* [Search "Production Budget" From Grid View|guide:_SearchBudgetActionService].
+* [Show Landing Page of "Budget Details"|guide:ShowBudgetDetailsActionService].
+* [Show Landing Page of "Budget Task"|guide:ShowBudgTaskActionService].
+* [Show Entity Content|application].
+

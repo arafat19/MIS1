@@ -1,0 +1,64 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of Customer's "Disbursed Task" in Landing Page | |
+*ActionService:* | ExhListDisbursedTaskForCustomerActionService  | *Auditable:* | No
+*Url*: | /exhTask/showDisbursedTaskForCustomer |  |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Disbursed" link.
+* Show List of Customer's "Disbursed Task" in [Landing Page|guide:ExhShowDisbursedTaskForCustomerActionService].
+
+h4. Pre-condition:
+* User must have "Disbursed Show Customer Task" privilege.
+
+h4. Process:
+* Get Customer's "Disbursed Task" from server (default: 15 at Max).
+
+* Following columns should show in grid view:
+** Serial
+** ID
+** Status
+** Date
+** Ref No
+** Amount(BDT)
+** Amount(AUD/BGP)
+** Total Due
+** Beneficiary Name
+** Payment Method
+** PIN No
+
+h4. Post-condition:
+
+* *Success:*
+** Customer's "Disbursed Task" will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Show Landing Page of "Invoice" Report For "Customer"|guide:ShowInvoiceForCustomer].
+* [Show Customer's "Task Status" Report From Grid View|guide:ExhGetDetailsByRefOrPinForCustomerActionService].
+
+!Exh/Customer's_Disbursed Task_List.png!

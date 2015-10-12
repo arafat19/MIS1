@@ -1,0 +1,46 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Send Task" To Sarb | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /sarbTaskModel/showForSendTaskToSarb | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Send Task" To Sarb with grid view.
+
+h4. Flow:
+* Actor clicks [SARB|guide:_ShowSARBPlugin] option from top menu bar.
+* "SARB" sub menu of left menu should show as default.
+* Click "Send Task" link.
+* Show Landing Page of "Send Task" To Sarb.
+
+h4. Pre-condition:
+* User must have "Show For Send task to SARB" privilege.
+
+h4. Process:
+* [Get List of all "Task" from server|guide:ListSarbTaskForSendToSarbActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Send Task" To Sarb information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Send "Task" to Sarb|guide:SendSarbTaskToSarbActionService].
+
+!sarb/SARB_Send To Sarb_Show.png!

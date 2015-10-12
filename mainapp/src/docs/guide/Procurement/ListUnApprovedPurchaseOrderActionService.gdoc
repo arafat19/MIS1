@@ -1,0 +1,56 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of Un-approved *Purchase Order* Widget tab of "Procurement Option" | |
+ *ActionService:* |ListUnApprovedPurchaseOrderActionService | *Auditable:* | No
+ *Url:* |/procPurchaseOrder/listUnApprovedPO | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* Clicks *Purchase Order* tab of "Procurement" widget.
+* Show List of Un-approved *Purchase Order* Widget tab of "Procurement Option".
+
+h4. Pre-condition:
+* User must have "Approve Purchase Order" privilege.
+* *Purchase Order* must be Un-approved.
+
+h4. Process:
+* Get list of all Un-approved *Purchase Order* from server (default: 10 at Max).
+* Following columns should show in grid view:
+** Serial
+** Purchase Order Number
+** Created By
+** Approved(Director)
+** Approved(Project Director)
+
+h4. Post-condition:
+
+* *Success:*
+** Un-approved *Purchase Order* will be listed corresponding widget tab.
+
+* *Failure:*
+** Show error message for details visit. [Error Handler|common Usecases]
+
+h4. Related Usecase:
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Approve *Purchase Order* from Dashboard|guide:ApprovePOForDashBoardActionService].
+* [Show Landing Page of *Purchase Order* Report from Dashboard|guide:ShowForPurchaseOrderActionService].
+
+!procurement/List_Un-Approved_PO_Widget.png!

@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name* | Show Landing Page of "Project Scope Mapping" | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /projectBudgetScope/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of "Project Scope Mapping" with input form on top and budget assign panel at the bottom.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click "Project Scope Mapping" link.
+* Show Landing Page of "Project Scope Mapping".
+
+h4. Pre-condition:
+* User must have "Show Project Budget Scope" privilege.
+
+h4. Process:
+* Get project list in drop-down with their available budget scope.[Populate Project List|application]
+
+h4. Post-condition:
+
+* *Success:*
+** Show project list in drop-down.
+** Show budget list panel.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Search *Project* wise "Budget Scope"|guide:SelectProjectBudgetScopeActionService].
+* [Update "Project Budget Scope"|guide:UpdateProjectBudgetScopeActionService].
+
+

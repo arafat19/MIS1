@@ -1,0 +1,43 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Re-Calculate All Inventory Item Valuation  | |
+ *ActionService:* | RecalculateAllInvInventoryValuationActionService |*Auditable:* | No
+ *Url:* | /invDevelopment/reCalculateValuation | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 30th December 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Development" sub menu of Inventory.
+* Click  "Re-Calculate ALL valuation" link.
+* [Show "ReCalculateValuation"|guide:_showReCalculateValuation].
+
+h4. Pre-condition:
+* User must have "Re-Calculate ALL valuation" privilege.
+
+
+h4. Process:
+* Re-Calculate all Inventory Item.
+
+h4. Post-condition:
+* *Success:*
+** ReCalculate Inventory Valuation.
+** Show Success Message of Calculation.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+
+!Inv/Recalculate_All_Valuation_Show.png!

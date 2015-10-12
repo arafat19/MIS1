@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show list of "UnResolved Task List" in Landing Page | |
+*ActionService:* | ListUnResolvedTaskListActionService | *Auditable:* | No
+*Url:* | /rmsTaskListSummaryModel/listUnResolvedTaskList | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 23rd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click *Transaction Day* link.
+* [Show Landing Page of "Transaction Day"|guide:_ShowTransactionDay].
+* Show list of "UnResolved Task List" in Landing Page.
+
+h4. Pre-condition:
+* User must have "List un-resolved task list" privilege.
+
+
+h4. Process:
+* Show list of "un-resolved task list" in grid view.
+* Following columns should show in grid view:
+** Serial	
+** Task List Name	
+** Exchange House	
+** Total Task	
+** Included In List	
+** Decision Taken	
+** Decision Approved	
+** Created On
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Forwarded Unpaid Tasks" information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].

@@ -1,0 +1,67 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search Beneficiary | |
+*ActionService:* | SearchBeneficiaryDetailsActionService | *Auditable:* | No
+*Url:* | /rmsReport/searchBeneficiaryForGrid | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Help Desk" sub menu from left menu.
+* Click "Search Beneficiary" link.
+* [Show Landing Page of Search Beneficiary|guide:_ShowBeneficiaryDetailsActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Search Beneficiary.
+
+h4. Pre-condition:
+* User must have "Search beneficiary for Grid" privilege.
+
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+Name/Account No/Phone No | Text Box | Alpha Numeric | Required
+{table}
+
+
+h4. Process:
+* Show list of "Beneficiary" information.
+* Following columns should show in grid view:
+** Serial
+** Ref No
+** Beneficiary Name
+** Amount
+** Outlet
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Beneficiary" information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Show Task Details of Beneficiary|guide:renderTaskDetails].
+

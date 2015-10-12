@@ -1,0 +1,45 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "District Wise Branch" List in drop-down | | 
+*Action:* | GetDropDownBranchTagLibActionService | *Auditable:* | No
+*Url:* | /bankBranch/reloadBranchesDropDownByBankAndDistrict | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User.
+
+h4. Description: 
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Purchase Instrument Mapping* link.
+* [Show Landing Page of "Purchase Instrument Mapping"|guide:ShowRmsPurchaseInstrumentMappingActionService].
+* Populate "District Wise Branch" List in drop-down.
+
+h4. Pre-condition: 
+* User must have "Get dropdown branches by bank and district independently" privilege.
+
+h4. Process: 
+* Get "District Wise Branch" list from server. [Show Landing Page of "District"|guide:ShowDistrictActionService]
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate all "District Wise Branch" list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase: 
+* [Create "Purchase Instrument Mapping"|guide:CreateRmsPurchaseInstrumentMappingActionService].
+* [Update "Purchase Instrument Mapping"|guide:UpdateRmsPurchaseInstrumentMappingActionService].

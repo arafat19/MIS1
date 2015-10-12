@@ -1,0 +1,59 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Bank Branch* | |
+*ActionService:* | CreateBankBranchActionService | *Auditable:* | No
+*Url:* | /bankBranch/create | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Bank Branch* link.
+* [Show Landing Page of "Bank Branch"|guide:ShowBankBranchActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Bank Branch*.
+
+h4. Pre-condition:
+* User must have "Create bank branch" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [Bank|guide:GetDropDownBankTagLibActionService] | Drop Down List | Numeric | Required
+ [District|guide:GetDropDownDistrictTagLibActionService] | Drop Down List | Numeric | Required
+ Name | Text Box | Alpha Numeric | Required
+ Code | Text Box | Alpha Numeric | Optional
+ Address | Text Box | Alpha Numeric | Optional
+ Principle Branch | Check Box | Boolean | Optional
+ SME Service Center | Check Box | Boolean | Optional
+{table}
+
+
+h4. Process:
+* Create a new *Bank Branch*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Bank Branch* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!application/Bank Branch_Create.png!

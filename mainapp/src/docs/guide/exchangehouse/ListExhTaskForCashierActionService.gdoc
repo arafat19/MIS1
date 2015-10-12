@@ -1,0 +1,73 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of Cashier's *Task* in Landing Page | |
+*ActionService:* | ListExhTaskForCashierActionService  | *Auditable:* | No
+*Url*: | /exhTask/listExhTaskForCashier | | 
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 1st February 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerForAgentActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" link from tool bar.
+* Show List of Cashier's *Task* in [Landing Page|guide:ShowExhTaskForCashierActionService].
+
+h4. Pre-condition:
+* User must have "List Exh Task for Cashier" privilege.
+* Newly created task will be listed in grid view.
+* *Task* list of corresponding "Cashier" will be display in grid view.
+
+h4. Process:
+* Get list of Cashier's *Task* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Id
+** Reference No
+** Amount(BDT)
+** Amount(AUD)
+** Total Due
+** Customer Name
+** Beneficiary Name
+** Payment Method
+** Regular fee
+** Discount
+** Paid
+
+h4. Post-condition:
+
+* *Success:*
+** Cashier's *Task* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search Cashier's "Task" From Grid View|guide:SearchExhTaskForCashierActionService].
+
+!Exh/Cashier_Create Task_List.png!

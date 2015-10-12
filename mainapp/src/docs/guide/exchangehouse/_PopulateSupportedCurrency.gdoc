@@ -1,0 +1,56 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Supported Currency" List in drop-down | |
+*Action:* | ShowExhTaskForCashierActionService | *Auditable:* | No
+*Url:* | /exhTask/create  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 22nd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent, Cashier, Customer.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* [Show Landing Page of Cashier's *Task*|guide:ShowExhTaskForCashierActionService].
+* Populate "Supported Currency" list in drop-down.
+
+h4. Pre-condition:
+* *Currency* must match with System integrated Country *Currency*.
+* *Currency* must match with send remittance Country *Currency*.
+
+h4. Process:
+* Get list of "Supported Currency" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate all "Supported Currency" in drop-down list from server.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create Agent's "Task"|guide:ExhCreateTaskActionService].
+* [Update Agent's "Task"|guide:ExhUpdateTaskActionService].
+* [Create Customer's "Task"|guide:_ExhCreateTaskForCustomerActionService].
+* [Update Customer's "Task"|guide:_ExhUpdateTaskForCustomerActionService].
+* [Create Cashier's "Task"|guide:_ExhCreateTaskForCashierActionService].
+* [Update Cashier's "Task"|guide:_ExhUpdateTaskForCashierActionService].

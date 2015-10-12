@@ -1,0 +1,48 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Remittance Transaction" Report | |
+*ActionServices:* | ExhShowRemittanceTransactionActionService | *Auditable:* | No
+*Url:* | /exhReport/showRemittanceTransaction | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 28th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Remittance Transaction" Report with input form on top.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Remittance Transaction" link.
+* Show Landing Page of "Remittance Transaction" Report.
+
+h4. Pre-condition:
+* User must have "Transaction Summary" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of "Remittance Transaction" report.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Remittance Transaction" Report in HTML Format|guide:ExhListRemittanceTransactionActionService].
+
+!Exh/Remittance Transaction Report_Show.png!

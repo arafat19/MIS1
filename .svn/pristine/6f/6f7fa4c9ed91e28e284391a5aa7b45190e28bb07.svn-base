@@ -1,0 +1,64 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show list of Approved "Inventory In" From Another Inventory in landing page | |
+ *ActionService:* | ListForUnapprovedInvInFromInventoryActionService |*Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/listApprovedInvInFromInventory | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 2nd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Clicks "From Inventory" link.
+* [Show Group of "Inventory In" From Another Inventory|guide:ShowForInventoryInFromInventoryActionService].
+* Select a Line-Item from grid view.
+* Click "Approved" Button.
+* Show list of Approved "Inventory In" From Another Inventory in [landing page|guide:ShowForApprovedInvInFromInventoryActionService].
+
+h4. Pre-condition:
+* User must have "List Unapproved Inv.In From Inventory" privilege.
+
+h4. Process:
+* Get list of Approved "Inventory In" From another Inventory from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Chalan
+** Item
+** Supply Quantity
+** Actual Quantity
+** Shrinkage
+** Rate
+** approved On
+** Created By
+** Approved By
+
+h4. Post-condition:
+
+* *Success:*
+** Approved "Inventory In" From another Inventory will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search Approve "Inventory In" From another Inventory From Grid View|guide:SearchForApprovedInvInFromInventoryActionService].
+
+!Inv/Approved_Item_From_Inventory_List.png!

@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Voucher Details" From *Ledger* Report Grid View | |
+*Action:* | ShowAccVoucherActionService | *Auditable:* | No
+*Url:* | /accVoucher/show | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 29th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow: 
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *Ledger* link.
+* [Show Landing Page of Ledger Report|guide:ShowForLedgerActionService].
+* Select *Project* from drop down list.
+* Add "Account Code" from right panel.
+* Click "Search" button to generate report.
+* Select a *Voucher* from grid view.
+* Click "Details" button from tool bar.
+* Show Landing Page of "Voucher Details".
+
+h4. Pre-condition:
+* User must have "Show Acc Voucher" privilege.
+
+h4. Process:
+* Show "Voucher Details" for the selected *Voucher*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Voucher Details" landing page of selected *Voucher*.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show Landing Page of "Voucher List" Report|guide:ShowForVoucherListActionService].
+* [Show Landing Page of "Group Ledger" Report|guide:ShowForGroupLedgerActionService].
+* [Show Landing Page of "Source Ledger" Report|guide:ShowForSourceLedgerActionService].

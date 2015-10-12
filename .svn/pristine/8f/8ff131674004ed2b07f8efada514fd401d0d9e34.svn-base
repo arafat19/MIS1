@@ -1,0 +1,52 @@
+
+{table}
+ Use Case ID: | MIS-Budget-11 | Priority: | High
+ *Name* | List Budget Line Item | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /budget/list | *Action Class:* | ListBudgetActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 20th September 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+User will see all Budget Line Item within the system under following columns:
+# Serial
+# ID (Default: Invisible)
+# Line Item
+# Budget Type
+# Project Name
+# Budget Quantity
+# Total Item
+# Billable
+# Details
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Get list of Budget Line Item from server (default: 15 at Max).
+
+h4. Post-condition:
+
+# *Success:*
+## Budget Line Item will be listed in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+# [Cancel|common Usecases]
+# [Clear Results|common Usecases]
+# [Refresh|common Usecases]
+# [Previous Page|common Usecases]
+# [Forward Page|common Usecases]
+# [First Page|common Usecases]
+# [Last Page|common Usecases]

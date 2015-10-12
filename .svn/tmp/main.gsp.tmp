@@ -1,0 +1,48 @@
+<%@ page import="com.athena.mis.application.config.ThemeCacheUtility; org.codehaus.groovy.grails.commons.ConfigurationHolder" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="language" content="en"/>
+    <title><g:layoutTitle default="ARMS"/></title>
+    <link rel="shortcut icon" href="${ConfigurationHolder.config.theme.application}/images/favicon_arms.ico"
+          type="image/x-icon"/>
+    <g:render template='/layouts/commonInclude'/>
+    <g:render template="/layouts/scriptMain"/>
+    <g:layoutHead/>
+</head>
+
+<body>
+<g:render template='/layouts/commonModals'/>
+<div class="ui-layout-north" style="background:none repeat scroll 0 0 #f2f5fa;margin:0;padding:0;">
+    <div class='app-logo' style="background-image:url(${ConfigurationHolder.config.theme.application}<app:themeContent
+            name="app.imgTopPanelLeft"></app:themeContent>)">
+        <a id='home-link' title="Dashboard" href="${createLink(uri: '/')}"></a>
+    </div>
+
+    <div class='powered-by-athena'
+         style="background-image:url(${ConfigurationHolder.config.theme.application}<app:themeContent
+                 name="app.imgTopPanelRight"></app:themeContent>)">
+    </div>
+</div>
+
+<div class="ui-layout-center" style="display: none;">
+    <g:render template='/layouts/dockMenu'/>
+<<<<<<< .mine
+    <div id='contentHolder' style='padding:5px;'>
+=======
+    <div id='contentHolder' style='padding:5px; overflow: auto;position: absolute'>
+>>>>>>> .r8841
+        <g:layoutBody/>
+    </div>
+</div>
+
+<div class="ui-layout-west" style="display: none;">
+    <div id="accordion1" class="basic">
+    </div>
+    <g:render template='/layouts/copyright'/>
+</div>
+</body>
+</html>
+

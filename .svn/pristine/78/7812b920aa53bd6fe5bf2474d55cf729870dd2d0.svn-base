@@ -1,0 +1,59 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Task Report for Issue(EFT)" in CSV Format | |
+*ActionService:* | DownloadTaskReportForIssueEftActionService | *Auditable:* | No
+*Url:* | /rmsInstrument/downloadTaskReportForIssueEft | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Nahida Sultana  | 22nd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+ Remittance User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Instrument" sub menu from left menu.
+* Click "EFT" link.
+* [Show Landing Page of "Issue(EFT)"|guide:showForIssueEft].
+* Enter valid input.
+* Click "CSV" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Task Report for Issue(EFT)" in CSV Format.
+
+h4. Pre-condition:
+* User must have "Download task for issue EFT" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+[Status|guide:]| Drop-Down | Numeric | Required
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+[Exchange House|guide:PopulateExchangeHouseList] | Drop Down Box | Numeric | Required
+[Task List|guide:_PopulateTaskListDropDownList] | Drop Down Box | Numeric | Required
+{table}
+
+h4. Process:
+* Download the report as CSV format.
+
+h4. Post-condition:
+
+* *Success:*
+** CSV Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+*
+

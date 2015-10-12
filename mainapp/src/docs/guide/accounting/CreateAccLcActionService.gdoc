@@ -1,0 +1,60 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Create *LC* | |
+ *ActionService:* | CreateAccLcActionService | *Auditable:* | No 
+ *Url:* | /accLc/create | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Meherun Nessa | 12th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *LC* link.
+* [Show Landing Page of LC|guide:ShowAccLcActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *LC*.
+
+h4. Pre-condition:
+* User must have "Create LC" privilege.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ LC NO | Text Box | Numeric | Required
+ Amount | Text Box | Numeric | Required
+ Bank | Text Box | Text | Required
+ [Populate Item Type List|application] | Drop Down List | Numeric | Required
+ [Populate Item List|application] | Drop Down List | Numeric | Required
+ [Populate All Supplier List|application] | Drop Down List | Numeric | Required
+{table}
+
+* *LC* "LC No" must be unique.
+
+h4. Process:
+* Create a new *LC*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *LC* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Acc/LC_Create.png!

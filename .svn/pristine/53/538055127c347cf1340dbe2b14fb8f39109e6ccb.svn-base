@@ -1,0 +1,354 @@
+<script language="javascript">
+
+    var backlogListModel = false;
+    var dropDownModule, dropDownPriority;
+
+    $(document).ready(function () {
+        onLoadBacklogPage();
+    });
+
+    // method called on page load
+    function onLoadBacklogPage() {
+        initializeForm($("#backlogForm"), onSubmitBacklog);
+
+        var output =${output ? output : ''};
+        backlogListModel = false;
+        if (output.isError) {
+            showError(output.message);  // show error message in case of error
+        }
+        else {
+            backlogListModel = output.gridObj;    // set data in a global variable to populate
+        }
+        initFlex();
+        populateFlex1();
+
+        // update page title
+        $(document).attr('title', "MIS - Create Backlog");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#ptBacklog/show");
+    }
+
+    // check pre condition before submitting the form
+    function executePreCondition() {
+        // validate form data
+        if (!validateForm($("#backlogForm"))) {
+            return false;
+        }
+        if (dropDownModule.value() == '') {
+            showError('Please Select a module');
+            dropDownModule.focus();
+            return false;
+        }
+        if (dropDownPriority.value() == '') {
+            showError('Please Select a priority');
+            dropDownPriority.focus();
+            return false;
+        }
+        return true;
+    }
+
+    // method called  on submit of the form
+    function onSubmitBacklog() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+        setButtonDisabled($('#create'), true);    // disable the save button
+        showLoadingSpinner(true);   // show loading spinner
+        var actionUrl = null;
+        // set link for create or update if there is data in hidden field id
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller:'ptBacklog', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller:'ptBacklog', action: 'update')}";
+        }
+
+        // fire ajax method
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#backlogForm").serialize(),  // serialize data from UI and send as parameter
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);   // enable the save button
+                showLoadingSpinner(false);  // stop loading spinner
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    // execute post condition after create or update
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);  // show error message in case of error
+            showLoadingSpinner(false);  // stop loading spinner
+        } else {
+            try {
+                var newEntry = result;
+                if ($('#id').val().isEmpty() && newEntry.entity != null) { // show newly created object in a grid row
+
+                    var previousTotal = parseInt(backlogListModel.total);
+                    var firstSerial = 1;
+
+                    if (backlogListModel.rows.length > 0) {
+                        firstSerial = backlogListModel.rows[0].cell[0];
+                        regenerateSerial($(backlogListModel.rows), 0);
+                    }
+                    newEntry.entity.cell[0] = firstSerial;
+                    backlogListModel.rows.splice(0, 0, newEntry.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        backlogListModel.rows.pop();
+                    }
+
+                    backlogListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(backlogListModel);
+
+                } else if (newEntry.entity != null) { // updated existing object data in the grid
+                    updateListModel(backlogListModel, newEntry.entity, 0);
+                    $("#flex1").flexAddData(backlogListModel);
+                }
+
+                resetFormForCreateAgain();
+                showSuccess(result.message);    // show success message
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    // reset the form
+    function resetForm() {
+        $('#ideaStr').html('');
+        clearForm($("#backlogForm"), $('#moduleId'));
+        $("#create").html("<span class='k-icon k-i-plus'></span>Create");   // reset create button text
+    }
+
+    function resetFormForCreateAgain() {
+        $('#ideaStr').html('');
+        $('#idea').val('');
+        $('#id').val('');
+        $('#version').val('');
+        $('#purpose').val('');
+        $('#actor').val('');
+        $('#benefit').val('');
+        $('#flow').val('');
+        $('#useCaseId').val('');
+        $('#url').val('');
+        clearErrors($("#backlogForm"));
+        $("#create").html("<span class='k-icon k-i-plus'></span>Create");   // reset create button text
+    }
+
+    // initialize the grid
+    function initFlex() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 50, sortable: false, align: "right", hide:true},
+                        {display: "Id", name: "id", width: 50, sortable: false, align: "right"},
+                        {display: "Module", name: "module.code", width: 80, sortable: true, align: "left"},
+                        {display: "Priority", name: "priority", width: 60, sortable: false, align: "left"},
+                        {display: "I want to", name: "purpose", width: 300, sortable: false, align: "left"},
+                        {display: "So that", name: "benefit", width: 290, sortable: false, align: "left"},
+                        {display: "A.C. count", name: "count", width: 65, sortable: false, align: "right"},
+                        {display: "Created By", name: "username", width: 150, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/ptBacklog/select,/ptBacklog/update">
+                        {name: 'Edit', bclass: 'edit', onpress: selectBacklog},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptBacklog/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteBacklog},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptAcceptanceCriteria/show">
+                        {name: 'Acceptance Criteria', bclass: 'note', onpress: loadAcceptanceCriteria},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptFlow/show">
+                        {name: 'Flow', bclass: 'note', onpress: loadFlow},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptReport/showForBacklogDetails">
+                        {name: 'Report', bclass: 'note', onpress: showBacklogDetails},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Idea", name: "idea", width: 180, sortable: true, align: "left"},
+                        {display: "Module", name: "module.code", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "module.code",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Backlog',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    preProcess: onLoadListJSON
+                }
+        );
+    }
+
+    // reload grid
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    // custom populate the grid
+    function onLoadListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            backlogListModel = null;
+        } else {
+            backlogListModel = data;
+        }
+        return data;
+    }
+
+    // delete backlog object
+    function deleteBacklog(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'ptBacklog', action:  'delete')}?id=" + backlogId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+    // execute pre condition for delete
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'backlog') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected backlog?')) {
+            return false;
+        }
+        return true;
+    }
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.isError == false) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetForm();
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            backlogListModel.total = parseInt(backlogListModel.total) - 1;
+            removeEntityFromGridRows(backlogListModel, selectedRow);
+        } else {
+            showError(data.message);
+        }
+    }
+
+    // load acceptance criteria for selected backlog
+    function loadAcceptanceCriteria(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'Backlog') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'ptAcceptanceCriteria', action: 'show')}?backlogId=" + backlogId + "&leftMenu=" + 'ptBacklog/show';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    // load flow for selected backlog
+    function loadFlow(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'Backlog') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'ptFlow', action: 'show')}?backlogId=" + backlogId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    // select backlog object for update
+    function selectBacklog(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'Backlog') == false) {
+            return;
+        }
+        resetForm();
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'ptBacklog', action: 'select')}?id=" + id,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    // execute post condition for edit
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showBacklog(data);
+        }
+    }
+
+    // show property of backlog object on UI
+    function showBacklog(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        $('#ideaStr').html(data.idea);
+        $('#purpose').val(entity.purpose);
+        $('#actor').val(entity.actor);
+        $('#benefit').val(entity.benefit);
+        $('#flow').val(entity.flow);
+        $('#useCaseId').val(entity.useCaseId);
+        $('#url').val(entity.url);
+        dropDownModule.value(entity.moduleId);
+        dropDownPriority.value(entity.priorityId);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Update");   // change create button text to update
+    }
+
+    // set link to grid url to populate data
+    function populateFlex1() {
+        var strUrl = "${createLink(controller:'ptBacklog',action:  'list')}";
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (backlogListModel) {
+            $("#flex1").flexAddData(backlogListModel);
+        }
+    }
+
+    function showBacklogDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'Backlog') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var backlogId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'ptReport', action: 'showForBacklogDetails')}?backlogId=" + backlogId + "&leftMenu=" + 'ptBacklog/show';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+</script>

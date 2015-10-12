@@ -1,0 +1,82 @@
+package com.athena.mis.exchangehouse.service
+
+import com.athena.mis.BaseService
+import com.athena.mis.exchangehouse.entity.ExhPhotoIdType
+import com.athena.mis.exchangehouse.utility.ExhPhotoIdTypeCacheUtility
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class ExhPhotoIdTypeService extends BaseService {
+
+    static transactional = false
+    @Autowired
+    ExhPhotoIdTypeCacheUtility exhPhotoIdTypeCacheUtility
+
+    @Transactional(readOnly = true)
+    public List<ExhPhotoIdType> init() {
+        List<ExhPhotoIdType> currencyList = ExhPhotoIdType.list(
+                sort: exhPhotoIdTypeCacheUtility.DEFAULT_SORT_PROPERTY,
+                order: exhPhotoIdTypeCacheUtility.SORT_ORDER_DESCENDING,
+                readOnly: true
+        )
+        return currencyList
+    }
+
+    //create a PhotoIdType
+    public ExhPhotoIdType create(ExhPhotoIdType photoIdType) {
+        ExhPhotoIdType newPhotoIdType = photoIdType.save();
+
+        return newPhotoIdType;
+    }
+
+
+    public Integer update(ExhPhotoIdType photoIdType) {
+        String query = """UPDATE exh_photo_id_type SET
+                          version=${photoIdType.version + 1},
+                          name=:name,
+                          code=:code,
+                          is_secondary=:isSecondary
+                      WHERE
+                          id=${photoIdType.id} AND
+                          version=${photoIdType.version}"""
+        Map queryParams = [name: photoIdType.name,
+                code: photoIdType.code,
+                isSecondary: photoIdType.isSecondary]
+        int updateCount = executeUpdateSql(query, queryParams);
+        if (updateCount <= 0) {
+            throw new RuntimeException("Failed to update Photo Id Type")
+        }
+        photoIdType.version = photoIdType.version + 1
+
+        return (new Integer(updateCount));
+    }
+
+    /**
+     * Deletes a PhotoIdType
+     *
+     * @param photoIdTypeId primary key of the photoIdType being deleted
+     * @return
+     */
+    public Boolean delete(Long id) {
+
+        ExhPhotoIdType photoIdTypeInstance = ExhPhotoIdType.get(id)
+        if (photoIdTypeInstance == null) {
+            return new Boolean(false)
+        }
+
+        photoIdTypeInstance.delete()
+        return new Boolean(true)
+    }
+
+
+    public void createDefaultData(long companyId) {
+        ExhPhotoIdType photoIdPassport = new ExhPhotoIdType(name: 'Passport', isSecondary: Boolean.FALSE)
+        photoIdPassport.companyId = companyId
+        photoIdPassport.save(flush: true)
+
+        ExhPhotoIdType photoIdType2 = new ExhPhotoIdType(name: 'National ID', isSecondary: Boolean.FALSE)
+        photoIdType2.companyId = companyId
+        photoIdType2.save()
+    }
+
+}

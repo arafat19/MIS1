@@ -1,0 +1,44 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open *Sub Account* in Edit Mode | |
+ *ActionService:* | SelectAccSubAccountActionService | *Auditable:* | No
+ *Url:* | /accSubAccount/select | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Sub Account* link.
+* [Show Landing Page of Sub Account|guide:ShowAccSubAccountActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open *Sub Account* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Sub Account" privilege.
+
+h4. Process:
+* Get *Sub Account* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Sub Account* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

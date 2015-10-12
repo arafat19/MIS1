@@ -1,0 +1,195 @@
+<g:render template="/procurement/report/purchaseOrder/script"/>
+
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+
+        <div class="panel-title">
+            Search Purchase Order
+        </div>
+
+    </div>
+    <form id="searchForm" name="searchForm" class="form-horizontal form-widgets" role="form">
+        <div class="panel-body">
+            <g:hiddenField name="hidPurchaseOrderId"/>
+            <g:hiddenField name="hidIsCancelled"/>
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label label-required" for="purchaseOrderId">PO No:</label>
+
+                        <div class="col-md-5">
+                            <input type="text"
+                                   tabindex="1"
+                                   class="k-textbox"
+                                   pattern="^(0|[1-9][0-9]*)$"
+                                   required validationMessage="Invalid PO No"
+                                   id="purchaseOrderId"
+                                   name="purchaseOrderId"
+                                   autofocus/>
+                        </div>
+
+                        <div class="col-md-4 pull-left">
+                            <span class="k-invalid-msg" data-for="purchaseOrderId"></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-md-3 control-label label-optional" for="cancelledPo">Cancelled:</label>
+
+                        <div class="col-md-9">
+                            <g:checkBox tabindex="2" id="cancelledPo" name="cancelledPo"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button id="showReport" name="showReport" type="submit" data-role="button"
+                    class="k-button k-button-icontext" role="button" tabindex="3"
+                    aria-disabled="false"><span class="k-icon k-i-search"></span>Search
+            </button>
+
+            <app:ifAllUrl urls="/procReport/downloadPurchaseOrderRpt">
+                <span class="download_icon_set">
+                    <ul>
+                        <li>Save as :</li>
+                        <li><a href="javascript:void(0)" id="printPurchaseOrderReport" class="pdf_icon"></a></li>
+                    </ul>
+                </span>
+            </app:ifAllUrl>
+
+        </div>
+    </form>
+</div>
+
+<div id="purchaseOrderDetails" class="table-responsive" style="display: none;">
+    <table class="table table-bordered">
+        <tbody>
+        <tr>
+            <td class="success">Purchase Order<span style="color: #ff0000" id='lblFormHeader'></span></td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered ">
+                    <tbody>
+                    <tr>
+                        <td class="active">PO Trace No</td>
+                        <td><span id='lblPurchaseOrderNo'></span></td>
+                        <td class="active"><span id='lblCancelDate'></span></td>
+                        <td><span id='lblPurchaseOrderDate'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Payment Method</td>
+                        <td><span id='lblPaymentMethod'></span></td>
+                        <td class="active"><span id='lblReferenceTitle'></span></td>
+                        <td><span id='lblOurReference'></span></td>
+                    </tr>
+
+                    <tr>
+                        <td class="active">Supplier</td>
+                        <td><span id='lblSupplier'></span></td>
+                        <td class="active">Supplier Address</td>
+                        <td><span id='lblSupplierAddress'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Project Name</td>
+                        <td><span id='lblProjectName'></span></td>
+                        <td class="active" id='lblCancel1'>Cancellation Reason</td>
+                        <td id='lblCancel2'><span id='lblCancelReason'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Mode of Payment</td>
+                        <td><span id='lblPaymentTerms'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr id="trTagPodWithItem">
+            <td class="success">Item List</td>
+        </tr>
+        <tr>
+            <td id="podWithItem">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Serial</th>
+                        <th>Item Type</th>
+                        <th>Item Name</th>
+                        <th>Code</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Total Cost</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tblItems">
+
+                    </tbody>
+
+                    <tr>
+                        <td class="alert-success" colspan="2">No. of Item(s)</td>
+                        <td colspan="3"><span id='lblItemCount'></span></td>
+                        <td class="alert-success align_right">Item Total</td>
+                        <td class="align_right"><span id='lblItemTotal'></span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" rowspan="4"></td>
+                        <td class="alert-success align_right">Discount</td>
+                        <td class="align_right">(<span id='lblDiscount'></span>)</td>
+                    </tr>
+                    <tr>
+                        <td class="alert-success align_right">Total VAT/Tax</td>
+                        <td class="align_right">(<span id='totalVatTax'></span>)</td>
+                    </tr>
+                    <tr>
+                        <td class="alert-success align_right">Total Tr. Cost</td>
+                        <td class="align_right">(<span id='lblTotalTransPortCost'></span>)</td>
+                    </tr>
+                    <tr>
+                        <td class="alert-success align_right">Grand Total</td>
+                        <td class="align_right"><span id='lblGrandTotal'></span></td>
+
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr id="tagOfValueOfTermsAndCondition">
+            <td class="success">Terms & Conditions</td>
+        </tr>
+        <tr>
+            <td>
+                <table class="table table-bordered" id="valueOfTermsAndCondition">
+                </table>
+            </td>
+        </tr>
+        <tr id="approvalTag">
+            <td class="success">Approval</td>
+        </tr>
+        <tr id="approvalContentList">
+            <td>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td class="active">Director</td>
+                        <td><span id='lblApprovedByDirector'></span></td>
+                    </tr>
+                    <tr>
+                        <td class="active">Project Director</td>
+                        <td><span id='lblApprovedByProjectDirector'></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+

@@ -1,0 +1,63 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Show List of *IOU Slip* in Landing Page | |
+ *ActionService:* | ListAccIouSlipActionService | *Auditable:* | No
+ *Url:* | accReport/listAccIouSlip | |
+{table}
+
+h4. Revision History:
+    {table}
+     *Author*   | *Date*	| *Reason for Changes*	| *Version*
+     Nahida Sultana | 30th April 2013	| Initial Requirement | 1.0
+    {table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click *IOU Slip* link.
+* Show List of *IOU Slip* in [Landing Page|guide:ShowAccIouSlipActionService].
+
+h4. Pre-condition:
+* User must have "List IOU Slip" privilege.
+
+h4. Process:
+* Get *IOU Slip* list from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Trace No
+** Created On
+** Employee
+** Indent details
+** Total Amount
+** Send for Approval
+** Approved By
+** Purpose Count
+** Project
+** Created By
+
+h4. Post-condition:
+
+* *Success:*
+** *IOU Slip* list show in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search IOU Slip From Grid View|guide:SearchAccIouSlipActionService].
+
+!Acc/IOU_Slip_List.png!

@@ -1,0 +1,58 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Source Wise Balance" Report in CSV Format | |
+*ActionService:* | DownloadForSourceWiseBalanceCsvActionService | *Auditable:* | No
+*Url:* | /accReport/downloadSourceWiseBalanceCsv | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Nahida Sultana | 29th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Source Wise Balance" link.
+* [Show Landing Page of Source Wise Balance Report|guide:ShowForSourceWiseBalanceActionService].
+* Enter valid input.
+* Click "CSV" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Source Wise Balance" Report in CSV Format.
+
+h4. Pre-condition:
+* User must have "Download Source Balance CSV report" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ From Date | Calender | Alpha Numeric | Required (Default: Current Date)
+ To Date | Calender | Alpha Numeric | Required (Default: Current Date)
+ [Source Type|guide:PopulateSourceTypeList] | Drop Down List | Numeric | Required
+ [Source Category|guide:GetSourceCategoryByAccSourceIdActionService] | Drop Down List | Numeric | All(Default)
+ [Populate Project List|application] | Drop Down List | Numeric | Optional(Default: All)
+ Account Code | Right Panel | Alpha Numeric | Optional(Default: All)
+{table}
+
+
+h4. Process:
+* Download the report as CSV format.
+* Downloded CSV report should show as same as grid view Report.
+
+h4. Post-condition:
+
+* *Success:*
+** CSV Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

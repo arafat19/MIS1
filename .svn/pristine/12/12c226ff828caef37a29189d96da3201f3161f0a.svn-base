@@ -1,0 +1,353 @@
+package com.athena.mis.document.actions.category
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.AppUser
+import com.athena.mis.application.entity.Company
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.application.utility.CompanyCacheUtility
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocAllCategoryUserMapping
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.entity.DocInvitedMembers
+import com.athena.mis.document.entity.DocInvitedMembersCategory
+import com.athena.mis.document.entity.DocSubCategory
+import com.athena.mis.document.service.DocAllCategoryUserMappingService
+import com.athena.mis.document.service.DocInvitedMembersCategoryService
+import com.athena.mis.document.service.DocInvitedMembersService
+import com.athena.mis.document.service.DocSubCategoryService
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.Tools
+import grails.converters.JSON
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+import javax.servlet.http.HttpServletRequest
+
+class ShowAcceptInvitationDocInvitedMemberActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String NOT_FOUND_MESSAGE = 'Invited member not found'
+    private static final String TIME_EXPIRED_MSG = 'Time to accept invitation has expired'
+    private static final String DEFAULT_ERROR_MESSAGE = 'Failed to load accept invitation page'
+    private static final String CATEGORY_NOT_FOUND_MESSAGE = 'Category not found'
+    private static final String ALREADY_ACCEPTED_MESSAGE = 'You have already accept this invitation'
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String SUB_CATEGORY_LABEL = 'subCategoryLabel'
+    private static final String APP_USER = 'appUser'
+    private static final String CATEGORY_NAME = 'Category'
+    private static final String SUB_CATEGORY_NAME = 'Sub Category'
+    private static final String LST_SUB_CATEGORY = 'lstSubCategory'
+    private static final String CATEGORY = 'category'
+    private static final String CODE = 'code'
+    private static final String LOGIN_ID = 'loginId'
+
+    DocInvitedMembersService docInvitedMembersService
+    DocInvitedMembersCategoryService docInvitedMembersCategoryService
+    DocAllCategoryUserMappingService docAllCategoryUserMappingService
+    DocSubCategoryService docSubCategoryService
+
+
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+    @Autowired
+    CompanyCacheUtility companyCacheUtility
+
+    /**
+     * 1. Get parameters from UI
+     * 2. check if params is valid/invalid
+     * 3.category label from system configuration
+     * 4.check invited member existance
+     * 5. check category existance
+     * 6.check AppUser existance & mapping with this user
+     * 7. check expire date
+     * @param parameters -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all object necessary for execute
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = CATEGORY_NAME
+        String subCategoryLabel = SUB_CATEGORY_NAME
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            String code = params.code.toString()
+            // check required parameter
+            if (!code) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            HttpServletRequest request = (HttpServletRequest) obj
+            long companyId = getCompanyId(request)
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+            SysConfiguration sysConfiguration1 = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_SUB_CATEGORY_LABEL, companyId)
+            if (sysConfiguration1) {
+                subCategoryLabel = sysConfiguration1.value
+            }
+            DocInvitedMembers invitedMember = docInvitedMembersService.findByInvitationCodeAndCompanyId(code, companyId)
+            if (!invitedMember) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(Tools.MESSAGE, NOT_FOUND_MESSAGE)
+                return result
+            }
+            List<DocInvitedMembersCategory> lstInvitedMembersCategory = docInvitedMembersCategoryService.findAllByInvitedMemberId(invitedMember.id)
+            if (!lstInvitedMembersCategory) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(Tools.MESSAGE, NOT_FOUND_MESSAGE)
+                return result
+            }
+            long categoryId = lstInvitedMembersCategory[0].categoryId
+            DocCategory category = (DocCategory) docCategoryCacheUtility.readByIdAndCompanyId(categoryId, request)
+            if (!category) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(Tools.MESSAGE, CATEGORY_NOT_FOUND_MESSAGE)
+                return result
+            }
+            String email = invitedMember.email
+            AppUser appUser = appUserCacheUtility.readByLoginId(email, companyId)
+            if (appUser) {
+                if (lstInvitedMembersCategory[0].subCategoryId == 0) {
+                    DocAllCategoryUserMapping categoryUserMapping = docAllCategoryUserMappingService.findByCategoryIdAndUserIdAndSubCategoryId(categoryId, appUser.id, 0L)
+                    if (categoryUserMapping) {
+                        result.put(CATEGORY_LABEL, categoryLabel)
+                        result.put(Tools.MESSAGE, ALREADY_ACCEPTED_MESSAGE)
+                        result.put(CATEGORY, category)
+                        result.put(CODE, code)
+                        result.put(LOGIN_ID, email)
+                        result.put(APP_USER, appUser)
+                        return result
+                    } else {
+                        result.put(APP_USER, appUser)
+                    }
+                } else {
+                    List<Long> lstSubCategoryId = listSubCategoryId(appUser.id, lstInvitedMembersCategory)
+                    if (lstSubCategoryId.size() == 0) {
+                        result.put(CATEGORY_LABEL, categoryLabel)
+                        result.put(SUB_CATEGORY_LABEL, subCategoryLabel)
+                        result.put(Tools.MESSAGE, ALREADY_ACCEPTED_MESSAGE)
+                        result.put(CATEGORY, category)
+                        result.put(CODE, code)
+                        result.put(LOGIN_ID, email)
+                        result.put(APP_USER, appUser)
+                        return result
+                    } else {
+                        List lstSubCategoryMap = []
+                        List<DocSubCategory> lstSubCategory = docSubCategoryService.findAllByIdInList(lstSubCategoryId)
+                        for (int i = 0; i < lstSubCategory.size(); i++) {
+                            Map subCategory = [name: lstSubCategory[i].name, description: lstSubCategory[i].description]
+                            lstSubCategoryMap << subCategory
+                        }
+                        result.put(LST_SUB_CATEGORY, lstSubCategoryMap)
+                        result.put(SUB_CATEGORY_LABEL, subCategoryLabel)
+                        result.put(APP_USER, appUser)
+                    }
+                }
+            } else {
+                List lstSubCategoryMap = []
+                List<Long> lstSubCategoryId = listSubCategoryId(lstInvitedMembersCategory)
+                List<DocSubCategory> lstSubCategory = docSubCategoryService.findAllByIdInList(lstSubCategoryId)
+                for (int i = 0; i < lstSubCategory.size(); i++) {
+                    Map subCategory = [name: lstSubCategory[i].name, description: lstSubCategory[i].description]
+                    lstSubCategoryMap << subCategory
+                }
+                result.put(LST_SUB_CATEGORY, lstSubCategoryMap)
+                result.put(SUB_CATEGORY_LABEL, subCategoryLabel)
+            }
+            Date date = new Date()
+            if (date.compareTo(invitedMember.expiredOn) > 0) {
+                result.put(CATEGORY_LABEL, categoryLabel)
+                result.put(CATEGORY, category)
+                result.put(LOGIN_ID, email)
+                result.put(Tools.MESSAGE, TIME_EXPIRED_MSG)
+                result.put(CODE, code)
+                return result
+            }
+
+            result.put(CODE, code)
+            result.put(LOGIN_ID, email)
+            result.put(CATEGORY, category)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(SUB_CATEGORY_LABEL, subCategoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    @Override
+    Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /*
+    * @param parameters - serialize parameters from UI
+    * @param obj -A map from precondition
+    * @return - A map containing all objects of category, categoryLabel,invitationCode for buildSuccessResultForUI
+    * */
+
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryName = CATEGORY_NAME
+        String subCategoryName = SUB_CATEGORY_NAME
+        Map preResult = (Map) obj
+        categoryName = preResult.get(CATEGORY_LABEL)
+        subCategoryName = preResult.get(SUB_CATEGORY_LABEL)
+        try {
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            result.put(CATEGORY, category)
+            List<DocSubCategory> lstSubCategory = (List<DocSubCategory>) preResult.get(LST_SUB_CATEGORY)
+            result.put(LST_SUB_CATEGORY, lstSubCategory)
+            result.put(CATEGORY_LABEL, categoryName)
+            result.put(SUB_CATEGORY_LABEL, subCategoryName)
+            result.put(APP_USER, preResult.get(APP_USER))
+            result.put(CODE, preResult.get(CODE))
+            result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+
+    }
+
+    /*
+    * Build Success Results UI
+    * @params obj - Map return from execute method
+    * @return a map of containing all object necessary for show page
+    * */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (Map) obj
+        String categoryLabel = preResult.get(CATEGORY_LABEL)
+        String subCategoryName = preResult.get(SUB_CATEGORY_LABEL)
+        try {
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            result.put(CATEGORY, category)
+            List<DocSubCategory> lstSubCategory = (List<DocSubCategory>) preResult.get(LST_SUB_CATEGORY)
+            result.put(LST_SUB_CATEGORY, lstSubCategory as JSON)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(SUB_CATEGORY_LABEL, subCategoryName)
+            result.put(APP_USER, preResult.get(APP_USER))
+            result.put(CODE, preResult.get(CODE))
+            result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+    * Build Failure result for UI
+    * @params obj - A map from execute method
+    * @return a Map containing IsError and default error message/relevant error message to display
+    * */
+
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (Map) obj
+        String categoryLabel = preResult.get(CATEGORY_LABEL)
+        String subCategoryLabel = preResult.get(SUB_CATEGORY_LABEL)
+        try {
+            DocCategory category = (DocCategory) preResult.get(CATEGORY)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(CATEGORY_LABEL, categoryLabel)
+                    result.put(SUB_CATEGORY_LABEL, subCategoryLabel)
+                    result.put(CATEGORY, category)
+                    result.put(CODE, preResult.get(CODE))
+                    result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+                    result.put(APP_USER, preResult.get(APP_USER))
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(SUB_CATEGORY_LABEL, subCategoryLabel)
+            result.put(CATEGORY, category)
+            result.put(CODE, preResult.get(CODE))
+            result.put(LOGIN_ID, preResult.get(LOGIN_ID))
+            result.put(APP_USER, preResult.get(APP_USER))
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * retrieve companyUser from request
+     * @param request
+     * @return company ID
+     */
+
+    private long getCompanyId(HttpServletRequest request) {
+        String fullUrl = Tools.getFullUrl(request, false)    // retrieve url with www
+        Company company = companyCacheUtility.readByWebUrl(fullUrl) // compare with www
+        if (company) {
+            return company.id
+        }
+        // if company not found try to retrieve url without www
+        fullUrl = Tools.getFullUrl(request, true)
+        company = companyCacheUtility.readByWebUrlWithoutWWW(fullUrl)     // compare without www
+        if (company) {
+            return company.id
+        } else {
+            return 0L
+        }
+    }
+
+    private List<Long> listSubCategoryId(long userId, List<DocInvitedMembersCategory> lstInvitedMembersCategory) {
+        List<Long> lstSubCategoryId = []
+
+        for (int i = 0; i < lstInvitedMembersCategory.size(); i++) {
+            DocAllCategoryUserMapping allCategoryUserMapping = docAllCategoryUserMappingService.findByCategoryIdAndUserIdAndSubCategoryId(lstInvitedMembersCategory[i].categoryId, userId, lstInvitedMembersCategory[i].subCategoryId)
+            if (!allCategoryUserMapping) {
+                lstSubCategoryId << lstInvitedMembersCategory[i].subCategoryId
+            }
+        }
+        return lstSubCategoryId
+    }
+
+    private List<Long> listSubCategoryId(List<DocInvitedMembersCategory> lstInvitedMembersCategory) {
+        List<Long> lstSubCategoryId = []
+
+        for (int i = 0; i < lstInvitedMembersCategory.size(); i++) {
+            lstSubCategoryId << lstInvitedMembersCategory[i].subCategoryId
+        }
+        return lstSubCategoryId
+    }
+}

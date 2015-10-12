@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Search *Sub Account* From Grid View | |
+ *ActionService:* | SearchAccSubAccountActionService | *Auditable:* | No
+ *Url:* | /accSubAccount/list | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Sub Account* link.
+* [Show Landing Page of Sub Account|guide:ShowAccSubAccountActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Sub Account* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Sub Account" privilege.
+* Rules of searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*
+ Find | Text Box | Alpha Numeric | Description 
+{table}
+
+
+h4. Process:
+* Get list of *Sub Account* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Sub Account*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Sub Account* list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Sub Account" in Landing Page|guide:ListAccSubAccountActionService].

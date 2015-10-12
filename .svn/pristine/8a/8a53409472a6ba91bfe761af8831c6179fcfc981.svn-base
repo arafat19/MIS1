@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open *Bug* for "My Task" in Edit Mode | |
+*ActionService:* | SelectPtBugForMyTaskActionService | *Auditable:* | No
+*Url:* | /ptBug/selectBugForMyTask| |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+SQA.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *My Task* link.
+* [Show Landing Page of "My Task"|guide:ShowMyPtBacklogActionService].
+* Select a line-item from grid view.
+* Click "Bug" button.
+* [Show landing page of "Bug" for "My Task"|guide:ShowPtBugForMyTaskActionService].
+* Select a line-item from grid view.
+* Click "Edit" Button.
+* Open *Bug* for "My Task" in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Bug For My Task" privilege.
+
+h4. Process:
+* Get *Bug* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Bug* information in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

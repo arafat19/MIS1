@@ -1,0 +1,97 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update Customer's *Task* | |
+*Action:* | ExhUpdateTaskActionService | *Auditable:* | No
+*Url:* | /exhTask/update | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 1st February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Approved" link.
+* [Show Landing Page of "Approved Beneficiary"|guide:ExhShowApprovedBeneficiariesForCustomerActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* [Show Landing Page of Customer's "Task"|guide:ExhShowTaskForCustomerActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Customer's *Task* in Edit Mode|guide:_ExhSelectTaskForCustomerActionService].
+* User must enter valid input to update.
+* Click "Update" button.
+* Update Customer's *Task*.
+
+h4. Pre-condition:
+* User must have "Update Task" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ [RemittancePurpose|guide:ExhRemittancePurposeDropDownTagLib] | Drop Down List | Numeric | Required
+ [Ref No|guide:GenerateRefNo] | Auto Generated | Alpha Numeric | System Generated
+ [Customer A/C No|guide:GenerateCustomerNo]| Read Only | Alpha Numeric | System Generated
+ Customer Name| Read Only | Alpha Numeric |
+ Beneficiary ID | Read Only | Numeric | System Generated
+ Beneficiary Name | Read Only |  Alpha Numeric |
+ [Payment Method|guide:PopulatePaymentMethodList] | Drop Down List | Numeric | Required
+ Account Number | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ Bank | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ Branch | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ District | Text Box | Alpha Numeric | Required (If "Payment Method" is "Bank Deposit")
+ [Pin Number|guide:GeneratePinNumber] | Read Only | Alpha Numeric | System Generated (If "Payment Method" is "Cash Collection")
+ Identity Type | Text Box | Alpha Numeric | Required (If "Payment Method" is "Cash Collection")
+ Identity No | Text Box | Alpha Numeric | Optional
+ Select Other Bank |  Check Box | Boolean | Optional(Default Value False)
+ [District|guide:GetDropDownDistrictTagLibActionService] | Drop Down List | Numeric | Required(If Other bank is Selected)
+ [District wise Bank List|guide:ExhListBankByDistrictActionService] | Drop Down List | Numeric | Required(If Other bank is Selected)
+ [District and Bank wise Branch List|guide:ExhListByBankAndDistrictActionService] | Drop Down List | Numeric | Required(If Other bank is Selected)
+ BDT Amount | Read Only | Numeric | System Generated(Calculated)
+ GBP Amount | Read Only | Numeric | System Generated(GBP Amount=Source Amount)
+ Regular Fee | Read Only | Numeric | System Generated
+ Total | Read Only | Numeric | System Generated(GBP Amount+Regular Fee)
+ Grand Total | Read only | Numeric | System Generated(Total=Grand Total)
+ [From Amount|guide:_PopulateSupportedCurrency] | Drop Down List | Numeric | Required
+ Source Amount |  Text Box | Numeric | Required
+ Rate |  Read Only | Numeric | System Generated
+ [Paid By|guide:PopulatePaidByList] | Drop Down List | Numeric | Required
+ Reference No | Text Box | Alpha Numeric | Required (If Paid By= Online Transfer)
+{table}
+
+* Visa Date must not expired.
+* Total Task amount for a *Customer* must not exceed Customer's "Declaration Amount" within declare date range
+          (If mis.exchangehouse.customerDeclarationAmountRequired=1).
+* Task Create Date must be within "Declaration Start" and "Declaration End" date range
+          (If mis.exchangehouse.customerDeclarationAmountRequired=1).
+* Photo Id date must not expired.
+* Match expected version before updating Customer's *Task*.
+
+h4. Process:
+* Update selected Customer's *Task*.
+
+h4. Post-condition:
+* [Send e-mail to corresponding *Customer*|guide:_SendMailForCreateTaskActionService].
+* Send sms to corresponding *Customer*.
+
+* *Success:*
+** Update selected Customer's *Task* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show "Customer Transaction Summary Panel"|guide:CustomerSummaryForTaskTagLibActionService].
+

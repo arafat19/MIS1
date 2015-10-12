@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of Un-approve "Inventory Production" | |
+ *ActionService:* | ShowForInvProductionWithConsumptionActionService |*Auditable:* | No
+ *Url:* | /invInventoryTransaction/showInvProductionWithConsumption | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 3rd July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Inventory Operator.
+
+h4. Description:
+This is the landing page of Un-approve "Inventory Production" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "New" Production link.
+* Show Landing Page of Un-approve "Inventory Production".
+
+h4. Pre-condition:
+* User must have "Show Inventory production" privilege.
+
+h4. Process:
+* [Get list of all Un-approve "Inventory Production"|guide:ListForInvProductionWithConsumptionActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create Un-approve "Inventory Production"|guide:CreateForInvProductionWithConsumptionActionService].
+** Show list of all Un-approve "Inventory Production" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open Un-approve "Inventory Production" in Edit Mode|guide:SelectForInvProductionWithConsumptionActionService].
+* [Delete Un-approve "Inventory Production"|guide:DeleteForInvProductionWithConsumptionActionService].
+* [Search Un-approve "Inventory Production" From Grid View|guide:SearchForInvProductionWithConsumptionActionService].
+* [Approve Un-approve"Inventory Production"|guide:ApproveForInvProductionWithConsumptionActionService].
+
+!Inv/Inventory_Production_Show.png!

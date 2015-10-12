@@ -1,0 +1,51 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show Landing Page of "Budget Sprint" | |
+ *ActionService:* | ShowBudgSprintActionService | *Auditable:* | No
+ *Url:* | /budgSprint/show | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali| 5th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of *Budget Sprint* with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Sprint" link.
+* Show Landing Page of *Budget Sprint*.
+
+h4. Pre-condition:
+* User must have "Show sprint" privilege.
+
+h4. Process:
+* [Get List of all "Budget Sprint" from server|guide:ListBudgSprintActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Budget Sprint* landing page.
+** Show input form on top.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Budget Sprint" in Edit Mode|guide:SelectBudgSprintActionService].
+* [Delete "Budget Sprint"|guide:DeleteBudgSprintActionService].
+* [Show Entity Content|application].
+* [Show Landing Page of "Budget Sprint" Report|guide:ShowForBudgetSprintActionService].
+* [Show Landing page of "Sprint Budget"|guide:ShowSprintBudgetActionService].
+* [Set "Current Sprint"|guide:SetCurrentBudgSprintActionService].
+* [Download "Budget Sprint" Forecusting Report in PDF Format|guide:DownloadForecastingReportActionService].
+* [Search "Budget Sprint" From Grid View|guide:SearchBudgSprintActionService].

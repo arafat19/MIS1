@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate "Task Status" Report For "Agent" | |
+*ActionService:* | ExhGetDetailsByRefOrPinForAgentActionService | *Auditable:* | No
+*Url:* | /exhTask/searchTaskWithRefOrPinForAgent | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Nahida Sultana | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Task Status" link.
+* [Show Landing Page of "Task Status" Report|guide:showForTaskSearchForAgent].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Task Status" Report For "Agent".
+
+h4. Pre-condition:
+* User must have "Show for task details(agent)" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Start Date | Calender | Alpha Numeric | Required
+ End Date | Calender | Alpha Numeric | Required
+ [Search By|guide:_PopulateSearchByList] | Drop Down List | Numeric |Required
+{table}
+
+
+h4. Process:
+* Show "Task Status" Report in landing page.
+* Show "Task Status" Report with following information:
+** Task Details
+** Sender Information
+** Beneficiary Information
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Task Status" Report in landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

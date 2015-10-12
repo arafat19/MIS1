@@ -1,0 +1,52 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Rename "Task" List  Name | |
+*Action:* | RenameTaskListActionService | *Auditable:* | No
+*Url:* | /rmsTaskList/renameTaskList | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Manage* link under task list.
+* [Show Landing Page for Manage "Task" list|guide:_ShowManageTaskList].
+* Enter Valid input.
+* Click on "Rename List" from tool bar.
+* Fill the text box with appropriate "New List Name" shown in search panel.
+* Press Enter.
+* System will show the confirmation message.
+* Click on Ok Button.
+* Rename "Task" List Name.
+
+h4. Pre-condition:
+* User must have "Rename task list" privilege.
+* User must have to select [Exchange House|guide:PopulateFilterExchangeHouseList] dropdown list.
+* User must have to select [Task List|guide:GetRmsTaskListDropDownTagLibActionService] dropdown list.
+* User must be given valid "New List Name".
+
+h4. Process:
+* Rename "Task List" name.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Show Success message.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

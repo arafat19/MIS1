@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Open Agent's *Task* in Edit Mode | |
+*ActionService:* | ExhSelectTaskActionService | *Auditable:* | No
+*Url:* |/exhTask/edit  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 23th January 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of Agent's "Customer"|guide:ExhShowCustomerForAgentActionService].
+* [Search Agent's "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerForAgentActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* [Show Landing Page of "Agent's Task"|guide:ExhShowTaskForAgentActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open Agent's *Task* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Task" privilege.
+
+h4. Process:
+* Get Agent's *Task* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected Agent's *Task* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use-case:
+* [Show Landing Page of Agent's *Task*|guide:ExhShowTaskForAgentActionService].

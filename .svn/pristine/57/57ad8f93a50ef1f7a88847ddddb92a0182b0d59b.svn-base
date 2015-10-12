@@ -1,0 +1,47 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of "Modify Production Overhead Cost" | |
+ *ActionService:* | ShowInvModifyOverheadCostActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/showInvModifyOverheadCost | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 27th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+This is the landing page of "Modify Production Overhead Cost" with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Setting" left sub menu from Inventory.
+* Click "Modify Production Overhead Cost" link.
+* Show Landing Page of "Modify Production Overhead Cost".
+
+h4. Pre-condition:
+* User must have "Show Production Overhead Cost for Modification" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+* Show From Date(Default Current Date) with calender.
+* Show To Date(Default Current Date) with calender.
+* [Show all "Production Line Item" list in drop-down|guide:GetDropDownInventoryProductionLineItemTagLibActionService].
+* [Show "Finished Material" list in drop-down|guide:GetInvProdFinishedMaterialByLineItemIdActionService].
+* [List of all "Modify Production Overhead Cost"|guide:SearchInvModifyOverheadCostActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show Modify Production Overhead Cost landing page.
+** Reset input form on top to search new "Modify Production Overhead Cost".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Inv/Modify_Production_Show.png!

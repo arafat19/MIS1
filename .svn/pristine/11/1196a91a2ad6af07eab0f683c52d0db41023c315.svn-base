@@ -1,0 +1,224 @@
+package com.athena.mis.document.actions.appuserdoccategory
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.SysConfiguration
+import com.athena.mis.document.config.DocSysConfigurationCacheUtility
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.Tools
+import groovy.sql.GroovyRowResult
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class ListAppUserDocCategoryActionService extends BaseService implements ActionIntf {
+
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String DEFAULT_ERROR_MESSAGE = "Can't load list of member"
+    private static final String LST_APP_USER_CATEGORY = "lstAppUserCategory"
+    private static final String CATEGORY_ID = "categoryId"
+    private static final String CATEGORY_NAME = "categoryName"
+    private static final String CATEGORY_LABEL = 'categoryLabel'
+    private static final String DEFAULT_CATEGORY_NAME = 'Category'
+    private static final String GRID_OBJ = "gridObj"
+
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSysConfigurationCacheUtility docSysConfigurationCacheUtility
+
+    /**
+     * Do nothing for pre operation
+     */
+    public Object executePreCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * get the list of user for related category
+     *  1.get categoryLabel from System configuration
+     *  2.check categoryId is valid/invalid
+     *  3.Get the list of user & count for category
+     * @param params - serialize parameters from UI
+     * @param obj - N/A
+     * @return result - A map of containing all object necessary for buildSuccessResultForUI
+     * This method is in transactional boundary and will roll back in case of any exception
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object params, Object obj) {
+        Map result = new LinkedHashMap()
+        String categoryLabel = DEFAULT_CATEGORY_NAME
+        try {
+            long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+
+            SysConfiguration sysConfiguration = docSysConfigurationCacheUtility.readByKeyAndCompanyId(docSysConfigurationCacheUtility.DOC_CATEGORY_LABEL, companyId)
+            if (sysConfiguration) {
+                categoryLabel = sysConfiguration.value
+            }
+
+            result.put(Tools.IS_ERROR, Boolean.TRUE)    // default value
+            GrailsParameterMap parameters = (GrailsParameterMap) params
+            initPager(parameters)
+            // check required parameters
+            if (!parameters.categoryId) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long categoryId = Long.parseLong(parameters.categoryId.toString())
+            DocCategory category = (DocCategory) docCategoryCacheUtility.read(categoryId)
+
+            Map appUserCategory = listOfAppUserCategory(categoryId)
+            List<GroovyRowResult> lstAppUserCategory = appUserCategory.lstAppUserCategory
+            int total = (int) appUserCategory.count
+
+            result.put(LST_APP_USER_CATEGORY, lstAppUserCategory)
+            result.put(CATEGORY_ID, categoryId)
+            result.put(CATEGORY_NAME, category.name)
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.COUNT, total)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Do nothing for post condition
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * Wrap list of user for grid
+     * @param obj - a map returned from execute method
+     * @return result - a map containing necessary information for show page
+     * map contains isError(true/false) depending on method success
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map executeResult = (LinkedHashMap) obj   // cast map returned from execute method
+        String categoryLabel = executeResult.get(CATEGORY_LABEL)
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            List<GroovyRowResult> lstAppUserCategory = (List) executeResult.get(LST_APP_USER_CATEGORY)
+            int total = (int) executeResult.get(Tools.COUNT)
+            List<GroovyRowResult> LstWrapAppUserCategory = wrapAppUserEntityList(lstAppUserCategory, start)
+            Map gridObject = [page: pageNumber, total: total, rows: LstWrapAppUserCategory]
+            result.put(GRID_OBJ, gridObject)
+            result.put(CATEGORY_ID, executeResult.get(CATEGORY_ID))
+            result.put(CATEGORY_NAME, executeResult.get(CATEGORY_NAME))
+            result.put(CATEGORY_LABEL, categoryLabel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods
+     * @return -a map containing isError = true & relevant error message to display on page load
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        Map preResult = (LinkedHashMap) obj
+        String categoryLabel = preResult.get(CATEGORY_LABEL)
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (preResult.get(Tools.MESSAGE)) {
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            }
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Wrap list in grid entity list
+     * @param lstAppUserCategory - list of user for category
+     * @param start - starting index of the page
+     * @return lstWrapAppUserCategory - list of wrap userCategory
+     */
+    private List wrapAppUserEntityList(List<GroovyRowResult> lstAppUserCategory, int start) {
+        List lstWrapAppUserCategory = []
+        int counter = start + 1
+        for (int i = 0; i < lstAppUserCategory.size(); i++) {
+            GroovyRowResult appUserCategory = lstAppUserCategory[i]
+            GridEntity obj = new GridEntity()
+            obj.id = appUserCategory.id
+            obj.cell = [
+                    counter,
+                    appUserCategory.id,
+                    appUserCategory.username,
+                    appUserCategory.is_category_manager ? Tools.YES : Tools.NO
+            ]
+            lstWrapAppUserCategory << obj
+            counter++
+        }
+        return lstWrapAppUserCategory
+    }
+
+    private static final String LST_QUERY = """
+         SELECT cum.id,au.username,cum.is_category_manager
+            FROM app_user au
+            LEFT JOIN doc_all_category_user_mapping cum ON cum.user_id=au.id
+            WHERE cum.company_id = :companyId
+            AND cum.category_id = :categoryId
+            AND cum.sub_category_id= :subCategoryId
+         ORDER BY au.username
+         LIMIT :resultPerPage OFFSET :start
+    """
+
+    private static final String COUNT_QUERY = """
+        SELECT COUNT(au.id) count
+            FROM app_user au
+            LEFT JOIN doc_all_category_user_mapping cum ON cum.user_id=au.id
+            WHERE cum.company_id = :companyId
+            AND cum.category_id = :categoryId
+            AND cum.sub_category_id= :subCategoryId
+    """
+
+    /**
+     * Get the list of appUser
+     * @param categoryId - Category Id
+     * @return - a map containing list of appUserCategory and count
+     */
+    private Map listOfAppUserCategory(long categoryId) {
+        long companyId = docSessionUtil.appSessionUtil.getCompanyId()
+
+        Map queryParams = [
+                categoryId: categoryId,
+                subCategoryId: 0,
+                companyId: companyId,
+                resultPerPage: resultPerPage,
+                start: start
+        ]
+        List<GroovyRowResult> lstResult = executeSelectSql(LST_QUERY, queryParams)
+        List<GroovyRowResult> countResult = executeSelectSql(COUNT_QUERY, queryParams)
+
+        int total = (int) countResult[0].count
+        return [lstAppUserCategory: lstResult, count: total]
+    }
+}

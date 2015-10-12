@@ -1,0 +1,91 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.sarb.model.SarbTaskModel
+import com.athena.mis.sarb.service.SarbTaskModelService
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+
+class ShowDetailsForReplaceTaskActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String SARB_TASK_MODEL = "sarbTaskModel"
+    private static final String LOAD_FAILURE_MSG = "Failed to load task details"
+    private static final String LOAD_SUCCESS_MSG = "Task details successfully loaded"
+
+    SarbTaskModelService sarbTaskModelService
+
+    @Override
+    Object executePreCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    @Override
+    Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    @Transactional(readOnly = true)
+    Object execute(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            if (!params.taskId) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+            long oldTaskId = Long.parseLong(params.taskId.toString())
+            SarbTaskModel sarbTaskModel = sarbTaskModelService.read(oldTaskId)
+            result.put(SARB_TASK_MODEL, sarbTaskModel)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, LOAD_FAILURE_MSG)
+            return result
+        }
+    }
+
+    @Override
+    Object buildSuccessResultForUI(Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            LinkedHashMap executeResult = (LinkedHashMap) obj
+            SarbTaskModel sarbTaskModel = executeResult.get(SARB_TASK_MODEL)
+            result.put(SARB_TASK_MODEL, sarbTaskModel)
+            result.put(Tools.MESSAGE, LOAD_SUCCESS_MSG)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, LOAD_FAILURE_MSG)
+            return result
+        }
+    }
+
+    @Override
+    Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                Map preResult = (Map) obj
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, LOAD_FAILURE_MSG)
+            }
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, true)
+            result.put(Tools.MESSAGE, LOAD_FAILURE_MSG)
+            return result
+        }
+    }
+}

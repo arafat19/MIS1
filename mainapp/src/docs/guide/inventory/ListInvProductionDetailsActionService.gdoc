@@ -1,0 +1,61 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show list of "Production Line Item" in landing page | |
+ *ActionService:* | ListInvProductionDetailsActionService | *Auditable:* | No
+ *Url:* | /invProductionDetails/list | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 12th October 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Clicks "Settings" left sub menu of *Inventory*.
+* Click *Production Line Item* link.
+* [Show Landing Page of "Production Line Item"|guide:ShowInvProductionLineItemActionService].
+* [List "Production Line Item"|guide:ListInvProductionLineItemActionService].
+* Select a Line-Item from grid view.
+* Click "Materials" Button.
+* Show list of "Production Line Item" in [landing page|guide:ShowInvProductionDetailsActionService].
+
+h4. Pre-condition:
+* User must have "List Production Details" privilege.
+
+h4. Process:
+* Get Item list of *Production Line Item* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Production Line Item
+** Production Item Type
+** Material
+** Overhead Cost
+
+h4. Post-condition:
+
+* *Success:*
+** Item of *Production Line Item* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search Item of *Production Line Item* From Grid View|guide:SearchInvProductionDetailsActionService].
+
+!Inv/Production_Line_Item_Details_List.png!

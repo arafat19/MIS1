@@ -1,0 +1,517 @@
+<script language="javascript">
+    var inventoryInDetailsListModel, dropDownItemId, dropDownVehicle,
+            transDate, numericActualQuantity, numericSuppliedQuantity,
+            invTransactionId,poId,transEntityId, inventoryId;
+
+    $(document).ready(function () {
+        onLoadInventoryIn();
+    });
+
+    function onLoadInventoryIn() {
+        var output =${output ?output : ''};
+
+        initializeForm($("#inventoryInDetailsForm"), onSubmitInventory);
+
+        $('#actualQuantity').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.9999,
+            format: "#.####"
+
+        });
+        numericActualQuantity = $("#actualQuantity").data("kendoNumericTextBox");
+
+        $('#suppliedQuantity').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.9999,
+            format: "#.####"
+
+        });
+        numericSuppliedQuantity = $("#suppliedQuantity").data("kendoNumericTextBox");
+
+        if (output.isError) {
+            showError(output.message);
+            return
+        }
+
+
+        inventoryInDetailsListModel = output.gridObj;
+        populateInventoryIn(output.inventoryInMap);
+        $('#chalanNo').html('(Auto Generated)');
+
+        initGrid();
+        populateFlexGrid();
+
+        // update page title
+        $(document).attr('title', "MIS - Inventory-In Item(s)");
+        loadNumberedMenu(MENU_ID_INVENTORY, "#invInventoryTransaction/showInventoryInFromSupplier");
+    }
+
+    //Calculate shrinkage: shrinkage = SuppliedQuantity - ActualQuantity
+    function calculateShrinkage() {
+        var suppliedQuantity;
+        var actualQuantity;
+        var shrinkage = 0;
+
+        suppliedQuantity = numericSuppliedQuantity.value();
+        actualQuantity = numericActualQuantity.value();
+
+        //checking valid supplied quantity
+        if (isNaN(suppliedQuantity) || suppliedQuantity <= 0) {
+            showError("Invalid Supplied Quantity!");
+            $("#suppliedQuantity").focus();
+            return false;
+        }
+
+        //checking valid actual quantity
+        if (isNaN(actualQuantity) || actualQuantity <= 0) {
+            showError("Invalid Actual Quantity!");
+            $("#actualQuantity").focus();
+            return false;
+        }
+
+        suppliedQuantity = parseFloat(suppliedQuantity);
+        actualQuantity = parseFloat(actualQuantity);
+
+        //actual quantity can't be bigger than supplied quantity
+        if (actualQuantity > suppliedQuantity) {
+            showError("Actual quantity can't be bigger than supplied quantity");
+            $("#actualQuantity").focus();
+            return false;
+        }
+        return true;
+    }
+
+    function populateInventoryIn(inventoryInMap) {
+        if (!inventoryInMap) {
+            return false;
+        }
+
+        invTransactionId = inventoryInMap.inventoryTransactionId;
+        poId = inventoryInMap.purchaseOrderId;
+        transEntityId = inventoryInMap.transactionEntityId;
+        inventoryId = inventoryInMap.inventoryId;
+
+        $('#inventoryTransactionId').val(inventoryInMap.inventoryTransactionId);
+        $('#purchaseOrderLabel').html(inventoryInMap.purchaseOrderId);
+        $('#purchaseOrderId').val(inventoryInMap.purchaseOrderId);
+        $('#inventoryId').val(inventoryInMap.inventoryId);
+        $('#inventoryName').html(inventoryInMap.inventoryName);
+        $('#supplierName').html(inventoryInMap.supplierName);
+        $('#transactionEntityId').val(inventoryInMap.transactionEntityId);
+
+        return true;
+    }
+
+    function onChangeItem() {
+        if (dropDownItemId.value() == '') {
+            $('#unit').text('');
+            return false;
+        }
+        var unit = dropDownItemId.dataItem().unit;
+        var purchaseOrderDetailsId = dropDownItemId.dataItem().purchase_request_details_id;
+        $('#unit').text(unit);
+        $('#purchaseOrderDetailsId').val(purchaseOrderDetailsId);
+    }
+
+    function chkPOLimit() {
+        var current_po_limit = dropDownItemId.dataItem().current_po_limit;
+        current_po_limit = parseFloat(current_po_limit);
+        var inventoryInQuantity = parseFloat(numericActualQuantity.value());
+        if (inventoryInQuantity > current_po_limit) {
+            showError("Supplied Quantity is exceeded the Purchase Order's Quantity.");
+            return false;
+        }
+        return true;
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#inventoryInDetailsForm"))) {
+            return false;
+        }
+        if (calculateShrinkage() == false) {
+            return false;
+        }
+        if (checkCustomDate($('#transactionDate'), 'Inventory-In') == false) {
+            return false;
+        }
+        return true;
+    }
+
+    function onSubmitInventory() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+
+        var data = jQuery("#inventoryInDetailsForm").serialize();
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'createInventoryInDetailsFromSupplier')}";
+        } else {
+            actionUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'updateInventoryInDetailsFromSupplier')}";
+        }
+
+        jQuery.ajax({
+            type: 'post',
+            data: data,
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            try {
+
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(inventoryInDetailsListModel.total);
+
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (inventoryInDetailsListModel.rows.length > 0) {
+                        firstSerial = inventoryInDetailsListModel.rows[0].cell[0];
+                        regenerateSerial($(inventoryInDetailsListModel.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+                    inventoryInDetailsListModel.rows.splice(0, 0, result.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        inventoryInDetailsListModel.rows.pop();
+                    }
+
+                    inventoryInDetailsListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(inventoryInDetailsListModel);
+
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(inventoryInDetailsListModel, result.entity, 0);
+                    $("#flex1").flexAddData(inventoryInDetailsListModel);
+                }
+
+                resetForCreateAgain();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function resetForCreateAgain() {
+        clearErrors($("#inventoryInDetailsForm"));
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+
+        $('#id').val('');
+        $('#chalanNo').text('(Auto Generated)');
+        $('#version').val('');
+        $('#vehicleNumber').val('');
+        $('#stackMeasurement').val('');
+        $('#itemId').attr('default_value', '');
+        $('#itemId').reloadMe();
+        numericSuppliedQuantity.value('');
+        numericActualQuantity.value('');
+        $('#comments').val('');
+        $('#unit').html('');
+        $("#transactionDate").val('');
+        $('#supplierChalan').val('');
+        dropDownVehicle.value('');
+        $('#transactionDate').focus();
+    }
+
+    function resetForm() {
+        clearForm($("#inventoryInDetailsForm"), $("#transactionDate"));
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+        $('#itemId').attr('default_value', '');
+        $('#itemId').reloadMe();
+        $('#chalanNo').html('(Auto Generated)');
+        $('#unit').text('');
+        $('#inventoryTransactionId').val(invTransactionId);
+        $('#purchaseOrderId').val(poId);
+        $('#inventoryId').val(inventoryId);
+        $('#transactionEntityId').val(transEntityId);
+    }
+
+    function initGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Chalan", name: "id", width: 50, sortable: false, align: "left"},
+                        {display: "Item", name: "itemId", width: 150, sortable: false, align: "left"},
+                        {display: "Supplied Quantity", name: "numericActualQuantity", width: 100, sortable: false, align: "right"},
+                        {display: "Actual Quantity", name: "numericActualQuantity", width: 100, sortable: false, align: "right"},
+                        {display: "Shrinkage", name: "shrinkage", width: 100, sortable: false, align: "right"},
+                        {display: "Transaction Date", name: "transaction_date", width: 80, sortable: false, align: "left"},
+                        {display: "Supplier Chalan", name: "supplier_chalan", width: 80, sortable: false, align: "left"} ,
+                        {display: "Vehicle", name: "vehicle_name", width: 80, sortable: false, align: "left"},
+                        {display: "Created By", name: "createdBy", width: 100, sortable: false, align: "left"},
+                        {display: "Updated By", name: "updatedBy", width: 100, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/invInventoryTransactionDetails/selectInventoryInDetailsFromSupplier,/invInventoryTransactionDetails/updateInventoryInDetailsFromSupplier">
+                        {name: 'Edit', bclass: 'edit', onpress: editInventoryIn},
+                        </app:ifAllUrl>
+                        <sec:access url="/invInventoryTransactionDetails/deleteInventoryInDetailsFromSupplier">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteInventoryInDetails},
+                        </sec:access>
+
+                        <sec:access url="/invInventoryTransactionDetails/approveInventoryInDetailsFromSupplier">
+                        {name: 'Approve', bclass: 'approve', onpress: approveInventoryIn},
+                        </sec:access>
+
+                        {name: 'Report', bclass: 'addDoc', onpress: getInvoiceInventoryIn},
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Chalan", name: "iitd.id", width: 180, sortable: true, align: "left"},
+                        {display: "Item", name: "item.name", width: 180, sortable: true, align: "left"},
+                        {display: "Actual Quantity", name: "iitd.actual_quantity", width: 180, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Unapproved Item(s) From Supplier',
+                    useRp: true,
+                    rp: 15,
+                    rpOptions: [15, 20, 25],
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 40,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);// Spinner hide after AJAX Call
+//                            checkGrid();
+                    },
+                    customPopulate: onLoadInventoryInListJSON
+                }
+        );
+    }
+
+    function approveInventoryIn(com, grid) {
+        var ids = $('.trSelected', grid);
+
+        if (executePreConditionForApprove(ids) == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var inventoryInDetailsId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'invInventoryTransactionDetails', action: 'approveInventoryInDetailsFromSupplier')}?id=" + inventoryInDetailsId,
+            success: executePostConditionForApprove,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForApprove(ids) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return false;
+        }
+        if (!confirm('Do you want to approve the selected item?')) {
+            return false;
+        }
+
+        var approvedByIA = $(ids[ids.length - 1]).find('td').eq(14).find('div').text();
+        if (approvedByIA != "") {
+            showError("This item already approved.");
+            return false;
+        }
+
+        return true;
+    }
+
+    function executePostConditionForApprove(data) {
+        if (data.isError == false) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            inventoryInDetailsListModel.total = parseInt(inventoryInDetailsListModel.total) - 1;
+            removeEntityFromGridRows(inventoryInDetailsListModel, selectedRow);
+            resetForCreateAgain(data);
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function deleteInventoryInDetails(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var inventoryDetailId = getSelectedIdFromGrid($('#flex1'));
+
+        $.ajax({
+            url: "${createLink(controller:'invInventoryTransactionDetails', action: 'deleteInventoryInDetailsFromSupplier')}?id=" + inventoryDetailId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure to delete the selected item?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            inventoryInDetailsListModel.total = parseInt(inventoryInDetailsListModel.total) - 1;
+            removeEntityFromGridRows(inventoryInDetailsListModel, selectedRow);
+            resetForCreateAgain();
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    function checkGrid() {
+        var rows = $('table#flex1 > tbody > tr');
+        if (rows && rows.length < 1) {
+            showInfo('No inventory in data found');
+        }
+    }
+
+    function executePreConditionForEdit(ids) {
+        if (ids.length == 0) {
+            showError("Please select an item.");
+            return false;
+        }
+        return true;
+    }
+
+    function editInventoryIn(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return;
+        }
+        var inventoryInId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'invInventoryTransactionDetails', action: 'selectInventoryInDetailsFromSupplier')}?id=" + inventoryInId,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            populateInventoryInDetails(data);
+        }
+    }
+
+    function updateMaterial() {
+        if (dropDownVehicle.value() == '') {
+            $('#unit').text('');
+        }
+
+        var unit = dropDownItemId.dataItem().unit;
+        var quantity = dropDownItemId.dataItem().quantity;
+        var budgetDetailsId = dropDownItemId.dataItem().budget_details_id;
+        $('#unit').text('of ' + quantity + ' ' + unit);
+    }
+
+    function populateInventoryInDetails(data) {
+        clearErrors($("#inventoryInDetailsForm"));
+        //resetForm(data);
+        var entity = data.entity;
+
+        $('#id').val(entity.id);
+        $('#chalanNo').text(entity.id);
+        $('#version').val(data.version);
+        $('#vehicleNumber').val(entity.vehicleNumber);
+        dropDownVehicle.value(entity.vehicleId);
+        $('#stackMeasurement').val(entity.stackMeasurement);
+        numericSuppliedQuantity.value(entity.suppliedQuantity);
+        numericActualQuantity.value(entity.actualQuantity);
+        $('#comments').val(entity.comments);
+        $('#supplierChalan').val(entity.supplierChalan);
+
+        $('#itemId').attr('default_value', entity.itemId);
+        $('#itemId').reloadMe(disableDropDownAndShowQuantitySpan);
+
+        $('#transactionDate').val(data.transactionDate);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    // disable item dropDown as well as show item actual quantity in the span
+    function disableDropDownAndShowQuantitySpan(){
+        onChangeItem();
+        dropDownItemId.enable(false);
+    }
+
+    function onLoadInventoryInListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            inventoryInDetailsListModel = getEmptyGridModel();
+        } else {
+            inventoryInDetailsListModel = data;
+        }
+        $("#flex1").flexAddData(inventoryInDetailsListModel);
+    }
+
+    function getInvoiceInventoryIn(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'item') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var inventoryInId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'invReport', action: 'showInvoice')}?id=" + inventoryInId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    function populateFlexGrid() {
+        var inventoryInId = $('#inventoryTransactionId').val();
+        var strUrl = "${createLink(controller: 'invInventoryTransactionDetails', action: 'listUnapprovedInvInFromSupplier')}?inventoryTransactionId=" + inventoryInId;
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (inventoryInDetailsListModel) {
+            $("#flex1").flexAddData(inventoryInDetailsListModel);
+        }
+    }
+
+</script>

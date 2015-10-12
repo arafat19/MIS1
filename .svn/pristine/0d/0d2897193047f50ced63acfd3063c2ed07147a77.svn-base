@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OtherBankDetailsCSV" language="groovy" pageWidth="1545" pageHeight="695" orientation="Landscape" columnWidth="1505" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="b7d22303-eb83-4ae8-82b6-7ada5d012b9e">
+	<property name="ireport.zoom" value="0.7500000000000013"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fromDate" class="java.sql.Timestamp"/>
+	<parameter name="toDate" class="java.sql.Timestamp">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="taskStatusId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="bankId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="companyId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="companyName" class="java.lang.String"/>
+	<parameter name="bankName" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT task.ref_no, floor(task.amount_in_foreign_currency) AS amount_in_foreign_currency,
+            to_char(task.created_on, 'MM/DD/YYYY') AS created_on, c.name AS customer_name, c.address AS customer_address,
+            c.phone AS customer_phone, (b.first_name || COALESCE(' ' || b.middle_name,'') || COALESCE(' ' || b.last_name,'')) AS beneficiary_name,
+            b.account_no, b.address AS beneficiary_address,
+            b.phone AS beneficiary_phone, bank.name AS bank, district.name AS district,
+            bank_branch.name AS bank_branch, b.photo_id_type, task.pin_no
+        FROM exh_task task
+        LEFT JOIN exh_customer c ON c.id=task.customer_id
+        LEFT JOIN exh_beneficiary b ON b.id=task.beneficiary_id
+        LEFT JOIN bank ON bank.id=task.outlet_bank_id
+        LEFT JOIN bank_branch ON bank_branch.id=task.outlet_branch_id
+        LEFT JOIN district ON district.id=task.outlet_district_id
+        WHERE task.created_on BETWEEN $P{fromDate} AND $P{toDate}
+        AND task.current_status=$P{taskStatusId}
+        AND task.outlet_bank_id=$P{bankId}
+        AND task.company_id = $P{companyId}]]>
+	</queryString>
+	<field name="ref_no" class="java.lang.String"/>
+	<field name="amount_in_foreign_currency" class="java.lang.Double"/>
+	<field name="created_on" class="java.lang.String"/>
+	<field name="customer_name" class="java.lang.String"/>
+	<field name="customer_address" class="java.lang.String"/>
+	<field name="customer_phone" class="java.lang.String"/>
+	<field name="beneficiary_name" class="java.lang.String"/>
+	<field name="account_no" class="java.lang.String"/>
+	<field name="beneficiary_address" class="java.lang.String"/>
+	<field name="beneficiary_phone" class="java.lang.String"/>
+	<field name="bank" class="java.lang.String"/>
+	<field name="district" class="java.lang.String"/>
+	<field name="bank_branch" class="java.lang.String"/>
+	<field name="photo_id_type" class="java.lang.String"/>
+	<field name="pin_no" class="java.lang.String"/>
+	<title>
+		<band height="81">
+			<staticText>
+				<reportElement uuid="298849d1-8339-48ab-88ab-0bc175747a6e" x="0" y="20" width="100" height="20" isPrintWhenDetailOverflows="true"/>
+				<textElement/>
+				<text><![CDATA[Bank Name:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="6941f279-c6f7-4ff9-8d7e-65688160587e" x="100" y="20" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{bankName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="db2548ae-ff95-47ce-9e43-14aabeede2d9" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Company Name:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="9d4bfd65-12aa-4d7c-b7bd-70072f10979f" x="100" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1f79636d-c82b-496f-80ff-dd239db99a98" x="0" y="40" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[From:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="23d2be35-db87-4fc0-a8a8-0e2459d757a3" x="100" y="40" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{fromDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="cbac2dfc-1077-4436-8196-c51c397810c8" x="200" y="40" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[To:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7a2a3677-83ad-48b1-835c-2405013235a6" x="300" y="40" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{toDate}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="57a60c86-f678-495a-be35-d51db16bd271" x="0" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Ref. No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2fb216f6-c2ad-4406-b998-847e35035b28" x="100" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Amount]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="654a176e-7a62-47a5-a1e2-82160a726136" x="300" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Customer Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c27cd9a-7f2f-4bae-9c69-166839c69d11" x="400" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Customer Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="54d487ee-6a41-4429-b24e-f48e014cb5f5" x="500" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Customer Phone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e250435f-fbee-4721-9263-577f4a208286" x="600" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Beneficiary Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b02d14e5-7581-44ac-ab90-8602798633d6" x="700" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[A\C No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6037ab70-6f24-4a63-ba09-d4f1db177a22" x="800" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Beneficiary Address]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="81a78a61-b0e5-4494-b8b2-0cbf70401af1" x="900" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Beneficiary Phone]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="da26f1be-aef1-4420-8d64-861b05a99213" x="1100" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Bank]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="87678fd2-3c8f-4cec-b9b7-325f80fc7c04" x="1000" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[District]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="18650f05-17d6-45bb-8bc1-bc338f2daa2d" x="200" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Created On]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="98e2bcde-9a81-4b17-a4a3-419791a0fa4f" x="1200" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Branch]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c8f6e21c-952e-4eac-b3a1-56d9d995ebf2" x="1300" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Identification]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eb017c45-d40d-4221-bb13-0230ab05b4ce" x="1400" y="60" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Pin No]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="50">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bcd245d9-d1fa-41be-9166-d31df766512b" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ref_no}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="###0" isBlankWhenNull="false">
+				<reportElement uuid="d8b31ece-8fed-4688-aa9a-79da6557e03f" x="100" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{amount_in_foreign_currency}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="4fb91ca7-30de-4c98-86b8-edbbe9f266a1" x="300" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{customer_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="62c791d0-a592-4fb7-bfee-e92b26791e76" x="400" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{customer_address}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="46830035-e608-472e-94c3-d915c562a0a0" x="500" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{customer_phone}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ee351bf3-d3e9-47eb-a718-2acafcee8e0a" x="600" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{beneficiary_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8e22708d-79a6-40ef-ba6a-1ed5d4739470" x="700" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{account_no}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="7d5e0cbd-e900-45dd-a637-45c558a83db5" x="800" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{beneficiary_address}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2521ac95-53eb-4b50-bcf2-12da53a47c67" x="900" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{beneficiary_phone}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="92647e05-3cca-40fe-93c0-23ff00a23489" x="1100" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{bank}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="ab58cadb-5e21-4afe-8d9f-b5c4a8d019f1" x="1000" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{district}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8251d84f-626b-4d5e-a9cb-25ef35b04d9c" x="200" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{created_on}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="d7d2adde-6ebd-45da-8afb-4f7750b3f9f3" x="1200" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{bank_branch}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="c2261e33-3105-4116-9088-ec63e7c56c65" x="1300" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{photo_id_type}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="714a163e-0a60-4383-899d-41b0b092f1aa" x="1400" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{pin_no}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

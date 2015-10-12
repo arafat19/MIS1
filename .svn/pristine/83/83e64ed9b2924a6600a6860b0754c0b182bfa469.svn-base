@@ -1,0 +1,71 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Bug* | |
+*ActionService:* | CreatePtBugActionService | *Auditable:* | No
+*Url:* | /ptBug/create | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click "Active" link.
+* Show Landing Page of *Active Backlog*.
+* Enter Valid input.
+* Click "Search" button.
+* [Search "Active Backlog"|guide:ListActiveBacklogActionService]. *Active Backlog* will be listed in grid view.
+* Select a Line-Item from grid view.
+* Click "Bug" button.
+* [Show landing page of bug|guide:ShowPtBugActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Bug*.
+
+h4. Pre-condition:
+* User must have "Create Project track Bug" privilege.
+* Bug can create from active sprint.
+* Bug can create from inactive sprint.
+* Bug can create from completed task.
+* Bug can create from accepted task.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+ Title | Text Box | Alpha Numeric | Required
+ Step to Reproduce | Text Box |  Alpha Numeric | Required
+ Note | Text Box |  Alpha Numeric | Optional
+ Status | Read Only | Alpha Numeric | Required (Default Submitted)
+ [Severity|guide:PopulateBugSeverityTypeList] | Drop-Down List |  Numeric | Required
+ [Bug Type|guide:PopulateBugTypeList] | Drop-Down List |  Numeric | Required
+ Attachment | File Upload |  | Optional
+{table}
+
+
+h4. Process:
+* Create a new *Bug*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Bug* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!projecttrack/Create-Bug.png!
+

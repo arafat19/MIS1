@@ -1,0 +1,72 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Generate *IOU Slip* Report in HTML Format | |
+ *ActionService:* | ListForAccIouSlipActionService | *Auditable:* | No
+ *Url:* | /accReport/listAccIouSlipRpt | |
+{table}
+
+h4. Revision History:
+    {table}
+     *Author*   | *Date* | *Reason for Changes*	| *Version*
+     Nahida Sultana | 30th April 2013	| Initial Requirement | 1.0
+    {table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click *IOU Slip* link.
+* [Show Landing Page of IOU Slip Report|guide:ShowForAccIouSlipActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate *IOU Slip* Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "List IOU Slip" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Trace No | Text Box | Numeric | Required
+{table}
+
+
+h4. Process:
+* Show *IOU Slip* information for the given Trace No.
+
+* Show *IOU Slip* report with following details:
+** Project Details
+*** Project Name
+
+** IOU Details
+*** Trace No
+*** Employee Name
+*** Total Amount
+*** Created On
+*** Designation
+*** Approved By
+
+** Indent Details
+*** Indent Trace No
+*** Indent Date
+
+** Purpose Details
+*** Serial
+*** Purpose
+*** Amount
+
+h4. Post-condition:
+
+* *Success:*
+** Show *IOU Slip* information in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Acc/IOU_Slip_Report_Generate.png!

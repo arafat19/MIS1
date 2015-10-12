@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Create *Sprint Budget* | |
+ *ActionService:* | CreateSprintBudgetActionService | *Auditable:* | No 
+ *Url:* | /budgSprintBudget/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 7th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Sprint" link
+* Show Landing Page of ["Budget Sprint"|guide:ShowBudgSprintActionService].
+* Select line item from grid.
+* Click "Budget" button from tool bar.
+* [Show Landing Page of "Sprint Budget"|guide:ShowSprintBudgetActionService].
+* [Add Budget from right panel|guide:_addBudgetToCreateSprint].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Sprint Budget*.
+
+h4. Pre-condition:
+* User must have "Create sprint budget" privilege.
+* "Budget" will not create again if exist in same sprint.
+* "Budget" date range must be within Sprint Date range or overlapes.
+* User must have to add "Budget" from right panel.
+
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Name | System Generated | Alpha Numeric | 
+ Quantity | Text Box | Numeric | Required
+{table}
+ 
+
+h4. Process:
+* Create a new *Sprint Budget*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly Created *Sprint Budget* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

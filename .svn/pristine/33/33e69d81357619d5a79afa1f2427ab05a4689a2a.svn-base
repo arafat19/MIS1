@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Backlog* | |
+*ActionService:* | ShowPtBacklogActionService | *Auditable:* | No
+*Url:* | /ptBacklog/show | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator,Software Engineer,SQA.
+
+h4. Description:
+This is the landing page of *Backlog* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Backlog* link.
+* Show Landing Page of *Backlog*.
+
+h4. Pre-condition:
+* User must have "Show all backlog" privilege.
+
+h4. Process:
+*  [Get List of all "Backlog" from server|guide:ListPtBacklogActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Backlog* information in grid view.
+** Reset input form on top to create new *Backlog*.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Backlog" in Edit Mode|guide:SelectPtBacklogActionService].
+* [Delete "Backlog"|guide:DeletePtBacklogActionService].
+* [Search "Backlog" From Grid View|guide:SearchPtBacklogActionService].
+
+!projecttrack/Show-Backlog.png!
+

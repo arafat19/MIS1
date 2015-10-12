@@ -1,0 +1,56 @@
+
+
+{table}
+ Access Type: | Restricted | Priority: | High
+ *Name:* | Search *Budget Sprint* From Grid View | |
+ *ActionService:* | SearchBudgSprintActionService | *Auditable:* | No
+ *Url:* | /budgSprint/list | |
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 5th August 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* "Budget" sub menu of left menu should show as default.
+* Click "Sprint" link
+* [Show Landing Page of "Budget Sprint"|guide:ShowBudgSprintActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Budget Sprint* From Grid View.
+
+h4. Pre-condition:
+* User must have "List sprint" privilege.
+* Rules of searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+ Criteria | Text Box | Alpha Numeric | Required
+ Field (Name) | Drop Down List |  Numeric | Required
+{table}
+
+
+
+h4. Process:
+* Get list of *Budget Sprint* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Budget Sprint*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Budget Sprint* list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of *Budget Sprint* in Landing Page|guide:ListBudgSprintActionService].

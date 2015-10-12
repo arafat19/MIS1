@@ -1,0 +1,61 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of Agent's *Customer* in Landing Page | |
+*ActionService:* | ExhListCustomerForAgentActionService | *Auditable:* | No
+*Url*: | /exhCustomer/listForAgent | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 2nd October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Agent.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Customer" link.
+* Show List of Agent's *Customer* in [Landing Page|guide:ExhShowCustomerForAgentActionService].
+
+h4. Pre-condition:
+* User must have "List customer for agent" privilege.
+* Empty *Customer* list of corresponding *Agent* will be exist in grid view.
+
+h4. Process:
+* Get empty List of Agent's *Customer* from server (Default: 15 at max).
+* Following columns should show in grid view:
+** Serial
+** Customer A/C No
+** Name
+** Date of Birth
+** Photo Id Type
+** Photo Id No
+** Phone No
+
+h4. Post-condition:
+* Reload Grid view is the cause of hiding *Customer* list.
+
+* *Success:*
+** Empty List of Agent's *Customer* will be exist in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search Agent's *Customer* From Empty Listed Grid View|guide:ExhSearchCustomerForAgentActionService].
+
+!Exh/Agent_Search Customer_List.png!

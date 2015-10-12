@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Validate *IOU* Trace Number While Create *Voucher* | |
+*Action:* | ShowAccVoucher(any voucher domain)ActionService | *Auditable:* | No
+*Url:* | /accVoucher/show(any voucher domain) | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 6th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer, Accountant.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* "Accounting" sub menu of left menu should show as default.
+* Click "Pay Cash" link.
+* Give a Valid input at *IOU* Trace input box.
+
+h4. Pre-condition:
+* *IOU* must be approved.
+* Sum of *Voucher* amount must not exceed *IOU* amount (For a individual IOU Slip).
+* Project of both *Voucher* and *IOU Slip* must be same.
+* Given *IOU* *Employee* Name must match with *Voucher* source *Employee* Name.
+
+h4. Process:
+* Given *IOU Slip* trace number used to Create *Voucher*.
+
+h4. Post-condition:
+
+* *Success:*
+** Valid *IOU* Number show in input box.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create "Pay Cash" Voucher|guide:_CreateAccPCVoucherActionService].
+* [Create "Pay Cheque" Voucher|guide:_CreateAccPBVoucherActionService].
+* [Create "Receive Cash" Voucher|guide:_CreateAccRCVoucherActionService].
+* [Create "Receive Cheque" Voucher|guide:_CreateAccRBVoucherActionService].
+* [Create Journal Voucher|guide:_CreateAccJRVoucherActionService].
+* [Update "Pay Cash" Voucher|guide:_UpdateAccPCVoucherActionService].
+* [Update "Pay Cheque" Voucher|guide:_UpdateAccPBVoucherActionService].
+* [Update "Receive Cash" Voucher|guide:_UpdateAccRCVoucherActionService].
+* [Update "Receive Cheque" Voucher|guide:_UpdateAccRBVoucherActionService].
+* [Update Journal Voucher|guide:_UpdateAccJRVoucherActionService].

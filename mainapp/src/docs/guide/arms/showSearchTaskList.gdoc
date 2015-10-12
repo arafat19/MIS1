@@ -1,0 +1,47 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of "Search Task List" Report | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsTaskList/showSearchTaskList | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+This is the landing page of "Search Task List" Report with search panel on top.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Search Task List" link.
+* Show Landing Page of "Search Task List" Report.
+
+h4. Pre-condition:
+* User must have "Show Task List for search" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Search Task List" report landing page.
+** Show search panel on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Search Task List" Report in HTML Format|guide:SearchTaskListForSearchActionService].
+

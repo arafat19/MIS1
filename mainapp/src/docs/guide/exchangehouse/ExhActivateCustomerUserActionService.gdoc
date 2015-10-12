@@ -1,0 +1,51 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Active *User* By Clicking Activation Link | |
+*ActionService:* | ExhActivateCustomerUserActionService | *Auditable:* | No
+*Url:* | /exhCustomer/activation | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Anonymous User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Log in with corresponding e-mail id.
+* Click on System generated link from e-mail.
+* Active *User* by clicking activation link.
+
+h4. Pre-condition:
+* *User* must request for "User Registration" activation.
+* *User* must activate "User Id" within 24 hours of his/her request.
+* Already activated *User* must not active-able.
+
+h4. Process:
+* Marked *User* as a "Active User" with corresponding log-in Id and password.
+* *Customer* role must be mapped with corresponding *User*.
+* User's "Enabled" CheckBox by Default False.
+* User's "Account Locked" CheckBox by Default False.
+* User's "Power User" CheckBox by Default False.
+* User's "Config Manager" CheckBox by Default False.
+* User's "Disable Password Expiration" CheckBox by Default False.
+* User's "Account Expired" CheckBox by Default False.
+
+h4. Post-condition:
+
+* *Success:*
+** *User* back to Log-in Page.
+** Show success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,57 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* |  Show List of "Transaction Day" in Landing Page | |
+*ActionService:* | ListRmsTransactionDayActionService | *Auditable:* | No
+*Url:* | /rmsTransactionDay/list | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author* | *Date* | *Reason for Changes* | *Version*
+Md. Shaheb Ali | 22nd July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Transaction Day* link.
+* [Show Landing Page of "Transaction Day"|guide:_ShowTransactionDay].
+* Show List of "Transaction Day" in Landing Page
+
+h4. Pre-condition:
+* User must have "List transaction day" privilege.
+
+h4. Process:
+* Get list of "Transaction day" from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** Transaction Date
+** Open By
+** Open On
+** Close By
+** Close On
+
+h4. Post-condition:
+
+* *Success:*
+** List of *Transaction day* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].

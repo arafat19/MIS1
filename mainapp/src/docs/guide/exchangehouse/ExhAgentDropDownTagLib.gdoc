@@ -1,0 +1,46 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate *Agent* List in drop-down  | |
+*ActionService:* | ExhAgentDropDownTagLib |*Auditable:* | No |
+*Url:* | /exhAgentCurrencyPosting/show | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 5th May 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Agent" sub menu from left menu.
+* Click *Agent Currency Posting* link.
+* [Show Landing Page of "Agent Currency Posting"|guide:ShowExhAgentCurrencyPostingActionService].
+* Populate *Agent* List in drop-down.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Get all *Agent* list from server. [Show Landing Page of "Agent"|guide:ShowExhAgentActionService]
+
+h4. Post-condition:
+
+* *Success:*
+** Populate list of *Agent* at drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Create "Agent Currency Posting"|guide:CreateExhAgentCurrencyPostingActionService].
+* [Update "Agent Currency Posting"|guide:UpdateExhAgentCurrencyPostingActionService].
+

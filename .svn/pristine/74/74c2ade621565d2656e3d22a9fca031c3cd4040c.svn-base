@@ -1,0 +1,239 @@
+<script language="javascript">
+    var bugListModel = false;
+    var dropDownProject, dropDownSprint, dropDownStatus, projectId, statusId, sprintId;
+
+    $(document).ready(function () {
+        onLoadBugPage();
+    });
+
+    // method called on page load
+    function onLoadBugPage() {
+
+        initializeForm($("#bugDetailsForm"), onSubmitBug);
+        $('.download_icon_set').hide();
+
+        $('#printPdfBtn').click(function () {
+            downloadBugDetails();
+        });
+
+        $("#sprintId").kendoDropDownList({
+            dataTextField: "name",
+            dataValueField: "id"
+        });
+
+        dropDownSprint = $("#sprintId").data("kendoDropDownList");
+        dropDownSprint.setDataSource(getKendoEmptyDataSource(dropDownSprint, 'ALL'));
+
+        var output =
+        ${output ? output : ''}
+        if (output.isError) {
+            showError(output.message);  // show error message in case of error
+        }
+        else {
+            bugListModel = output.gridObj;    // set data in a global variable to populate
+        }
+
+        initFlex();
+
+        if (bugListModel) {
+            dropDownProject.value(output.projectId);
+            dropDownProject.trigger('change', updateSprint);
+            dropDownSprint.value(output.sprintId);
+            projectId = output.projectId;
+            sprintId = output.sprintId;
+            statusId = '';  // set status empty for  'All' .
+            // show message if no bug details available for selected sprint
+            if (output.gridObj.rows.length < 1) {
+                showError("No bug details available");
+            }
+            populateFlex1();
+        }
+
+        // update page title
+        $(document).attr('title', "MIS - Search Bug");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#ptReport/showReportBug");
+    }
+
+    // check pre condition before submitting the form
+    function executePreCondition() {
+        if (dropDownProject.value() == '') {
+            showError('Please select project.');
+            return false;
+        }
+        // validate form data
+        if (!validateForm($("#bugDetailsForm"))) {
+            return false;
+        }
+        return true;
+    }
+
+    // method called  on submit of the form
+    function onSubmitBug() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        projectId = dropDownProject.value();
+        sprintId = dropDownSprint.value();
+        statusId = dropDownStatus.value();
+
+        setButtonDisabled($('#search'), true);  // disable the save button
+        showLoadingSpinner(true);   // show loading spinner
+        var params = "?sprintId=" + sprintId + "&statusId=" + statusId + "&projectId=" + projectId;
+        var strUrl = "${createLink(controller:'ptReport',action:  'listBugDetails')}" + params;
+
+        $.ajax({
+            url: strUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+        // $("#flex1").flexOptions({url: strUrl}).flexReload();
+        setButtonDisabled($('#search'), false);  // disable the save button
+    }
+
+    function executePostCondition(result) {
+        $("#flex1").flexAddData(getEmptyGridModel());
+        if (result.isError) {
+            showError(result.message);
+            return false;
+        }
+        $('#hideProjectId').val(result.projectId);
+        $('#hideSprintId').val(result.sprintId);
+        $('#hideStatusId').val(result.statusId);
+        if (result.gridObj.rows.length < 1) {
+            showError("No report available");
+            return false;
+        }
+        bugListModel = result.gridObj;
+        populateFlex1();
+    }
+    function downloadBugDetails() {
+        if (projectId == "" && sprintId) {
+            showError("Invalid report request");
+            return false;
+        }
+        showLoadingSpinner(true);
+        var params = "?projectId=" + projectId +"&sprintId=" + sprintId+"&statusId=" + statusId;
+
+        if (confirm('Do you want to download the PDF now?')) {
+            var url = "${createLink(controller: 'ptReport', action: 'downloadBugDetails')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+        return false;
+    }
+
+    function resetForm() {
+        clearForm($("#bugDetailsForm"));  // clear errors & form values
+    }
+
+    // initialize the grid
+    function initFlex() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 40, sortable: false, align: "right", hide: true},
+                        {display: "Sprint ID", name: "bug.sprint_id", width: 60, sortable: true, align: "right"},
+                        {display: "Created By", name: "created_by", width: 200, sortable: false, align: "left"},
+                        {display: "Title", name: "title", width: 300, sortable: false, align: "left"},
+                        {display: "Severity", name: "severity", width: 120, sortable: false, align: "left"},
+                        {display: "Bug Status", name: "status", width: 120, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        {name: 'Report', bclass: 'report', onpress: viewBugDetails},
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    title: 'Bug Details',
+                    singleSelect: true,
+                    usepager:true,
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    customPopulate: onLoadListJSON
+                }
+        );
+    }
+
+
+    // reload grid
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    function viewBugDetails(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'bug') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var bugId = getSelectedIdFromGrid($('#flex1'));
+        var loc = "${createLink(controller: 'ptBug', action: 'showBugDetails')}?id=" + bugId + "&leftMenu=" + '#ptReport/showReportBug';
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    function updateSprint() {
+        var projectId = dropDownProject.value();
+        dropDownSprint.value('');
+        if (projectId == '') {
+            dropDownSprint.setDataSource(getKendoEmptyDataSource(dropDownSprint, 'ALL'));
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?projectId=" + projectId;
+        $.ajax({
+            url: "${createLink(controller:'ptSprint', action: 'listSprintByProjectId')}" + params,
+            success: function (data, textStatus) {
+                dropDownSprint.setDataSource(data.sprintList);
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+
+    }
+
+    // custom populate the grid
+    function onLoadListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            bugListModel = getEmptyGridModel();
+        } else {
+            bugListModel = data.gridObj;
+        }
+        $("#flex1").flexAddData(bugListModel);
+    }
+
+
+    // set link to grid url to populate data
+    function populateFlex1() {
+        var params = "?projectId=" + projectId + "&sprintId=" + sprintId + "&statusId=" + statusId;
+        var strUrl = "${createLink(controller:'ptReport',action:  'listBugDetails')}" + params;
+        $("#flex1").flexOptions({url: strUrl});
+        if (bugListModel.total > 0) {
+            $('.download_icon_set').show();
+        }
+        if (bugListModel) {
+            $("#flex1").flexAddData(bugListModel);
+        }
+    }
+
+</script>

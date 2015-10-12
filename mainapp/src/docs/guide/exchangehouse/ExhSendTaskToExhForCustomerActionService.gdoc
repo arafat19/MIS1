@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Send "Customer Task" to "Exchange House" | |
+ *ActionService:* | ExhSendTaskToExhForCustomerActionService | *Auditable:* | No
+*Url*: | /exhTask/sendToExhForCustomer | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 30th January 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Customer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Send Remittance" link.
+* [Show Landing Page of Customer's *Task*|guide:ExhShowTaskForCustomerActionService].
+* Select a Line-Item from grid view.
+* Click "Send to Exchange House" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Send "Customer Task" to "Exchange House".
+
+h4. Pre-condition:
+* User must have "Send task to exchange house" privilege.
+* Sum of "Balance and credit amount" must not exceed total "Task amount".
+* Select a newly created *Task* from grid view.
+
+h4. Process:
+* Send *Task* to "Exchange House".
+
+h4. Post-condition:
+
+* *Success:*
+** Send *Task* to exchange house.
+** Remove sending Task from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

@@ -1,0 +1,46 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Backlog Status Type" List in drop-down | |
+*Action:* |  | *Auditable:* | No
+*Url:* | /ptBacklog/showForActive  | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+ Md. Shaheb Ali |8th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Software Engineer, SQA.
+
+h4. Description:
+* Name of the use case represents its functionality.
+* It is a System entity Type.
+* Its id number is 10707.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Active* link.
+* [Show Landing Page of "Active Backlog"|guide:_showForActive].
+* Populate "Backlog Status Type" List in Drop-Down.
+
+h4. Pre-condition:
+* Key must be Active to populate in drop-down.
+
+h4. Process:
+* Get list of "Backlog Status Type" from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Populate "Backlog Status Type" List in Drop-Down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+* [Generate List of "Active Backlog"|guide:ListActiveBacklogActionService].
+* [Generate List of "Project"|guide:GetDropDownPtProjectTagLibActionService].

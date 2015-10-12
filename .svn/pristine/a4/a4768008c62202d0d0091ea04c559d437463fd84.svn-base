@@ -1,0 +1,10 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+class SendRefundTaskToSarbActionService {
+
+    static transactional = true
+
+    def serviceMethod() {
+
+    }
+}

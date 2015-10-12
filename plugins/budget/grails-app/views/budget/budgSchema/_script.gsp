@@ -1,0 +1,387 @@
+<script language="javascript">
+    var budgetSchemaListModel, budgetSchemaGrid, budgetId, projectId, budgetLineItem;
+    var dropDownItemType, dropDownItem, itemQuantity, estimatedRate;
+
+    $(document).ready(function () {
+        onLoadBudgetSchema();
+    });
+
+    function onLoadBudgetSchema() {
+        initializeForm($("#budgetSchemaForm"), onSubmitBudgetSchema);
+        dropDownItem = initKendoDropdown($('#itemId'), null, null, null);
+
+        $('#quantity').kendoNumericTextBox({
+            min: 0.001,
+            max: 999999999999.999,
+            format: "#.###"
+        });
+        itemQuantity = $("#quantity").data("kendoNumericTextBox");
+
+        $('#rate').kendoNumericTextBox({
+            min: 0,
+            max: 999999999999.9999,
+            format: "#.####"
+        });
+        estimatedRate = $("#rate").data("kendoNumericTextBox");
+
+        // update page title
+        $(document).attr('title', "MIS - Create Budget Schema");
+        loadNumberedMenu(MENU_ID_BUDGET, "#budgBudget/show");
+
+        initFlexGrid();
+        budgetSchemaListModel = ${output ? output : ''};
+        var isError = budgetSchemaListModel.isError;
+        if (isError == 'true') {
+            var message = budgetSchemaListModel.message;
+            showError(message);
+            return;
+        }
+        if (budgetSchemaListModel.budgetInfoMap) {
+            setBudgetInfo(budgetSchemaListModel.budgetInfoMap);
+        }
+        budgetSchemaGrid = budgetSchemaListModel.lstBudgetSchema;
+    }
+
+    function setBudgetInfo(budgetInfo) {
+        $('#projectId').val(budgetInfo.projectId);
+        $('#projectName').text(budgetInfo.projectName);
+        $('#budgetScope').text(budgetInfo.budgetScope);
+        $('#budgetId').val(budgetInfo.budgetId);
+        $('#budgetItemSpan').text(budgetInfo.budgetItem);
+        $('#detailsSpan').text(budgetInfo.details);
+        $('#quantity').text(budgetInfo.quantity);
+        budgetId = budgetInfo.budgetId;
+        budgetLineItem = budgetInfo.budgetItem;
+        projectId = budgetInfo.projectId;
+    }
+
+    function resetFormBudgetSchema() {
+        clearForm($("#budgetSchemaForm"), dropDownItemType);
+
+        dropDownItem.setDataSource(getKendoEmptyDataSource());
+        dropDownItem.value('');
+        dropDownItemType.enable(true);
+        dropDownItem.enable(true);
+        $('#projectId').val(projectId);
+        $('#budgetId').val(budgetId);
+        $('#unit').text('');
+        $('#perUnitName').text('');
+        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+    }
+
+    function onChangeItemType() {
+        dropDownItem.setDataSource(getKendoEmptyDataSource());
+        dropDownItem.value('');
+        var itemTypeId = dropDownItemType.value();
+        if (itemTypeId == '') {
+            return;
+        }
+
+        var budgetId = $('#budgetId').attr('value');
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller:'budgSchema', action: 'listItemForBudgetSchema')}?budgetId=" + budgetId + "&itemTypeId=" + itemTypeId,
+            success: function (data) {
+                if (data.isError) {
+                    showError(data.message);
+                    dropDownItem.setDataSource(getKendoEmptyDataSource());
+                } else {
+                    dropDownItem.setDataSource(data.lstItem);
+                    dropDownItem.value('');
+                }
+            }, complete: onCompleteAjaxCall,
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function onChangeItem() {
+        var itemId = dropDownItem.value();
+        if (itemId == '') {
+            $('#unit').text('');
+            $('#perUnitName').text('');
+            return;
+        }
+        $('#unit').text(dropDownItem.dataItem().unit);
+        $('#perUnitName').text('per ' + dropDownItem.dataItem().unit);
+    }
+
+    function executePreCondition() {
+        if (!validateForm($("#budgetSchemaForm"))) {
+            return false;
+        }
+    }
+
+    function onSubmitBudgetSchema() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+
+        setButtonDisabled($('#create'), true);
+        // Spinner Show on AJAX Call
+        showLoadingSpinner(true);
+        var actionUrl = null;
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller:'budgSchema', action: 'create')}";
+        } else {
+            actionUrl = "${createLink(controller:'budgSchema', action: 'update')}";
+        }
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#budgetSchemaForm").serialize(),
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);
+        } else {
+            try {
+                if ($('#id').val().isEmpty() && result.entity != null) { // newly created
+                    var previousTotal = parseInt(budgetSchemaGrid.total);
+                    // re-arranging serial
+                    var firstSerial = 1;
+                    if (budgetSchemaGrid.rows.length > 0) {
+                        firstSerial = budgetSchemaGrid.rows[0].cell[0];
+                        regenerateSerial($(budgetSchemaGrid.rows), 0);
+                    }
+                    result.entity.cell[0] = firstSerial;
+                    budgetSchemaGrid.rows.splice(0, 0, result.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        budgetSchemaGrid.rows.pop();
+                    }
+
+                    budgetSchemaGrid.total = ++previousTotal;
+                    $("#flex1").flexAddData(budgetSchemaGrid);
+                } else if (result.entity != null) { // updated existing
+                    updateListModel(budgetSchemaGrid, result.entity, 0);
+                    $("#flex1").flexAddData(budgetSchemaGrid);
+                }
+                resetFormBudgetSchema();
+                showSuccess(result.message);
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    function initFlexGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
+                        {display: "Item Type", name: "itemTypeId", width: 200, sortable: false, align: "left"},
+                        {display: "Item", name: "itemId", width: 300, sortable: false, align: "left"},
+                        {display: "Quantity", name: "quantity", width: 150, sortable: false, align: "right"},
+                        {display: "Estimated Rate", name: "rate", width: 150, sortable: false, align: "right"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/budgSchema/select,/budgSchema/update">
+                        {name: 'Edit', bclass: 'edit', onpress: selectBudgetSchema},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/budgSchema/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteBudgetSchema},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/budgBudgetDetails/generateBudgetRequirement">
+                        {name: 'Generate Budget Requirement', bclass: 'note', onpress: generateBudgetRequirement},
+                        </app:ifAllUrl>
+                        {name: 'Refresh', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    searchitems: [
+                        {display: "Item", name: "itemId", width: 150, sortable: true, align: "left"},
+                        {display: "Item Type", name: "itemTypeId", width: 150, sortable: true, align: "left"}
+                    ],
+                    sortname: "id",
+                    sortorder: "desc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Budget Schema',
+                    useRp: true,
+                    rp: 15,
+                    rpOptions: [15, 20, 25],
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function () {
+                        showLoadingSpinner(false);// Spinner hide after AJAX Call
+                    },
+                    preProcess: onLoadBudgetSchemaListJSON
+                }
+        );
+    }
+
+    function onLoadBudgetSchemaListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            budgetSchemaGrid = null;
+        } else {
+            budgetSchemaGrid = data;
+        }
+        return budgetSchemaGrid;
+    }
+
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'budget schema') == false) {
+            return false;
+        }
+        if (!confirm("Are you sure you want to delete the selected schema?")) {
+            return false;
+        }
+        return true;
+    }
+
+    function deleteBudgetSchema(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true); // Spinner Show on AJAX Call
+        var budgetSchemaId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller: 'budgSchema', action: 'delete')}?id=" + budgetSchemaId,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForDelete(data) {
+        if (data.deleted == true) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            budgetSchemaGrid.total = parseInt(budgetSchemaGrid.total) - 1;
+            removeEntityFromGridRows(budgetSchemaGrid, selectedRow);
+            resetFormBudgetSchema();
+        } else {
+            showError(data.message);
+        }
+    }
+
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    function selectBudgetSchema(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'budget schema') == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var budgetSchemaId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'budgSchema', action: 'select')}?id=" + budgetSchemaId,
+            success: executePostConditionForEdit,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(result.message);
+        } else {
+            populateBudgetSchemaForEdit(data);
+        }
+    }
+
+    function populateBudgetSchemaForEdit(data) {
+        resetFormBudgetSchema();
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        dropDownItem.setDataSource(data.lstItem);
+        dropDownItem.value(entity.itemId);
+        dropDownItemType.value(entity.itemTypeId);
+        itemQuantity.value(entity.quantity);
+        estimatedRate.value(entity.rate);
+        dropDownItem.enable(false);
+        dropDownItemType.enable(false);
+        $('#unit').text(dropDownItem.dataItem().unit);
+        $('#perUnitName').text('per ' + dropDownItem.dataItem().unit);
+        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
+    }
+
+    window.onload = populateBudgetSchemaGridOnPageLoad();
+
+    function populateBudgetSchemaGridOnPageLoad() {
+        var strUrl = "${createLink(controller:'budgSchema', action: 'list')}?budgetId=" + budgetId;
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (budgetSchemaGrid) {
+            $("#flex1").flexAddData(budgetSchemaGrid);
+        }
+        var gridTitle;
+        if (budgetId) {
+            gridTitle = "Budget Schema for [Budget : " + budgetLineItem + " ]";
+        }
+        else {
+            gridTitle = "All Budget Schema";
+        }
+        $('div.mDiv > div.ftitle').text(gridTitle);
+    }
+
+    function generateBudgetRequirement(com, grid) {
+        if (budgetSchemaGrid.total == 0) {
+            showError('Budget has no schema');
+            return false;
+        }
+        if (!confirm("Are you sure you want to generate the budget requirement now?")) {
+            return false;
+        }
+        showLoadingSpinner(true);
+        $.ajax({
+            url: "${createLink(controller:'budgBudgetDetails', action: 'generateBudgetRequirement')}?budgetId=" + budgetId,
+            success: executePostConditionForGenerateBudgetRequirement,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePostConditionForGenerateBudgetRequirement(data) {
+        if (data.isError) {
+            showError(result.message);
+        } else {
+            $('#lblBudgetId').text(budgetLineItem);    // Set budget line item in Modal form
+            $('#lblLineItem').text(budgetLineItem);    // Set budget line item for dynamic prompt msg
+            $('#viewRequirementsConfirmationModalBudget').modal('show');    // show Modal
+        }
+    }
+
+    // this func. will be called from Modal form
+    function viewBudgetRequirements() {
+        $('#lblBudgetId').text('');    // Clean budget line item in Modal form
+        $('#viewRequirementsConfirmationModalBudget').modal('hide');
+        var loc = "${createLink(controller:'budgBudgetDetails', action: 'show')}?budgetId=" + budgetId;
+        $.history.load(formatLink(loc));
+        return false;
+    }
+
+    function cleanViewBudgetRequirementsForm() {
+        $('#lblBudgetId').text('');    // Clean budget line item in Modal form
+    }
+
+</script>

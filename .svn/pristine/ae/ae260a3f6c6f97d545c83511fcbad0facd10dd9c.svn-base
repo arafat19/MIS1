@@ -1,0 +1,50 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Delete *Indent* | |
+ *ActionService:* | DeleteIndentActionService| *Auditable:* | No
+ *Url*: | /procIndent/delete ||
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 6th October 2012 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+All users.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Indent* link.
+* [Show Landing Page of "Indent"|guide:ShowIndentActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Indent*.
+
+h4. Pre-condition:
+* User must have "Delete Indent" privilege.
+* If *Indent* has dependency with following business entity then *Indent* will not be delete-able.
+** *Indent* added Items.
+** *Purchase Request*.
+** IOU Slip.
+* Approved *Indent* must not delete-able.
+
+h4. Process:
+Delete  selected *Indent*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Indent* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

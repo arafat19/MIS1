@@ -1,0 +1,61 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Generate "Invoice" Report in HTML Format | |
+*ActionService:* | ExhGetInvoiceDetailsReportActionService | *Auditable:* | No
+*Url:* | /exhReport/getInvoiceDetails | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 27th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Cashier, Agent.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Show Invoice" link.
+* [Show Landing Page of "Invoice" Report|guide:ExhShowInvoiceDetailsReportActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Invoice" Report in HTML Format.
+
+h4. Pre-condition:
+* User must have "Get invoice details" privilege.
+* Follow rules of validation:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules* 
+ Reference No | Text Box | Alpha Numeric | Required 
+{table}
+
+
+h4. Process:
+* Show "Invoice" information, for the given "Reference No".
+* Show "Invoice" Report under following information:
+** Reference No
+** Customer Account No
+** Order Created On
+** Cashier Name
+** Customer Details
+** Beneficiary Details
+** Customer Signature
+** Cashier Signature
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Invoice Details" information in landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Invoice_Report_Generate.png!

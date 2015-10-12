@@ -1,0 +1,44 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-19 | Priority: | High
+ *Name* | Search Category Maintenance Type Mapping | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fxdCategoryMaintenanceType/list | *Action Class:* | FxdSearchCategoryMaintenanceTypeActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Click the magnify icon bottom of the page.
+# Write about searching criteria related with Maintenance Type and Category.
+# Click "Enter" button.
+
+h4. Pre-condition:
+# Rules of searching field:{table}
+ *Field* | *Input Type* | *Search Type*
+ Find | Text box | Maintenance Type
+ Find | Text box | Category
+{table}
+# Searching with zero length string will show list of all Category Maintenance Type Mapping.
+
+h4. Process:
+Get list of Category Maintenance Type Mapping (Default: 15 at Max) matching with search criteria.
+
+h4. Post-condition:
+
+# *Success:*
+## Show Category Maintenance Type Mapping in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

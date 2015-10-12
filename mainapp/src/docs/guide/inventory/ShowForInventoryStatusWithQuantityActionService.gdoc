@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show Landing Page of "Inventory Status With Quantity" Report | |
+ *ActionService:* | ShowForInventoryStatusWithQuantityActionService | *Auditable:* | No
+ *Url:* | /invReport/showInventoryStatusWithQuantity | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Production Operator,Inventory. Auditor,Chief Financial Officer.
+
+h4. Description:
+This is the landing page of "Inventory Status With Quantity" Report with search panel on top.
+
+h4. Flow:
+* Actor clicks  [Inventory|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Status With Quantity" link.
+* Show Landing Page of "Inventory Status With Quantity" Report.
+
+h4. Pre-condition:
+* User must have "Show Inventory Status With Quantity" privilege.
+
+h4. Process:
+* Show search panel on top grid.
+* Show Project list in drop-down. [Populate Project List|application]
+* Show From Date(Default Current Date) with calender.
+* Show To Date(Default Current Date) with calender.
+* Show *Inventory* Type (Default All) [Populate Inventory Type List|application].
+* Show *Inventory* Name List (Default All) [Populate "Inventory Name" List|guide:GetInventoryListByInventoryTypeActionService].
+* Show *Item* Type (Default All) [Populate Item Type List|application].
+
+h4. Post-condition:
+
+* *Success:*
+** Show landing page of Inventory Status With Quantity Report.
+** Reset input form on top to search new report.
+** Show grid view at the bottom of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Generate "Inventory Status With Quantity" Report|guide:ListForInventoryStatusWithQuantityActionService].
+
+!Inv/Inventory_Status_With_Quantity_Report_Show.png!

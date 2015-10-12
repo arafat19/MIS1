@@ -1,0 +1,141 @@
+package com.athena.mis.sarb.actions.taskmodel
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.utility.AppUserCacheUtility
+import com.athena.mis.sarb.entity.SarbTaskDetails
+import com.athena.mis.sarb.service.SarbTaskDetailsService
+import com.athena.mis.sarb.utility.SarbSessionUtil
+import com.athena.mis.utility.Tools
+import grails.transaction.Transactional
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+class MoveForResendSarbTaskActionService extends BaseService implements ActionIntf {
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    SarbTaskDetailsService sarbTaskDetailsService
+    @Autowired
+    AppUserCacheUtility appUserCacheUtility
+    @Autowired
+    SarbSessionUtil sarbSessionUtil
+
+    private static final String DEFAULT_ERROR_MESSAGE = "Task could not be moved"
+    private static final String ACCEPTED_TASK_COULD_NOT_BE_MOVED = "Accepted task could not be moved"
+    private static final String SARB_TASK_DETAILS = "sarbTaskDetails"
+    private static final String TASK_RESEND_SUCCESS = "Task has been moved to send again"
+    private static final String CONFIG_MANAGER_CAN_PERFORM_THIS = "Only config manager can perform this operation"
+
+    /**
+     * 1. Check for config manager to perform the operation
+     * 2. Only Not accepted task can be moved
+     * @param parameters-parameters from UI
+     * @param obj-N/A
+     * @return- map containing sarbTaskDetails
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+
+        Map result = new LinkedHashMap()
+        try {
+            GrailsParameterMap parameterMap = (GrailsParameterMap) parameters
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+
+            /*long appUserId = sarbSessionUtil.appSessionUtil.getAppUser().id
+            AppUser appUser = (AppUser) appUserCacheUtility.read(appUserId)
+            if (!appUser.isConfigManager) {
+                result.put(Tools.MESSAGE, CONFIG_MANAGER_CAN_PERFORM_THIS)
+                return result
+            }*/
+
+            if (!parameterMap.id) {
+                result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+                return result
+            }
+
+            long taskId = Long.parseLong(parameterMap.id)
+            SarbTaskDetails sarbTaskDetails = sarbTaskDetailsService.findByTaskIdAndEnabled(taskId)
+            if (!sarbTaskDetails) {
+                result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+                return result
+            }
+            if(sarbTaskDetails.isAcceptedBySarb){
+                result.put(Tools.MESSAGE, ACCEPTED_TASK_COULD_NOT_BE_MOVED)
+                return result
+            }
+            result.put(SARB_TASK_DETAILS, sarbTaskDetails)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+    /**
+     * Do nothing for postCondition
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+    /**
+     * update property enable after resend
+     * @param parameters- parameters return from executePrecondition
+     * @param obj-N/A
+     * @return isError-false
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map executeResult = (Map) obj
+            SarbTaskDetails sarbTaskDetails = (SarbTaskDetails) executeResult.get(SARB_TASK_DETAILS)
+            sarbTaskDetailsService.updateForMoveForResend(sarbTaskDetails)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message to display on page load
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        result.put(Tools.MESSAGE, TASK_RESEND_SUCCESS)
+        result.put(Tools.IS_ERROR, Boolean.FALSE)
+        return result
+    }
+    /**
+     * @param obj -map returned from execute method
+     * @return -a map containing  objects necessary for show page
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (preResult.get(Tools.MESSAGE)) {
+                result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+            } else {
+                result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            }
+            return result
+        }
+        catch (Exception ex) {
+            log.error(ex.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+}

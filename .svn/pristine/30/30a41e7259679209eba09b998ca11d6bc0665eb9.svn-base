@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Revise "Task" | |
+*Action:* | ReviseTaskActionService | *Auditable:* | No
+*Url:* |/rmsTask/reviseTask | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Md. Shaheb Ali | 21th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Disbursement sub menu of left menu should show as default.
+* Click *Approve* link.
+* [Show Landing Page for "Approve Task"|guide:_ShowForApproveTask].
+* Enter Valid input.
+* Click "Search" button.
+* [Search for "Approve Task"|guide:SearchTaskForApproveTaskActionService] *Task* will be listed in grid view.
+* Select line item from grid view.
+* Click "Revise" button from tool bar.
+* Give the "Revise" note in textarea.
+* Click on "Revise" button.
+* Revise "Task".
+
+h4. Pre-condition:
+* User must have "Revise Task" privilege.
+* Revise note must be given.
+
+h4. Process:
+* Revise selected "Task" one step ago.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Revise selected "Task" from grid view.
+** Show Success message.
+** Remove Revise "Task" from grid view.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="consumptionAgainstAssetSubreport" language="groovy" pageWidth="470" pageHeight="842" columnWidth="465" leftMargin="5" rightMargin="0" topMargin="0" bottomMargin="5" uuid="8dc7e1d1-a0b6-4022-87ee-07398a19205d">
+	<property name="ireport.zoom" value="1.3636363636363653"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="itemId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="transactionTypeConsumption" class="java.lang.Long"/>
+	<parameter name="projectId" class="java.lang.Long"/>
+	<parameter name="itemUnit" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT   inv.name AS inv_name, item.name || ' (' || fad.name || ')' AS fixed_asset_name,
+         COALESCE(SUM(iitd.actual_quantity),0) AS actual_quantity
+    FROM inv_inventory_transaction_details  iitd
+LEFT JOIN inv_inventory_transaction iit ON iit.id = iitd.inventory_transaction_id
+LEFT JOIN fxd_fixed_asset_details fad ON fad.id = iitd.fixed_asset_details_id
+LEFT JOIN inv_inventory inv ON inv.id = iitd.inventory_id
+LEFT JOIN item ON item.id=iitd.fixed_asset_id
+WHERE iit.project_id = $P{projectId} AND
+	  iit.transaction_type_id = $P{transactionTypeConsumption} AND
+	  iitd.approved_by > 0 AND
+	  iitd.fixed_asset_details_id > 0 AND
+	  iitd.fixed_asset_id > 0 AND
+	  iitd.item_id = $P{itemId}  AND
+      	  iitd.is_current = true
+GROUP BY inv.name,fad.name,item.name]]>
+	</queryString>
+	<field name="inv_name" class="java.lang.String"/>
+	<field name="fixed_asset_name" class="java.lang.String"/>
+	<field name="actual_quantity" class="java.math.BigDecimal"/>
+	<pageHeader>
+		<band height="15">
+			<staticText>
+				<reportElement uuid="a1102739-12f2-400b-93cf-5fdbdf62926f" x="0" y="0" width="176" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Bottom">
+					<font size="8" isBold="true" isItalic="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Details List of Consumption]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="14" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="76d493ca-0015-4ef0-ad3f-bfb28515e496" x="0" y="0" width="20" height="14"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[SL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3276d07d-5c08-416a-9e97-4884f19e1125" x="176" y="0" width="175" height="14"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Fixed Asset Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3276d07d-5c08-416a-9e97-4884f19e1125" x="351" y="0" width="114" height="14"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Quantity]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3276d07d-5c08-416a-9e97-4884f19e1125" x="20" y="0" width="156" height="14"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<topPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[Inventory Name]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="b1a759c5-737e-4336-a81a-6c3d9f0780aa" stretchType="RelativeToTallestObject" x="20" y="0" width="156" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{inv_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="2fe6db4c-edf0-40c4-8fc9-f48ea2d6e56c" stretchType="RelativeToTallestObject" x="176" y="0" width="175" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fixed_asset_name}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6259a12c-55b0-49cb-9d5a-89d57e1515d8" stretchType="RelativeToTallestObject" x="351" y="0" width="114" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<rightPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{actual_quantity} + " " + $P{itemUnit}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="03257588-d24a-480c-8280-57bd2499b7df" stretchType="RelativeToTallestObject" x="0" y="0" width="20" height="15"/>
+				<box topPadding="2" leftPadding="2" bottomPadding="2" rightPadding="2">
+					<leftPen lineWidth="0.5" lineColor="#CCCCCC"/>
+					<bottomPen lineWidth="0.5" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{COLUMN_COUNT} + "."]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

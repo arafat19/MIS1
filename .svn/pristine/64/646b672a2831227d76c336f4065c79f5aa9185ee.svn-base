@@ -1,0 +1,276 @@
+<script type="text/javascript">
+    var modelJsonForPurchaseOrder, purchaseOrderId, cancelledPo;
+
+    jQuery(function ($) {
+        modelJsonForPurchaseOrder = ${modelJson};
+        $('#printPurchaseOrderReport').click(function () {
+            printPurchaseOrder();
+            return false;
+        });
+
+        onLoadPurchaseOrder();
+    });
+
+    function printPurchaseOrder() {
+        var purchaseOrderId = $('#hidPurchaseOrderId').val();
+        if (purchaseOrderId.length <= 0) {
+            showError('First populate PO details then click Print');
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?purchaseOrderId=" + purchaseOrderId+"&cancelledPo="+cancelledPo;
+        if (confirm('Do you want to download the Purchase Order now?')) {
+            var url = "${createLink(controller: 'procReport', action: 'downloadPurchaseOrderRpt')}" + params;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+    }
+
+    function onLoadPurchaseOrder() {
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#searchForm"), getPurchaseOrder);
+
+        try {   // Model will be supplied to grid on load _list.gsp
+            $('.download_icon_set').hide();
+            $('#approvalContentList').hide();
+            $('#approvalTag').hide();
+            if (modelJsonForPurchaseOrder.purchaseOrderMap) {
+                cancelledPo = modelJsonForPurchaseOrder.isCancelled;
+                populatePurchaseOrder(modelJsonForPurchaseOrder.purchaseOrderMap, cancelledPo);
+                populateItem(modelJsonForPurchaseOrder.itemList);
+                populateTermsAndCondition(modelJsonForPurchaseOrder.termsAndConditionList);
+
+                $("#purchaseOrderId").val(modelJsonForPurchaseOrder.purchaseOrderMap.purchaseOrderId);
+                if (modelJsonForPurchaseOrder.isApproved) {
+                    $('.download_icon_set').show();
+                    $('#approvalContentList').show();
+                    $('#approvalTag').show();
+                }
+
+            }
+        } catch (e) {
+            showError(e.message);
+        }
+
+        // update page title
+        $('span.headingText').html('Purchase Order');
+        $('#icon_box').attr('class', 'pre-icon-header purchase-order');
+        $(document).attr('title', "MIS - Purchase Order");
+        loadNumberedMenu(MENU_ID_PROCUREMENT, "#procReport/showPurchaseOrderRpt");
+
+    }
+
+    function executePreConditionToGetPurchaseOrder(ids) {
+        if (!validateForm($('#searchForm'))) {
+            return false;
+        }
+        if (ids.length == 0) {
+            showError("Please enter a PO No");
+            return false;
+        }
+        return true;
+    }
+
+    function getPurchaseOrder() {
+        $('.download_icon_set').hide();
+        $('#approvalContentList').hide();
+        $('#approvalTag').hide();
+
+        var purchaseOrderId = $('#purchaseOrderId').val();
+        cancelledPo = $('#cancelledPo').is(":checked");
+
+        if (executePreConditionToGetPurchaseOrder(purchaseOrderId) == false) {
+            return false;
+        }
+
+        showLoadingSpinner(true);
+        var params = "?purchaseOrderId=" + purchaseOrderId+"&cancelledPo="+cancelledPo;
+        $.ajax({
+            url: "${createLink(controller: 'procReport', action: 'searchPurchaseOrderRpt')}" + params,
+            success: executePostConditionForPurchaseOrder,
+            complete: onCompleteAjaxCall, // Spinner Hide on AJAX Call
+            dataType: 'json',
+            type: 'post'
+        });
+        return false;
+    }
+
+    function executePostConditionForPurchaseOrder(data) {
+
+        if (data.isError) {
+            showError(data.message);
+            $('#purchaseOrderDetails').hide();
+            $('.download_icon_set').hide();
+            $('#approvalContentList').hide();
+            $('#approvalTag').hide();
+            return;
+        }
+        populatePurchaseOrder(data.purchaseOrderMap, data.isCancelled);
+        populateItem(data.itemList);
+        populateTermsAndCondition(data.termsAndConditionList);
+
+        if (data.isApproved) {
+            $('.download_icon_set').show();
+            $('#approvalContentList').show();
+            $('#approvalTag').show();
+        }
+
+        if (cancelledPo) {
+            $('.download_icon_set').show();
+        }
+
+        return false;
+
+    }
+
+    var grandTotalCostOfItem = null;
+    function clearPurchaseOrder() {
+        $('#lblFormHeader').text('');
+        $('#lblCancel1').hide();
+        $('#lblCancel2').hide();
+        $('#lblCancelReason').text('');
+        $('#lblPurchaseOrderNo').text('');
+        $('#hidPurchaseOrderId').val('');
+        $('#lblCancelDate').text('');
+        $('#lblPurchaseOrderDate').text('');
+        $('#lblReferenceTitle').text('');
+        $('#lblOurReference').text('');
+        $('#lblSupplierName').text('');
+        $('#lblSupplierAddress').text('');
+        $('#lblProjectName').text('');
+        $('#lblTotalTransPortCost').text('');
+        $('#lblDiscount').text('');
+        $('#lblGrandTotal').text('');
+        $('#totalVatTax').text('');
+        $('#lblMaterialId').text('');
+        $('#lblMaterialName').text('');
+        $('#lblUnit').text('');
+        $('#lblQuantity').text('');
+        $('#lblRate').text('');
+        $('#lblValue').text('');
+
+        $('#lblSupplier').text('');
+        $('#lblPaymentMethod').text('');
+        $('#lblPaymentTerms').text('');
+        $('#lblApprovedByDirector').text('');
+        $('#lblApprovedByProjectDirector').text('');
+
+    }
+
+    function populatePurchaseOrder(data, isCancelled) {
+        clearPurchaseOrder();
+        $('#purchaseOrderDetails').show();
+        $('#lblCancel1').hide();
+        $('#lblCancel2').hide();
+        $('#lblPurchaseOrderNo').text(data.purchaseOrderId);
+        $('#hidPurchaseOrderId').val(data.purchaseOrderId);
+        $('#lblPurchaseOrderDate').text(data.lastUpdatedOn);
+        $('#lblReferenceTitle').text('Reference');  // default value
+        $('#lblCancelDate').text('Last Updated On'); // default value
+        $('#lblFormHeader').text(''); // default value
+        if(isCancelled == 'true'){
+            $('#cancelledPo').attr('checked', true);
+            $('#lblFormHeader').text(' ( Cancelled )');
+            $('#lblReferenceTitle').text('Cancelled By');
+            $('#lblCancelDate').text('Cancelled On');
+            $('#lblCancelReason').text(data.cancelReason);
+            $('#lblCancel1').show();
+            $('#lblCancel2').show();
+        }
+        $('#lblOurReference').text(data.lastUpdatedBy);
+        $('#lblSupplierName').text(data.supplierName);
+        $('#lblSupplierAddress').text(data.supplierAddress);
+        $('#lblProjectName').text(data.projectName);
+        $('#lblTotalTransPortCost').text(data.totalTransportCost);
+        $('#lblMaterialId').text(data.materialCode);
+        $('#lblMaterialName').text(data.materialName);
+        $('#lblUnit').text(data.materialUnit);
+        $('#lblQuantity').text(data.quantity);
+        $('#lblRate').text(data.rate);
+        $('#lblValue').text(data.value);
+
+        $('#lblSupplier').text(data.supplierName);
+        $('#lblPaymentMethod').text(data.paymentMethod);
+        $('#lblPaymentTerms').text(data.paymentTerms);
+        $('#lblApprovedByDirector').text(data.approvedByDirector);
+        $('#lblApprovedByProjectDirector').text(data.approvedByProjectDirector);
+
+        $('#lblItemTotal').text(data.totalItemAmount);
+        $('#lblItemCount').text(data.itemCount);
+        $('#lblDiscount').text(data.discount);
+        $('#lblGrandTotal').text(data.netPrice);
+        $('#totalVatTax').text(data.totalVatTax);
+
+        $('#podWithItem').hide();
+        if (data.isApproved) {
+            $('#approvalContentList').show();
+            $('#approvalTag').show();
+        }
+        else {
+            $('#approvalContentList').hide();
+            $('#approvalTag').hide();
+        }
+    }
+
+    function populateItem(lstItem) {
+        var lstItems = $(lstItem);
+        if (lstItems.length <= 0) {
+            $('#podWithItem').hide();
+            $('#trTagPodWithItem').hide();
+        }
+        else {
+            $('#trTagPodWithItem').show();
+            $('#podWithItem').show();
+            var serialCount = 1;
+            var tdClass_05 = "class='info_box topedge' width='5%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_10 = "class='info_box topedge' width='10%' style='text-align: left;border-right: 1px solid #BDC7D8;'";
+            var tdClass_15 = "class='info_box topedge' width='15%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_20 = "class='info_box topedge' width='20%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_25 = "class='info_box topedge' width='25%' style='text-align: left;border-right: 1px solid #BDC7D8;'";
+
+            var tbody = $('#tblItems');
+            tbody.html('');
+            lstItems.each(function (idx) {
+                var eachObject = lstItems[idx];
+                tbody.append($('<tr></tr>')
+                        .append($('<td ' + tdClass_05 + ' ></td>').html(serialCount++))
+                        .append($('<td ' + tdClass_10 + ' ></td>').html(eachObject.item_type))
+                        .append($('<td ' + tdClass_25 + ' ></td>').html(eachObject.name))
+                        .append($('<td ' + tdClass_10 + ' ></td>').html(eachObject.code))
+                        .append($('<td ' + tdClass_15 + ' ></td>').html(eachObject.quantity))
+                        .append($('<td ' + tdClass_15 + ' ></td>').html(eachObject.rate))
+                        .append($('<td ' + tdClass_20 + ' ></td>').html(eachObject.total_cost))
+                );
+            });
+
+        }
+    }
+
+    function populateTermsAndCondition(lstTermsAndCondition) {
+        var listTermsAndCondition = $(lstTermsAndCondition);
+
+        if (listTermsAndCondition.size() > 0) {
+            $('#valueOfTermsAndCondition').show();
+            $('#tagOfValueOfTermsAndCondition').show();
+
+            var serialCount = 1;
+            var tdClass_05 = "class='info_box topedge' width='5%' style='text-align: right;border-right: 1px solid #BDC7D8;'";
+            var tdClass_95 = "class='info_box topedge' width='95%' style='text-align: left;border-right: 1px solid #BDC7D8;'";
+            var parentTable = $('#valueOfTermsAndCondition');
+            parentTable.html('');
+            parentTable.append($('<tr></tr>'));
+            listTermsAndCondition.each(function (idx) {
+                var eachObject = listTermsAndCondition[idx];
+
+                parentTable.append($('<tr></tr>')
+                        .append($('<td ' + tdClass_05 + ' ></td>').html(serialCount++))
+                        .append($('<td ' + tdClass_95 + ' ></td>').html(eachObject.details))
+                );
+            });
+        } else {
+            $('#valueOfTermsAndCondition').hide();
+            $('#tagOfValueOfTermsAndCondition').hide();
+        }
+    }
+</script>

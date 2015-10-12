@@ -1,0 +1,81 @@
+package com.athena.mis.integration.exchangehouse
+
+import com.athena.mis.PluginConnector
+import com.athena.mis.application.entity.SystemEntity
+
+public abstract class ExchangeHousePluginConnector extends PluginConnector {
+
+    //return customer object
+    public abstract Object readCustomer(long id)
+
+    // Re-initialize the Exh-Paid By
+    public abstract void initExhPaidByTypeCacheUtility()
+    // Re-initialize the Payment-Method By
+    public abstract void initExhPaymentMethodCacheUtility()
+    // Re-initialize the Photo-Id-Type
+    public abstract void initExhTaskStatusCacheUtility()
+
+    public abstract void initExhTaskTypeCacheUtility()
+
+    // get list of ExhPaidByType system entity
+    public abstract List<Object> listExhPaidByType()
+
+    // get list of ExhPaymentMethodType system entity
+    public abstract List<Object> listExhPaymentMethodType()
+
+    // get list of ExhTaskStatusType system entity
+    public abstract List<Object> listExhTaskStatusType()
+
+    // get list of ExhTaskType system entity
+    public abstract List<Object> listExhTaskType()
+
+    public abstract Object readTaskStatus(long id)
+
+    public abstract Object readTaskTypeByReservedAndCompany(long id,long companyId)
+
+    public abstract long getExhTaskTypeId()
+
+    public abstract long getCustomerTaskTypeId()
+
+    public abstract long getAgentTaskTypeId()
+
+    public abstract void initExhSysConfigCacheUtility()
+    // init bootstrap of exh plugin
+    public abstract void bootStrap(boolean isSchema, boolean isData)
+
+	public abstract List<Long> listTaskStatusForSarb()
+
+    public abstract List<Long> listTaskStatusForExcludingSarb()
+
+    public abstract SystemEntity readExhPaymentMethod(long id)
+
+    // get reserved system entity of paid by type
+    public abstract Object readByReservedPaidByType(long reservedId, long companyId)
+
+    // get reserved system entity of payment method type
+    public abstract Object readByReservedPaymentMethodType(long reservedId, long companyId)
+
+    // get system entity of reserved type (BANK DEPOSIT); used in serb xml generation
+    public abstract SystemEntity readBankDepositPaymentMethod(long companyId)
+
+    // get reserved system entity of task status type
+    public abstract Object readByReservedTaskStatusType(long reservedId, long companyId)
+
+    // check if new user registration is enabled through sysConfig
+    public abstract Boolean isNewUserRegistrationEnabled(long companyId)
+
+    public abstract void initSession()
+
+    public abstract Object readExhRemittancePurpose(long id)
+
+    public abstract SystemEntity readExhPaidBy(long id)
+
+    public abstract SystemEntity readExhTaskStatusRefund(long companyId)
+
+    public abstract boolean isTaskExists(long taskId)
+
+    public abstract Map createExhTaskForRefundTask(long taskId, double refundAmount)
+
+    // read the exhTask object by id
+    public abstract Object readTask(long taskId)
+}

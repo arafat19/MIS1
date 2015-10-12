@@ -1,0 +1,42 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-14 | Priority: | High
+ *Name* | Delete Fixed Asset Maintenance Type | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fxdMaintenanceType/delete | *Action Class:* | FxdDeleteFxdMaintenanceTypeActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+# Select a Fixed Asset Maintenance Type to delete.
+# Click "Delete" button.
+# System will show conformation message.
+# Actor clicks "Yes" button.
+
+h4. Pre-condition:
+# If Fixed Asset Maintenance Type has dependency with following business entity then selected Fixed Asset Maintenance Type will not be delete-able.
+## Category-Maintenance Type Mapping.
+
+h4. Process:
+Delete a selected Fixed Asset Maintenance Type.
+
+h4. Post-condition:
+
+# *Success:*
+## Delete selected Fixed Asset Maintenance Type information from grid.
+## Show Success message.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

@@ -1,0 +1,66 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | List of "Budget Line Item" | |
+ *ActionService:* | GetBudgetGridListByProjectActionService |*Auditable:* | No
+ *Url*: | /budgBudget/getBudgetGridByProject |  |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 10th January 2013	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [Procurement|guide:_widgetofprocurement] option from top menu bar.
+* "Procurement" sub menu of left menu should show as default.
+* Click *Purchase Request* link.
+* [Show landing page of "Purchase Request"|guide:ShowPurchaseRequestActionService].
+* Click the magnify icon bottom of the page.
+* Write searching criteria.
+* Click "Enter".
+* List of "Budget Line Item".
+
+h4. Pre-condition:
+* User must have "Get Budget Grid List By Project" privilege.
+* Rules of searching field:{table}
+ *Field*   | *Input Type* | *Search Type*
+  Find | Text Box | All
+{table}
+
+h4. Process:
+* Get list of "Budget Line Item" from server (default: 20 at Max).
+* Get list of "Budget Line Item" matching with search criteria.
+* Searching with zero length string will show list of all "Budget Line Item"s.
+
+* Following columns should show in grid view:
+** Id
+** Line Item
+** Details
+** Project Id
+** Project Name
+** Budget Quantity
+** Unit
+
+h4. Post-condition:
+
+* *Success:*
+** Show list of "Budget Line Item" in grid view with Searching option.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+* [Clear Results|common Usecases]
+* [Previous Page|common Usecases]
+* [Forward Page|common Usecases]
+* [First Page|common Usecases]
+* [Last Page|common Usecases]
+* [Create *Purchase Request*|guide:CreatePurchaseRequestActionService].

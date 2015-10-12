@@ -1,0 +1,189 @@
+package com.athena.mis.document.actions.article
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.document.entity.DocArticle
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.entity.DocSubCategory
+import com.athena.mis.document.service.DocArticleService
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.document.utility.DocSubCategoryCacheUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+class UpdateDocArticleActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String DOC_ARTICLE = 'docArticle'
+    private static final String UPDATE_SUCCESS_MESSAGE = 'Article has been successfully updated'
+    private static final String UPDATE_FAILURE_MESSAGE = 'Failed to saved Article'
+    private static final String OBJ_NOT_FOUND = "Article not found"
+    private static final String DETAILS_LENGTH_ERROR = "Your Article is too large to saved."
+
+    DocArticleService docArticleService
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+    @Autowired
+    DocSubCategoryCacheUtility docSubCategoryCacheUtility
+    /*
+    * @params parameters - Serialize parameters from UI
+    * @params obj - N/A
+    * Check for invalid input, object
+    * Build new article
+    * check for article length
+    * @return - A map on containing new article or error messages
+    * */
+
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap grailsParameterMap = (GrailsParameterMap) parameters
+            if (!grailsParameterMap.id) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            long id = Long.parseLong(grailsParameterMap.id.toString())
+            DocArticle oldArticle = (DocArticle) docArticleService.read(id)
+            if (!oldArticle) {
+                result.put(Tools.MESSAGE, OBJ_NOT_FOUND)
+                return result
+            }
+            String details = grailsParameterMap.details.toString()
+            if (details.length() > 15000) {
+                result.put(Tools.MESSAGE, DETAILS_LENGTH_ERROR)
+                return result
+            }
+            DocArticle newArticle = buildArticle(grailsParameterMap, oldArticle)
+
+            result.put(DOC_ARTICLE, newArticle)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        //Do Nothing ofr post - operation
+        return null
+    }
+
+    /**
+     * Update Article object in DB
+     * This function is in transactional block and will roll back in case of any exception
+     * @param parameters -N/A
+     * @param obj -map returned from executePreCondition method
+     * @return -a map containing all objects necessary for build result
+     */
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            DocArticle article = (DocArticle) preResult.get(DOC_ARTICLE)
+            docArticleService.update(article)
+            result.put(DOC_ARTICLE, article)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            throw new RuntimeException(UPDATE_FAILURE_MESSAGE)
+
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+    * @params obj - map from execute method
+    * Show newly updated article to grid
+    * Show success message
+    * @return - A map containing all necessary object for show
+    * */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            DocArticle article = (DocArticle) preResult.get(DOC_ARTICLE)
+            GridEntity object = new GridEntity()
+            DocCategory category = (DocCategory) docCategoryCacheUtility.read(article.categoryId)
+            DocSubCategory subCategory = (DocSubCategory) docSubCategoryCacheUtility.read(article.subCategoryId)
+            object.id = article.id
+            object.cell = [
+                    Tools.LABEL_NEW,
+                    article.id,
+                    Tools.makeDetailsShort(article.title, 60),
+                    category.name,
+                    subCategory.name
+            ]
+            result.put(Tools.ENTITY, object)
+            result.put(Tools.VERSION, article.version)
+            result.put(Tools.MESSAGE, UPDATE_SUCCESS_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+   * Build Failure result in case of any error
+   * @params obj - A map from execute method
+   * @return - A map containing all necessary message for show
+   * */
+
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            Map preResult = (Map) obj
+            if (obj) {
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                } else {
+                    result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+                }
+            }
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+    * Build article object for update
+    * */
+
+    private DocArticle buildArticle(GrailsParameterMap parameterMap, DocArticle oldArticle) {
+        DocArticle newArticle = new DocArticle(parameterMap)
+        oldArticle.categoryId = newArticle.categoryId
+        oldArticle.subCategoryId = newArticle.subCategoryId
+        oldArticle.title = newArticle.title
+        oldArticle.details = newArticle.details
+        oldArticle.updatedOn = new Date()
+        oldArticle.updatedBy = docSessionUtil.appSessionUtil.getAppUser().id
+        return oldArticle
+    }
+}

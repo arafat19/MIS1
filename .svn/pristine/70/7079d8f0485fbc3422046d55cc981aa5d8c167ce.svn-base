@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sendMailForInventoryTransaction" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="15" bottomMargin="15" uuid="3641649e-c3f0-44e0-8911-836fc73a0da2">
+	<property name="ireport.zoom" value="1.1"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="REPORT_DIR" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="COMMON_REPORT_DIR" class="java.lang.String"/>
+	<parameter name="inventoryIds" class="java.util.Collection"/>
+	<parameter name="transactionTypeIn" class="java.lang.Long"/>
+	<parameter name="transactionEntityTypeSupplier" class="java.lang.Long"/>
+	<parameter name="transactionEntityTypeInventory" class="java.lang.Long"/>
+	<parameter name="transactionTypeOut" class="java.lang.Long"/>
+	<parameter name="transactionTypeConsumption" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT 1]]>
+	</queryString>
+	<field name="?column?" class="java.lang.Integer"/>
+	<title>
+		<band height="123">
+			<image>
+				<reportElement uuid="0579a2a9-55cc-444a-a988-b4b19165d58c" x="322" y="0" width="233" height="30"/>
+				<imageExpression><![CDATA[$P{COMMON_REPORT_DIR} +  "/" +  "corolla_logo.gif"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="399f9492-1b0b-440d-a2eb-492eeb1b8253" x="0" y="0" width="322" height="20"/>
+				<box>
+					<bottomPen lineWidth="0.0" lineColor="#CCCCCC"/>
+				</box>
+				<textElement>
+					<font size="14" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[All Unapproved Inventory Transactions]]></text>
+			</staticText>
+			<subreport>
+				<reportElement uuid="89a4a54a-36a4-418e-9a18-345cab6973ab" positionType="Float" x="0" y="83" width="530" height="20"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeSupplier">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeSupplier}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeIn">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeIn}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeOut">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeOut}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inventoryIds">
+					<subreportParameterExpression><![CDATA[$P{inventoryIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="COMMON_REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{COMMON_REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeInventory">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeInventory}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeConsumption">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeConsumption}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "inventoryOutSubreport.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="c100eb51-4273-4fdb-a6aa-a00687e71ef1" positionType="Float" x="0" y="103" width="530" height="20"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeSupplier">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeSupplier}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeIn">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeIn}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeOut">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeOut}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inventoryIds">
+					<subreportParameterExpression><![CDATA[$P{inventoryIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="COMMON_REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{COMMON_REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeInventory">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeInventory}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeConsumption">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeConsumption}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "inventoryConsumptionSubreport.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="09d1f89f-3e99-445d-bba0-da2eeb5eb083" x="0" y="43" width="530" height="20"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeSupplier">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeSupplier}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeIn">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeIn}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeOut">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeOut}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inventoryIds">
+					<subreportParameterExpression><![CDATA[$P{inventoryIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="COMMON_REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{COMMON_REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeInventory">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeInventory}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeConsumption">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeConsumption}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "inFromInventorySubreport.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement uuid="ed875a0f-5082-4d22-897c-ecc0b9c44ead" positionType="Float" x="0" y="63" width="530" height="20"/>
+				<subreportParameter name="SUBREPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{SUBREPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeSupplier">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeSupplier}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeIn">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeIn}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeOut">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeOut}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="inventoryIds">
+					<subreportParameterExpression><![CDATA[$P{inventoryIds}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="COMMON_REPORT_DIR">
+					<subreportParameterExpression><![CDATA[$P{COMMON_REPORT_DIR}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionEntityTypeInventory">
+					<subreportParameterExpression><![CDATA[$P{transactionEntityTypeInventory}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="transactionTypeConsumption">
+					<subreportParameterExpression><![CDATA[$P{transactionTypeConsumption}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "inFromSupplierSubreport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</title>
+	<pageFooter>
+		<band height="22">
+			<subreport>
+				<reportElement uuid="50bd0718-417b-4a97-bfd1-e7b260c12b79" x="0" y="0" width="530" height="22"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{COMMON_REPORT_DIR} + "/" + "inventoryFooter.jasper"]]></subreportExpression>
+			</subreport>
+			<textField pattern="" isBlankWhenNull="true">
+				<reportElement uuid="93a84ab2-f7a2-4b67-ac9d-2c1b5cb038a1" x="0" y="0" width="103" height="12"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page: " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="bcf84a52-1ea9-48a3-b456-a83996242e14" x="240" y="0" width="94" height="12"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="6" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Printed On : " + new java.util.Date().format("dd-MMM-yyyy")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

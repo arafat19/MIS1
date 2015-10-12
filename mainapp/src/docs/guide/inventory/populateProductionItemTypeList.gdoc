@@ -1,0 +1,49 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Populate "Production Item Type"(Raw,Finish)List in drop-down  | |
+ *ActionService:* | getDropDownSystemEntityTagLibActionService | *Auditable:* | No
+ *Url:* | Taglib:SystemEntityDropDownTagLib | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 26th November 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director,Project Manager,Production Operator,Inventory. Auditor,Inventory. Operator.
+
+h4. Description:
+* Name of the usecase represents its functionality.
+* It is a System entity Type.
+* Its id number is 151.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click Setting sub menu of Inventory.
+* Click *Production Line Item*.
+* [Show Landing Page of "Production Line Item"|guide:ShowInvProductionLineItemActionService].
+* [List "Production Line Item"|guide:ListInvProductionLineItemActionService].
+* Select a Line-Item from grid view.
+* Click "Material" button.
+* [Show Item of "Production Line Item" Landing Page|guide:ShowInvProductionDetailsActionService].
+* Populate "Production Item Type"(Raw,Finish)List in drop-down.
+
+h4. Pre-condition: 
+N/A.
+
+h4. Process:
+* Get Active "Production Item Type" list from server. [Show *Item* of *Production Line Item*|guide:ShowInvProductionDetailsActionService]
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate active list of "Production Item Type" at drop-down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Create *Item* of *Production Line Item*|guide:CreateInvProductionDetailsActionService].

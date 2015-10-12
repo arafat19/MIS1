@@ -1,0 +1,270 @@
+<script language="javascript">
+
+    var flowListModel = false;
+    var backlogId;
+
+    $(document).ready(function () {
+        onLoadFlowPage();
+    });
+
+    // method called on page load
+    function onLoadFlowPage() {
+        initializeForm($("#flowForm"), onSubmitFlow);
+        var output = ${output ? output : ''};
+        flowListModel = false;
+        if (output.isError) {
+            showError(output.message);  // show error message in case of error
+        }
+        else {
+            flowListModel = output.gridObj;    // set data in a global variable to populate
+            backlogId = output.backlogId;      // set backlog id in global variable
+        }
+        initFlex();
+        populateFlex1();
+
+        // update page title
+        $(document).attr('title', "MIS - Create Flow");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#ptBacklog/show");
+    }
+
+    // check pre condition before submitting the form
+    function executePreCondition() {
+        // validate form data
+        if (!validateForm("#flowForm")) {
+            return false;
+        }
+        return true;
+    }
+
+    // method called  on submit of the form
+    function onSubmitFlow() {
+        if (executePreCondition() == false) {
+            return false;
+        }
+        setButtonDisabled($('#create'), true);    // disable the save button
+        showLoadingSpinner(true);   // show loading spinner
+        var actionUrl = null;
+        // set link for create or update if there is data in hidden field id
+        if ($('#id').val().isEmpty()) {
+            actionUrl = "${createLink(controller:'ptFlow', action: 'create')}?backlogId=" + backlogId;
+        } else {
+            actionUrl = "${createLink(controller:'ptFlow', action: 'update')}";
+        }
+        // fire ajax method
+        jQuery.ajax({
+            type: 'post',
+            data: jQuery("#flowForm").serialize(),  // serialize data from UI and send as parameter
+            url: actionUrl,
+            success: function (data, textStatus) {
+                executePostCondition(data);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            },
+            complete: function (XMLHttpRequest, textStatus) {
+                setButtonDisabled($('#create'), false);   // enable the save button
+                showLoadingSpinner(false);  // stop loading spinner
+            },
+            dataType: 'json'
+        });
+        return false;
+    }
+
+    // execute post condition after create or update
+    function executePostCondition(result) {
+        if (result.isError) {
+            showError(result.message);  // show error message in case of error
+            showLoadingSpinner(false);  // stop loading spinner
+        } else {
+            try {
+                var newEntry = result;
+                if ($('#id').val().isEmpty() && newEntry.entity != null) { // show newly created object in a grid row
+
+                    var previousTotal = parseInt(flowListModel.total);
+                    var firstSerial = 1;
+
+                    if (flowListModel.rows.length > 0) {
+                        firstSerial = flowListModel.rows[0].cell[0];
+                        regenerateSerial($(flowListModel.rows), 0);
+                    }
+                    newEntry.entity.cell[0] = firstSerial;
+                    flowListModel.rows.splice(0, 0, newEntry.entity);
+
+                    if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
+                        flowListModel.rows.pop();
+                    }
+
+                    flowListModel.total = ++previousTotal;
+                    $("#flex1").flexAddData(flowListModel);
+
+                } else if (newEntry.entity != null) { // updated existing object data in the grid
+                    updateListModel(flowListModel, newEntry.entity, 0);
+                    $("#flex1").flexAddData(flowListModel);
+                }
+
+                resetForm();    // reset the form
+                showSuccess(result.message);    // show success message
+            } catch (e) {
+                // Do Nothing
+            }
+        }
+    }
+
+    // reset the form
+    function resetForm() {
+        clearForm($("#flowForm"), $("#flow"));
+        $("#create").html("<span class='k-icon k-i-plus'></span>Create");   // reset create button text
+    }
+
+    // initialize the grid
+    function initFlex() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 50, sortable: false, align: "right"},
+                        {display: "ID", name: "id", width: 50, sortable: true, align: "right", hide:true},
+                        {display: "Flow", name: "flow", width: 500, sortable: false, align: "left"},
+                        {display: "Created On", name: "createdOn", width: 160, sortable: false, align: "left"},
+                        {display: "Created By", name: "createdBy", width: 200, sortable: false, align: "left"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/ptFlow/select,/ptFlow/update">
+                        {name: 'Edit', bclass: 'edit', onpress: selectFlow},
+                        </app:ifAllUrl>
+                        <app:ifAllUrl urls="/ptFlow/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteFlow},
+                        </app:ifAllUrl>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
+                    sortname: "id",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'All Flow',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    afterAjax: function (XMLHttpRequest, textStatus) {
+                        afterAjaxError(XMLHttpRequest, textStatus);
+                        showLoadingSpinner(false);
+                    },
+                    preProcess: onLoadListJSON
+                }
+        );
+    }
+
+    // reload grid
+    function reloadGrid(com, grid) {
+        $('#flex1').flexOptions({query: ''}).flexReload();
+    }
+
+    // custom populate the grid
+    function onLoadListJSON(data) {
+        if (data.isError) {
+            showError(data.message);
+            flowListModel = null;
+        } else {
+            flowListModel = data;
+        }
+        return data;
+    }
+
+    // delete flow object
+    function deleteFlow(com, grid) {
+        if (executePreConditionForDelete() == false) {
+            return;
+        }
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'ptFlow', action:  'delete')}?id=" + id,
+            success: executePostConditionForDelete,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    // execute pre condition for delete
+    function executePreConditionForDelete() {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'flow') == false) {
+            return false;
+        }
+        if (!confirm('Are you sure you want to delete the selected flow?')) {
+            return false;
+        }
+        return true;
+    }
+
+    <%-- removing selected row and clean input form --%>
+    function executePostConditionForDelete(data) {
+        if (data.isError == false) {
+            var selectedRow = null;
+            $('.trSelected', $('#flex1')).each(function (e) {
+                selectedRow = $(this).remove();
+            });
+            resetForm();
+            $('#flex1').decreaseCount(1);
+            showSuccess(data.message);
+            flowListModel.total = parseInt(flowListModel.total) - 1;
+            removeEntityFromGridRows(flowListModel, selectedRow);
+        } else {
+            showError(data.message);
+        }
+    }
+
+    // select flow object for update
+    function selectFlow(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'flow') == false) {
+            return;
+        }
+
+        resetForm();
+        showLoadingSpinner(true);
+        var id = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'ptFlow', action: 'select')}?id=" + id,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    // execute post condition for edit
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showFlow(data);
+        }
+    }
+
+    // show property of flow object on UI
+    function showFlow(data) {
+        var entity = data.entity;
+        $('#id').val(entity.id);
+        $('#version').val(data.version);
+        $('#flow').val(entity.flow);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Update");   // change create button text to update
+    }
+
+    // set link to grid url to populate data
+    function populateFlex1() {
+        var strUrl = "${createLink(controller:'ptFlow',action:  'list')}?backlogId=" + backlogId;
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (flowListModel) {
+            $("#flex1").flexAddData(flowListModel);
+        }
+    }
+
+</script>

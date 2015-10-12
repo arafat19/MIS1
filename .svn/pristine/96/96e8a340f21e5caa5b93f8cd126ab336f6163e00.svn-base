@@ -1,0 +1,85 @@
+<g:render template='/projectTrack/ptBug/scriptBugDetails'/>
+
+
+<div class="panel-body">
+    <div class="panel panel-success">
+        <div class="panel-heading">Bug Details</div>
+        <span class="download_icon_set">
+            <ul>
+                <li>Save as :</li>
+                <li><a href="javascript:void(0)" id="printPdfBtn" class="pdf_icon"></a></li>
+            </ul>
+        </span>
+
+        <div class="panel-body">
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr>
+                                <td class="active" width="10%">Project</td>
+                                <td width="40%"><span id='lblProject'></span></td>
+                                <td class="active" width="10%">Module</td>
+                                <td width="40%"><span id='lblModule'></span></td>
+                            </tr>
+                            <tr>
+                                <td class="active" width="10%">Sprint</td>
+                                <td width="40%"><span id='lblSprint'></span></td>
+                                <td class="active" width="10%">Type</td>
+                                <td width="40%"><span id='lblType'></span></td>
+                            </tr>
+                            <tr>
+                                <td class="active" width="10%">Created By</td>
+                                <td width="40%"><span id='lblCreatedBy'></span></td>
+                                <td class="active" width="10%">Created On</td>
+                                <td width="40%"><span id='lblCreatedOn'></span></td>
+                            </tr>
+                            <tr>
+                                <td class="active" width="10%">Status</td>
+                                <td width="40%"><span id='lblStatus'></span></td>
+                                <td class="active" width="10%">Severity</td>
+                                <td width="40%"><span id='lblSeverity'></span></td>
+                            </tr>
+                            <tr>
+                                <td class="active" width="10%">Use Case Id</td>
+                                <td width="40%"><span id='lblUseCaseId'></span></td>
+                                <td class="active" width="10%">Updated By</td>
+                                <td width="40%"><span id='lblUpdatedBy'></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <table class="table table-responsive table-bordered">
+                            <tbody>
+                            <tr>
+                                <td class="active" width="10%">Task</td>
+                                <td><span id='lblTask'></span></td>
+                            </tr>
+                            <tr>
+                                <td class="active" width="10%">Title</td>
+                                <td><span id='lblTitle'></span></td>
+                            </tr>
+                            <tr>
+                                <td class="active" width="10%">Step to Reproduce</td>
+                                <td><span id='lblStepToReproduce'></span></td>
+                            </tr>
+                            <tr>
+                                <td class="active" width="10%">Note</td>
+                                <td><span id='lblNote'></span></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+
+

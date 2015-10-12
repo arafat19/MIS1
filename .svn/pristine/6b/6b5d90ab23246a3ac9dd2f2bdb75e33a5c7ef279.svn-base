@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Exchange House* | |
+*ActionService:* | DeleteRmsExchangeHouseActionService | *Auditable:* | No
+*Url:* | /rmsExchangeHouse/delete | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Exchange House* link.
+* [Show Landing Page of "Exchange House"|guide:ShowRmsExchangeHouseActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Exchange House*.
+
+h4. Pre-condition:
+* User must have "Delete Exchange House" privilege.
+* If *Exchange House* has dependency with following business entity then *Exchange House* will not be delete-able:
+** User Exchange House Mapping
+
+h4. Process:
+* Delete a selected *Exchange House*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Exchange House* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

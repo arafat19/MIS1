@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show Landing Page of *Custom Group* | |
+ *ActionService:* | ShowAccCustomGroupActionService | *Auditable:* | No
+ *Url:* | /accCustomGroup/show | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 28th April 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+This is the landing page of *Custom Group* with input form on top and grid view at the bottom.
+
+h4. Flow: 
+* Actor clicks [Accounting|guide:_showAccountingPlugin] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Custom Group* link.
+* Show Landing Page of *Custom Group*.
+
+h4. Pre-condition:
+* User must have "Show Custom Group" privilege.
+
+h4. Process:
+* [Get List of all "Custom Group" from server|guide:ListAccCustomGroupActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create "Custom Group"|guide:CreateAccCustomGroupActionService].
+** Show list of all *Custom Group* in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Custom Group" in Edit Mode|guide:SelectAccCustomGroupActionService].
+* [Delete "Custom Group"|guide:DeleteAccCustomGroupActionService].
+* [Search "Custom Group" From Grid View|guide:SearchAccCustomGroupActionService].
+
+!Acc/Custom_Group_Show.png!

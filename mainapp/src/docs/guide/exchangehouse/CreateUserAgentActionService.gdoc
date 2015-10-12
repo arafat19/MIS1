@@ -1,0 +1,58 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create "User-Agent Mapping" | |
+*ActionService:* | CreateUserAgentActionService | *Auditable:* | No
+*Url:* | /exhUserAgent/create | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 23rd January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* Click *Agent* sub menu from left menu.
+* Click *Agent* link.
+* [Show Landing Page of "Agent"|guide:ShowExhAgentActionService].
+* Select a Line-Item from grid view.
+* Click "User" button from tool bar.
+* [Show Landing Page of "User-Agent Mapping"|guide:ShowUserAgentActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create "User-Agent Mapping".
+
+h4. Pre-condition:
+* User must have "Create User Agent" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Agent | Read Only | Alpha Numeric |
+[Populate User List|application] | Drop Down List | Numeric | Required
+{table}
+
+* "User-Agent Mapping" must be unique.
+
+h4. Process:
+* Create a new "User-Agent Mapping".
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created "User-Agent Mapping" into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Exh/User Agent Mapping_Create.png!

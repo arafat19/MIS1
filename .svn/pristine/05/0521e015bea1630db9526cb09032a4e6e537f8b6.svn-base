@@ -1,0 +1,61 @@
+<script language="javascript">
+
+    $(document).ready(function () {
+        onLoadBugDetailsPage();
+    });
+
+    // method called on page load
+    function onLoadBugDetailsPage() {
+
+        var output = ${output ? output : ''}
+        if (output.isError) {
+            showError(output.message);  // show error message in case of error
+        } else{
+            var bugDetailsObj = output.bugDetails;
+            if (bugDetailsObj) {
+                populateGrid(bugDetailsObj);
+            }
+
+            $('#printPdfBtn').click(function () {
+                downloadBugDetails(bugDetailsObj);
+            });
+        }
+
+        // update page title
+        $(document).attr('title', "MIS - Bug Details");
+        loadNumberedMenu(MENU_ID_PROJECT_TRACK, "#${leftMenu}");
+    }
+
+    function populateGrid(result){
+        var backlog = 'As a      : ' + result.actor   + '<br>' +
+                      'I want to : ' + '<br>' + '&nbsp;&nbsp;' + result.purpose + '<br>' +
+                      'So that   : ' + '<br>' +
+                                '&nbsp;&nbsp;' + result.benefit;
+        $('#lblProject').text(result.project);
+        $('#lblModule').text(result.module);
+        $('#lblSprint').text(result.sprint);
+        $('#lblTask').html(backlog);
+        $('#lblUseCaseId').text(result.useCaseId ? result.useCaseId : '');
+        $('#lblTitle').text(result.title);
+        $('#lblStepToReproduce').text(result.stepToReproduce);
+        $('#lblType').text(result.type);
+        $('#lblStatus').text(result.status);
+        $('#lblNote').text(result.note ? result.note : '');
+        $('#lblSeverity').text(result.severity);
+        $('#lblCreatedBy').text(result.createdBy);
+        $('#lblUpdatedBy').text(result.updatedBy);
+        $('#lblCreatedOn').text(result.createdOn);
+    }
+
+    function downloadBugDetails(result) {
+        showLoadingSpinner(true);
+        if (confirm('Do you want to download the PDF now?')) {
+            var bugId = result.id;
+            var url = "${createLink(controller: 'ptReport', action: 'downloadPtBugDetails')}?bugId=" + bugId;
+            document.location = url;
+        }
+        showLoadingSpinner(false);
+        return false;
+    }
+
+</script>

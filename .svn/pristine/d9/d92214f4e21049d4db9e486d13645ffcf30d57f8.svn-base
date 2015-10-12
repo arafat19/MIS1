@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Chart of Account* From Grid View | |
+*ActionService:* | SearchAccChartOfAccountActionService | *Auditable:* | No
+*Url:* | /accChartOfAccount/list | |
+{table}
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Chart of Account* link.
+* [Show Landing Page of Chart of Account|guide:ShowAccChartOfAccountActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Chart of Account* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Chart of Account" privilege.
+* Rules of searching:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Searching Option*
+ Find | Text Box | Alpha Numeric | Code
+ Find | Text Box | Alpha Numeric | Head Name
+{table}
+
+
+h4. Process:
+* Get list of *Chart of Account* (Default: 15 at Max) matching with search criteria.
+* Searching with zero length string will show list of all *Chart of Account*.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Chart of Account* list in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Show List of "Chart of Account" in Landing Page|guide:ListAccChartOfAccountActionService].

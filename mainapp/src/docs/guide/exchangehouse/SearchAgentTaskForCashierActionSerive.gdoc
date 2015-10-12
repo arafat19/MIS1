@@ -1,0 +1,53 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search "Task" From Grid View Created By "Agent" | |
+*ActionService:* | SearchAgentTaskForCashierActionSerive  | *Auditable:* | No
+*Url*: | /exhTask/listAgentTaskForCashier | | 
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 19th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Agent* link.
+* [Show Landing Page of "Agent Task"|guide:ShowExhTaskForCashierActionService].
+* Search Agent's Task From Grid View.
+
+h4. Pre-condition:
+* User must have "List Agent Task for Cashier" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Searching Option*
+Find | Text Box | Ref No
+     |          | Customer Name
+     |          | Amount(BDT)
+{table}
+
+* Send to exchange house *Task*s will be listed in grid view.
+
+h4. Process:
+* Get *Agent Task* list (Default: 15 at Max) matching with search criteria.
+
+h4. Post-condition:
+
+* *Success:*
+** *Agent Task* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show List of Agent's Task in Landing Page|guide:ListAgentTaskForCashierActionService].
+

@@ -1,0 +1,48 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open Approved "Inventory Consumption" in Read Only Mode | |
+ *ActionService:* | SelectForInventoryConsumptionDetailsActionService | *Auditable:* | No
+ *Url:* | /invInventoryTransactionDetails/selectInventoryConsumptionDetails | |
+{table}
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Project Director, Project Manager, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of the usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "Consumption" link.
+* [Show Group of "Inventory Consumption" Landing Page|guide:ShowForInventoryConsumptionActionService].
+* Select a Line-Item from grid view.
+* Click "Approve" button.
+* [Show Landing Page of Approved "Inventory Consumption"|guide:ShowForApprovedInventoryConsumptionDetailsActionService].
+* Select a Line-Item from grid view.
+* Click "Details" button.
+* Open Approved "Inventory Consumption" in Read Only Mode.
+
+h4. Pre-condition:
+* User must have "Select Inventory-Consumption Details Transaction" privilege.
+* "Inventory Consumption" must be approved.
+
+h4. Process:
+Get Approved "Inventory Consumption" details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected Approved "Inventory Consumption" in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+!Inv/InventoryConsumption_ApprovedItem_Details.png!

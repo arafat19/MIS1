@@ -1,0 +1,66 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Update *Supplier Item* | |
+*ActionService:* | UpdateSupplierItemActionService | *Auditable:* | No
+*Url:* | /SupplierItem/update | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 13th November 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Supplier* link.
+* [Show Landing Page of Supplier|guide:ShowSupplierActionService].
+* Select a Line-Item from grid view.
+* Click "Item(s)" button from tool bar.
+* [Show Landing Page of Supplier Item|guide:ShowSupplierItemActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* [Open Supplier Item in Edit Mode|guide:SelectSupplierItemActionService].
+* User must enter valid input to update.
+* Click "Update" button from tool bar.
+* Update *Supplier Item*.
+
+h4. Pre-condition:
+* User must have "Update supplier-item" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+Supplier Name | Read Only | Alpha Numeric |
+Address | Read Only | Alpha Numeric |
+Bank Account | Read Only | Alpha Numeric |
+Bank Name | Read Only | Alpha Numeric |
+[Populate Item Type List|application] | Drop Down List | Numeric | Required
+[Populate Item List|application] | Drop Down List | Numeric | Required & Unique
+Code | Read Only | Alpha Numeric | Auto Generated
+Unit | Read Only | Alpha Numeric |
+{table}
+
+* Match expected version before updating a *Supplier Item*.
+
+h4. Process:
+* Update selected *Supplier Item*.
+
+h4. Post-condition:
+
+* *Success:*
+** Update selected *Supplier Item* into grid-view.
+** Show success message.
+** Reset the field for next inputs.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

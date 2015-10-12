@@ -1,0 +1,473 @@
+$(document).ready(function () {
+    // for left menu click function
+
+    $('#dockMenuBudget').click(function () {
+        renderBudgetMenu(null, true);
+    });
+    $('#dockMenuProc').click(function () {
+        renderProcurementMenu(null, true);
+    });
+    $('#dockMenuInv').click(function () {
+        renderInventoryMenu(null, true);
+    });
+    $('#dockMenuAcc').click(function () {
+        renderAccountingMenu(null, true);
+    });
+    $('#dockMenuQs').click(function () {
+        renderQsMenu(null, true);
+    });
+    $('#dockMenuSettings').click(function () {
+        renderApplicationMenu(null, true);
+    });
+    $('#dockMenuFixedAsset').click(function () {
+        renderFixedAssetMenu(null, true);
+    });
+    $('#dockMenuExchangeHouse').click(function () {
+        renderExchangeHouseMenu(null, true);
+    });
+    $('#dockMenuProjectTrack').click(function () {
+        renderProjectTrackMenu(null, true);
+    });
+    $('#dockMenuArms').click(function () {
+        renderArmsMenu(null, true);
+    });
+    $('#dockMenuSarb').click(function () {
+        renderSarbMenu(null, true);
+    });
+    $('#dockMenuDocument').click(function () {
+        renderDocumentMenu(null, true);
+    });
+});
+
+
+//***********************
+
+
+// assign kendo validator & bind onSubmit event
+function initializeForm(form, func) {
+    $(form).kendoValidator({validateOnBlur: false});
+
+    $(form).submit(function (e) {
+        func();
+        return false;
+    });
+}
+
+// init date picker by kendo & mask by jQuery
+function initDateControl(ctlDate, val) {
+    var value = new Date(); // default value
+    if (val == '') {
+        value = '';
+    }
+    $(ctlDate).kendoDatePicker({
+        format: "dd/MM/yyyy",
+        value: value
+    });
+    ctlDate.mask('99/99/9999');
+}
+
+// return empty data source for kendo dropDown
+function getKendoEmptyDataSource(dataModel, unselectedText) {
+    var textMember = 'name'; // default value
+    if (dataModel) {
+        textMember = dataModel.options.dataTextField;
+    }
+    var unselectedData = new Object();
+    unselectedData['id'] = '';
+    unselectedData[textMember] = 'Please Select...'; // default value
+    if (unselectedText)unselectedData[textMember] = unselectedText;
+    return  new kendo.data.DataSource({ data: [unselectedData]});
+}
+
+function initKendoDropdown(control, paramTextMember, paramValueMember, paramDataSource) {
+    if (!paramTextMember) paramTextMember = 'name';
+    if (!paramValueMember) paramValueMember = 'id';
+    if (!paramDataSource) paramDataSource = getKendoEmptyDataSource();
+
+    $(control).kendoDropDownList({
+        dataTextField: paramTextMember,
+        dataValueField: paramValueMember,
+        dataSource: paramDataSource
+    });
+    return $(control).data("kendoDropDownList");
+}
+
+
+/*function extracts data from select & return as converted JSON data
+ used to feed in dataSource of kendo dropDown*/
+function getKendoDropDownDataSource(select) {
+    var lst = [];
+    $("select > option").each(function () {
+        var obj = new Object();
+        obj["name"] = this.text;
+        obj["id"] = this.value;
+        for (var i = 0; i < this.attributes.length; i++) {
+            var attrib = this.attributes[i];
+            if (attrib.name.toUpperCase() == 'VALUE') continue;
+            if (attrib.name.toUpperCase() == 'SELECTED') continue;
+            obj[attrib.name] = attrib.value;
+        }
+        lst.push(obj);
+    });
+    return lst
+}
+
+function trimFormValues(form) {
+
+    // iterate over all of the inputs for the form
+    $(':input', form).each(function () {
+        var type = this.type.toLowerCase();
+        var tag = this.tagName.toLowerCase(); // normalize case
+
+        // for inputs and textareas
+        if (type == 'text' || type == 'hidden' || tag == 'textarea') {
+            this.value = jQuery.trim(this.value);
+        }
+    });
+}
+
+function validateForm(form) {
+    trimFormValues(form);
+    var frmValidator = $(form).kendoValidator({
+        validateOnBlur: false
+    }).data("kendoValidator");
+    if (!frmValidator.validate()) {
+        return false;
+    }
+    return true;
+}
+
+
+function clearForm(frm, focusElement) {
+    clearErrors(frm);
+    clearFormValues(frm);
+    $(focusElement).focus();
+}
+
+function clearErrors(form) {
+    var frmValidator = $(form).kendoValidator({
+        validateOnBlur: false
+    }).data("kendoValidator");
+    frmValidator.hideMessages();
+}
+
+function clearFormValues(form) {
+
+    // iterate over all of the inputs for the form
+
+    $(':input', form).each(function () {
+        var type = this.type;
+        var tag = this.tagName.toLowerCase(); // normalize case
+
+        // password inputs, and textareas
+        if (type == 'text' || type == 'password' || type == 'hidden' || tag == 'textarea' || type == 'email' || type == 'tel') {
+            this.value = "";
+        }
+
+        // checkboxes and radios need to have their checked state cleared
+        else if (type == 'checkbox' || type == 'radio')
+            this.checked = false;
+
+        // select elements need to have their 'selectedIndex' property set to -1
+        else if (tag == 'select') {
+//            this.selectedIndex = -1;
+//            this.value = '-1';
+            var dropDownKendo = $(this).data("kendoDropDownList");
+            dropDownKendo.value('');
+        }
+    });
+
+}
+
+function setButtonDisabled(button, isEnable) {
+    $(button).attr('disabled', isEnable);
+}
+
+
+function onLoadMainLayout() {
+    myLayout = $('body').layout({
+
+        east__size: 300
+        // RESIZE Accordion widget when panes resize
+        , west__onresize: function () {
+            $("#accordion1").accordion("resize");
+        }, east__onresize: function () {
+            $("#accordion2").accordion("resize");
+        }, south__resizable: false, south__slidable: false, south__togglerLength_open: 0, north__size: 55, north__resizable: false, south__showOverflowOnHover: false, west__size: 230, center__contentSelector: '#contentHolder', spacing_open: 5	// ALL panes
+
+    });
+
+    // ACCORDION - in the West pane
+    $("#accordion1").accordion({
+        fillSpace: true, active: 0
+    });
+
+    myLayout.close('north');
+
+    $.history.init(function (hash) {
+        setFavicon();
+        if (hash) {
+            if (hash.endsWith('Menu')) {
+                loadLeftMenu(hash, null);
+            } else {
+                load(hash);
+            }
+        } else {
+            loadInitialLeftMenu();
+        }
+    });
+
+    bindAutoLoadClass();
+
+    $.ajaxSetup({
+        error: function (x, e) {
+            if (x.status == 0) {
+                redirectToLogoutPage(); // defined in main.gsp
+            } else if (x.status == 404) {
+                //alert('Requested URL not found.');
+                showLoadingSpinner(false);
+                redirectToLogoutPage(); // defined in main.gsp
+            } else if (x.status == 500) {
+                redirectToLogoutPage(); // defined in main.gsp
+            } else if (e == 'parsererror') {
+                alert('Error.\nParsing JSON Request failed.');
+            } else if (e == 'timeout') {
+                alert('Request Time out.');
+            } else {
+                alert('Unknow Error.\n Exception:' + e + '\nResponse:' + + x.responseText + '\nStatus code:' + x.status);
+            }
+        }
+    });
+    try {
+        errorData = $("<span></span>").html(errorData).text();
+        errorData = errorData.toJSON();
+    } catch (e) {
+        errorData = false;
+    }
+
+    if (errorData) {
+        $(errorData).each(function (idx) {
+            showError(errorData[idx]);
+        });
+    }
+}
+
+
+function bindAutoLoadClass() {
+    $('div.ui-layout-west a.autoload').click(function (e) {
+        var href = $(this).attr('href');
+        var currentUrl = document.location.href;
+        var currentPage = currentUrl.substring(currentUrl.indexOf('#', 0), currentUrl.length);
+        if (currentPage == href) {
+            var reqUrl = href.substring(1, href.length);
+            load(reqUrl);
+        }
+    });
+}
+
+
+function setTabId(tabid) {
+    $("#accordion1").accordion({
+        fillSpace: true, active: tabid
+    });
+}
+function load(loc) {
+    showLoadingSpinner(true);
+    jQuery.ajax({type: 'post',
+        url: loc,                      //+ "?ajaxid=" + new Date().getTime()
+        success: function (data, textStatus) {
+            $('#contentHolder').html(data);
+            showLoadingSpinner(false);
+        },
+        complete: function (XMLHttpRequest, textStatus) {
+            showLoadingSpinner(false);
+
+        }
+    });
+}
+function setFavicon() {
+    var link = $("link[type='image/x-icon']").remove().attr("href");
+    $('<link href="' + link + '" rel="shortcut icon" type="image/x-icon" />').appendTo('head');
+}
+
+
+function afterAjaxError(XMLHttpRequest, textStatus) {
+    if ((XMLHttpRequest == undefined) || (XMLHttpRequest.status == 200)) {
+        return false;
+    }
+    if (XMLHttpRequest.status == 0) {
+        redirectToLogoutPage(); // defined in main.gsp
+    } else if (XMLHttpRequest.status == 404) {
+        redirectToLogoutPage(); // defined in main.gsp
+        showLoadingSpinner(false);
+    } else if (XMLHttpRequest.status == 500) {
+        redirectToLogoutPage(); // defined in main.gsp
+    } else if (textStatus == 'parsererror') {
+        alert('Error.\nParsing JSON Request failed.');
+    } else if (textStatus == 'timeout') {
+        alert('Request Time out.');
+    } else {
+        alert('Unknow Error.\n' + XMLHttpRequest.responseText);
+    }
+    return false;
+}
+
+function showLoadingSpinner(show) {
+    if (show) {
+        $('#spinner').show();
+    } else {
+        $('#spinner').hide();
+    }
+}
+
+// Above code moved from logintpl.gsp
+$.fn.textWidth = function () {
+    var sensor = $('<div />').css({margin: 0, padding: 0});
+    $(this).append(sensor);
+    var width = sensor.width();
+    sensor.remove();
+    return width;
+};
+
+function calTextWidth(myText) {
+    var html_org = myText;
+    var html_calc = '<span>' + html_org + '</span>'
+    $('#temDiv').html(html_calc);
+    var width = $('#temDiv').find('span:first').width();
+    $('#temDiv').html('');
+    return width;
+}
+
+// function is used to fix IE problem of drop down width (drop down should have class "dropdown")
+function fixIESelectBoxDataWidth(comboWidth) {
+    if ($.browser.msie && $.browser.version < 9) {
+        var comboWidthInt = 0;
+        if ((comboWidth == '') || (comboWidth == undefined)) {
+            comboWidthInt = 120;
+            comboWidth = '120px';  // default width (if not provided)
+
+        } else {
+            comboWidthInt = comboWidth;
+            comboWidth = comboWidth + 'px';
+        }
+        $(".dropdown").mousedown(function () {
+            if ($.browser.msie) {
+                if ($(this).find('option').length < 2) {
+                    $(this).width(comboWidth);
+                } else {
+                    var maxVal = 0;
+                    for (var i = 0; i < $(this).find('option').length; i++) {
+                        var myText = $(this).find('option:nth(' + i + ')').text();
+                        var textWidth = calTextWidth(myText);
+                        if (maxVal < textWidth) {
+                            maxVal = textWidth;
+                        }
+                    }
+                    //alert(maxVal+"::"+comboWidthInt);
+                    if ((maxVal + 4) < comboWidthInt) {
+                        $(this).width(comboWidth);
+                    } else {
+                        $(this).css("width", "auto");
+                    }
+                }
+            }
+        });
+        $(".dropdown").change(function () {
+            if ($.browser.msie) {
+                $(this).css("width", comboWidth);
+            }
+        });
+        $(".dropdown").blur(function () {
+            if ($.browser.msie) {
+                $(this).css("width", comboWidth);
+            }
+        });
+
+    }
+}
+
+function onCompleteAjaxCall(XMLHttpRequest, textStatus) {
+    showLoadingSpinner(false);
+}
+
+// function trims the leading / for hash loading
+function formatLink(link) {
+    if (link.indexOf('/') == 0) {
+        link = link.substring(1, link.length);
+    }
+    return link;
+}
+
+// function to check if one or more grid row is selected or not
+function executeCommonPreConditionForSelect(flexGrid, objName, singleOnly) {
+    var objectName = 'row';
+    if (objName) {
+        objectName = objName;
+    }
+    var ids = $('.trSelected', flexGrid);
+    if (ids.length == 0) {
+        showError("Please select " + objectName + " to perform this operation");
+        return false;
+    }
+    if (singleOnly && (ids.length > 1)){
+        showError("Please select only one " + objectName + " to perform this operation");
+        return false;
+    }
+
+    return true;
+}
+
+// function to check if one or more grid row is selected or not
+function executeCommonPreConditionForSelectKendo(gridModel, objName, singleOnly) {
+    var objectName = 'row';
+    if (objName) {
+        objectName = objName;
+    }
+    var row = gridModel.select();
+
+    if (row.size() == 0) {
+        showError("Please select " + objectName + " to perform this operation");
+        return false;
+    }
+    if (singleOnly && (row.size() > 1)){
+        showError("Please select only one " + objectName + " to perform this operation");
+        return false;
+    }
+    return true;
+}
+
+/* function returns objectId from grid row.
+ In case of multi select return '_' separated ids
+ */
+function getSelectedIdFromGrid(flexGrid) {
+    var objectId = '';
+    var selectedIds = $('.trSelected', flexGrid);
+    if (selectedIds.length == 1) {
+        objectId = $(selectedIds[0]).attr('id').replace('row', '');
+    } else if (selectedIds.length > 1) {
+        selectedIds.each(function (e) {
+            var singleId = $(this).attr('id').replace('row', '');
+            objectId += singleId + '_';
+        });
+    }
+    return objectId;
+}
+
+/* function returns objectId from grid row.
+ In case of multi select return '_' separated ids
+ */
+function getSelectedIdFromGridKendo(gridModel) {
+    var objectId = '';
+    var row = gridModel.select();
+    var data;
+    if (row.size() == 1) {
+        data = gridModel.dataItem(row);
+        objectId = data.id;
+    } else if (row.size() > 1) {
+        row.each(function (e) {
+            data = gridModel.dataItem($(this));
+            objectId += data.id + '_';
+        });
+    }
+    return objectId;
+}

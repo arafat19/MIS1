@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Create *Exchange House Currency Posting* | |
+*ActionService:* | CreateRmsExchangeHouseCurrencyPostingActionService | *Auditable:* | No
+*Url:* | /rmsExchangeHouseCurrencyPosting/create | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Exh. House Currency Posting* link.
+* [Show Landing Page of "Exchange House Currency Posting"|guide:ShowRmsExchangeHouseCurrencyPostingActionService].
+* User must enter valid input.
+* Click "Create" button.
+* Create *Exchange House Currency Posting*.
+
+h4. Pre-condition:
+* User must have "Create Exchange House Currency Posting" privilege.
+
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules* 
+[Exchange House|guide:PopulateExchangeHouseList] |  Drop Down list | Numeric | Required
+Amount | Text Box | Text | Required & Unique
+Balance | Auto Generated | Numeric | Read Only
+{table}
+
+
+h4. Process:
+* Create a new *Exchange House Currency Posting*.
+
+h4. Post-condition:
+
+* *Success:*
+** Add newly created *Exchange House Currency Posting* into grid-view (should be in 1st row of grid).
+** Show success message.
+** Reset the field for next inputs.
+
+** *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

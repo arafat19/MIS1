@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of *Beneficiary* | |
+*ActionService:* | ExhShowBeneficiaryActionService | *Auditable:* | No
+*Url:* | /exhBeneficiary/show | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+This is the landing page of *Beneficiary* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* Show Landing Page of *Beneficiary*.
+
+h4. Pre-condition:
+* User must have "Show Beneficiary" privilege.
+
+h4. Process:
+* [Get list of "Beneficiary"|guide:ExhListBeneficiaryActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show input form on top to [Create new "Beneficiary"|guide:ExhCreateBeneficiaryActionService].
+** Show list of "Beneficiary" in grid view of landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open "Beneficiary" in Edit Mode|guide:ExhSelectBeneficiaryActionService].
+* [Search "Beneficiary" From Grid View|guide:ExhSearchBeneficiaryActionService].
+* [Show Landing Page of Cashier's "Task"|guide:ShowExhTaskForCashierActionService].
+
+!Exh/Cashier_Beneficiary_Show.png!

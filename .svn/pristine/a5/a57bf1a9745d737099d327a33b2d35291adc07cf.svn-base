@@ -1,0 +1,105 @@
+package com.athena.mis.projecttrack.actions.report
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.projecttrack.utility.PtSessionUtil
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.plugins.jasper.JasperExportFormat
+import org.codehaus.groovy.grails.plugins.jasper.JasperReportDef
+import org.codehaus.groovy.grails.plugins.jasper.JasperService
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+class DownloadPtBugDetailsActionService extends BaseService implements ActionIntf {
+
+    JasperService jasperService
+    @Autowired
+    PtSessionUtil ptSessionUtil
+
+    private final Logger log = Logger.getLogger(getClass())
+
+    private static final String BUG_ID = "bugId"
+    private static final String REPORT = "report"
+    private static final String PDF_EXTENSION = ".pdf"
+    private static final String COMPANY_ID = "companyId"
+    private static final String REPORT_DIR = 'REPORT_DIR'
+    private static final String REPORT_FILE_FORMAT = 'pdf'
+    private static final String REPORT_FOLDER = 'bugDetails'
+    private static final String JASPER_FILE = 'ptBug.jasper'
+    private static final String REPORT_TITLE = 'PT Bug Details'
+    private static final String REPORT_NAME_FIELD = 'REPORT_NAME'
+    private static final String OUTPUT_FILE_NAME = "ptBugDetails"
+    private static final String ERROR_INVALID_INPUT = "Error occurred for invalid inputs"
+    private static final String ERROR_EXCEPTION = "Failed to generate bug details report"
+
+    public Object executePreCondition(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap parameterMap = (GrailsParameterMap) parameters
+            if (!parameterMap.bugId) {
+                result.put(Tools.MESSAGE, ERROR_INVALID_INPUT)
+                return result
+            }
+            long bugId = Long.parseLong(parameterMap.bugId.toString())
+            result.put(BUG_ID, bugId)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error ex.getMessage()
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, ERROR_EXCEPTION)
+            return result
+        }
+    }
+
+    /**
+     * Do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    public Object execute(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            long bugId = (long) preResult.get(BUG_ID)
+            long companyId = ptSessionUtil.appSessionUtil.getCompanyId()
+            Map report = getBugDetailsReport(bugId, companyId)
+            result.put(REPORT, report)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error ex.getMessage()
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, ERROR_EXCEPTION)
+            return result
+        }
+    }
+
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    public Object buildFailureResultForUI(Object obj) {
+        return null
+    }
+
+    private Map getBugDetailsReport(long bugId, long companyId) {
+        String reportDir = Tools.getProjectTrackReportDirectory() + File.separator + REPORT_FOLDER
+        String outputFileName = OUTPUT_FILE_NAME + PDF_EXTENSION
+        Map reportParams = new LinkedHashMap()
+        reportParams.put(REPORT_DIR, reportDir)
+        reportParams.put(REPORT_NAME_FIELD, REPORT_TITLE)
+        reportParams.put(BUG_ID, bugId)
+        reportParams.put(COMPANY_ID, companyId)
+        reportParams.put(Tools.COMMON_REPORT_DIR, Tools.getCommonReportDirectory())
+
+        JasperReportDef reportDef = new JasperReportDef(name: JASPER_FILE, fileFormat: JasperExportFormat.PDF_FORMAT,
+                parameters: reportParams, folder: reportDir)
+        ByteArrayOutputStream report = jasperService.generateReport(reportDef)           // generate pdf report
+        return [report: report, reportFileName: outputFileName, format: REPORT_FILE_FORMAT]
+    }
+}

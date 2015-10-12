@@ -1,0 +1,6 @@
+Serial,Date,REF NO.,BENIFICIARY,A/C NO.,BANK,BRANCH,DIST,Benef Tele,Remitter,BDT ,Currency
+1,,RF-001,Mr. Ali Azam,AC121000012052,Dutch Bangla Bank Limited.,Mirpur Br.,COMILLA,1714031741,Salim,5000.999,BDT
+2,11/11/2013,RF-002,,AC121000012053,Janata Bank,Mirpur Br.,DHAKA,1714031741,Rahim,-780.2,BDT
+3,11/11/2013,,Mr. Fazle Elahi,,Dutch Bangla Bank Limited.,Mirpur Br.,COMILLA,1714031741,Salim,5000.2,
+4,11/11/2013,,Mr. Fazle Elahi,,Dutch Bangla Bank Limited.,Mirpur Br.,COMILLA,1714031741,Salim,0,
+5,,,,,,,,,,,

@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show Landing Page of Cashier's *Task* | |
+*ActionService:* | ShowExhTaskForCashierActionService | *Auditable:* | No
+*Url:* | /exhTask/showExhTaskForCashier | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 1st February 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier.
+
+h4. Description:
+This is the landing page of Cashier's *Task* with input form on top and grid view at the bottom.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* [Search "Customer" From Empty Listed Grid View|guide:ExhSearchCustomerActionService].
+* Select a Line-Item from grid view.
+* Click *Beneficiary* button from tool bar.
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* Select a Line-Item from grid view.
+* Click "Create Task" button from tool bar.
+* Show Landing Page of Cashier's *Task*.
+
+h4. Pre-condition:
+* User must have "Show Exh Task for Cashier" privilege.
+
+h4. Process:
+* Show blank input form of *Task* to [Create Cashier's "Task"|guide:_ExhCreateTaskForCashierActionService].
+* [List of Cashier's "Task"|guide:ListExhTaskForCashierActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show Cashier's *Task* in grid view.
+** Reset input form on top.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Open Cashier's "Task" in Edit Mode|guide:_ExhSelectTaskForCashierActionService].
+* [Search Cashier's "Task" From Grid View|guide:SearchExhTaskForCashierActionService].
+* [Show "Customer Transaction Summary" Panel|guide:CustomerSummaryForTaskTagLibActionService].
+* [Show Landing Page of "Beneficiary"|guide:ExhShowBeneficiaryActionService].
+* [Show Landing Page of "Customer History" Report|guide:ExhShowForCustomerRemittanceActionService].
+* [Show Landing Page of "Customer User Account"|guide:ExhShowForCustomerUserActionService].
+* [Show Landing Page of "Customer Note"|guide:ShowExhCustomerNoteActionService].
+* [Show Landing Page of "Customer Attachment"|guide:ShowExhCustomerContentActionService].
+
+!Exh/Cashier_Create Task_Show.png!

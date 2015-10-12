@@ -1,0 +1,44 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Open "Task" in Edit Mode | |
+ *ActionService:* | SelectRmsTaskActionService | *Auditable:* | No
+ *Url:* | /rmsTask/select | | 
+{table}
+
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 20th July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Exchange House User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Create" link.
+* [Show Landing Page of Task|guide:ShowRmsTaskActionService].
+* Select a Line-Item from grid view.
+* Click "Edit" button from tool bar.
+* Open *Task* in Edit Mode.
+
+h4. Pre-condition:
+* User must have "Select Task" privilege.
+
+h4. Process:
+* Get *Task* details from server.
+
+h4. Post-condition:
+
+* *Success:*
+** Show selected *Task* in input form.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

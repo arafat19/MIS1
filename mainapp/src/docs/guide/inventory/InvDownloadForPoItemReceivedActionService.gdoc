@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Download "PO Item Received" Report in PDF Format | |
+ *ActionService:* | InvDownloadForPoItemReceivedActionService | *Auditable:* | No
+ *Url:* | /invReport/downloadPoItemReceived | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "PO Item Received" link.
+* [Show Landing Page of "PO Item Received" Report|guide:InvShowForPoItemReceivedActionService].
+* Click "PDF" icon upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "PO Item Received" Report in PDF Format.
+
+h4. Pre-condition: 
+* User must have "Download PO Item Received Report" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ PO No | Text Box | Numeric | Required
+{table}
+
+
+h4. Process:
+* To get "PO Item Received" Report in PDF Format "Click Here":PO_Item_Received_Report.pdf
+* Download Report as PDF Format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

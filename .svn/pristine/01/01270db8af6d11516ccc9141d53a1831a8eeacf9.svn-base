@@ -1,0 +1,55 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *Sprint* From Grid View | |
+*ActionService:* | PtSearchSprintActionService | *Auditable:* | No
+*Url:* | /ptSprint/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* "Project" sub menu of left menu should show as default.
+* Click *Sprint* link.
+* [Show Landing Page of "Sprint"|guide:PtShowSprintActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *Sprint* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Sprint of Project track" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Searching Option*
+Find | Text Box | Alpha Numeric | Sprint Name
+{table}
+
+
+h4. Process:
+* Get list of *Sprint* (default: 15 at Max) matching with search criteria.
+* Searching with zero length string will list all *Sprint*.
+
+h4. Post-condition:
+
+* *Success:*
+** *Sprint* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [List "Sprint"|guide:PtListSprintActionService].

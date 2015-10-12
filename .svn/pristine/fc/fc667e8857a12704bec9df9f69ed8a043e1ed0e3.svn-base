@@ -1,0 +1,52 @@
+
+{table}
+ Use Case ID: | MIS-FixedAsset-28 | Priority: | High
+ *Name* | List Fixed Asset Details | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | /fxdFixedAssetDetails/list | *Action Class:* | ListFixedAssetDetailsActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 11th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+User will see all Fixed Asset Details within the system under following columns:
+# Serial
+# ID (Default: Invisible)
+# Category
+# Model/Serial No
+# Current Inventory
+# Cost
+# Purchase Date
+# PO No
+# Ownership Type
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Get list of Fixed Asset Details from server (default: 15 at Max).
+
+h4. Post-condition:
+
+# *Success:*
+## Fixed Asset Details will be listed in grid view.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].
+
+h4. *Related Use Case:*
+# [Cancel|common Usecases]
+# [Clear Results|common Usecases]
+# [Refresh|common Usecases]
+# [Previous Page|common Usecases]
+# [Forward Page|common Usecases]
+# [First Page|common Usecases]
+# [Last Page|common Usecases]

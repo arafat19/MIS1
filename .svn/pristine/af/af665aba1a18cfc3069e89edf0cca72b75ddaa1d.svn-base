@@ -1,0 +1,40 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Populate "Content Category" List in drop-down | |
+*Action:* | GetContentCategoryListByContentTypeIdActionService | *Auditable:* | No
+*Url:* | /contentCategory/listContentCategoryByContentTypeId | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 30th January 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Configuration Manager.
+
+h4. Description: 
+Name of use case represent its functionality.
+
+h4. Pre-condition: 
+* User must have "Get content category list by contet type ID" privilege.
+
+h4. Process: 
+* Get "Content Category" list from server. [Show Landing Page of "Content Category"|guide:ShowContentCategoryActionService]
+
+h4. Post-condition: 
+
+* *Success:*
+** Populate all "Content Category" list in drop down.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase: 
+* [Create "Customer Content"|guide:CreateExhCustomerContentActionService].
+* [Update "Customer Content"|guide:UpdateExhCustomerContentActionService].
+* [Create Entity Content|application].
+* [Update Entity Content|application].

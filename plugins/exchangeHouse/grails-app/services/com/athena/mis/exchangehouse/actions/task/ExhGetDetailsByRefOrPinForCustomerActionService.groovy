@@ -1,0 +1,484 @@
+package com.athena.mis.exchangehouse.actions.task
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.application.entity.*
+import com.athena.mis.application.utility.*
+import com.athena.mis.exchangehouse.entity.ExhTask
+import com.athena.mis.exchangehouse.entity.ExhTaskTrace
+import com.athena.mis.exchangehouse.service.ExhTaskService
+import com.athena.mis.exchangehouse.utility.ExhPaymentMethodCacheUtility
+import com.athena.mis.exchangehouse.utility.ExhSessionUtil
+import com.athena.mis.exchangehouse.utility.ExhTaskStatusCacheUtility
+import com.athena.mis.exchangehouse.wp.TaskDetailsMap
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import groovy.sql.GroovyRowResult
+import groovy.sql.Sql
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
+
+import javax.sql.DataSource
+
+/**
+ *   Search task details through refNo or pinNo for Customer
+ *  For details go through Use-Case doc named 'ExhGetDetailsByRefOrPinForCustomerActionService'
+ */
+class ExhGetDetailsByRefOrPinForCustomerActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String FAILURE_MESSAGE = "Failed to get task details"
+
+    private static final String GRID_OUTPUT = "gridOutput"
+    private static final String TASK_INFO_MAP = "taskInfoMap"
+    private static final String TASK_OBJECT = "task"
+
+    private static final String TASK_NOT_FOUND_MESSAGE = "Task not found."
+
+    private static final String IS_PAID = "Paid"
+    private static final String IS_CANCELLED = "Cancelled"
+    private static final String IS_UNPAID = "Unpaid"
+    private static final int ARMS_CANCELLED_TASK_STATUS = 6
+    private static final int ARMS_DECISION_TAKEN_TASK_STATUS = 30
+    private static final int ARMS_WAITING_FOR_RECONCILIATION_TASK_STATUS = 60
+    private static final String TASK_STATUS = "taskStatus"
+
+
+    ExhTaskService exhTaskService
+    // declare datasource for ARMS
+    DataSource dataSource_arms
+    @Autowired
+    ExhTaskStatusCacheUtility exhTaskStatusCacheUtility
+    @Autowired
+    ExhPaymentMethodCacheUtility exhPaymentMethodCacheUtility
+    @Autowired
+    BankCacheUtility bankCacheUtility
+    @Autowired
+    BankBranchCacheUtility bankBranchCacheUtility
+    @Autowired
+    DistrictCacheUtility districtCacheUtility
+    @Autowired
+    CompanyCacheUtility companyCacheUtility
+    @Autowired
+    CountryCacheUtility countryCacheUtility
+    @Autowired
+    ExhSessionUtil exhSessionUtil
+
+    /**
+     * 1. check necessary parameters
+     * 2. pull task by id and check task existence
+     * 4. check customerId of both task & login user
+     * 5. check currentStatus of task
+     * @param params -serialized parameters from UI
+     * @param obj -N/A
+     * @return -a map containing all objects necessary for execute
+     * map contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object executePreCondition(Object params, Object obj) {
+        Map result = new LinkedHashMap()
+
+
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            GrailsParameterMap parameters = (GrailsParameterMap) params
+            if ((!parameters.taskId)) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            long taskId = Tools.parseLongInput(parameters.taskId.toString())
+            if (taskId == 0) {      // check parse exception
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            ExhTask task = exhTaskService.read(taskId)
+
+            if (!task) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            if (task.customerId != exhSessionUtil.getUserCustomerId()) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+            SystemEntity exhCanceledTaskSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_CANCELLED_TASK, companyId)
+            SystemEntity exhPendingTaskSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_PENDING_TASK, companyId)
+            SystemEntity exhNewTaskSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_NEW_TASK, companyId)
+            SystemEntity exhStatusUnApprovedSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_UN_APPROVED, companyId)
+
+            if (task.currentStatus == exhStatusUnApprovedSysEntityObject.id
+                    || task.currentStatus == exhNewTaskSysEntityObject.id
+                    || task.currentStatus == exhPendingTaskSysEntityObject.id
+                    || task.currentStatus == exhCanceledTaskSysEntityObject.id) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }
+
+            result.put(TASK_OBJECT, task)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, true)
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            return result
+        }
+    }
+
+    /**
+     * Get task details for UI
+     * @param params -N/A
+     * @param obj -map returned from previous methods
+     * @return -a map containing all objects necessary for UI
+     * map -contains isError(true/false) depending on method success
+     */
+    @Transactional(readOnly = true)
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+
+        try {
+            LinkedHashMap preResult = (LinkedHashMap) obj
+            ExhTask task = (ExhTask) preResult.get(TASK_OBJECT)
+
+            TaskDetailsMap taskDetailsMap = null
+            long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+            SystemEntity exhSentToBankSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_SENT_TO_BANK, companyId)
+            SystemEntity exhSentToOtherBankSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_SENT_TO_OTHER_BANK, companyId)
+            SystemEntity exhResolvedByOtherBankSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_RESOLVED_BY_OTHER_BANK, companyId)
+
+            if (task.currentStatus == exhSentToBankSysEntityObject.id) {
+                taskDetailsMap = getTaskDetailsByRefNo(task.refNo)
+            } else if (task.currentStatus == exhSentToOtherBankSysEntityObject.id
+                    || task.currentStatus == exhResolvedByOtherBankSysEntityObject.id) {
+                taskDetailsMap = getTaskDetailsByRefNoFromSFSL(task.refNo)
+            }
+            SystemEntity taskStatus= (SystemEntity)exhTaskStatusCacheUtility.read(task.currentStatus)
+            if (taskDetailsMap.success) {
+                result.put(Tools.IS_ERROR, Boolean.FALSE)
+                result.put(TASK_INFO_MAP, taskDetailsMap)
+                result.put(TASK_OBJECT, task)
+                result.put(TASK_STATUS, taskStatus.key)
+            } else {
+                result.put(Tools.IS_ERROR, Boolean.TRUE)
+                result.put(TASK_INFO_MAP, null)
+                result.put(Tools.MESSAGE, taskDetailsMap.message)
+            }
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            result.put(TASK_INFO_MAP, null)
+            return result
+        }
+    }
+
+    /**
+     * do nothing for post operation
+     */
+    public Object executePostCondition(Object parameters, Object obj) {
+        return null
+    }
+
+    /**
+     * do nothing for success operation
+     */
+    public Object buildSuccessResultForUI(Object obj) {
+        return null
+    }
+
+    /**
+     * Build failure result in case of any error
+     * @param obj -map returned from previous methods, can be null
+     * @return -a map containing isError = true & relevant error message
+     */
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj && obj.message) {
+                result.put(Tools.MESSAGE, obj.message)
+            } else {
+                result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            }
+            result.put(GRID_OUTPUT, null)
+            result.put(TASK_INFO_MAP, null)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, FAILURE_MESSAGE)
+            result.put(GRID_OUTPUT, null)
+            result.put(TASK_INFO_MAP, null)
+            return result
+        }
+
+    }
+
+    /**
+     * Build task details through TaskDetailsMap
+     * @param refNo
+     * @return taskDetailsMap -a update object of TaskDetailsMap
+     */
+    public TaskDetailsMap getTaskDetailsByRefNo(String refNo) {
+        TaskDetailsMap taskDetailsMap = new TaskDetailsMap()
+        taskDetailsMap.success = Boolean.FALSE
+        try {
+            GroovyRowResult result = readTaskByRefNoFromARMS(refNo)
+
+            if (result == null) {
+                taskDetailsMap.message = TASK_NOT_FOUND_MESSAGE
+                return taskDetailsMap
+            }
+
+            buildTaskDetailsMap(taskDetailsMap, result)
+
+            taskDetailsMap.success = Boolean.TRUE
+            taskDetailsMap.message = Tools.EMPTY_SPACE
+
+            return taskDetailsMap
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            taskDetailsMap.message = 'Failed to get task details from ARMS. Reason: ' + e.getMessage()
+            return taskDetailsMap
+        }
+    }
+
+    /**
+     * Get taskInfo properties from ARMS DB
+     * @param refNo
+     * @return lstTaskInfo or can be null
+     */
+    private GroovyRowResult readTaskByRefNoFromARMS(String refNo) {
+        refNo = refNo.toUpperCase()
+        String query = """
+            SELECT e.name company_name,c.name country_name, t.transaction_ref_no,
+            t.pin_no,t.value_date,t.amount,t.current_status,t.status_updated,
+            b.name || ', ' || br.name || ', ' || d.name mapping_bank_info,
+            t.sender_name, t.sender_mobile, t.beneficiary_name, t.beneficiary_phone,
+            t.identity_type, t.identity_no, pm.name payment_method, list.name task_list_name,
+            t.outlet_name, t.outlet_branch_name, t.outlet_district_name, t.outlet_thana_name,
+            t.account_number
+            FROM task_info t
+            LEFT JOIN exchange_house e ON t.exchange_house_id=e.id
+            LEFT JOIN country c ON t.country_id = c.id
+            LEFT JOIN bank b ON t.mapping_bank_id=b.id
+            LEFT JOIN bank_branch br ON t.mapping_branch_id=br.id
+            LEFT JOIN district d ON t.mapping_district_id=d.id
+            LEFT JOIN task_list list ON t.task_list_id=list.id
+            LEFT JOIN payment_method pm ON pm.id = t.payment_method
+            WHERE t.transaction_ref_no = '${refNo}'
+        """
+        Sql sql = new Sql(dataSource_arms)
+        log.debug(query)
+        List<GroovyRowResult> lstTaskInfo = sql.rows(query)
+        if (lstTaskInfo.size() > 0) {
+            return lstTaskInfo[0]
+        }
+        return null
+    }
+
+    /**
+     * Build TaskDetailsMap
+     * @param taskDetailsMap
+     * @param result
+     */
+    private void buildTaskDetailsMap(TaskDetailsMap taskDetailsMap, GroovyRowResult result) {
+        String isPaid = null
+        String paidOn = Tools.NOT_APPLICABLE
+        // Waiting for reconciliation status = 60
+        if (result.current_status >= ARMS_WAITING_FOR_RECONCILIATION_TASK_STATUS) {
+            isPaid = IS_PAID
+            paidOn = DateUtility.getDateTimeFormatAsString(result.status_updated)
+        } else if (result.current_status == ARMS_CANCELLED_TASK_STATUS) {
+            isPaid = IS_CANCELLED
+            paidOn = DateUtility.getDateTimeFormatAsString(result.status_updated)
+        } else {
+            isPaid = IS_UNPAID
+        }
+
+        String pinNo = Tools.NOT_APPLICABLE
+        String taskListName = Tools.NOT_APPLICABLE
+        if (result.pin_no && (result.pin_no.toString().length() > 0)) {                         // Cash Collection
+            pinNo = result.pin_no
+        } else if (result.task_list_name && (result.task_list_name.toString().length() > 0)) {  // Bank Deposit
+            taskListName = result.task_list_name
+        }
+        String mappingBankInfo = Tools.NOT_APPLICABLE
+        if (result.mapping_bank_info) {
+            if (result.current_status >= ARMS_DECISION_TAKEN_TASK_STATUS) {
+                mappingBankInfo = result.mapping_bank_info
+            }
+        }
+
+        String fullOutletName = Tools.EMPTY_SPACE
+        if (result.outlet_name) {
+            fullOutletName = result.outlet_name + Tools.EMPTY_SPACE_COMA + result.outlet_branch_name + Tools.EMPTY_SPACE_COMA + result.outlet_district_name
+        } else {
+            fullOutletName = result.outlet_district_name + Tools.EMPTY_SPACE_COMA + result.outlet_thana_name
+        }
+
+        taskDetailsMap.isAccessible = true
+        taskDetailsMap.exchangeHouse = result.company_name
+        taskDetailsMap.country = result.country_name
+        taskDetailsMap.transactionRefNum = result.transaction_ref_no
+        taskDetailsMap.pinNo = pinNo
+        taskDetailsMap.valueDate = DateUtility.getDateFormatAsString(result.value_date)
+        taskDetailsMap.amount = result.amount
+        taskDetailsMap.listName = taskListName
+        taskDetailsMap.isPaid = isPaid
+        taskDetailsMap.paidOn = paidOn
+        taskDetailsMap.mappingBankInfo = mappingBankInfo
+        taskDetailsMap.senderName = result.sender_name
+        taskDetailsMap.senderMobile = result.sender_mobile
+        taskDetailsMap.beneficiaryName = result.beneficiary_name
+        taskDetailsMap.beneficiaryPhone = result.beneficiary_phone
+        taskDetailsMap.identityType = result.identity_type
+        taskDetailsMap.identityNo = result.identity_no
+
+        taskDetailsMap.paymentMethodName = result.payment_method
+        taskDetailsMap.accountNumber = result.account_number
+        taskDetailsMap.beneficiaryBankInfo = fullOutletName
+    }
+
+    /**
+     * get task details from SFSL by RefNo
+     * @param refNo
+     * @return taskDetailsMap
+     */
+    private TaskDetailsMap getTaskDetailsByRefNoFromSFSL(String refNo) {
+        TaskDetailsMap taskDetailsMap = new TaskDetailsMap()
+        taskDetailsMap.success = false
+        try {
+            GroovyRowResult result = readTaskByRefNoFromSFSL(refNo)
+
+            if (result == null) {
+                taskDetailsMap.message = TASK_NOT_FOUND_MESSAGE
+                return taskDetailsMap
+            }
+
+            buildTaskDetailsMapForSFSL(taskDetailsMap, result)
+
+            taskDetailsMap.success = true
+            taskDetailsMap.message = Tools.EMPTY_SPACE
+
+            return taskDetailsMap
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            taskDetailsMap.message = 'Failed to get task details from ARMS. Reason: ' + e.getMessage()
+            return taskDetailsMap
+        }
+    }
+
+    /**
+     * Get taskInfo properties from ARMS DB
+     * @param refNo
+     * @return lstTask or can be null
+     */
+    private GroovyRowResult readTaskByRefNoFromSFSL(String refNo) {
+        String query = """SELECT t.id, t.company_id, t.ref_no,
+                t.pin_no,t.created_on,t.amount_in_foreign_currency,t.current_status,
+                t.outlet_bank_id, t.outlet_district_id, t.outlet_branch_id,
+                (cust.name || ' ' || COALESCE(cust.surname,'')) AS customer_name, cust.phone AS customer_phone,
+                (ben.first_name || COALESCE(' ' || ben.middle_name,'') || COALESCE(' ' || ben.last_name,'')) AS beneficiary_name,
+                ben.phone As beneficiary_phone, ben.photo_id_type, ben.photo_id_no,
+                t.payment_method,
+                ben.bank AS beneficiary_bank, ben.bank_branch AS beneficiary_branch, ben.district AS beneficiary_district,
+                ben.thana AS beneficiary_thana, ben.account_no
+        FROM exh_task t
+        LEFT JOIN exh_customer cust ON cust.id=t.customer_id
+        LEFT JOIN exh_beneficiary ben ON ben.id=t.beneficiary_id
+            WHERE t.ref_no ilike '${refNo}'
+        """
+        List<GroovyRowResult> lstTaskInfo = executeSelectSql(query)      // no need to escape sql since refNo retrieved from DB
+        if (lstTaskInfo.size() > 0) {
+            return lstTaskInfo[0]
+        }
+        return null
+    }
+
+    /**
+     * Build taskDetailsMap
+     * @param taskDetailsMap -TaskDetailsMap object
+     * @param result -GroovyRowResult object
+     */
+    private void buildTaskDetailsMapForSFSL(TaskDetailsMap taskDetailsMap, GroovyRowResult result) {
+        long companyId = exhSessionUtil.appSessionUtil.getCompanyId()
+        SystemEntity exhPaymentMethodObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_BANK_DEPOSIT, companyId)
+        SystemEntity exhPaymentMethodCashObj = (SystemEntity) exhPaymentMethodCacheUtility.readByReservedAndCompany(exhPaymentMethodCacheUtility.PAYMENT_METHOD_CASH_COLLECTION, companyId)
+        SystemEntity exhResolvedByOtherBankSysEntityObject = (SystemEntity) exhTaskStatusCacheUtility.readByReservedAndCompany(exhTaskStatusCacheUtility.STATUS_RESOLVED_BY_OTHER_BANK, companyId)
+
+        String isPaid = IS_UNPAID      //default value
+        String paidOn = Tools.NOT_APPLICABLE   //default value
+        // Waiting for reconciliation status = 60
+        if (result.current_status == exhResolvedByOtherBankSysEntityObject.id) {
+            isPaid = IS_PAID
+
+            ExhTaskTrace taskTrace = readByTaskId(result.id)
+            paidOn = DateUtility.getDateTimeFormatAsString(taskTrace.actionDate)
+        }
+        long paymentMethodId = Long.parseLong(result.payment_method.toString())
+        String paymentMethodName = exhPaymentMethodCacheUtility.read(paymentMethodId).key
+
+        String pinNo = Tools.NOT_APPLICABLE
+        String taskListName = Tools.NOT_APPLICABLE
+        if (paymentMethodId == exhPaymentMethodCashObj.id) {
+            pinNo = result.pin_no
+        }
+
+        String fullOutletName = Tools.NOT_APPLICABLE
+
+        Bank outletBank = (Bank) bankCacheUtility.read(result.outlet_bank_id)
+        District outletDistrict = (District) districtCacheUtility.read(result.outlet_district_id)
+        BankBranch outletBankBranch = (BankBranch) bankBranchCacheUtility.read(result.outlet_branch_id)
+
+        Company company = (Company) companyCacheUtility.read(result.company_id)
+        Country country = (Country) countryCacheUtility.read(company.countryId)
+
+        if (paymentMethodId == exhPaymentMethodObj.id) {
+            fullOutletName = result.beneficiary_bank + Tools.EMPTY_SPACE_COMA + result.beneficiary_branch + Tools.EMPTY_SPACE_COMA + result.beneficiary_district
+        }
+
+        String mappingBankInfo = outletBank.name + Tools.EMPTY_SPACE_COMA + outletBankBranch.name + Tools.EMPTY_SPACE_COMA + outletDistrict.name
+
+        taskDetailsMap.isAccessible = true
+        taskDetailsMap.exchangeHouse = company.name
+        taskDetailsMap.country = country.name
+        taskDetailsMap.transactionRefNum = result.ref_no
+        taskDetailsMap.pinNo = pinNo
+        taskDetailsMap.valueDate = DateUtility.getDateFormatAsString(result.created_on)
+        taskDetailsMap.amount = result.amount_in_foreign_currency
+        taskDetailsMap.listName = taskListName
+        taskDetailsMap.isPaid = isPaid
+        taskDetailsMap.paidOn = paidOn
+        taskDetailsMap.mappingBankInfo = mappingBankInfo
+        taskDetailsMap.senderName = result.customer_name
+        taskDetailsMap.senderMobile = result.customer_phone
+        taskDetailsMap.beneficiaryName = result.beneficiary_name
+        taskDetailsMap.beneficiaryPhone = result.beneficiary_phone
+        taskDetailsMap.identityType = result.photo_id_type
+        taskDetailsMap.identityNo = result.photo_id_no
+
+        taskDetailsMap.paymentMethodName = paymentMethodName
+        taskDetailsMap.accountNumber = result.account_no
+        taskDetailsMap.beneficiaryBankInfo = fullOutletName
+    }
+
+    /**
+     * Get current task details info by task id
+     * @param taskId
+     * @return taskTrace -an object of ExhTaskTrace
+     */
+    private ExhTaskTrace readByTaskId(Long taskId) {
+        ExhTaskTrace taskTrace = ExhTaskTrace.findByTaskId(taskId, [readOnly: true])
+        return taskTrace
+    }
+}

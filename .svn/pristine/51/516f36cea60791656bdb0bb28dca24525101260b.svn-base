@@ -1,0 +1,127 @@
+<%@ page import="com.athena.mis.application.utility.NoteEntityTypeCacheUtility; com.athena.mis.application.utility.RoleTypeCacheUtility; com.athena.mis.projecttrack.utility.PtBacklogStatusCacheUtility; com.athena.mis.application.utility.SystemEntityTypeCacheUtility" %>
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            Update My Task
+        </div>
+    </div>
+
+    <form id='myBacklogForm' name='myBacklogForm' class="form-horizontal form-widgets" role="form">
+        <div class="panel-body">
+            <input type="hidden" id="id" name="id"/>
+            <input type="hidden" id="version" name="version"/>
+
+            <app:systemEntityByReserved
+                    name="backlogStatusAccepted"
+                    reservedId="${PtBacklogStatusCacheUtility.ACCEPTED_RESERVED_ID}"
+                    typeId="${SystemEntityTypeCacheUtility.PT_BACKLOG_STATUS}">
+            </app:systemEntityByReserved>
+
+            <app:systemEntityByReserved
+                    name="entityTypeId"
+                    reservedId="${NoteEntityTypeCacheUtility.COMMENT_ENTITY_TYPE_PT_TASK}"
+                    typeId="${SystemEntityTypeCacheUtility.TYPE_NOTE_ENTITY}">
+            </app:systemEntityByReserved>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="module">Module:</label>
+
+                <div class="col-md-4">
+                    <label id="module"></label>
+                </div>
+
+                <label class="col-md-2 control-label" for="sprint">Sprint:</label>
+
+                <div class="col-md-4">
+                    <label id="sprint"></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="priority">Priority:</label>
+
+                <div class="col-md-4">
+                    <label id="priority"></label>
+                </div>
+
+                <label class="col-md-2 control-label label-optional" for="ownerId">Owner:</label>
+
+                <div class="col-md-2">
+                    <pt:dropDownOwner
+                            tabindex="3"
+                            dataModelName="dropDownOwner"
+                            name="ownerId"
+                            typeId="${RoleTypeCacheUtility.ROLE_SOFTWARE_ENGINEER}">
+                    </pt:dropDownOwner>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label" for="idea">Idea:</label>
+
+                <div class="col-md-10">
+                    <label id="idea"></label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label label-required" for="statusId">Status:</label>
+
+                <div class="col-md-2">
+                    <app:dropDownSystemEntity
+                            dataModelName="dropDownStatus"
+                            name="statusId"
+                            tabindex="1"
+                            typeId="${SystemEntityTypeCacheUtility.PT_BACKLOG_STATUS}"
+                            elements="${[PtBacklogStatusCacheUtility.DEFINED_RESERVED_ID,
+                                    PtBacklogStatusCacheUtility.IN_PROGRESS_RESERVED_ID,
+                                    PtBacklogStatusCacheUtility.COMPLETED_RESERVED_ID]}"
+                            showHints="false"
+                            required="true"
+                            validationMessage="Required">
+                    </app:dropDownSystemEntity>
+                </div>
+
+                <div class="col-md-2 pull-left">
+                    <span class="k-invalid-msg" data-for="statusId"></span>
+                </div>
+
+                <label class="col-md-2 control-label label-required" for="hours">Hours:</label>
+
+                <div class="col-md-2">
+                    <input type="text" id="hours" name="hours" tabindex="2"
+                           placeholder="" required validationMessage="Required"/>
+                </div>
+
+                <div class="col-md-2">
+                    <span class="k-invalid-msg" data-for="hours"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-md-2 control-label label-optional" for="useCaseId">Use Case ID:</label>
+
+                <div class="col-md-8">
+                    <input class="k-textbox" id="useCaseId" name="useCaseId" tabindex="4"
+                           placeholder="Use Case ID" validationMessage="Required"/>
+                </div>
+
+                <div class="col-md-2">
+                    <span class="k-invalid-msg" data-for="useCaseId"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-footer">
+            <button id="create" name="create" type="submit" data-role="button" class="k-button k-button-icontext"
+                    role="button" tabindex="6"
+                    aria-disabled="false"><span class="k-icon k-i-plus"></span>Update
+            </button>
+
+            <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
+                    class="k-button k-button-icontext" role="button" tabindex="7"
+                    aria-disabled="false" onclick='resetForm();'><span class="k-icon k-i-close"></span>Cancel
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,53 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Navigate "Sanction List" from *Customer* Page | |
+*ActionService:* | ExhShowSanctionFromCustomerActionService | *Auditable:* | No
+*Url:* | /exhSanction/showFromCustomer | |
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 12th February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Cashier, Agent.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor clicks [Exchange House|guide:_ShowExchangeHousePlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click *Customer* link.
+* [Show Landing Page of "Customer"|guide:ExhShowCustomerActionService].
+* Insert valid input in "Name" field.
+* If name matched with Sanction List then show number of matching in a link.
+* Click the high lighted link.
+* Navigate "Sanction List" from *Customer* Page.
+
+h4. Pre-condition:
+* User must have "Navigate to sanction from customer" privilege.
+* User must enter "Customer Name".
+* "mis.exchangehouse.verifyCustomerSanction" Key must contain value 1.
+
+h4. Process:
+* [Show Landing Page of "Sanction Information"|guide:ExhShowSanctionActionService]
+* Show List of Matching "Sanction Information" in grid view.
+
+h4. Post-condition:
+
+* *Success:*
+** Show *Sanction* information in grid view.
+** Reset input form on top to see *Sanction* details in read only mode.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Search "Sanction Information" From Grid View|guide:ExhSearchSanctionActionService].
+* [Create "Customer"|guide:ExhCreateCustomerActionService].

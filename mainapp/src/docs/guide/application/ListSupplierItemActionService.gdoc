@@ -1,0 +1,62 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Show List of *Supplier Item* in Landing Page | |
+*ActionService:* | ListSupplierItemActionService | *Auditable:* | No
+*Url:* | /supplierItem/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 12th November 2012	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represent its functionality.
+
+h4. Flow:
+* Actor clicks [Settings|guide:_ShowApplicationPlugin] option from top menu bar.
+* "Settings" sub menu of left menu should show as default.
+* Click *Supplier* link.
+* [Show Landing Page of Supplier|guide:ShowSupplierActionService].
+* Select a line item from grid view.
+* Click "Item(s)" button from tool bar.
+* Show List of *Supplier Item* in [Landing Page|guide:ShowSupplierItemActionService].
+
+h4. Pre-condition:
+* User must have "List supplier-item" privilege.
+
+h4. Process:
+* Get list of *Supplier Item* from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial
+** ID (Default: Invisible)
+** Name
+** Code
+** Unit
+** Item Type
+
+h4. Post-condition:
+
+* *Success:*
+** *Supplier Item* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+* [Refresh|common Usecases].
+* [Search Supplier Item From Grid View|guide:SearchSupplierItemActionService].
+
+!application/Supplier_Item_List.png!

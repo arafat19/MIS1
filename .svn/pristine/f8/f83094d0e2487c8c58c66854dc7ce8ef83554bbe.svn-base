@@ -1,0 +1,164 @@
+package com.athena.mis.document.actions.memberjoinrequest
+
+import com.athena.mis.ActionIntf
+import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.document.entity.DocCategory
+import com.athena.mis.document.entity.DocMemberJoinRequest
+import com.athena.mis.document.service.DocMemberJoinRequestService
+import com.athena.mis.document.utility.DocCategoryCacheUtility
+import com.athena.mis.document.utility.DocSessionUtil
+import com.athena.mis.utility.DateUtility
+import com.athena.mis.utility.Tools
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+import org.springframework.beans.factory.annotation.Autowired
+
+class ListDocMemberJoinRequestActionService extends BaseService implements ActionIntf {
+    private Logger log = Logger.getLogger(getClass())
+
+    private static final String DEFAULT_ERROR_MESSAGE = 'Failed to load applied requested member list'
+    private static final String LIST_REQUESTED_MEMBER = 'lstRequestedMember'
+    private static final String GRID_OBJ = 'gridObj'
+    private static final String PENDING = 'Pending'
+    private static final String SPAN_START = "<span style='color:red'>"
+    private static final String SPAN_END = "</span>"
+    private static final String EXPIRED = "Expired"
+    private static final String DAYS = " Day(s)"
+    private static final String STR_NOT_APPLICALBE_LABEL = "<span>N/A</span>"
+
+    DocMemberJoinRequestService docMemberJoinRequestService
+
+    @Autowired
+    DocSessionUtil docSessionUtil
+    @Autowired
+    DocCategoryCacheUtility docCategoryCacheUtility
+
+    public Object executePreCondition(Object parameters, Object obj) {
+        //Do nothing for pre-operation
+        return null
+    }
+
+
+    public Object executePostCondition(Object parameters, Object obj) {
+        //Do nothing for post-operation
+        return null
+    }
+
+    /*
+    * @param parameters - serialize parameters from UI
+    * Category and Sub category Label from system configuration
+    * @param obj - N/A
+    * @return - A map containing all objects of categoryList,count of categoryList for buildSuccessResultForUI
+    * */
+
+    public Object execute(Object parameters, Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            GrailsParameterMap params = (GrailsParameterMap) parameters
+            initSearch(params)
+            Date fromDate = DateUtility.parseMaskedFromDate(params.fromDate.toString())
+            Date toDate = DateUtility.parseMaskedToDate(params.toDate.toString())
+            Map joinRequestResult = docMemberJoinRequestService.appliedJoinRequestedList(fromDate, toDate, this)
+            List<DocMemberJoinRequest> lstJoinRequest = joinRequestResult.lstJoinRequest
+            //get list of category from cache utility
+            int count = joinRequestResult.count
+            result.put(LIST_REQUESTED_MEMBER, lstJoinRequest)
+            result.put(Tools.COUNT, count)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+
+    }
+
+    /*
+    * Build Success Results for grid in UI
+    * @params obj - Map return from execute method
+    * Wrap Category list for grid
+    * @return a map of containing all object necessary for show page
+    * */
+
+    public Object buildSuccessResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            List<DocMemberJoinRequest> lstJoinRequest = (List<DocMemberJoinRequest>) preResult.get(LIST_REQUESTED_MEMBER)
+            int count = (int) preResult.get(Tools.COUNT)
+            List wrapListJoinRequest = wraplstJoinRequest(lstJoinRequest, start)
+            Map gridObject = [page: pageNumber, total: count, rows: wrapListJoinRequest]
+            result.put(GRID_OBJ, gridObject)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            return result
+        }
+    }
+
+    /*
+    * Build Failure result for UI
+    * @params obj - A map from execute method
+    * @return a Map containing IsError and default error message/relevant error message to display
+    * */
+
+    public Object buildFailureResultForUI(Object obj) {
+        Map result = new LinkedHashMap()
+        try {
+            Map preResult = (Map) obj
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            if (obj) {
+                if (preResult.get(Tools.MESSAGE)) {
+                    result.put(Tools.MESSAGE, preResult.get(Tools.MESSAGE))
+                    return result
+                }
+            }
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+
+        } catch (Exception e) {
+            log.error(e.getMessage())
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
+            return result
+        }
+    }
+
+    /*
+    * Wrap Category List for Grid
+    * @params catList - List of Category List
+    * @params start - starting index of the page
+    * @return List of wrapped category
+    * */
+
+    private List wraplstJoinRequest(List<DocMemberJoinRequest> lstJoinRequest, int start) {
+        List wrapListJoinRequest = []
+        int counter = start + 1
+        for (int i = 0; i < lstJoinRequest.size(); i++) {
+            GridEntity object = new GridEntity()
+            DocMemberJoinRequest joinRequest = lstJoinRequest[i]
+            String requestApprovedDate = DateUtility.getDateForSMS(joinRequest.approvedOn)
+            DocCategory category = (DocCategory) docCategoryCacheUtility.read(joinRequest.categoryId)
+            object.id = joinRequest.id
+            object.cell = [
+                    counter,
+                    joinRequest.id,
+                    joinRequest.email,
+                    joinRequest.userName ? joinRequest.userName : Tools.EMPTY_SPACE,
+                    category.name ? category.name : Tools.EMPTY_SPACE,
+                    joinRequest.approvedOn ? requestApprovedDate : PENDING,
+                    requestApprovedDate ? STR_NOT_APPLICALBE_LABEL : joinRequest.expiredOn.before(new Date()) ? SPAN_START + EXPIRED + SPAN_END : joinRequest.expiredOn - new Date() + DAYS
+            ]
+            wrapListJoinRequest << object
+            counter++
+        }
+        return wrapListJoinRequest
+    }
+}

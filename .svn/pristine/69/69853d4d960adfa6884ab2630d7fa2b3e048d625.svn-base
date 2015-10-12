@@ -1,0 +1,50 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Disburse "Cash Collection Task" | |
+*Action:* | DisburseCashCollectionRmsTaskActionService | *Auditable:* | No
+*Url:* | /rmsTask/disburseCashCollectionRmsTask | |
+{table}
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Nahida Sultana | 23rd July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Branch User.
+
+h4. Description:
+Name of the use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Instrument sub menu of left menu should show as default.
+* Click "Pay Now" link.
+* [Show Landing Page of "Pay Now Cash Collection" Task List|guide:showDisburseCashCollection].
+* Enter Valid input.
+* Click "Search" button.
+* [Generate Task Details|guide:SearchDisburseCashCollectionTaskActionService].
+* User must insert valid input.
+* Click "Disburse" button from tool bar.
+* Disburse "Cash CollectionTask".
+
+h4. Pre-condition:
+* User must have "Disburse cash collection rms task" privilege.
+* Must insert "Identity Type".
+
+h4. Process:
+* Disbursed selected Cash Collection task.
+
+
+h4. Post-condition:
+
+* *Success:*
+** Disbursed selected "Cash Collection Task".
+** Show Success message.
+
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].

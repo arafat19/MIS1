@@ -1,0 +1,48 @@
+
+
+{table}
+ Access Type: | Un-Restricted | Priority: | High
+*Name:* | Show "User Registration" Page | |
+*ActionService:* | ExhShowRegistrationCustomerActionService | *Auditable:* | No
+*Url:* | /exhCustomer/registration | | 
+{table}
+
+
+h4. Revision History
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 2nd February 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Anonymous User.
+
+h4. Description:
+This is the "User Registration" page. New user can register by this page with correct information.
+
+h4. Flow:
+* User must request to access "Log-In" page.
+* Actor clicks "New User? Click Here" option from show page.
+* Show "User Registration" Page.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+* Show blank input form to [Create new "User Registration"|guide:ExhSignupForCustomerUserActionService].
+
+h4. Post-condition:
+
+* *Success:*
+** Show "User Registration" page.
+** Reset input form to create "User Registration".
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Cancel|common Usecases].
+* [Populate "Nationality" List in drop-down|guide:_PopulateNationalityList].
+* [Populate "Photo Id Type" List in drop-down|guide:ExhPhotoIdTypeDropDownTagLib].
+
+!Exh/User_Registration_Page_Show.png!

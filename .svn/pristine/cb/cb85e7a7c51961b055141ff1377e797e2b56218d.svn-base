@@ -1,0 +1,54 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Download "Decision Taken Summary" Report in PDF Format | |
+*ActionService:* | N/A | *Auditable:* | No
+*Url:* | /rmsReport/downloadDecisionSummaryReport | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date* | *Reason for Changes*	| *Version*
+Meherun Nessa | 21st July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator, Remittance User, Branch User.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Decision Taken Summary" link.
+* [Show Landing Page of "Decision Taken Summary" Report|guide:showDecisionSummary].
+* Enter valid input.
+* Click "PDF" icon of the upper right side of the page.
+* System will show confirmation message of download.
+* Actor clicks "Ok" button.
+* Download "Decision Taken Summary" Report in PDF Format.
+
+h4. Pre-condition:
+* User must have "" privilege.
+* Follow rules of validation:
+{table}
+*Field* | *Input Type* | *Data Type* | *Rules*
+From Date | Calender | Alpha Numeric | Required
+To Date | Calender | Alpha Numeric | Required
+{table}
+
+h4. Process:
+* To get "Decision Taken Summary" Report in PDF Format "Click Here":
+* Download the report as PDF format.
+
+h4. Post-condition:
+
+* *Success:*
+** PDF Report will successfully download to user's computer.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

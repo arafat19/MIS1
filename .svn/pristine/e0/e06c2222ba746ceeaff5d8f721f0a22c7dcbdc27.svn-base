@@ -1,0 +1,74 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Generate "Supplier Chalan" Report in HTML Format | |
+ *ActionService:* | InvListForSupplierChalanActionService | *Auditable:* | No
+ *Url:* | /invReport/listSupplierChalan | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 4th July 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represents its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* Click "Report" sub menu from left menu.
+* Click "Supplier Chalan" link.
+* [Show Landing Page of "Supplier Chalan"|guide:InvShowForSupplierChalanActionService].
+* User must insert valid input.
+* Click "Search" button.
+* Generate "Supplier Chalan" Report in HTML Format.
+
+
+h4. Pre-condition:
+* User must have "List Supplier Chalan Report" privilege.
+* Rules of searching field:
+{table}
+ *Field* | *Input Type* | *Data Type* | *Rules*
+ Supplier Chalan No | Text Box | Numeric | Required
+ [Populate All Supplier List|application] | Drop-Down List  | Numeric | Required
+ Status(All,Pending,Acknowledged) | Drop-Down List | Text | Default (Pending)
+{table}
+
+
+h4. Process:
+* Get "Supplier Chalan" Report landing page from server.
+
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Production Operator Trace
+** Transaction Date
+** Inventory Name
+** Item Name
+** Quantity
+** Rate
+** Amount
+** Approved
+** Acknowledged
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Supplier Chalan" Report landing page.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related usecase:
+* [Show Landing Page of "Supplier Chalan" Report|guide:InvShowForSupplierChalanActionService].
+* [Refresh|common Usecases].
+* [Previous Page|common Usecases].
+* [Forward Page|common Usecases].
+* [First Page|common Usecases].
+* [Last Page|common Usecases].
+
+!Inv/Supplier_Chalan_Report_Generate.png!

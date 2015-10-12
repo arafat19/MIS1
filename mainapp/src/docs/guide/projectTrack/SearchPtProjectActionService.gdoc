@@ -1,0 +1,56 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Search *System Project* From Grid View | |
+*ActionService:* | SearchPtProjectActionService | *Auditable:* | No
+*Url:* | /ptProject/list | |
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 5th July 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+Name of use case represents its responsibility.
+
+h4. Flow:
+* Actor clicks [Project Track|guide:_ShowProjectTrackPlugin] option from top menu bar.
+* Click "Settings" sub menu from left menu.
+* Click *Project* link.
+* [Show Landing Page of "System Project"|guide:ShowPtProjectActionService].
+* Click the magnify icon from grid view.
+* Write searching criteria.
+* Press "Enter" button.
+* Search *System Project* From Grid View.
+
+h4. Pre-condition:
+* User must have "List Project of Project track" privilege.
+* Rules of Searching:
+{table}
+*Field* | *Input Type* | *Data Type* | *Searching Option*
+Find | Text Box | Alpha Numeric | Name
+Find | Text Box | Alpha Numeric | Code
+{table}
+
+
+h4. Process:
+* Get list of *System Project* (default: 15 at Max) matching with search criteria.
+* Searching with zero length string will list all *System Project*.
+
+h4. Post-condition:
+
+* *Success:*
+** *System Project* will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [List "System Project"|guide:ListPtProjectActionService].

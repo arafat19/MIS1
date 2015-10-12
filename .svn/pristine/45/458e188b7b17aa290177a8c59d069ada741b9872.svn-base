@@ -1,0 +1,52 @@
+
+
+{table}
+Access Type: | Restricted | Priority: | High
+*Name:* | Delete *Chart Of Account* | |
+*ActionService:* | DeleteAccChartOfAccountActionService | *Auditable:* | No
+*Url:* | /accChartOfAccount/delete | | 
+{table}
+
+
+h4. Revision History:
+{table}
+*Author*   | *Date*	| *Reason for Changes*	| *Version*
+Meherun Nessa | 6th August 2014	| Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Name of use case represents its functionality.
+
+h4. Flow:
+* Actor clicks [Budget|guide:renderBudgetMenu] option from top menu bar.
+* Click "Setting" sub menu from left menu.
+* Click *Chart Of Account* link.
+* [Show Landing Page of Chart Of Account|guide:ShowAccChartOfAccountActionService].
+* Select a Line-Item from grid view.
+* Click "Delete" button from tool bar.
+* System will show confirmation message.
+* Actor clicks "Yes" button.
+* Delete *Chart Of Account*.
+
+h4. Pre-condition:
+* User must have "Delete Chart of Account" privilege.
+* If *Chart Of Account* has dependency with following business entity then *Chart Of Account* will not be delete-able:
+** *Voucher*
+** Voucher Type Mapping
+** *Sub Account*
+
+h4. Process:
+* Delete a selected *Chart Of Account*.
+
+h4. Post-condition:
+
+* *Success:*
+** Delete selected *Chart Of Account* from grid view.
+** Show Success message.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+

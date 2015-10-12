@@ -1,0 +1,52 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name* | Show "Task" Details | |
+ *ActionService:* | N/A | *Auditable:* | No
+ *Url:* | /rmsTask/renderTaskDetails | | 
+{table}
+
+h4. Revision History:
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Md. Shaheb Ali | 21st July 2014 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Administrator.
+
+h4. Description:
+This is the landing page of "Show Task Details" with search panel on top.
+
+h4. Flow: 
+* Actor clicks [ARMS|guide:_ShowARMSPlugin] option from top menu bar.
+* "Disbursement" sub menu of left menu should show as default.
+* Click "Task-Manage" link.
+* [Show Landing Page of "Manage Task"|guide:_ShowManageTask].
+* Enter valid input.
+* Click "Search" button.
+* Show "Task" Details.
+
+h4. Pre-condition:
+* User must have "Show Task Details" privilege.
+
+h4. Process:
+* Show "Task Details" information in grid view.
+* Following information should show in grid view:
+** Task Details
+** Beneficiary Information
+** Sender Information
+
+h4. Post-condition:
+
+* *Success:*
+** Show "Task Details" in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Use Case:
+* [Edit "Task"|guide:ShowRmsTaskActionService].
+* [Cancel "Task"|guide:CancelRmsTaskActionService].
+* ["Task" History |guide:showRmsTaskHistory].
+* [Search "Task History"|guide:searchRmsTaskHistory].

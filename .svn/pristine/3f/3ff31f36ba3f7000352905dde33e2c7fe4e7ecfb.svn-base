@@ -1,0 +1,28 @@
+<%@ page import="com.athena.mis.document.config.DocSysConfigurationCacheUtility; com.athena.mis.PluginConnector" %>
+<div id="application_top_panel" class="panel panel-primary">
+    <div class="panel-heading">
+        <div class="panel-title">
+            My <app:showSysConfig pluginId="${PluginConnector.DOCUMENT_ID}"
+                                  key="${DocSysConfigurationCacheUtility.DOC_SUB_CATEGORY_LABEL}"></app:showSysConfig>(s)
+
+            <span class="label label-primary" style="float: right; cursor: pointer" onclick="window.history.back()">
+                Back To <app:showSysConfig pluginId="${PluginConnector.DOCUMENT_ID}"
+                                           key="${DocSysConfigurationCacheUtility.DOC_CATEGORY_LABEL}"></app:showSysConfig>
+            </span>
+            <span class="glyphicon glyphicon-chevron-left" style="float: right"></span>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-7">
+                <doc:listMySubCategories categoryId="${categoryId}" name="listMySubCategory"></doc:listMySubCategories>
+            </div>
+
+            <div class="col-md-5" id="subCategoryDetails">
+                <g:include view="/document/docMySubCategory/_mySubCategoryDetails.gsp"></g:include>
+            </div>
+        </div>
+    </div>
+
+</div>

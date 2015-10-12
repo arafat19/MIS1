@@ -1,0 +1,40 @@
+
+{table}
+ Use Case ID: | MIS-Budget-47 | Priority: | High
+ *Name* | Download Budget Wise PO Summary CSV Report | |
+ *Access Type:* | Restricted | *Auditable:* | No
+ *Url*: | N/A | *Action Class:* | DownloadForBudgetWisePOSummaryCsvActionService
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 7th October 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Chief Financial Officer.
+
+h4. Description:
+Printed budget wise PO summary report show in CSV format.
+
+h4. Flow:
+# Click "CSV" icon upper right side of the page.
+# System will show conformation message of download.
+# Actor clicks "Ok" button.
+
+h4. Pre-condition:
+N/A.
+
+h4. Process:
+Create a printable report of the budget wise PO summary for the selecting project.
+
+h4. Post-condition:
+
+# *Success:*
+## Printable budget wise PO Summary CSV report can see here.
+## Downloaded CSV report is same as grid view report.
+
+# *Failure:*
+## Show error message for details visit [Error Handler|common Usecases].

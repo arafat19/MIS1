@@ -1,0 +1,165 @@
+
+
+projectTrack:
+
+         title: Project Track Plugin
+
+
+         _ShowProjectTrackPlugin: Show Project Track Plugin
+
+
+         PtShowSprintActionService: Show Landing Page of "Sprint"
+         PtListSprintActionService: List "Sprint"
+         GetDropDownPtProjectTagLibActionService: Populate "Project" List in drop-down
+         PopulateSprintStatusTypeList: Populate "Sprint Status Type" List in drop-down
+         PtCreateSprintActionService: Create "Sprint"
+         PtSelectSprintActionService: Open "Sprint" in Edit Mode
+         PtUpdateSprintActionService: Update "Sprint"
+         PtSearchSprintActionService: Search "Sprint" From Grid View
+         PtDeleteSprintActionService: Delete "Sprint"
+
+
+         ShowBackLogForSprintActionService: Show Landing Page of "Sprint's Backlog"
+         ListBackLogForSprintActionService: List "Sprint's Backlog"
+         _PopulateProjectWiseModuleList: Populate "Project" Wise "Module" List in drop-down
+         GetBackLogForModuleActionService: Populate "Module" Wise "Task" List in drop-down
+         CreateBackLogForSprintActionService: Add "Sprint's Backlog"
+         SearchBackLogForSprintActionService: Search "Sprint's Backlog" From Grid View
+         DeleteBackLogForSprintActionService: Delete "Sprint's Backlog"
+
+         RemoveMyPtBacklogActionService: Remove "Backlog"
+
+
+
+         ShowPtBugForSprintActionService: Show Landing Page of "Sprint's Bug"
+         ListPtBugForSprintActionService: List "Sprint's Bug"
+         GetBugForModuleActionService: Populate "Module" Wise "Bug" List in drop-down
+         CreatePtBugForSprintActionService: Add "Sprint's Bug"
+         SearchPtBugForSprintActionService: Search "Sprint's Bug" From Grid View
+         DeletePtBugForSprintActionService: Delete "Sprint's Bug"
+
+
+         ShowPtBacklogActionService: Show Landing Page of "Backlog"
+         ListPtBacklogActionService: List "Backlog"
+         GetDropDownPtModuleTagLibActionService: Populate "Module" List in drop-down
+         PopulateBacklogPriorityList: Populate "Backlog Priority" List in drop-down
+         CreatePtBacklogActionService: Create "Backlog"
+         SelectPtBacklogActionService: Open "Backlog" in Edit Mode
+         UpdatePtBacklogActionService: Update "Backlog"
+         SearchPtBacklogActionService: Search "Backlog" From Grid View
+         DeletePtBacklogActionService: Delete "Backlog"
+
+
+         ShowPtAcceptanceCriteriaActionService: Show Landing Page of "Acceptance Criteria"
+         ListPtAcceptanceCriteriaActionService: List "Acceptance Criteria"
+         PopulateAcceptanceCriteriaTypeList: Populate "Acceptance Criteria Type" List in drop-down
+         CreatePtAcceptanceCriteriaActionService: Create "Acceptance Criteria"
+         SelectPtAcceptanceCriteriaActionService: Open "Acceptance Criteria" in Edit Mode
+         UpdatePtAcceptanceCriteriaActionService: Update "Acceptance Criteria"
+         DeletePtAcceptanceCriteriaActionService: Delete "Acceptance Criteria"
+
+         ShowPtBacklogDetailsActionService: Show "Backlog" Report from grid view
+
+
+
+
+         _showForActive: Show Landing Page of "Active Backlog"
+         PopulateBacklogStatusTypeList: Populate "Backlog Status Type" List in drop-down
+         ListActiveBacklogActionService: Generate List of "Active Backlog"
+
+         AddMyPtBacklogActionService: Add Backlog to "My Task List"
+         AcceptPtBacklogActionService: Accept "Backlog"
+
+         ShowPtBugActionService: Show Landing Page of "Bug"
+         ListPtBugActionService: List "Bug"
+         PopulateBugStatusTypeList: Populate "Bug Status Type" List in drop-down
+         PopulateBugSeverityTypeList: Populate "Bug Severity Type" List in drop-down
+         PopulateBugTypeList: Populate "Bug Type" List in drop-down
+         CreatePtBugActionService: Create "Bug"
+         SelectPtBugActionService: Open "Bug" in Edit Mode
+         UpdatePtBugActionService: Update "Bug"
+         SearchPtBugActionService: Search "Bug" From Grid View
+         DeletePtBugActionService: Delete "Bug"
+
+         ReOpenPtBugActionService: ReOpen "Bug"
+         ClosePtBugActionService: Close "Bug"
+
+
+
+
+         _showForInActive: Show Landing Page of "InActive Backlog"
+         PtGetInActiveSprintListByProjectIdActionService: Populate "InActive Sprint" List in drop-down
+         ListInActiveBacklogActionService: List of "InActive Backlog"
+
+
+
+
+         ShowMyPtBacklogActionService: Show Landing Page of "My Task"
+         ListMyPtBacklogActionService: List "My Task"
+         SelectMyPtBacklogActionService: Open "My Task" in Edit Mode
+         GetDropDownPtOwnerTagLibActionService: Populate "Owner" List in drop-down
+         UpdateMyPtBacklogActionService: Update "My Task"
+         SearchMyPtBacklogActionService: Search "My Task" From Grid View
+
+
+         ShowPtAcceptanceCriteriaForMyBacklogActionService: Show Landing page of "Acceptance Criteria" of "My Task"
+         ListPtAcceptanceCriteriaForMyBacklogActionService: List "Acceptance Criteria" of "My Task"
+         UpdatePtAcceptanceCriteriaForMyBacklogActionService: Update "Acceptance Criteria" of "My Task"
+
+
+         ShowPtBugForMyTaskActionService: Show Landing Page of "Bug" for "My Task"
+         SelectPtBugForMyTaskActionService: Open "Bug" for "My Task" in Edit Mode
+         UpdatePtBugForMyTaskActionService: Update "Bug" for "My Task"
+         DownloadEntityContentForBugActionService: Download "Entity Content" for "Bug"
+
+         _PopulateSearchId: Populate Search Id
+         SearchPtBacklogDetailsActionService: Search Backlog Details
+         DownloadPtBacklogDetailsReportActionService: Download Backlog Details
+
+
+
+         PtShowSprintDetailsReportActionService: Show Landing Page of "Sprint Detials" Report
+         PtGetSprintListByProjectIdActionService: Populate "Sprint" List in drop-down
+         PtListSprintDetailsReportActionService: Generate "Sprint Detials" Report in HTML Format
+         PtDownloadSprintDetailsActionService: Download "Sprint Detials" Report in PDF Format
+
+
+         ShowOpenBacklogReportActionService: Show Landing Page of "Open Backlog" Report
+         ListOpenBacklogReportActionService: Generate "Open Backlog" Report in HTML Format
+         DownloadOpenBacklogReportActionService: Download "Open Backlog" Report in PDF Format
+
+
+         ShowPtBugDetailsReportActionService: Show Landing Page of "Bug Details" Report
+         ListPtBugDetailsReportActionService: Generate "Bug Details" Report in HTML Format
+         DownloadPtBugDetailsReportActionService: Download "Bug Details" Report in PDF Format
+         ShowPtBugDetailsActionService: Show "Bug Details" From "Bug Details Report"
+
+
+
+         ShowPtProjectActionService: Show Landing Page of "Software Project"
+         ListPtProjectActionService: List "Software Project"
+         CreatePtProjectActionService: Create "Software Project"
+         SelectPtProjectActionService: Open "Software Project" in Edit Mode
+         UpdatePtProjectActionService: Update "Software Project"
+         SearchPtProjectActionService: Search "Software Project" From Grid View
+         DeletePtProjectActionService: Delete "Software Project"
+
+
+         ShowPtProjectModuleActionService: Show Landing Page of "Project Module"
+         ListPtProjectModuleActionService: List "Project Module"
+         CreatePtProjectModuleActionService: Create "Project Module"
+         SelectPtProjectModuleActionService: Open "Project Module" in Edit Mode
+         UpdatePtProjectModuleActionService: Update "Project Module"
+         SearchPtProjectModuleActionService: Search "Project Module" From Grid View
+         DeletePtProjectModuleActionService: Delete "Project Module"
+
+
+         ShowPtModuleActionService: Show Landing Page of "Module"
+         ListPtModuleActionService: List "Module"
+         CreatePtModuleActionService: Create "Module"
+         SelectPtModuleActionService: Open "Module" in Edit Mode
+         UpdatePtModuleActionService: Update "Module"
+         SearchPtModuleActionService: Search "Module" From Grid View
+         DeletePtModuleActionService: Delete "Module"
+
+

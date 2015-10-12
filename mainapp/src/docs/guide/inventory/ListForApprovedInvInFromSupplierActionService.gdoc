@@ -1,0 +1,68 @@
+
+{table}
+Access Type: | Restricted | Priority: | High
+ *Name:* | Show list of Approved "Inventory in" From Supplier in landing page | |
+ *ActionService:* | ListForApprovedInvInFromSupplierActionService |*Auditable:* | No
+ *Url:* |/invInventoryTransactionDetails/listApprovedInvInFromSupplier | |
+{table}
+
+
+h4. Revision History
+{table}
+ *Author*   | *Date*	| *Reason for Changes*	| *Version*
+  Nahida Sultana | 30th June 2013 | Initial Requirement | 1.0
+{table}
+
+h4. Actor:
+Director, Project Director, Project Manager, Chief Financial Officer, Production Operator, Inventory Auditor, Inventory Operator.
+
+h4. Description:
+Name of usecase represent its functionality.
+
+h4. Flow:
+* Actor Clicks [*Inventory*|guide:_showInventoryPlugin] option from top menu bar.
+* *Inventory* sub menu from left menu should show as default.
+* Click "From Supplier" link.
+* [Show Group of "Inventory In" From Supplier Landing Page|guide:ShowForInventoryInFromSupplierActionService].
+* Select a Line-Item from grid view.
+* Click "Approved" button.
+* Show list of Approved "Inventory in" From Supplier in [landing page|guide:ShowForApprovedInvInFromSupplierActionService].
+
+
+h4. Pre-condition:
+* User must have "List Unapproved Inv.In From Supplier" privilege.
+
+h4. Process:
+* Get list of Approved "Inventory In" From Supplier  from server (default: 15 at Max).
+* Following columns should show in grid view:
+** Serial (Default: Invisible)
+** Chalan
+** Item
+** Supplied Quantity
+** Actual Quantity
+** Shrinkage
+** Transaction Date
+** Approved Date
+** Supplier Chalan
+** Vehicle
+** Created By
+** Approved By
+
+h4. Post-condition:
+
+* *Success:*
+** Approved "Inventory In" From Supplier will be listed in grid view.
+
+* *Failure:*
+** Show error message for details visit [Error Handler|common Usecases].
+
+h4. Related Usecase:
+* [Clear Results|common Usecases].
+* [Refresh|common Usecases].
+* [First Page|common Usecases].
+* [Forward Page|common Usecases].
+* [Previous Page|common Usecases].
+* [Last Page|common Usecases].
+* [Search Approved "Inventory In" From Supplier|guide:SearchForApprovedInvInFromSupplierActionService].
+
+!Inv/Approved_Item_From_Supplier_List.png!
