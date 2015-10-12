@@ -2,6 +2,8 @@ package com.athena.mis.application.actions.costingdetails
 
 import com.athena.mis.ActionIntf
 import com.athena.mis.BaseService
+import com.athena.mis.GridEntity
+import com.athena.mis.application.entity.CostingDetails
 import com.athena.mis.application.service.CostingDetailsService
 import com.athena.mis.application.utility.CostingDetailsCacheUtility
 import com.athena.mis.utility.Tools
@@ -64,10 +66,10 @@ class ShowCostingDetailsActionService extends BaseService implements ActionIntf 
         try {
             result.put(Tools.IS_ERROR, Boolean.TRUE)
             Map executeResult = (Map) obj
-            List costingDetailsList = (List) executeResult.get(COSTING_TYPE_LIST)
+            List costingDetailsList = (List) executeResult.get(COSTING_DETAILS_LIST)
             int count = (int) executeResult.get(COUNT)
-            List wrappedCostingTypeList = wrapListInGridEntityList(costingTypeList, start)
-            Map gridObject = [page: pageNumber, total: count, rows: wrappedCostingTypeList]
+            List wrappedCostingDetailsList = wrapListInGridEntityList(costingDetailsList, start)
+            Map gridObject = [page: pageNumber, total: count, rows: wrappedCostingDetailsList]
 
             result.put(GRID_OBJECT, gridObject)
             result.put(Tools.IS_ERROR, Boolean.FALSE)
@@ -83,5 +85,28 @@ class ShowCostingDetailsActionService extends BaseService implements ActionIntf 
     @Override
     Object buildFailureResultForUI(Object obj) {
         return null
+    }
+
+    private List wrapListInGridEntityList(List<CostingDetails> costingDetailsList, int start) {
+        List costingDetails = [] as List
+        try {
+            int counter = start + 1
+            for (int i = 0; i < costingDetailsList.size(); i++) {
+                GridEntity obj = new GridEntity()
+                obj.id = costingDetailsList[i].id
+                obj.cell = [
+                        counter,
+                        costingDetailsList[i].name,
+                        costingDetailsList[i].description
+                ]
+                costingDetails << obj
+                counter++
+            }
+            return costingDetails
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            costingDetails = []
+            return costingDetails
+        }
     }
 }
