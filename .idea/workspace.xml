@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="602c2adb-71dd-4f46-aa3c-2a28afb9428a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="63cde54e-6bc4-422d-9ce8-67878a8242c0" name="Others" comment="" />
@@ -71,8 +70,8 @@
       <file leaf-file-name="CreateCostingDetailsActionService.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/CreateCostingDetailsActionService.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.18518518" vertical-offset="1360" max-vertical-offset="2220">
-              <caret line="116" column="37" selection-start-line="116" selection-start-column="37" selection-end-line="116" selection-end-column="37" />
+            <state vertical-scroll-proportion="2.096774" vertical-offset="0" max-vertical-offset="2220">
+              <caret line="132" column="25" selection-start-line="132" selection-start-column="25" selection-end-line="132" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -589,7 +588,7 @@
       <workItem from="1440598248085" duration="217000" />
       <workItem from="1444320604157" duration="7231000" />
       <workItem from="1444654672999" duration="1188000" />
-      <workItem from="1444657347212" duration="214000" />
+      <workItem from="1444657347212" duration="237000" />
     </task>
     <task id="LOCAL-00001" summary="PR html report code style (no JSON data) change and in the list kendo list view change (data list sent from Action Service as JSON)">
       <created>1405933916178</created>
@@ -651,11 +650,15 @@
       <created>1444657588226</created>
       <updated>1444657588226</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="modification">
+      <created>1444657607729</created>
+      <updated>1444657607729</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="216540000" />
+    <option name="totallyTimeSpent" value="216563000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -682,7 +685,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32977462" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32947975" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1142,8 +1145,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/CreateCostingDetailsActionService.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18518518" vertical-offset="1360" max-vertical-offset="2220">
-          <caret line="116" column="37" selection-start-line="116" selection-start-column="37" selection-end-line="116" selection-end-column="37" />
+        <state vertical-scroll-proportion="2.096774" vertical-offset="0" max-vertical-offset="2220">
+          <caret line="132" column="25" selection-start-line="132" selection-start-column="25" selection-end-line="132" selection-end-column="25" />
           <folding />
         </state>
       </provider>
