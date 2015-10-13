@@ -53,7 +53,12 @@ class CostingDetailsService extends BaseService {
         }
 
         int costingTypeId = (int) result[0][0]
-        costingType.id = costingTypeId
-        return costingType
+        costingDetails.id = costingTypeId
+        return costingDetails
+    }
+
+    public int countByDescriptionAndIdNotEqual(String name, long id) {
+        int count = CostingDetails.countByDescriptionAndIdNotEqual(name, id)
+        return count
     }
 }
