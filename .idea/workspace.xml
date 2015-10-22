@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="602c2adb-71dd-4f46-aa3c-2a28afb9428a" name="Default" comment="modification">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/integration/application/ApplicationBootStrapService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/integration/application/ApplicationBootStrapService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/src/groovy/com/athena/mis/application/utility/CostingDetailsCacheUtility.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/src/groovy/com/athena/mis/application/utility/CostingDetailsCacheUtility.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/controllers/com/athena/mis/application/controller/CostingDetailsController.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/controllers/com/athena/mis/application/controller/CostingDetailsController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/CostingDetailsService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/CostingDetailsService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/CreateCostingDetailsActionService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/CreateCostingDetailsActionService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/RequestMapService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/RequestMapService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/RoleFeatureMappingService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/RoleFeatureMappingService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/ShowCostingDetailsActionService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/ShowCostingDetailsActionService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/UpdateCostingDetailsActionService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingdetails/UpdateCostingDetailsActionService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/conf/UrlMappings.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/conf/UrlMappings.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_create.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/currency/_create.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/currency/_create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/_leftmenu.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/_leftmenu.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_script.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_script.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/show.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="602c2adb-71dd-4f46-aa3c-2a28afb9428a" name="Default" comment="" />
     <list id="63cde54e-6bc4-422d-9ce8-67878a8242c0" name="Others" comment="" />
     <ignored path="mainapp.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -95,13 +78,9 @@
       <file leaf-file-name="_script.gsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_script.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="7.3960395" vertical-offset="0" max-vertical-offset="4095">
-              <caret line="249" column="56" selection-start-line="249" selection-start-column="56" selection-end-line="249" selection-end-column="56" />
-              <folding>
-                <marker date="1445509121000" expanded="true" signature="4658:4777" placeholder="..." />
-                <marker date="1445509121000" expanded="true" signature="4839:4960" placeholder="..." />
-                <marker date="1445509121000" expanded="true" signature="9108:9350" placeholder="..." />
-              </folding>
+            <state vertical-scroll-proportion="0.44554454" vertical-offset="0" max-vertical-offset="4095">
+              <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -644,7 +623,7 @@
       <workItem from="1445005922193" duration="1614000" />
       <workItem from="1445411141089" duration="2923000" />
       <workItem from="1445431079419" duration="6731000" />
-      <workItem from="1445498344018" duration="5780000" />
+      <workItem from="1445498344018" duration="6316000" />
     </task>
     <task id="LOCAL-00001" summary="PR html report code style (no JSON data) change and in the list kendo list view change (data list sent from Action Service as JSON)">
       <created>1405933916178</created>
@@ -726,11 +705,19 @@
       <created>1445512493733</created>
       <updated>1445512493733</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="modification">
+      <created>1445513141984</created>
+      <updated>1445513141984</updated>
+    </task>
+    <task id="LOCAL-00022" summary="modification">
+      <created>1445513375531</created>
+      <updated>1445513375531</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="251875000" />
+    <option name="totallyTimeSpent" value="252411000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -754,10 +741,10 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1920" height="983" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32947975" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32947975" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24973376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1259,13 +1246,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_script.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="7.3960395" vertical-offset="0" max-vertical-offset="4095">
-          <caret line="249" column="56" selection-start-line="249" selection-start-column="56" selection-end-line="249" selection-end-column="56" />
-          <folding>
-            <marker date="1445509121000" expanded="true" signature="4658:4777" placeholder="..." />
-            <marker date="1445509121000" expanded="true" signature="4839:4960" placeholder="..." />
-            <marker date="1445509121000" expanded="true" signature="9108:9350" placeholder="..." />
-          </folding>
+        <state vertical-scroll-proportion="0.44554454" vertical-offset="0" max-vertical-offset="4095">
+          <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
