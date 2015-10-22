@@ -98,14 +98,13 @@ class CreateCostingTypeActionService extends BaseService implements ActionIntf {
             object.id = costingTypeInstance.id
             object.cell = [
                     Tools.LABEL_NEW,
-                    costingTypeInstance.id,
                     costingTypeInstance.name,
                     costingTypeInstance.description ? costingTypeInstance.description : Tools.EMPTY_SPACE
             ]
-            Map resultMap = [entity: object, version: costingTypeInstance.version]
+
             result.put(Tools.IS_ERROR, Boolean.FALSE)
             result.put(Tools.MESSAGE, COSTING_TYPE_SAVE_SUCCESS_MESSAGE)
-            result.put(COSTING_TYPE, resultMap)
+            result.put(Tools.ENTITY, object)
             return result
         } catch (Exception ex) {
             log.error(ex.getMessage())

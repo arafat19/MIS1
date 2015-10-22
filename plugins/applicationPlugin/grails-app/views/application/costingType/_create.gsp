@@ -45,7 +45,7 @@
 
             <button id="clearFormButton" name="clearFormButton" type="button" data-role="button"
                     class="k-button k-button-icontext" role="button" tabindex="4"
-                    aria-disabled="false" onclick='clearCostingTypeForm();'><span class="k-icon k-i-close"></span>Cancel
+                    aria-disabled="false" onclick='resetForm();'><span class="k-icon k-i-close"></span>Cancel
             </button>
         </div>
     </form>

@@ -3,6 +3,7 @@ package com.athena.mis.application.actions.taglib
 import com.athena.mis.ActionIntf
 import com.athena.mis.BaseService
 import com.athena.mis.application.entity.CostingType
+import com.athena.mis.application.service.CostingTypeService
 import com.athena.mis.application.utility.CostingTypeCacheUtility
 import com.athena.mis.utility.Tools
 import grails.converters.JSON
@@ -13,6 +14,8 @@ class GetDropDownCostingTypeTagLibActionService extends BaseService implements A
 
     @Autowired
     CostingTypeCacheUtility costingTypeCacheUtility
+    @Autowired
+    CostingTypeService costingTypeService
 
     private static final String NAME = 'name'
     private static final String CLASS = 'class'
@@ -101,7 +104,7 @@ class GetDropDownCostingTypeTagLibActionService extends BaseService implements A
     public Object execute(Object parameters, Object obj) {
         try {
             Map dropDownAttributes = (Map) parameters
-            List<CostingType> lstCostingType = costingTypeCacheUtility.list()
+            List<CostingType> lstCostingType = costingTypeService.list()
             String html = buildDropDown(lstCostingType, dropDownAttributes)
             return html
         } catch (Exception e) {

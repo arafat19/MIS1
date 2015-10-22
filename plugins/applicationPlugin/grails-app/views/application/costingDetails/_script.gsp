@@ -55,7 +55,7 @@
             },
             complete: function (XMLHttpRequest, textStatus) {
                 setButtonDisabled($('#create'), false);
-                showLoadingSpinner(false)
+                showLoadingSpinner(false);
             },
             dataType: 'json'
         });
@@ -70,8 +70,9 @@
         } else {
             try {
                 var newEntry = result.entity;
-                if ($('#id').val().isEmpty() && newEntry.entity != null) { // newly created
+                if ($('#id').val().isEmpty() && newEntry != null) { // newly created
                     var previousTotal = parseInt(costingDetailsListModel.total);
+
 
                     // re-arranging serial
                     var firstSerial = 1;
@@ -79,8 +80,8 @@
                         firstSerial = costingDetailsListModel.rows[0].cell[0];
                         regenerateSerial($(costingDetailsListModel.rows), 0);
                     }
-                    newEntry.entity.cell[0] = firstSerial;
-                    costingDetailsListModel.rows.splice(0, 0, newEntry.entity);
+                    newEntry.cell[0] = firstSerial;
+                    costingDetailsListModel.rows.splice(0, 0, newEntry);
 
                     if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
                         costingDetailsListModel.rows.pop();

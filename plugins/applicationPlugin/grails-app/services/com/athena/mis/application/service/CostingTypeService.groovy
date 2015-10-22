@@ -9,12 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired
 class CostingTypeService extends BaseService {
 
     static transactional = false
+    static final String SORT_ON_ID = "id";
 
     @Autowired
     CostingTypeCacheUtility costingTypeCacheUtility
 
     public List list() {
-        return CostingType.list(sort: costingTypeCacheUtility.SORT_ON_NAME, order: costingTypeCacheUtility.SORT_ORDER_ASCENDING, readOnly: true);
+        return CostingType.list(sort: SORT_ON_ID, order: costingTypeCacheUtility.SORT_ORDER_ASCENDING, readOnly: true);
     }
 
     public CostingType read(long id) {

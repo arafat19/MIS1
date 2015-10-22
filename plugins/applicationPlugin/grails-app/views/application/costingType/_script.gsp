@@ -1,5 +1,6 @@
-<script language="javascript">
-    var output =${output ? output : ''};
+<script language="javascript" type="text/javascript">
+
+    var output = false;
     var costingTypeListModel = false;
 
     $(document).ready(function () {
@@ -7,38 +8,40 @@
     });
 
     function onLoadCostingTypePage() {
-        // initialize form with kendo validator & bind onSubmit method
-        initializeForm($("#costingTypeForm"), onSubmitCostingType);
+        // initialize form with kendo validator & bind onSubmit event
+        initializeForm($("#costingTypeForm"), onSubmitCostingTypeForm);
 
+        initGrid();
+        output =${output ? output : ''};
         if (output.isError) {
-            showError(output.message);
+            showError(data.message);
         } else {
             costingTypeListModel = output.gridObject;
         }
 
-        // update page title
-        $(document).attr('title', "MIS - Add Costing Type");
-        loadNumberedMenu(MENU_ID_APPLICATION, "#costingType/show");
+        populateFlex1();
 
+        // update page title
+        $(document).attr('title', "MIS - Create Costing Type");
+        loadNumberedMenu(MENU_ID_APPLICATION, "#costingType/show");
     }
+
     function executePreCondition() {
-        if (!validateForm($("#costingTypeForm"))) {   // check kendo validation
+        if (!validateForm($("#costingTypeForm"))) {
             return false;
         }
         return true;
     }
 
-    function onSubmitCostingType() {
-
+    function onSubmitCostingTypeForm() {
         if (executePreCondition() == false) {
             return false;
         }
-
-        setButtonDisabled($('.save'), true);
+        setButtonDisabled($('#create'), true);
         showLoadingSpinner(true);
         var actionUrl = null;
         if ($('#id').val().isEmpty()) {
-            actionUrl = "${createLink(controller: 'costingType', action: 'create')}";
+            actionUrl = "${createLink(controller:'costingType', action: 'create')}";
         } else {
             actionUrl = "${createLink(controller: 'costingType', action: 'update')}";
         }
@@ -50,11 +53,9 @@
             success: function (data, textStatus) {
                 executePostCondition(data);
             },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-            },
             complete: function (XMLHttpRequest, textStatus) {
-                setButtonDisabled($('.save'), false);
-                showLoadingSpinner(false)
+                setButtonDisabled($('#create'), false);
+                showLoadingSpinner(false);
             },
             dataType: 'json'
         });
@@ -69,17 +70,18 @@
         } else {
             try {
                 var newEntry = result.entity;
-                if ($('#id').val().isEmpty() && newEntry.entity != null) { // newly created
-                    var previousTotal = parseInt(costingTypeListModel.total);
+                if ($('#id').val().isEmpty() && newEntry != null) { // newly created
 
-                    // re-arranging serial
+                    var previousTotal = parseInt(costingTypeListModel.total);
                     var firstSerial = 1;
+
                     if (costingTypeListModel.rows.length > 0) {
                         firstSerial = costingTypeListModel.rows[0].cell[0];
                         regenerateSerial($(costingTypeListModel.rows), 0);
                     }
-                    newEntry.entity.cell[0] = firstSerial;
-                    costingTypeListModel.rows.splice(0, 0, newEntry.entity);
+                    newEntry.cell[0] = firstSerial;
+
+                    costingTypeListModel.rows.splice(0, 0, newEntry);
 
                     if ($('#flex1').countEqualsResultPerPage(previousTotal)) {
                         costingTypeListModel.rows.pop();
@@ -93,61 +95,58 @@
                     $("#flex1").flexAddData(costingTypeListModel);
                 }
 
-                clearCostingTypeForm();
+                resetForm();
                 showSuccess(result.message);
+
             } catch (e) {
                 // Do Nothing
             }
         }
     }
 
-    function clearCostingTypeForm() {
-        // clear all errors, validation messages & form values and bind onFocus method
-        clearForm($("#costingTypeForm"), $('#name'));
-        $('#create').html("<span class='k-icon k-i-plus'></span>Create");
+
+    function resetForm() {
+        clearForm($("#costingTypeForm"), $("#name"));
+        $("#create").html("<span class='k-icon k-i-plus'></span>Create");
     }
 
+    function initGrid() {
+        $("#flex1").flexigrid
+        (
+                {
+                    url: false,
+                    dataType: 'json',
+                    colModel: [
+                        {display: "Serial", name: "serial", width: 50, sortable: false, align: "right"},
+//                        {display: "ID", name: "id", width: 30, sortable: false, align: "right", hide: true},
+                        {display: "Name", name: "name", width: 150, sortable: false, align: "left"},
+                        {display: "Description", name: "description", width: 300, sortable: false, align: "center"}
+                    ],
+                    buttons: [
+                        <app:ifAllUrl urls="/costingType/select,/costingType/update">
+                        {name: 'Edit', bclass: 'edit', onpress: editCostingType},
+                        </app:ifAllUrl>
+                        <sec:access url="/costingType/delete">
+                        {name: 'Delete', bclass: 'delete', onpress: deleteCostingType},
+                        </sec:access>
+                        {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
+                        {separator: true}
+                    ],
 
-    $("#flex1").flexigrid
-    (
-            {
-                url: false,
-                dataType: 'json',
-                colModel: [
-                    {display: "Serial", name: "serial", width: 40, sortable: false, align: "right"},
-                    /*{display: "ID", name: "id", width: 40, sortable: false, align: "right", hide: true},*/
-                    {display: "Name", name: "name", width: 180, sortable: true, align: "left"},
-                    {display: "Description", name: "description", width: 250, sortable: true, align: "left"}
-                ],
-                buttons: [
-                    <app:ifAllUrl urls="/costingType/select,/costingType/update">
-                    {name: 'Edit', bclass: 'edit', onpress: selectCostingType},
-                    </app:ifAllUrl>
-                    <sec:access url="/costingType/delete">
-                    {name: 'Delete', bclass: 'delete', onpress: deleteCostingType},
-                    </sec:access>
-                    {name: 'Clear Results', bclass: 'clear-results', onpress: reloadGrid},
-                    {separator: true}
-                ],
-                searchitems: [
-                    {display: "Name", name: "name", width: 180, sortable: true, align: "left"}
-                ],
-                sortname: "id",
-                sortorder: "desc",
-                usepager: true,
-                singleSelect: true,
-                title: 'All Costing Types',
-                useRp: true,
-                rp: 15,
-                showTableToggleBtn: false,
-                height: getGridHeight() - 20,
-                afterAjax: function (XMLHttpRequest, textStatus) {
-                    afterAjaxError(XMLHttpRequest, textStatus);
-                    showLoadingSpinner(false);// Spinner hide after AJAX Call
-                },
-                preProcess: onLoadCostingTypeListJSON
-            }
-    );
+
+                    sortname: "id",
+                    sortorder: "asc",
+                    usepager: true,
+                    singleSelect: true,
+                    title: 'Costing Type List',
+                    useRp: true,
+                    rp: 15,
+                    showTableToggleBtn: false,
+                    height: getGridHeight() - 20,
+                    customPopulate: customPopulateCostingTypeGrid
+                }
+        );
+    }
 
     function reloadGrid(com, grid) {
         if (com == 'Clear Results') {
@@ -155,28 +154,69 @@
         }
     }
 
-    function onLoadCostingTypeListJSON(data) {
+    function customPopulateCostingTypeGrid(data) {
         if (data.isError) {
             showError(data.message);
-            costingTypeListModel = null;
+            costingTypeListModel = getEmptyGridModel();
         } else {
             costingTypeListModel = data;
         }
-        return data;
+        $("#flex1").flexAddData(costingTypeListModel);
+        return false;
     }
 
+    function editCostingType(com, grid) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'costingType') == false) {
+            return;
+        }
+        resetForm();
+        showLoadingSpinner(true);
+
+        var costingTypeId = getSelectedIdFromGrid($('#flex1'));
+        $.ajax({
+            url: "${createLink(controller:'costingType', action: 'select')}?id=" + costingTypeId,
+            success: executePostConditionForEdit,
+            complete: function (XMLHttpRequest, textStatus) {
+                showLoadingSpinner(false);
+            },
+            dataType: 'json',
+            type: 'post'
+        });
+    }
+
+    function executePreConditionForEdit(ids) {
+        if (ids.length == 0) {
+            showError("Please select a costing type to edit the details");
+            return false;
+        }
+        return true;
+    }
+
+    function executePostConditionForEdit(data) {
+        if (data.isError) {
+            showError(data.message);
+        } else {
+            showCountry(data);
+        }
+    }
+
+    function showCountry(data) {
+        var entity = data.entity;
+        $("#id").val(entity.id);
+        $('#version').val(data.version);
+        $("#name").val(entity.name);
+        $("#description").val(entity.description);
+        $("#create").html("<span class='k-icon k-i-plus'></span>Update");
+    }
 
     function deleteCostingType(com, grid) {
         if (executePreConditionForDelete() == false) {
             return;
         }
-
         showLoadingSpinner(true);
-
         var costingTypeId = getSelectedIdFromGrid($('#flex1'));
-
         $.ajax({
-            url: "${createLink(controller: 'costingType', action: 'delete')}?id=" + costingTypeId,
+            url: "${createLink(controller:'costingType', action:'delete')}?id=" + costingTypeId,
             success: executePostConditionForDelete,
             complete: function (XMLHttpRequest, textStatus) {
                 showLoadingSpinner(false);
@@ -184,82 +224,47 @@
             dataType: 'json',
             type: 'post'
         });
+
     }
 
     function executePreConditionForDelete() {
-        if (executeCommonPreConditionForSelect($('#flex1'), 'Costing Type') == false) {
+        if (executeCommonPreConditionForSelect($('#flex1'), 'costingType') == false) {
             return false;
         }
-        if (!confirm('Are you sure you want to delete the selected Costing Type?')) {
+        if (!confirm('Are you sure you want to delete the selected costing type?')) {
             return false;
         }
         return true;
     }
 
-    <%-- removing selected row and clean input form --%>
     function executePostConditionForDelete(data) {
+
         if (data.deleted == true) {
             var selectedRow = null;
             $('.trSelected', $('#flex1')).each(function (e) {
                 selectedRow = $(this).remove();
             });
-            clearCostingTypeForm();
+            resetForm();
             $('#flex1').decreaseCount(1);
             showSuccess(data.message);
             costingTypeListModel.total = parseInt(costingTypeListModel.total) - 1;
             removeEntityFromGridRows(costingTypeListModel, selectedRow);
-
         } else {
             showError(data.message);
         }
     }
 
 
-    function selectCostingType(com, grid) {
-        if (executeCommonPreConditionForSelect($('#flex1'), 'Costing Type') == false) {
-            return;
+    function populateFlex1() {
+        <sec:access url="/costingType/list">
+        var strUrl = "${createLink(controller:'costingType', action: 'list')}";
+        $("#flex1").flexOptions({url: strUrl});
+
+        if (costingTypeListModel) {
+            $("#flex1").flexAddData(costingTypeListModel);
         }
-
-        clearCostingTypeForm();
-        showLoadingSpinner(true);
-        var costingTypeId = getSelectedIdFromGrid($('#flex1'));
-        $.ajax({
-            url: "${createLink(controller: 'costingType', action: 'select')}?id="
-                    + costingTypeId,
-            success: executePostConditionForSelect,
-            complete: function (XMLHttpRequest, textStatus) {
-                showLoadingSpinner(false);
-            },
-            dataType: 'json',
-            type: 'post'
-        });
+        </sec:access>
     }
 
-    function executePostConditionForSelect(data) {
-        if (data.isError) {
-            showError(data.message);
-        } else {
-            showCostingType(data);
-        }
-    }
-
-    function showCostingType(data) {
-        var entity = data.entity;
-        $('#id').val(entity.id);
-        $('#version').val(data.version);
-        $('#name').val(entity.name);
-        $('#description').val(entity.description);
-        $('#create').html("<span class='k-icon k-i-plus'></span>Update");
-    }
-
-
-    <sec:access url="/costingType/list">
-    var strUrl = "${createLink(controller: 'costingType', action: 'list')}";
-    $("#flex1").flexOptions({url: strUrl});
-
-    if (costingTypeListModel) {
-        $("#flex1").flexAddData(costingTypeListModel);
-    }
-    </sec:access>
 
 </script>

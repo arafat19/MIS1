@@ -43,9 +43,13 @@ class ShowCostingTypeActionService extends BaseService implements ActionIntf {
         try {
             result.put(Tools.IS_ERROR, Boolean.TRUE)
             GrailsParameterMap parameterMap = (GrailsParameterMap) params
-            if ((!parameterMap.sortname) || (parameterMap.sortname.toString().equals(ID))) {
+            /*if ((!parameterMap.sortname) || (parameterMap.sortname.toString().equals(ID))) {
                 parameterMap.sortname = costingTypeCacheUtility.SORT_ON_NAME
                 parameterMap.sortorder = ASCENDING_SORT_ORDER
+            }*/
+
+            if (!parameterMap.rp) {
+                parameterMap.rp = 20
             }
             initPager(parameterMap)
 //            int count = costingTypeCacheUtility.count()
