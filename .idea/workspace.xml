@@ -2,13 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="602c2adb-71dd-4f46-aa3c-2a28afb9428a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/CostingTypeService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/service/CostingTypeService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingtype/CreateCostingTypeActionService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingtype/CreateCostingTypeActionService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/taglib/GetDropDownCostingTypeTagLibActionService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/taglib/GetDropDownCostingTypeTagLibActionService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingtype/ShowCostingTypeActionService.groovy" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/services/com/athena/mis/application/actions/costingtype/ShowCostingTypeActionService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingType/_create.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingType/_create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_script.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingDetails/_script.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingType/_script.gsp" afterPath="$PROJECT_DIR$/plugins/applicationPlugin/grails-app/views/application/costingType/_script.gsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="63cde54e-6bc4-422d-9ce8-67878a8242c0" name="Others" comment="" />
@@ -680,7 +673,7 @@
       <workItem from="1445005922193" duration="1614000" />
       <workItem from="1445411141089" duration="2923000" />
       <workItem from="1445431079419" duration="6731000" />
-      <workItem from="1445498344018" duration="15201000" />
+      <workItem from="1445498344018" duration="15226000" />
     </task>
     <task id="LOCAL-00001" summary="PR html report code style (no JSON data) change and in the list kendo list view change (data list sent from Action Service as JSON)">
       <created>1405933916178</created>
@@ -770,11 +763,15 @@
       <created>1445513375531</created>
       <updated>1445513375531</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="modification">
+      <created>1445529985782</created>
+      <updated>1445529985782</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="261296000" />
+    <option name="totallyTimeSpent" value="261321000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
