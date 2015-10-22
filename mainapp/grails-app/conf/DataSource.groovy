@@ -27,7 +27,7 @@ environments {
 //            url = "jdbc:postgresql://192.168.10.56:5432/mis"
             url = "jdbc:postgresql://localhost:5432/mis"
             username = "postgres"
-            password = "123"
+            password = "arafat"
             dbCreate = "update"
             logSql = true
             properties {
@@ -41,9 +41,9 @@ environments {
             }
         }
         dataSource_arms {
-            url = "jdbc:postgresql://203.190.0.213:5432/arms_mamun"
+            url = "jdbc:postgresql://localhost:5432/mis"
             username = "postgres"
-            password = ""
+            password = "arafat"
             dbCreate = "update"
             logSql = true
             properties {
