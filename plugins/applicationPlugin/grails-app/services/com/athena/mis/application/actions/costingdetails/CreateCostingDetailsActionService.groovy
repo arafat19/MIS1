@@ -11,6 +11,7 @@ import com.athena.mis.application.entity.SystemEntity
 import com.athena.mis.application.service.CostingDetailsService
 import com.athena.mis.application.service.CostingTypeService
 import com.athena.mis.application.utility.AppSessionUtil
+import com.athena.mis.utility.DateUtility
 import com.athena.mis.utility.Tools
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -42,7 +43,7 @@ class CreateCostingDetailsActionService extends BaseService implements ActionInt
             GrailsParameterMap parameterMap = (GrailsParameterMap) params
 
             // check here for required params are present
-            if ((!parameterMap.costingTypeId || !parameterMap.costingAmount)) {
+            if ((!parameterMap.costingTypeId || !parameterMap.costingAmount || !parameterMap.costingDate)) {
                 result.put(Tools.MESSAGE, INPUT_VALIDATION_ERROR)
                 return result
             }
@@ -146,6 +147,7 @@ class CreateCostingDetailsActionService extends BaseService implements ActionInt
         costingDetails.costingTypeId = costingType.id
         costingDetails.createdOn = new Date()
         costingDetails.createdBy = systemUser.id
+        costingDetails.costingDate = DateUtility.parseMaskedDate(parameterMap.costingDate.toString())
 
         // ensure null on updateBy and additional fields
         costingDetails.updatedOn = null

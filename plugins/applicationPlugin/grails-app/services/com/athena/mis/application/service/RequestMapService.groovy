@@ -353,6 +353,15 @@ class RequestMapService extends BaseService {
         new RequestMap(transactionCode: 'APP-265', url: '/costingType/list', featureName: 'List costing Type', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save()
         new RequestMap(transactionCode: 'APP-266', url: '/costingType/select', featureName: 'Select costing Type', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save();
 
+        // costing Details
+        new RequestMap(transactionCode: 'APP-267', url: '/costingType/show', featureName: 'Show costing Details', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.TRUE).save()
+        new RequestMap(transactionCode: 'APP-268', url: '/costingType/create', featureName: 'Create costing Details', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save()
+        new RequestMap(transactionCode: 'APP-269', url: '/costingType/update', featureName: 'Update costing Details', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save()
+        new RequestMap(transactionCode: 'APP-270', url: '/costingType/delete', featureName: 'Delete costing Details', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save()
+        new RequestMap(transactionCode: 'APP-271', url: '/costingType/list', featureName: 'List costing Details', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save()
+        new RequestMap(transactionCode: 'APP-272', url: '/costingType/select', featureName: 'Select costing Details', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save();
+
+
         // system Configuration
         new RequestMap(transactionCode: 'APP-99', url: '/systemConfiguration/show', featureName: 'Show system configuration', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.TRUE).save();
         new RequestMap(transactionCode: 'APP-100', url: '/systemConfiguration/list', featureName: 'List system configuration', configAttribute: 'ROLE_-2', pluginId: 1, isCommon: Boolean.FALSE, isViewable: Boolean.FALSE).save();

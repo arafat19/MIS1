@@ -8,6 +8,7 @@ import com.athena.mis.application.entity.CostingType
 import com.athena.mis.application.service.CostingDetailsService
 import com.athena.mis.application.service.CostingTypeService
 import com.athena.mis.application.utility.AppSessionUtil
+import com.athena.mis.utility.DateUtility
 import com.athena.mis.utility.Tools
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
@@ -74,14 +75,29 @@ class UpdateCostingDetailsActionService extends BaseService implements ActionInt
         }
     }
 
-    @Override
-    Object executePostCondition(Object parameters, Object obj) {
+    public Object executePostCondition(Object parameters, Object obj) {
         return null
     }
 
-    @Override
-    Object execute(Object parameters, Object obj) {
-        return null
+    @Transactional
+    public Object execute(Object parameters, Object obj) {
+        LinkedHashMap result = new LinkedHashMap()
+        try {
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            LinkedHashMap preResult = (LinkedHashMap) obj
+            CostingDetails costingDetails = (CostingDetails) preResult.get(COSTING_DETAILS)
+            costingDetailsService.update(costingDetails)
+            result.put(COSTING_DETAILS, costingDetails)
+            result.put(Tools.IS_ERROR, Boolean.FALSE)
+            return result
+        } catch (Exception ex) {
+            log.error(ex.getMessage())
+            //@todo:rollback
+            throw new RuntimeException(UPDATE_FAILURE_MESSAGE)
+            result.put(Tools.IS_ERROR, Boolean.TRUE)
+            result.put(Tools.MESSAGE, UPDATE_FAILURE_MESSAGE)
+            return result
+        }
     }
 
     public Object buildSuccessResultForUI(Object obj) {
@@ -139,6 +155,7 @@ class UpdateCostingDetailsActionService extends BaseService implements ActionInt
         oldCostingDetails.costingTypeId = Long.parseLong(parameterMap.costingTypeId.toString())
         oldCostingDetails.updatedBy = appSessionUtil.getAppUser().id
         oldCostingDetails.updatedOn = new Date()
+        oldCostingDetails.costingDate = DateUtility.parseMaskedDate(parameterMap.costingDate.toString())
         return oldCostingDetails
     }
 }

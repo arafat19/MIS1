@@ -8,6 +8,10 @@
                 <li><a class='autoload' href="#costingType/show"><span><i class="pre-icon vehicle"></i></span> <span
                         class="menuText">Costing Type</span></a></li>
             </sec:access>
+            <sec:access url="/costingDetails/show">
+                <li><a class='autoload' href="#costingDetails/show"><span><i class="pre-icon vehicle"></i></span> <span
+                        class="menuText">Costing Details</span></a></li>
+            </sec:access>
             <sec:access url="/vehicle/show">
                 <li><a class='autoload' href="#vehicle/show"><span><i class="pre-icon vehicle"></i></span> <span
                         class="menuText">Vehicle</span></a></li>

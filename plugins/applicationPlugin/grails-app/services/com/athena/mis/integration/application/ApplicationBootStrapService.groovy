@@ -87,6 +87,11 @@ class ApplicationBootStrapService {
     GenderCacheUtility genderCacheUtility
     @Autowired
     UserBankBranchCacheUtility userBankBranchCacheUtility
+    @Autowired
+    CostingTypeCacheUtility costingTypeCacheUtility
+    @Autowired
+    CostingDetailsCacheUtility costingDetailsCacheUtility
+
 
     public void init() {
         initAllUtility()
@@ -132,5 +137,7 @@ class ApplicationBootStrapService {
         bankBranchCacheUtility.init()
         genderCacheUtility.init()
         userBankBranchCacheUtility.init()
+        costingTypeCacheUtility.init()
+        costingDetailsCacheUtility.init()
     }
 }

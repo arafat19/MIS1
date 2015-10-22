@@ -1,17 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: user
-  Date: 10/9/15
-  Time: 7:03 PM
---%>
+<g:render template='/application/costingDetails/script'/>
+<g:render template='/application/costingDetails/create'/>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
-<html>
-<head>
-    <title></title>
-</head>
-
-<body>
-
-</body>
-</html>
+<table id="flex1" style="display:none"></table>

@@ -197,6 +197,14 @@ class RoleFeatureMappingService extends BaseService {
         new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-265', pluginId: 1).save();  // url: '/designation/list'
         new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-266', pluginId: 1).save();  // url: '/designation/select'
 
+        // costing details
+        new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-267', pluginId: 1).save();  // url: '/designation/show'
+        new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-268', pluginId: 1).save();  // url: '/designation/create'
+        new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-269', pluginId: 1).save();  // url: '/designation/update'
+        new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-270', pluginId: 1).save();  // url: '/designation/delete'
+        new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-271', pluginId: 1).save();  // url: '/designation/list'
+        new RoleFeatureMapping(roleTypeId: -3, transactionCode: 'APP-272', pluginId: 1).save();  // url: '/designation/select'
+
         // theme
         new RoleFeatureMapping(roleTypeId: -12, transactionCode: 'APP-124', pluginId: 1).save(); // url: '/theme/showTheme'
         new RoleFeatureMapping(roleTypeId: -12, transactionCode: 'APP-125', pluginId: 1).save(); // url: '/theme/updateTheme'

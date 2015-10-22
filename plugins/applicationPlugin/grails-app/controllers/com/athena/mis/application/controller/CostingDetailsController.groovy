@@ -1,7 +1,6 @@
 package com.athena.mis.application.controller
 
-import com.athena.mis.application.actions.costingdetails.CreateCostingDetailsActionService
-import com.athena.mis.application.actions.costingdetails.ShowCostingDetailsActionService
+import com.athena.mis.application.actions.costingdetails.*
 import grails.converters.JSON
 
 class CostingDetailsController {
@@ -11,7 +10,41 @@ class CostingDetailsController {
 
     CreateCostingDetailsActionService createCostingDetailsActionService
     ShowCostingDetailsActionService showCostingDetailsActionService
+    UpdateCostingDetailsActionService updateCostingDetailsActionService
+    ListCostingDetailsActionService listCostingDetailsActionService
+    DeleteCostingDetailsActionService deleteCostingDetailsActionService
+    SelectCostingDetailsActionService selectCostingDetailsActionService
 
+
+    def select() {
+        Map executeResult
+        executeResult = (Map) selectCostingDetailsActionService.execute(params, null)
+        render(executeResult as JSON)
+    }
+
+    def delete() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+
+        preResult = (Map) deleteCostingDetailsActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deleteCostingDetailsActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) deleteCostingDetailsActionService.execute(params, null)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) deleteCostingDetailsActionService.buildFailureResultForUI(executeResult)
+            render(result as JSON)
+            return
+        }
+        result = (Map) deleteCostingDetailsActionService.buildSuccessResultForUI(executeResult)
+        render(result as JSON)
+    }
 
     def show() {
         Map result
@@ -49,6 +82,54 @@ class CostingDetailsController {
             return
         }
         result = (Map) createCostingDetailsActionService.buildSuccessResultForUI(executeResult)
+        render(result as JSON)
+    }
+
+    def update() {
+        Map preResult
+        Map executeResult
+        Map result
+        Boolean isError
+
+        preResult = (Map) updateCostingDetailsActionService.executePreCondition(params, null)
+        isError = (Boolean) preResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateCostingDetailsActionService.buildFailureResultForUI(preResult)
+            render(result as JSON)
+            return
+        }
+        executeResult = (Map) updateCostingDetailsActionService.execute(null, preResult)
+        isError = (Boolean) executeResult.isError
+        if (isError.booleanValue()) {
+            result = (Map) updateCostingDetailsActionService.buildFailureResultForUI(executeResult)
+            render(result as JSON)
+            return
+        }
+        result = (Map) updateCostingDetailsActionService.buildSuccessResultForUI(executeResult)
+        render(result as JSON)
+    }
+
+    def list() {
+        Map result
+        Map executeResult
+        Boolean isError
+        if (params.query) {
+            executeResult = (Map) listCostingDetailsActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) listCostingDetailsActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) listCostingDetailsActionService.buildSuccessResultForUI(executeResult)
+            }
+        } else {
+            executeResult = (Map) listCostingDetailsActionService.execute(params, null)
+            isError = (Boolean) executeResult.isError
+            if (isError.booleanValue()) {
+                result = (Map) listCostingDetailsActionService.buildFailureResultForUI(executeResult)
+            } else {
+                result = (Map) listCostingDetailsActionService.buildSuccessResultForUI(executeResult)
+            }
+        }
         render(result as JSON)
     }
 }

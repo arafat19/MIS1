@@ -7,11 +7,9 @@ import com.athena.mis.application.entity.CostingDetails
 import com.athena.mis.application.entity.CostingType
 import com.athena.mis.application.service.CostingDetailsService
 import com.athena.mis.application.service.CostingTypeService
-import com.athena.mis.application.utility.CostingDetailsCacheUtility
 import com.athena.mis.utility.Tools
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
-import org.springframework.beans.factory.annotation.Autowired
 
 class ShowCostingDetailsActionService extends BaseService implements ActionIntf {
 
@@ -24,8 +22,6 @@ class ShowCostingDetailsActionService extends BaseService implements ActionIntf 
 
     CostingDetailsService costingDetailsService
     CostingTypeService costingTypeService
-    @Autowired
-    CostingDetailsCacheUtility costingDetailsCacheUtility
 
     /**
      * do nothing for pre operation
@@ -44,9 +40,12 @@ class ShowCostingDetailsActionService extends BaseService implements ActionIntf 
         try {
             result.put(Tools.IS_ERROR, Boolean.TRUE)
             GrailsParameterMap parameterMap = (GrailsParameterMap) params
-            if ((!parameterMap.sortname) || (parameterMap.sortname.toString().equals(ID))) {
-                parameterMap.sortname = costingDetailsCacheUtility.SORT_ON_NAME
-                parameterMap.sortorder = ASCENDING_SORT_ORDER
+            /*if (!parameterMap.costingTypeId || !parameterMap.costingAmount) {
+                result.put(Tools.MESSAGE, Tools.ERROR_FOR_INVALID_INPUT)
+                return result
+            }*/
+            if (!parameterMap.rp) {
+                parameterMap.rp = 20
             }
             initPager(parameterMap)
 

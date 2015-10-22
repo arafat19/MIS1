@@ -644,7 +644,7 @@
       <workItem from="1445005922193" duration="1614000" />
       <workItem from="1445411141089" duration="2923000" />
       <workItem from="1445431079419" duration="6731000" />
-      <workItem from="1445498344018" duration="5751000" />
+      <workItem from="1445498344018" duration="5780000" />
     </task>
     <task id="LOCAL-00001" summary="PR html report code style (no JSON data) change and in the list kendo list view change (data list sent from Action Service as JSON)">
       <created>1405933916178</created>
@@ -722,11 +722,15 @@
       <created>1445512472086</created>
       <updated>1445512472086</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="modification">
+      <created>1445512493733</created>
+      <updated>1445512493733</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="251846000" />
+    <option name="totallyTimeSpent" value="251875000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
