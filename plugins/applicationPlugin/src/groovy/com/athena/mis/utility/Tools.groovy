@@ -419,6 +419,7 @@ class Tools {
     //Domain
     public static final String DOMAIN_EXCHANGEHOUSE = "Exchange House"
     public static final String DOMAIN_BANK_BRANCH = "Branch" // "BankBranch"
+    public static final String COSTING_DETAILS = "Costing Details" //
     public static final String DOMAIN_BENEFICIARY = "Beneficiary"
     public static final String DOMAIN_TASK = "Task"
     public static final String DOMAIN_CUSTOMER = "Customer"

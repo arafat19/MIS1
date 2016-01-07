@@ -41,7 +41,6 @@ class TestAppMailActionService extends BaseService implements ActionIntf {
     private static final String TRANSACTION_CODE = "TestAppMailActionService"
 
     /**
-     *
      * @param parameters - params from UI
      * @param obj - n/a
      * @return - a map containing message and isError True/False

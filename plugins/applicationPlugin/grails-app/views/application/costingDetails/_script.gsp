@@ -251,7 +251,9 @@
         dropDownCostingType.value(entity.costingTypeId);
         $('#description').val(entity.description);
         $('#costingAmount').val(entity.costingAmount);
+        $('#costingAmount').prop("disabled", true);
         $('#costingDate').val(data.costingDate);
+        $('#costingDate').prop("disabled", true);
         $('#create').html("<span class='k-icon k-i-plus'></span>Update");
     }
 

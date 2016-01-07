@@ -40,6 +40,13 @@ class DeleteCostingTypeActionService extends BaseService implements ActionIntf {
                 return result
             }
 
+            Map associationResult = isAssociated(costingType)    // check association of bank with relevant domains
+            Boolean hasAssociation = (Boolean) associationResult.get(Tools.HAS_ASSOCIATION)
+            if (hasAssociation.booleanValue()) {
+                result.put(Tools.MESSAGE, associationResult.get(Tools.MESSAGE))
+                return result
+            }
+
             result.put(Tools.IS_ERROR, Boolean.FALSE)
             return result
         } catch (Exception e) {
@@ -107,5 +114,35 @@ class DeleteCostingTypeActionService extends BaseService implements ActionIntf {
             result.put(Tools.MESSAGE, DEFAULT_ERROR_MESSAGE)
             return result
         }
+    }
+
+    private Map isAssociated(CostingType costingType) {
+        LinkedHashMap result = new LinkedHashMap()
+        result.put(Tools.HAS_ASSOCIATION, Boolean.TRUE)
+        long costingTypeId = costingType.id
+        String costingTypeName = costingType.name
+        int count=0
+
+
+        count = countCostingType(costingTypeId)                                      // hasBranch
+        if (count.intValue() > 0) {
+            result.put(Tools.MESSAGE, Tools.getMessageOfAssociation(costingTypeName, count, Tools.COSTING_DETAILS))
+            return result
+        }
+        result.put(Tools.HAS_ASSOCIATION, Boolean.FALSE)
+        return result
+    }
+
+    //count number of costing type in costing details table
+    private static final String QUERY_COUNT_COSTING_TYPE = """
+            SELECT COUNT(id) as count
+            FROM costing_details
+            WHERE costing_type_id = :costingTypeId
+        """
+
+    private int countCostingType(long costingTypeId) {
+        List costingTypeCount = executeSelectSql(QUERY_COUNT_COSTING_TYPE, [costingTypeId: costingTypeId]);
+        int count = costingTypeCount[0].count;
+        return count;
     }
 }

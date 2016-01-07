@@ -40,7 +40,7 @@ class UpdateCostingDetailsActionService extends BaseService implements ActionInt
             GrailsParameterMap params = (GrailsParameterMap) parameterMap
 
             //Check parameters
-            if ((!params.id) || (!params.version) || (!params.costingTypeId) || (!params.costingAmount)) {
+            if ((!params.id) || (!params.version) || (!params.costingTypeId)) {
                 result.put(Tools.MESSAGE, INVALID_INPUT_MSG)
                 return result
             }
@@ -151,11 +151,11 @@ class UpdateCostingDetailsActionService extends BaseService implements ActionInt
 
     private CostingDetails buildCostingDetailsObject(GrailsParameterMap parameterMap, CostingDetails oldCostingDetails) {
         oldCostingDetails.description = parameterMap.description.toString()
-        oldCostingDetails.costingAmount = Double.parseDouble(parameterMap.costingAmount.toString())
+        //oldCostingDetails.costingAmount = Double.parseDouble(parameterMap.costingAmount.toString())
         oldCostingDetails.costingTypeId = Long.parseLong(parameterMap.costingTypeId.toString())
         oldCostingDetails.updatedBy = appSessionUtil.getAppUser().id
         oldCostingDetails.updatedOn = new Date()
-        oldCostingDetails.costingDate = DateUtility.parseMaskedDate(parameterMap.costingDate.toString())
+        //oldCostingDetails.costingDate = DateUtility.parseMaskedDate(parameterMap.costingDate.toString())
         return oldCostingDetails
     }
 }
